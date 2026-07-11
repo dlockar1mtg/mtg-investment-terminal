@@ -1,0 +1,5 @@
+box_name,source_name,market_price,low_price,last_price_checked,source_note,source_confidence
+Universes Beyond: The Lord of the Rings: Tales of Middle-earth Collector Booster Display,manual_verified_tcgplayer,1925.23,,2026-07-07T21:45:00+00:00,Known individual Collector Booster Display market price; rejects TCGCSV case-like outlier.,95
+Universes Beyond: Fallout Collector Booster Display,manual_estimate,375.0,,2026-07-07T21:45:00+00:00,Manual placeholder estimate because TCGCSV selected case-like value; replace with verified market price.,70
+FINAL FANTASY Collector Booster Display,manual_verified_tcgplayer,1524.84,,2026-07-07T21:45:00+00:00,Known individual Collector Booster Display market price.,95
+Double Masters 2022 Collector Booster Display,manual_verified_tcgplayer,404.55,,2026-07-07T21:45:00+00:00,Known individual Collector Booster Display market price.,95
