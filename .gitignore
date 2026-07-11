@@ -1,11 +1,8 @@
 # ============================================================
-# MTG Investment Terminal — Terminal 2.5.1a
-# Production repository rules
+# MTG Investment Terminal - Production .gitignore
 # ============================================================
 
-# ------------------------------------------------------------
 # Python
-# ------------------------------------------------------------
 __pycache__/
 *.py[cod]
 *$py.class
@@ -19,8 +16,7 @@ dist/
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
-.coverage
-.coverage.*
+.coverage*
 htmlcov/
 .tox/
 .nox/
@@ -32,12 +28,12 @@ venv/
 env/
 ENV/
 
-# Jupyter
-.ipynb_checkpoints/
+# IDEs
+.vscode/
+.idea/
+*.code-workspace
 
-# ------------------------------------------------------------
-# Secrets and local-only configuration
-# ------------------------------------------------------------
+# Secrets
 .env
 .env.*
 !.env.example
@@ -46,7 +42,6 @@ config.local.py
 local_config.py
 credentials.json
 secrets.json
-secret.json
 tokens.json
 auth.json
 *.pem
@@ -55,139 +50,78 @@ auth.json
 *.pfx
 *.token
 
-# Safe examples remain tracked
-!config.example.py
-!config_template.py
-!credentials.example.json
-!secrets.example.json
-
-# ------------------------------------------------------------
-# Local databases
-# ------------------------------------------------------------
+# Databases
 *.sqlite
 *.sqlite3
 *.db
 *.db-wal
 *.db-shm
-*.sqlite-wal
-*.sqlite-shm
-data/**/*.sqlite
-data/**/*.sqlite3
-data/**/*.db
-workspace/**/*.sqlite
-workspace/**/*.sqlite3
-workspace/**/*.db
 
-# ------------------------------------------------------------
-# Downloaded and extracted archives
-# ------------------------------------------------------------
+# Archives
 *.7z
 *.zip
 *.rar
 *.tar
 *.tar.gz
 *.tgz
-*.bz2
 *.xz
-
-data/**/archive_cache/
-data/**/archives/
-data/**/downloads/
-data/**/extracted/
-data/**/raw_downloads/
-workspace/raw/
-workspace/cache/
-
-# Preserve workspace documentation
-!workspace/README.md
+*.bz2
 
 # ------------------------------------------------------------
-# Generated data — not source controlled
+# Runtime / generated data
 # ------------------------------------------------------------
+
+# Raw source downloads
 data/raw/
 data/input/
-data/investment/
-data/market_inputs/
-data/market_intelligence/
-data/monte_carlo/
-data/source_cache/
 data/discovered/
+data/source_cache/
 data/market_database/
-data/rolling_metrics/
 data/market_signals/
-data/source_runs/
-data/dashboard/
+data/rolling_metrics/
+data/market_intelligence/
+data/investment/
+data/monte_carlo/
 data/analytics/
+data/dashboard/
 data/warehouse/
-data/terminal2/exports/
+
+# Daily historical price snapshots
+data/history/*.csv
+!data/history/README.md
+
+# Terminal runtime folders
 data/terminal2/archive_cache/
 data/terminal2/extracted_archives/
+data/terminal2/exports/
 data/terminal2/market_audit/
 data/terminal2/market_inputs/
-data/terminal2/product_discovery_candidates.csv
-data/terminal2/product_metadata_template.csv
 
+# Workspace
+workspace/raw/
+workspace/cache/
+workspace/history/
 workspace/analytics/
 workspace/market/
 workspace/monte_carlo/
-workspace/history/
 workspace/temp/
+!workspace/README.md
 
-# ------------------------------------------------------------
-# Generated exports and reports
-# ------------------------------------------------------------
+# Outputs
 outputs/
 reports/
 exports/
 snapshots/
 
-# ------------------------------------------------------------
-# Keep repository-controlled reference/configuration data
-# ------------------------------------------------------------
-!data/product_master/
-!data/product_master/**
-!data/reference/
-!data/reference/**
-!data/templates/
-!data/templates/**
-
-# Product master review artifacts remain local unless converted to templates
-data/product_master/*review*.csv
-data/product_master/*candidate*.csv
-data/product_master/*manual*.csv
-data/product_master/*approval*.csv
-
-# Keep safe templates/examples
-!data/product_master/*_template.csv
-!data/product_master/*.example.csv
-!data/product_master/README.md
-
-# ------------------------------------------------------------
-# Logs, diagnostics, and temporary artifacts
-# ------------------------------------------------------------
+# Logs
 *.log
-*.tmp
-*.temp
-*.bak
-*.old
-*.orig
-*.rej
-*.pid
-*.lock
 logs/
 audit/
 audits/
 debug/
 diagnostics/
-data/**/audit/
-data/**/audits/
-data/**/logs/
-data/**/debug/
-data/**/diagnostics/
 
-# ------------------------------------------------------------
 # Large generated formats
-# ------------------------------------------------------------
 *.parquet
 *.feather
 *.arrow
@@ -196,60 +130,29 @@ data/**/diagnostics/
 *.pickle
 *.pkl
 
-# ------------------------------------------------------------
 # Spreadsheet lock files
-# ------------------------------------------------------------
 ~$*.xlsx
 ~$*.xls
 ~$*.csv
 
 # ------------------------------------------------------------
-# Power BI local files
+# Repository-controlled reference data
 # ------------------------------------------------------------
-*.pbix
-*.pbit
-*.pbip
-*.bim
-*.pbi
-*.pbi.json
-*.pbids
+!data/product_master/
+!data/product_master/**
+!data/reference/
+!data/reference/**
+!data/templates/
+!data/templates/**
 
-# ------------------------------------------------------------
-# Editors and operating systems
-# ------------------------------------------------------------
-.vscode/
-.idea/
-*.code-workspace
+# Local review artifacts
+data/product_master/*review*.csv
+data/product_master/*candidate*.csv
+data/product_master/*manual*.csv
+data/product_master/*approval*.csv
+
+# OS files
 .DS_Store
-.AppleDouble
-.LSOverride
-Icon?
-._*
-.Spotlight-V100
-.Trashes
 Thumbs.db
-ehthumbs.db
 Desktop.ini
 $RECYCLE.BIN/
-
-# ------------------------------------------------------------
-# Installers and binaries
-# ------------------------------------------------------------
-*.lnk
-*.msi
-*.exe
-
-# ------------------------------------------------------------
-# Test outputs
-# ------------------------------------------------------------
-test_output/
-test_outputs/
-test_results/
-coverage.xml
-junit.xml
-
-# ------------------------------------------------------------
-# Git leftovers
-# ------------------------------------------------------------
-*.patch
-*.diff
