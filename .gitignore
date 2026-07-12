@@ -77,6 +77,7 @@ data/input/
 data/discovered/
 data/source_cache/
 data/market_database/
+data/market_inputs/
 data/market_signals/
 data/rolling_metrics/
 data/market_intelligence/
@@ -91,11 +92,15 @@ data/history/*.csv
 !data/history/README.md
 
 # Terminal runtime folders
+data/terminal2/*.sqlite
+data/terminal2/*.sqlite3
+data/terminal2/*.db
 data/terminal2/archive_cache/
 data/terminal2/extracted_archives/
 data/terminal2/exports/
 data/terminal2/market_audit/
 data/terminal2/market_inputs/
+data/terminal2/product_discovery_candidates.csv
 
 # Workspace
 workspace/raw/
