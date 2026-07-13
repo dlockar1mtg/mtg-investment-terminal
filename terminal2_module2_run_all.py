@@ -37,16 +37,17 @@ def main():
 
     export_all()
     manifest, status = build_dashboard_warehouse(create_snapshot=True)
-    module2_status = export_module2_dashboard()
     migration_status = migrate_legacy_dashboard_outputs(
         create_snapshots=True,
         include_analytics_current=True,
         continue_on_error=False,
     )
+    module2_status = export_module2_dashboard()
 
     print("\nFull Module 2 workflow complete.")
     print(f"Base dashboard datasets: {status['datasets_created']}")
     print(f"Module 2 dashboard datasets: {module2_status['datasets']}")
+    print(f"Standardized warehouse market datasets: {module2_status['warehouse_datasets']}")
     print(f"Products: {status['product_rows']}")
     print(f"Historical price rows: {status['historical_price_rows']}")
     print(f"Market intelligence rows: {module2_status['market_intelligence_rows']}")

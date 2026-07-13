@@ -9,6 +9,8 @@ import pandas as pd
 from terminal2.config import ROOT_DIR
 from terminal2.db.module2_migration import migrate_module2
 from terminal2.db.schema import get_connection
+from terminal2.market.contracts import get_market_contract
+from terminal2.warehouse_core import DashboardPublisher, Warehouse
 
 
 DATA_DIR = Path(ROOT_DIR) / "data"
@@ -27,7 +29,7 @@ def _read(sql):
         connection.close()
 
 
-def _write(df, path):
+def _write_legacy(df, path):
     path.parent.mkdir(parents=True, exist_ok=True)
     df.to_csv(path, index=False)
     return len(df)
@@ -35,14 +37,21 @@ def _write(df, path):
 
 def _market_signals(intelligence):
     if intelligence.empty:
-        return intelligence
+        return intelligence.assign(
+            market_signal=pd.Series(dtype="object"),
+            signal_reason=pd.Series(dtype="object"),
+        )
 
     df = intelligence.copy()
     score = pd.to_numeric(df["market_intelligence_score"], errors="coerce")
-    confidence = pd.to_numeric(df["market_intelligence_confidence"], errors="coerce")
+    confidence = pd.to_numeric(
+        df["market_intelligence_confidence"], errors="coerce"
+    )
     supply = pd.to_numeric(df["supply_signal_score"], errors="coerce")
     sales = pd.to_numeric(df["sales_velocity_score"], errors="coerce")
-    relative = pd.to_numeric(df["market_relative_strength"], errors="coerce")
+    relative = pd.to_numeric(
+        df["market_relative_strength"], errors="coerce"
+    )
 
     df["market_signal"] = np.select(
         [
@@ -75,11 +84,16 @@ def _market_signals(intelligence):
 
 
 def _market_alerts(signals):
+    columns = [
+        "investment_product_id",
+        "box_name",
+        "alert_type",
+        "severity",
+        "alert_message",
+        "generated_at_utc",
+    ]
     if signals.empty:
-        return pd.DataFrame(columns=[
-            "investment_product_id", "box_name", "alert_type", "severity",
-            "alert_message", "generated_at_utc"
-        ])
+        return pd.DataFrame(columns=columns)
 
     rows = []
     generated = datetime.now(timezone.utc).isoformat()
@@ -92,13 +106,21 @@ def _market_alerts(signals):
         sales = row.get("sales_velocity_score")
         sales_conf = row.get("sales_confidence")
 
-        if pd.notna(score) and score >= 72 and pd.notna(confidence) and confidence >= 50:
+        if (
+            pd.notna(score)
+            and score >= 72
+            and pd.notna(confidence)
+            and confidence >= 50
+        ):
             rows.append({
                 "investment_product_id": row.get("investment_product_id"),
                 "box_name": row.get("box_name"),
                 "alert_type": "MARKET_STRENGTH",
                 "severity": "High",
-                "alert_message": f"Market intelligence score is {score:.1f} with {confidence:.1f}% confidence.",
+                "alert_message": (
+                    f"Market intelligence score is {score:.1f} "
+                    f"with {confidence:.1f}% confidence."
+                ),
                 "generated_at_utc": generated,
             })
         if pd.notna(alpha30) and alpha30 >= 0.10:
@@ -107,10 +129,18 @@ def _market_alerts(signals):
                 "box_name": row.get("box_name"),
                 "alert_type": "MARKET_OUTPERFORMANCE",
                 "severity": "Medium",
-                "alert_message": f"30-day alpha versus the sealed market is {alpha30 * 100:.1f}%.",
+                "alert_message": (
+                    f"30-day alpha versus the sealed market is "
+                    f"{alpha30 * 100:.1f}%."
+                ),
                 "generated_at_utc": generated,
             })
-        if pd.notna(supply) and supply >= 75 and pd.notna(supply_conf) and supply_conf >= 50:
+        if (
+            pd.notna(supply)
+            and supply >= 75
+            and pd.notna(supply_conf)
+            and supply_conf >= 50
+        ):
             rows.append({
                 "investment_product_id": row.get("investment_product_id"),
                 "box_name": row.get("box_name"),
@@ -119,7 +149,12 @@ def _market_alerts(signals):
                 "alert_message": f"Supply signal is {supply:.1f}.",
                 "generated_at_utc": generated,
             })
-        if pd.notna(sales) and sales >= 75 and pd.notna(sales_conf) and sales_conf >= 50:
+        if (
+            pd.notna(sales)
+            and sales >= 75
+            and pd.notna(sales_conf)
+            and sales_conf >= 50
+        ):
             rows.append({
                 "investment_product_id": row.get("investment_product_id"),
                 "box_name": row.get("box_name"),
@@ -129,15 +164,18 @@ def _market_alerts(signals):
                 "generated_at_utc": generated,
             })
 
-    return pd.DataFrame(rows)
+    return pd.DataFrame(rows, columns=columns)
 
 
-def _update_manifest(entries):
+def _update_legacy_manifest(entries):
     manifest_path = DASHBOARD_DIR / "dataset_manifest.csv"
     generated = datetime.now(timezone.utc).isoformat()
-
-    existing = pd.read_csv(manifest_path) if manifest_path.exists() else pd.DataFrame(
-        columns=["dataset", "path", "rows", "generated_at_utc"]
+    existing = (
+        pd.read_csv(manifest_path)
+        if manifest_path.exists()
+        else pd.DataFrame(
+            columns=["dataset", "path", "rows", "generated_at_utc"]
+        )
     )
     new = pd.DataFrame([
         {
@@ -148,38 +186,17 @@ def _update_manifest(entries):
         }
         for dataset, path, rows in entries
     ])
-
     if not existing.empty:
         existing = existing[~existing["dataset"].isin(new["dataset"])]
     combined = pd.concat([existing, new], ignore_index=True, sort=False)
     combined.to_csv(manifest_path, index=False)
-    (DATA_DIR / "analytics" / "dataset_manifest.csv").parent.mkdir(parents=True, exist_ok=True)
-    combined.to_csv(DATA_DIR / "analytics" / "dataset_manifest.csv", index=False)
 
-    dictionary_path = DASHBOARD_DIR / "data_dictionary.csv"
-    dictionary = pd.read_csv(dictionary_path) if dictionary_path.exists() else pd.DataFrame(
-        columns=["dataset", "path", "column_name", "inferred_dtype"]
-    )
-    dictionary = dictionary[~dictionary["dataset"].isin(new["dataset"])] if not dictionary.empty else dictionary
-    rows = []
-    for dataset, path, _ in entries:
-        try:
-            sample = pd.read_csv(path, nrows=10)
-            for col in sample.columns:
-                rows.append({
-                    "dataset": dataset,
-                    "path": str(path.relative_to(DATA_DIR)),
-                    "column_name": col,
-                    "inferred_dtype": str(sample[col].dtype),
-                })
-        except Exception:
-            pass
-    dictionary = pd.concat([dictionary, pd.DataFrame(rows)], ignore_index=True, sort=False)
-    dictionary.to_csv(dictionary_path, index=False)
+    analytics_manifest = DATA_DIR / "analytics" / "dataset_manifest.csv"
+    analytics_manifest.parent.mkdir(parents=True, exist_ok=True)
+    combined.to_csv(analytics_manifest, index=False)
 
 
-def export_module2_dashboard():
-    migrate_module2()
+def build_module2_datasets():
     intelligence = _read("""
         SELECT mi.*, p.box_name, p.set_name, p.product_type, p.asset_class
         FROM market_intelligence mi
@@ -198,40 +215,85 @@ def export_module2_dashboard():
         LEFT JOIN products p USING(investment_product_id)
         ORDER BY sa.observation_date, sa.investment_product_id
     """)
-    market_health = _read("SELECT * FROM market_health_history ORDER BY snapshot_date")
-    source_health = _read("SELECT * FROM source_health_history ORDER BY snapshot_date, source_name")
+    market_health = _read(
+        "SELECT * FROM market_health_history ORDER BY snapshot_date"
+    )
+    source_health = _read(
+        "SELECT * FROM source_health_history "
+        "ORDER BY snapshot_date, source_name"
+    )
     signals = _market_signals(intelligence)
     alerts = _market_alerts(signals)
 
+    return {
+        "market_intelligence": intelligence,
+        "market_signals": signals,
+        "market_health": market_health,
+        "source_health": source_health,
+        "supply_metrics": supply,
+        "liquidity": sales,
+        "market_alerts": alerts,
+        "current_market_intelligence": intelligence,
+        "current_market_health": market_health.tail(1),
+        "market_health_summary": market_health.tail(1),
+    }
+
+
+def publish_module2_datasets(
+    datasets,
+    *,
+    warehouse: Warehouse | None = None,
+):
+    warehouse = warehouse or Warehouse()
+    publisher = DashboardPublisher(warehouse)
+
+    batch = []
+    for name, dataframe in datasets.items():
+        contract = get_market_contract(name)
+        batch.append((dataframe, contract.definition()))
+
+    return publisher.publish_many(
+        batch,
+        message="Terminal 2.5.2 market intelligence publication",
+    )
+
+
+def export_module2_dashboard():
+    migrate_module2()
+    datasets = build_module2_datasets()
+
+    legacy_targets = {
+        "market_intelligence": MARKET_DIR / "market_intelligence.csv",
+        "market_signals": MARKET_DIR / "market_signals.csv",
+        "market_health": MARKET_DIR / "market_health.csv",
+        "source_health": MARKET_DIR / "source_health.csv",
+        "supply_metrics": MARKET_DIR / "supply_metrics.csv",
+        "liquidity": MARKET_DIR / "liquidity.csv",
+        "market_alerts": ALERTS_DIR / "market_intelligence_alerts.csv",
+        "current_market_intelligence": (
+            ANALYTICS_CURRENT_DIR / "market_intelligence.csv"
+        ),
+        "current_market_health": ANALYTICS_CURRENT_DIR / "market_health.csv",
+        "market_health_summary": (
+            EXECUTIVE_DIR / "market_health_summary.csv"
+        ),
+    }
+
     entries = []
+    for name, path in legacy_targets.items():
+        rows = _write_legacy(datasets[name], path)
+        entries.append((name, path, rows))
+    _update_legacy_manifest(entries)
 
-    for dataset, df, path in [
-        ("market_intelligence", intelligence, MARKET_DIR / "market_intelligence.csv"),
-        ("market_signals", signals, MARKET_DIR / "market_signals.csv"),
-        ("market_health", market_health, MARKET_DIR / "market_health.csv"),
-        ("source_health", source_health, MARKET_DIR / "source_health.csv"),
-        ("supply_metrics", supply, MARKET_DIR / "supply_metrics.csv"),
-        ("liquidity", sales, MARKET_DIR / "liquidity.csv"),
-        ("market_alerts", alerts, ALERTS_DIR / "market_intelligence_alerts.csv"),
-        ("current_market_intelligence", intelligence, ANALYTICS_CURRENT_DIR / "market_intelligence.csv"),
-        ("current_market_health", market_health.tail(1), ANALYTICS_CURRENT_DIR / "market_health.csv"),
-    ]:
-        rows = _write(df, path)
-        entries.append((dataset, path, rows))
-
-    # Executive market health is a stable one-row table.
-    executive_path = EXECUTIVE_DIR / "market_health_summary.csv"
-    rows = _write(market_health.tail(1), executive_path)
-    entries.append(("market_health_summary", executive_path, rows))
-
-    _update_manifest(entries)
+    published = publish_module2_datasets(datasets)
 
     return {
         "datasets": len(entries),
-        "market_intelligence_rows": len(intelligence),
-        "supply_rows": len(supply),
-        "sales_rows": len(sales),
-        "market_alert_rows": len(alerts),
-        "market_health_rows": len(market_health),
-        "source_health_rows": len(source_health),
+        "warehouse_datasets": len(published),
+        "market_intelligence_rows": len(datasets["market_intelligence"]),
+        "supply_rows": len(datasets["supply_metrics"]),
+        "sales_rows": len(datasets["liquidity"]),
+        "market_alert_rows": len(datasets["market_alerts"]),
+        "market_health_rows": len(datasets["market_health"]),
+        "source_health_rows": len(datasets["source_health"]),
     }
