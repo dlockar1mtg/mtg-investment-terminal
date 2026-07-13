@@ -161,3 +161,6 @@ data/product_master/*approval*.csv
 Thumbs.db
 Desktop.ini
 $RECYCLE.BIN/
+
+# Personal portfolio holdings
+data/terminal2/portfolio_holdings.csv

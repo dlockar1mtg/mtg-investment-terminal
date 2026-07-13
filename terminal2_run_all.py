@@ -9,6 +9,7 @@ from terminal2.market.analytics.intelligence import compute_market_intelligence
 from terminal2.market.analytics.health import compute_source_health, compute_market_health
 from terminal2.market.exports import export_module2_dashboard
 from terminal2.history import publish_historical_intelligence
+from terminal2.portfolio import publish_portfolio_intelligence
 
 def main():
     init_db()
@@ -61,6 +62,17 @@ def main():
     print(f"Module 2 dashboard datasets: {module2_status['datasets']}")
     print(f"Standardized warehouse market datasets: {module2_status['warehouse_datasets']}")
     print("Canonical Power BI market root: data/warehouse/current/")
+
+    portfolio_status = publish_portfolio_intelligence(
+        model_capital=10000.0,
+        maximum_positions=12,
+    )
+    print("\nPortfolio intelligence:")
+    print(f"Datasets published: {portfolio_status['datasets']}")
+    print(f"Holdings file found: {portfolio_status['holdings_file_found']}")
+    print(f"Actual positions: {portfolio_status['position_count']}")
+    print(f"Model candidates: {portfolio_status['candidate_count']}")
+    print("Canonical Power BI portfolio root: data/warehouse/current/portfolio/")
 
 if __name__ == "__main__":
     main()
