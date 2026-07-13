@@ -10,6 +10,7 @@ from terminal2.market.analytics.health import compute_source_health, compute_mar
 from terminal2.market.exports import export_module2_dashboard
 from terminal2.history import publish_historical_intelligence
 from terminal2.portfolio import publish_portfolio_intelligence
+from terminal2.forecast import publish_forecast_intelligence
 
 def main():
     init_db()
@@ -62,6 +63,14 @@ def main():
     print(f"Module 2 dashboard datasets: {module2_status['datasets']}")
     print(f"Standardized warehouse market datasets: {module2_status['warehouse_datasets']}")
     print("Canonical Power BI market root: data/warehouse/current/")
+
+    forecast_status = publish_forecast_intelligence()
+    print("\nForecast intelligence:")
+    print(f"Datasets published: {forecast_status['datasets']}")
+    print(f"Products forecast: {forecast_status['product_count']}")
+    print(f"Horizon rows: {forecast_status['horizon_rows']}")
+    print(f"Average conviction: {forecast_status['average_conviction_score']:.2f}")
+    print("Canonical Power BI forecast root: data/warehouse/current/intelligence/")
 
     portfolio_status = publish_portfolio_intelligence(
         model_capital=10000.0,
