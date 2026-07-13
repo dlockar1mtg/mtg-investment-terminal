@@ -164,3 +164,7 @@ $RECYCLE.BIN/
 
 # Personal portfolio holdings
 data/terminal2/portfolio_holdings.csv
+
+# Curated Secret Lair working registry
+data/terminal2/secret_lair_registry.csv
+data/terminal2/secret_lair_import_rejections.csv
