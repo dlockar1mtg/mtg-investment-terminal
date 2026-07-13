@@ -25,5 +25,12 @@ class DatasetRegistry:
     def register_many(self,definitions):
         for d in definitions: self.register(d)
     def all(self): return tuple(sorted(self._datasets.values(),key=lambda x:x.name))
+    def contains(self,name):
+        normalized=normalize_dataset_name(name,self.config.max_dataset_name_length)
+        return normalized in self._datasets
+    def get(self,name):
+        normalized=normalize_dataset_name(name,self.config.max_dataset_name_length)
+        if normalized not in self._datasets: raise KeyError(f"Dataset is not registered: {normalized}")
+        return self._datasets[normalized]
     def validate_dependencies(self):
         known=set(self._datasets); return [f"{d.name} depends on unregistered dataset {x}" for d in self.all() for x in d.dependencies if x not in known]

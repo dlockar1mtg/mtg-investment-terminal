@@ -14,6 +14,8 @@ class Warehouse:
             if not p.exists(): p.mkdir(parents=True,exist_ok=True); created.append(str(p.relative_to(self.config.project_root)))
         self._write_registry(); self._write_status('initialized'); self.versions.append('Warehouse core initialized')
         return {'warehouse_root':str(self.config.warehouse_root),'paths_created':created,'categories':list(self.config.categories),'version':self.config.version,'schema_version':self.config.schema_version}
+    def register(self,definition):
+        registered=self.registry.register(definition); self._write_registry(); return registered
     def register_many(self,defs): self.registry.register_many(defs); self._write_registry()
     def validate(self):
         errs=[]

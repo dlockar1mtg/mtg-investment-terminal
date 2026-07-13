@@ -20,6 +20,8 @@ class WarehouseConfig:
     schema_version: str="1"
     refresh_id_format: str="%Y%m%dT%H%M%SZ"
     max_dataset_name_length: int=120
+    csv_encoding: str="utf-8"
+    snapshot_date_format: str="%Y-%m-%d"
     def category_path(self,category:str)->Path:
         c=category.strip().lower()
         if c not in self.categories: raise ValueError(f"Invalid warehouse category: {category}")
