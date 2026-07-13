@@ -22,6 +22,8 @@ DEFAULT_MONTHLY_START = "2024-02-08"
 # Module 1 — Data Foundation
 METADATA_FILE = TERMINAL2_DIR / "product_metadata.csv"
 METADATA_TEMPLATE_FILE = TERMINAL2_DIR / "product_metadata_template.csv"
+PORTFOLIO_HOLDINGS_FILE = TERMINAL2_DIR / "portfolio_holdings.csv"
+PORTFOLIO_HOLDINGS_TEMPLATE_FILE = TERMINAL2_DIR / "portfolio_holdings_template.csv"
 DISCOVERY_CANDIDATES_FILE = TERMINAL2_DIR / "product_discovery_candidates.csv"
 DISCOVERY_AUDIT_FILE = AUDIT_DIR / "product_discovery_audit.csv"
 DAILY_UPDATE_AUDIT_FILE = AUDIT_DIR / "daily_update_audit.csv"
