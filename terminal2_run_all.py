@@ -11,6 +11,7 @@ from terminal2.market.exports import export_module2_dashboard
 from terminal2.history import publish_historical_intelligence
 from terminal2.portfolio import publish_portfolio_intelligence
 from terminal2.forecast import publish_forecast_intelligence
+from terminal2.semantic import publish_semantic_layer
 
 def main():
     init_db()
@@ -82,6 +83,14 @@ def main():
     print(f"Actual positions: {portfolio_status['position_count']}")
     print(f"Model candidates: {portfolio_status['candidate_count']}")
     print("Canonical Power BI portfolio root: data/warehouse/current/portfolio/")
+
+    semantic_status = publish_semantic_layer()
+    print("\nPower BI semantic layer:")
+    print(f"Datasets published: {semantic_status['datasets']}")
+    print(f"Products: {semantic_status['products']}")
+    print(f"Calendar rows: {semantic_status['calendar_rows']}")
+    print(f"Executive KPIs: {semantic_status['executive_kpis']}")
+    print("Canonical semantic root: data/warehouse/current/semantic/")
 
 if __name__ == "__main__":
     main()
