@@ -49,6 +49,8 @@ def main():
     print(f"Source health rows: {len(source_health)}")
     print(f"Market health rows: {len(market_health)}")
     print(f"Module 2 dashboard datasets: {module2_status['datasets']}")
+    print(f"Standardized warehouse market datasets: {module2_status['warehouse_datasets']}")
+    print("Canonical Power BI market root: data/warehouse/current/")
 
 if __name__ == "__main__":
     main()
