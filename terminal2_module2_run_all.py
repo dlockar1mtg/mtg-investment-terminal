@@ -8,6 +8,7 @@ from terminal2.market.analytics.health import compute_source_health, compute_mar
 from terminal2.exports.export_reports import export_all
 from terminal2.warehouse.dashboard_mart import build_dashboard_warehouse
 from terminal2.market.exports import export_module2_dashboard
+from terminal2.warehouse_migration import migrate_legacy_dashboard_outputs
 
 def main():
     migrate_module2()
@@ -37,6 +38,11 @@ def main():
     export_all()
     manifest, status = build_dashboard_warehouse(create_snapshot=True)
     module2_status = export_module2_dashboard()
+    migration_status = migrate_legacy_dashboard_outputs(
+        create_snapshots=True,
+        include_analytics_current=True,
+        continue_on_error=False,
+    )
 
     print("\nFull Module 2 workflow complete.")
     print(f"Base dashboard datasets: {status['datasets_created']}")
@@ -44,8 +50,10 @@ def main():
     print(f"Products: {status['product_rows']}")
     print(f"Historical price rows: {status['historical_price_rows']}")
     print(f"Market intelligence rows: {module2_status['market_intelligence_rows']}")
-    print("Dashboard root: data/dashboard/")
-    print("Analytics root: data/analytics/")
+    print(f"Warehouse datasets migrated: {migration_status['datasets_migrated']}")
+    print("Dashboard root: data/dashboard/ (legacy compatibility)")
+    print("Analytics root: data/analytics/ (legacy compatibility)")
+    print("Canonical Power BI root: data/warehouse/current/")
 
 if __name__ == "__main__":
     main()
