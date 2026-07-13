@@ -8,6 +8,7 @@ from terminal2.db.module2_migration import migrate_module2
 from terminal2.market.analytics.intelligence import compute_market_intelligence
 from terminal2.market.analytics.health import compute_source_health, compute_market_health
 from terminal2.market.exports import export_module2_dashboard
+from terminal2.history import publish_historical_intelligence
 
 def main():
     init_db()
@@ -17,6 +18,15 @@ def main():
 
     features = compute_price_features()
     print(f"Computed features: {len(features)}")
+
+    historical_status = publish_historical_intelligence(
+        recompute_features=False
+    )
+    print("\nHistorical intelligence:")
+    print(f"Datasets published: {historical_status['datasets']}")
+    print(f"Historical price rows: {historical_status['historical_price_rows']}")
+    print(f"Monthly price rows: {historical_status['monthly_price_rows']}")
+    print(f"Historical return rows: {historical_status['historical_return_rows']}")
 
     ranked = score_from_features()
     print(f"Scored products: {len(ranked)}")
