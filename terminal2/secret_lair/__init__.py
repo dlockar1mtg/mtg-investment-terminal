@@ -1,6 +1,14 @@
 """Secret Lair curated registry foundation."""
 
 
+from .acquisition import (
+    AcquisitionBuildResult,
+    AcquisitionValidationResult,
+    acquire_secret_lair_sources,
+    publish_secret_lair_acquisition,
+    validate_secret_lair_acquisition,
+)
+
 from .backfill import (
     BackfillBuildResult,
     BackfillRunResult,
@@ -46,6 +54,8 @@ from .validation import (
 
 __all__ = [
     "SECRET_LAIR_DATASET_CONTRACTS",
+    "AcquisitionBuildResult",
+    "AcquisitionValidationResult",
     "BackfillBuildResult",
     "BackfillRunResult",
     "ImportResult",
@@ -55,6 +65,7 @@ __all__ = [
     "SecretLairDatasetContract",
     "SecretLairPricingValidationResult",
     "SecretLairValidationResult",
+    "acquire_secret_lair_sources",
     "apply_secret_lair_backfill",
     "build_secret_lair_backfill",
     "build_secret_lair_datasets",
@@ -64,9 +75,11 @@ __all__ = [
     "import_secret_lair_registry",
     "load_price_observations",
     "load_secret_lair_registry",
+    "publish_secret_lair_acquisition",
     "publish_secret_lair_backfill",
     "publish_secret_lair_pricing",
     "publish_secret_lair_registry",
+    "validate_secret_lair_acquisition",
     "validate_secret_lair_backfill",
     "validate_secret_lair_pricing",
     "validate_secret_lair_warehouse",
