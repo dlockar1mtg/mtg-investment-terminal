@@ -12,6 +12,7 @@ from terminal2.history import publish_historical_intelligence
 from terminal2.portfolio import publish_portfolio_intelligence
 from terminal2.forecast import publish_forecast_intelligence
 from terminal2.intelligence import publish_core_investment_intelligence
+from terminal2.calibration import publish_model_calibration
 from terminal2.semantic import publish_semantic_layer
 from terminal2.secret_lair import (
     publish_secret_lair_acquisition,
@@ -91,6 +92,15 @@ def main():
     print(f"Watch: {core_intelligence['watch_count']}")
     print(f"Average confidence: {core_intelligence['average_confidence']:.2f}")
     print(f"Average risk: {core_intelligence['average_risk']:.2f}")
+
+    calibration = publish_model_calibration()
+    print("\nModel calibration:")
+    print(f"Datasets published: {calibration['datasets']}")
+    print(f"New vintage rows: {calibration['new_vintage_rows']}")
+    print(f"Archived forecasts: {calibration['archived_forecast_count']}")
+    print(f"Matured forecasts: {calibration['matured_forecast_count']}")
+    print(f"Pending forecasts: {calibration['pending_forecast_count']}")
+    print(f"Calibration status: {calibration['calibration_status']}")
 
     portfolio_status = publish_portfolio_intelligence(
         model_capital=10000.0,

@@ -5,7 +5,7 @@ try:
     from terminal2.config import ROOT_DIR
 except Exception:
     ROOT_DIR = Path(__file__).resolve().parents[2]
-DEFAULT_CATEGORIES=("executive","rankings","market","products","lifecycle","seasonality","research","alerts","metadata","intelligence","portfolio","semantic","secret_lair","admin")
+DEFAULT_CATEGORIES=("executive","rankings","market","products","lifecycle","seasonality","research","alerts","metadata","intelligence","portfolio","semantic","secret_lair","calibration","admin")
 @dataclass(frozen=True)
 class WarehouseConfig:
     project_root: Path
