@@ -11,6 +11,7 @@ from terminal2.market.exports import export_module2_dashboard
 from terminal2.history import publish_historical_intelligence
 from terminal2.portfolio import publish_portfolio_intelligence
 from terminal2.forecast import publish_forecast_intelligence
+from terminal2.intelligence import publish_core_investment_intelligence
 from terminal2.semantic import publish_semantic_layer
 from terminal2.secret_lair import (
     publish_secret_lair_acquisition,
@@ -80,6 +81,16 @@ def main():
     print(f"Horizon rows: {forecast_status['horizon_rows']}")
     print(f"Average conviction: {forecast_status['average_conviction_score']:.2f}")
     print("Canonical Power BI forecast root: data/warehouse/current/intelligence/")
+
+    core_intelligence = publish_core_investment_intelligence()
+    print("\nCore investment intelligence:")
+    print(f"Datasets published: {core_intelligence['datasets']}")
+    print(f"Products assessed: {core_intelligence['product_count']}")
+    print(f"Strong Buy: {core_intelligence['strong_buy_count']}")
+    print(f"Buy: {core_intelligence['buy_count']}")
+    print(f"Watch: {core_intelligence['watch_count']}")
+    print(f"Average confidence: {core_intelligence['average_confidence']:.2f}")
+    print(f"Average risk: {core_intelligence['average_risk']:.2f}")
 
     portfolio_status = publish_portfolio_intelligence(
         model_capital=10000.0,
