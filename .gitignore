@@ -178,3 +178,8 @@ data/terminal2/secret_lair_acquisition_sources.csv
 data/terminal2/secret_lair_acquisition_runs.csv
 data/terminal2/secret_lair_acquisition_raw/
 data/terminal2/secret_lair_acquisition_stage/
+data/terminal2/secret_lair_discovery_sources.csv
+data/terminal2/secret_lair_discovery_state.csv
+data/terminal2/secret_lair_discovery_cache/
+data/terminal2/secret_lair_discovery_raw/
+data/terminal2/secret_lair_discovery_stage_catalog.csv

@@ -9,6 +9,18 @@ from .acquisition import (
     validate_secret_lair_acquisition,
 )
 
+
+from .discovery import (
+    DiscoveryBuildResult,
+    DiscoveryStageResult,
+    DiscoveryValidationResult,
+    discover_secret_lairs,
+    has_enabled_discovery_sources,
+    publish_secret_lair_discovery,
+    stage_discovery_to_acquisition,
+    validate_secret_lair_discovery,
+)
+
 from .backfill import (
     BackfillBuildResult,
     BackfillRunResult,
@@ -58,6 +70,9 @@ __all__ = [
     "AcquisitionValidationResult",
     "BackfillBuildResult",
     "BackfillRunResult",
+    "DiscoveryBuildResult",
+    "DiscoveryStageResult",
+    "DiscoveryValidationResult",
     "ImportResult",
     "PricingBuildResult",
     "RegistryBuildResult",
@@ -66,6 +81,8 @@ __all__ = [
     "SecretLairPricingValidationResult",
     "SecretLairValidationResult",
     "acquire_secret_lair_sources",
+    "discover_secret_lairs",
+    "has_enabled_discovery_sources",
     "apply_secret_lair_backfill",
     "build_secret_lair_backfill",
     "build_secret_lair_datasets",
@@ -76,10 +93,13 @@ __all__ = [
     "load_price_observations",
     "load_secret_lair_registry",
     "publish_secret_lair_acquisition",
+    "publish_secret_lair_discovery",
     "publish_secret_lair_backfill",
     "publish_secret_lair_pricing",
     "publish_secret_lair_registry",
+    "stage_discovery_to_acquisition",
     "validate_secret_lair_acquisition",
+    "validate_secret_lair_discovery",
     "validate_secret_lair_backfill",
     "validate_secret_lair_pricing",
     "validate_secret_lair_warehouse",
