@@ -106,3 +106,11 @@ __all__ = [
 ]
 
 from .intelligence_expansion import publish_secret_lair_intelligence_expansion,validate_secret_lair_intelligence_expansion
+
+from .population import publish_secret_lair_population, validate_secret_lair_population
+
+from .master_database import (
+    build_master_secret_lair_database,
+    publish_master_secret_lair_database,
+    validate_master_secret_lair_database,
+)
