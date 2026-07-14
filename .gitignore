@@ -183,3 +183,4 @@ data/terminal2/secret_lair_discovery_state.csv
 data/terminal2/secret_lair_discovery_cache/
 data/terminal2/secret_lair_discovery_raw/
 data/terminal2/secret_lair_discovery_stage_catalog.csv
+data/terminal2/calibration/
