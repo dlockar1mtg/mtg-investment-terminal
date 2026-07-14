@@ -104,3 +104,5 @@ __all__ = [
     "validate_secret_lair_pricing",
     "validate_secret_lair_warehouse",
 ]
+
+from .intelligence_expansion import publish_secret_lair_intelligence_expansion,validate_secret_lair_intelligence_expansion
