@@ -170,3 +170,7 @@ data/terminal2/secret_lair_registry.csv
 data/terminal2/secret_lair_import_rejections.csv
 data/terminal2/secret_lair_price_observations.csv
 data/terminal2/secret_lair_price_import_rejections.csv
+data/terminal2/secret_lair_source_catalog.csv
+data/terminal2/secret_lair_source_prices.csv
+data/terminal2/secret_lair_match_overrides.csv
+data/terminal2/secret_lair_backfill_apply_log.csv

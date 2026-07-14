@@ -13,6 +13,7 @@ from terminal2.portfolio import publish_portfolio_intelligence
 from terminal2.forecast import publish_forecast_intelligence
 from terminal2.semantic import publish_semantic_layer
 from terminal2.secret_lair import (
+    publish_secret_lair_backfill,
     publish_secret_lair_pricing,
     publish_secret_lair_registry,
 )
@@ -109,6 +110,14 @@ def main():
     print(f"Price observations: {secret_lair_pricing['observation_count']}")
     print(f"Priced assets: {secret_lair_pricing['priced_asset_count']}")
     print(f"Monthly rows: {secret_lair_pricing['monthly_rows']}")
+
+    secret_lair_backfill = publish_secret_lair_backfill()
+    print("\nSecret Lair backfill:")
+    print(f"Datasets published: {secret_lair_backfill['datasets']}")
+    print(f"Catalog rows: {secret_lair_backfill['catalog_rows']}")
+    print(f"Matched rows: {secret_lair_backfill['matched_rows']}")
+    print(f"Review rows: {secret_lair_backfill['review_rows']}")
+    print(f"Apply ready: {secret_lair_backfill['apply_ready']}")
 
 if __name__ == "__main__":
     main()
