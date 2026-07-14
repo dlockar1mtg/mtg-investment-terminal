@@ -20,6 +20,7 @@ from terminal2.secret_lair import (
     has_enabled_discovery_sources,
     publish_secret_lair_discovery,
     publish_secret_lair_pricing,
+    publish_secret_lair_intelligence_expansion,
     publish_secret_lair_registry,
 )
 
@@ -134,6 +135,14 @@ def main():
     print(f"Price observations: {secret_lair_pricing['observation_count']}")
     print(f"Priced assets: {secret_lair_pricing['priced_asset_count']}")
     print(f"Monthly rows: {secret_lair_pricing['monthly_rows']}")
+
+    secret_lair_intelligence = publish_secret_lair_intelligence_expansion()
+    print("\nSecret Lair investment intelligence:")
+    print(f"Datasets published: {secret_lair_intelligence['datasets']}")
+    print(f"Secret Lair assets: {secret_lair_intelligence['secret_lair_assets']}")
+    print(f"Priced Secret Lairs: {secret_lair_intelligence['priced_secret_lairs']}")
+    print(f"Actionable Secret Lairs: {secret_lair_intelligence['actionable_secret_lairs']}")
+    print(f"Unified investment products: {secret_lair_intelligence['unified_products']}")
 
     secret_lair_backfill = publish_secret_lair_backfill()
     print("\nSecret Lair backfill:")
