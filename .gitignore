@@ -168,3 +168,5 @@ data/terminal2/portfolio_holdings.csv
 # Curated Secret Lair working registry
 data/terminal2/secret_lair_registry.csv
 data/terminal2/secret_lair_import_rejections.csv
+data/terminal2/secret_lair_price_observations.csv
+data/terminal2/secret_lair_price_import_rejections.csv

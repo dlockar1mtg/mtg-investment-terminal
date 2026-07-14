@@ -12,7 +12,10 @@ from terminal2.history import publish_historical_intelligence
 from terminal2.portfolio import publish_portfolio_intelligence
 from terminal2.forecast import publish_forecast_intelligence
 from terminal2.semantic import publish_semantic_layer
-from terminal2.secret_lair import publish_secret_lair_registry
+from terminal2.secret_lair import (
+    publish_secret_lair_pricing,
+    publish_secret_lair_registry,
+)
 
 def main():
     init_db()
@@ -99,6 +102,13 @@ def main():
     print(f"Registry assets: {secret_lair_status['asset_count']}")
     print(f"Distinct drops: {secret_lair_status['drop_count']}")
     print("Canonical Secret Lair root: data/warehouse/current/secret_lair/")
+
+    secret_lair_pricing = publish_secret_lair_pricing()
+    print("\nSecret Lair pricing:")
+    print(f"Datasets published: {secret_lair_pricing['datasets']}")
+    print(f"Price observations: {secret_lair_pricing['observation_count']}")
+    print(f"Priced assets: {secret_lair_pricing['priced_asset_count']}")
+    print(f"Monthly rows: {secret_lair_pricing['monthly_rows']}")
 
 if __name__ == "__main__":
     main()
