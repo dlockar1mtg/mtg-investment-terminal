@@ -15,6 +15,8 @@ from terminal2.semantic import publish_semantic_layer
 from terminal2.secret_lair import (
     publish_secret_lair_acquisition,
     publish_secret_lair_backfill,
+    has_enabled_discovery_sources,
+    publish_secret_lair_discovery,
     publish_secret_lair_pricing,
     publish_secret_lair_registry,
 )
@@ -119,6 +121,24 @@ def main():
     print(f"Matched rows: {secret_lair_backfill['matched_rows']}")
     print(f"Review rows: {secret_lair_backfill['review_rows']}")
     print(f"Apply ready: {secret_lair_backfill['apply_ready']}")
+
+    if has_enabled_discovery_sources():
+        discovery = publish_secret_lair_discovery()
+        print("\nAutomated Secret Lair discovery:")
+        print(f"Datasets published: {discovery['datasets']}")
+        print(f"Enabled sources: {discovery['enabled_sources']}")
+        print(f"Discovered rows: {discovery['discovered_rows']}")
+        print(f"New candidates: {discovery['new_candidate_rows']}")
+        print(f"Conflict rows: {discovery['conflict_rows']}")
+        print(
+            "Acquisition stage ready: "
+            f"{discovery['stage_ready']}"
+        )
+    else:
+        print(
+            "\nAutomated Secret Lair discovery: "
+            "SKIPPED (no enabled sources)"
+        )
 
     acquisition = publish_secret_lair_acquisition()
     print("\nSecret Lair source acquisition:")
