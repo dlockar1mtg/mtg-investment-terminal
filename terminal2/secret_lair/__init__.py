@@ -125,3 +125,4 @@ from .calibration import (
     publish_secret_lair_calibration,
     validate_secret_lair_calibration,
 )
+from .archive import build_secret_lair_archive,publish_secret_lair_archive,validate_secret_lair_archive
