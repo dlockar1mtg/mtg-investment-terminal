@@ -14,6 +14,7 @@ from terminal2.forecast import publish_forecast_intelligence
 from terminal2.intelligence import publish_core_investment_intelligence
 from terminal2.calibration import publish_model_calibration
 from terminal2.semantic import publish_semantic_layer
+from terminal2.return_analytics import publish_universal_return_analytics
 from terminal2.secret_lair import (
     publish_secret_lair_acquisition,
     publish_secret_lair_backfill,
@@ -149,6 +150,19 @@ def main():
     print(f"Priced assets: {secret_lair_pricing['priced_asset_count']}")
     print(f"Monthly rows: {secret_lair_pricing['monthly_rows']}")
 
+    universal_returns = publish_universal_return_analytics()
+    print("\nUniversal return analytics:")
+    print(f"Datasets published: {universal_returns['datasets']}")
+    print(f"Products analyzed: {universal_returns['products']}")
+    print(f"Asset classes: {universal_returns['asset_classes']}")
+    print(f"Analytics ready: {universal_returns['analytics_ready']}")
+    print(f"Rolling 12-month ready: {universal_returns['rolling_12m_ready']}")
+    print(f"Rolling 24-month ready: {universal_returns['rolling_24m_ready']}")
+    print(f"Positive CAGR: {universal_returns['positive_cagr']}")
+    print(f"Negative CAGR: {universal_returns['negative_cagr']}")
+    print(f"Median CAGR: {universal_returns['median_cagr']:.4f}")
+    print(f"Status: {universal_returns['status']}")
+
     secret_lair_intelligence = publish_secret_lair_intelligence_expansion()
     print("\nSecret Lair investment intelligence:")
     print(f"Datasets published: {secret_lair_intelligence['datasets']}")
@@ -165,6 +179,15 @@ def main():
     print(f"Products calibrated: {calibration_check.products}")
     print(f"Score spread: {calibration_check.score_spread:.2f}")
     print(f"Actionable buys: {calibration_check.actionable_buys}")
+
+    from terminal2.secret_lair.archive.exports import publish_secret_lair_archive
+    archive_status = publish_secret_lair_archive()
+    print("\nSecret Lair historical market archive:")
+    print(f"Datasets published: {archive_status['datasets']}")
+    print(f"Archive observations: {archive_status['observations']}")
+    print(f"Covered products: {archive_status['covered_products']}")
+    print(f"Historical ready: {archive_status['historical_ready']}")
+    print(f"Apply ready: {archive_status['apply_ready']}")
 
     secret_lair_backfill = publish_secret_lair_backfill()
     print("\nSecret Lair backfill:")

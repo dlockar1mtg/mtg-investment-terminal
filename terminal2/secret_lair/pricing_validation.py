@@ -114,9 +114,20 @@ def validate_secret_lair_pricing(
             quality["severity"].eq("Error")
         ]
         if not error_findings.empty:
+            rule_counts = (
+                error_findings["rule_name"]
+                .fillna("unknown_rule")
+                .value_counts()
+                .sort_index()
+            )
+            breakdown = ", ".join(
+                f"{rule}={int(count)}"
+                for rule, count in rule_counts.items()
+            )
             errors.append(
                 "Secret Lair price-quality output contains "
-                f"{len(error_findings)} error finding(s)."
+                f"{len(error_findings)} error finding(s): "
+                f"{breakdown}."
             )
 
     return SecretLairPricingValidationResult(
