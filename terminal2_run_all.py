@@ -156,6 +156,15 @@ def main():
     print(f"Priced Secret Lairs: {secret_lair_intelligence['priced_secret_lairs']}")
     print(f"Actionable Secret Lairs: {secret_lair_intelligence['actionable_secret_lairs']}")
     print(f"Unified investment products: {secret_lair_intelligence['unified_products']}")
+    from terminal2.secret_lair.calibration.validation import (
+        validate_secret_lair_calibration,
+    )
+    calibration_check = validate_secret_lair_calibration()
+    print("\nSecret Lair intelligence calibration:")
+    print(f"Datasets checked: {calibration_check.datasets_checked}")
+    print(f"Products calibrated: {calibration_check.products}")
+    print(f"Score spread: {calibration_check.score_spread:.2f}")
+    print(f"Actionable buys: {calibration_check.actionable_buys}")
 
     secret_lair_backfill = publish_secret_lair_backfill()
     print("\nSecret Lair backfill:")

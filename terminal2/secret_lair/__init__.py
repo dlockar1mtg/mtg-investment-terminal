@@ -120,3 +120,8 @@ from .promotion import (
     publish_secret_lair_promotion,
     validate_secret_lair_promotion,
 )
+from .calibration import (
+    calibrate_secret_lair_intelligence,
+    publish_secret_lair_calibration,
+    validate_secret_lair_calibration,
+)
