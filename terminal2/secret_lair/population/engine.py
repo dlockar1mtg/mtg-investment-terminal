@@ -4,6 +4,7 @@ import hashlib
 import pandas as pd
 from terminal2.secret_lair.backfill.engine import build_secret_lair_backfill
 from terminal2.secret_lair.pricing import build_secret_lair_pricing_datasets
+from terminal2.secret_lair.datetime_utils import date_string_series,to_utc_naive_series
 from terminal2.secret_lair.identifiers import slug
 @dataclass(frozen=True)
 class PopulationBuildResult: datasets:dict[str,pd.DataFrame]
@@ -43,11 +44,11 @@ def _price_readiness(registry,prices):
  if obs.empty:
   for c in cols[3:]:f[c]=False if c.startswith("ready_") or c=="current_price_available" else 0
   f["latest_observation_date"]="";return f[cols]
- o=obs.copy();o["observation_date"]=pd.to_datetime(o["observation_date"],errors="coerce");o["market_price"]=pd.to_numeric(o["market_price"],errors="coerce")
+ o=obs.copy();o["observation_date"]=to_utc_naive_series(o["observation_date"]);o["market_price"]=pd.to_numeric(o["market_price"],errors="coerce")
  g=o.groupby("secret_lair_id").agg(current_price=("market_price","last"),price_observation_count=("market_price","count"),source_count=("source_name","nunique"),first_date=("observation_date","min"),latest_observation_date=("observation_date","max"))
  g["distinct_price_months"]=o.assign(month=o["observation_date"].dt.to_period("M")).groupby("secret_lair_id")["month"].nunique();g["history_span_days"]=(g["latest_observation_date"]-g["first_date"]).dt.days;g=g.reset_index();f=f.merge(g,on="secret_lair_id",how="left")
  f["current_price_available"]=pd.to_numeric(f["current_price"],errors="coerce").gt(0);f["ready_for_scoring"]=f["current_price_available"]&f["price_observation_count"].fillna(0).ge(2);f["ready_for_forecasting"]=f["distinct_price_months"].fillna(0).ge(6)&f["history_span_days"].fillna(0).ge(150);f["ready_for_calibration"]=f["distinct_price_months"].fillna(0).ge(12)&f["history_span_days"].fillna(0).ge(330)
- f["latest_observation_date"]=pd.to_datetime(f["latest_observation_date"],errors="coerce").dt.date.astype("string").fillna("")
+ f["latest_observation_date"]=date_string_series(f["latest_observation_date"]).fillna("")
  for c in cols:
   if c not in f:f[c]=0
  return f[cols]

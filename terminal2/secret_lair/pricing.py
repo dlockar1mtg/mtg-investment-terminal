@@ -7,6 +7,12 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
+from terminal2.secret_lair.datetime_utils import (
+    date_string_series,
+    to_utc_naive_scalar,
+    to_utc_naive_series,
+)
+
 from terminal2.config import ROOT_DIR
 
 from .identifiers import stable_key
@@ -186,9 +192,8 @@ def _current_prices(enriched: pd.DataFrame) -> pd.DataFrame:
         return pd.DataFrame(columns=columns)
 
     frame = enriched.copy()
-    frame["_date"] = pd.to_datetime(
-        frame["observation_date"],
-        errors="coerce",
+    frame["_date"] = to_utc_naive_series(
+        frame["observation_date"]
     )
     frame = (
         frame.sort_values(
@@ -317,18 +322,17 @@ def _returns(
         group = group.sort_values("_date")
         latest = current_map.loc[asset_id]
         latest_price = float(latest["market_price"])
-        latest_date = pd.to_datetime(
+        latest_date = to_utc_naive_scalar(
             latest["observation_date"]
         )
         msrp = pd.to_numeric(
             pd.Series([latest.get("msrp_usd")]),
             errors="coerce",
         ).iloc[0]
-        release = pd.to_datetime(
+        release = to_utc_naive_scalar(
             group["release_date"].dropna().iloc[0]
             if group["release_date"].notna().any()
-            else group["_date"].min(),
-            errors="coerce",
+            else group["_date"].min()
         )
         years = max(
             (latest_date - release).days / 365.25,

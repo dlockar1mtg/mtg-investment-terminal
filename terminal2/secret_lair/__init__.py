@@ -114,3 +114,9 @@ from .master_database import (
     publish_master_secret_lair_database,
     validate_master_secret_lair_database,
 )
+from .promotion import (
+    apply_secret_lair_promotion,
+    build_secret_lair_promotion_plan,
+    publish_secret_lair_promotion,
+    validate_secret_lair_promotion,
+)

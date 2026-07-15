@@ -22,6 +22,7 @@ from terminal2.secret_lair import (
     publish_secret_lair_pricing,
     publish_secret_lair_intelligence_expansion,
     publish_secret_lair_population,
+    publish_secret_lair_promotion,
     publish_secret_lair_registry,
 )
 
@@ -122,6 +123,17 @@ def main():
     print(f"Calendar rows: {semantic_status['calendar_rows']}")
     print(f"Executive KPIs: {semantic_status['executive_kpis']}")
     print("Canonical semantic root: data/warehouse/current/semantic/")
+
+    promotion_status = publish_secret_lair_promotion()
+    print("\nSecret Lair production promotion:")
+    print(f"Datasets published: {promotion_status['datasets']}")
+    print(f"Eligible products: {promotion_status['eligible_products']}")
+    print(f"Rejected products: {promotion_status['rejected_products']}")
+    print(f"Review remaining: {promotion_status['review_remaining']}")
+    print(f"Production registry: {promotion_status['production_registry']}")
+    print(f"Production prices: {promotion_status['production_prices']}")
+    print(f"Apply ready: {promotion_status['apply_ready']}")
+    print(f"Last apply status: {promotion_status['last_apply_status']}")
 
     secret_lair_status = publish_secret_lair_registry()
     print("\nSecret Lair registry:")

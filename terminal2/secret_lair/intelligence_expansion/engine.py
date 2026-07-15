@@ -5,6 +5,7 @@ import numpy as np,pandas as pd
 from terminal2.config import ROOT_DIR
 from terminal2.secret_lair.registry import REGISTRY_PATH,load_secret_lair_registry
 from terminal2.secret_lair.pricing import PRICE_PATH,build_secret_lair_pricing_datasets
+from terminal2.secret_lair.datetime_utils import to_utc_naive_series,utc_naive_today
 @dataclass(frozen=True)
 class ExpansionBuildResult: datasets:dict[str,pd.DataFrame]
 def _read(p):return pd.read_csv(p) if Path(p).exists() else pd.DataFrame()
@@ -27,8 +28,8 @@ def _features(u,returns,coverage):
  f=u.copy();rcols=[c for c in ['secret_lair_id','return_30d','return_90d','return_365d','annualized_return','drawdown_from_peak','observation_count'] if c in returns];ccols=[c for c in ['secret_lair_id','source_count','history_span_days'] if c in coverage]
  if rcols:f=f.merge(returns[rcols],on='secret_lair_id',how='left')
  if ccols:f=f.merge(coverage[ccols],on='secret_lair_id',how='left')
- rel=pd.to_datetime(f['release_date'],errors='coerce');f['product_age_months']=((pd.Timestamp.now().normalize()-rel).dt.days/30.4375).clip(lower=0);f['foil_flag']=f['finish'].astype(str).str.lower().eq('foil');f['universes_beyond_flag']=f['universes_beyond'].astype(str).str.lower().isin(['true','1','yes']);f['artist_count']=f['artist_names'].fillna('').astype(str).map(lambda x:len([a for a in x.replace('|',',').split(',') if a.strip()]));f['card_count']=pd.to_numeric(f['card_count'],errors='coerce');f['msrp_usd']=pd.to_numeric(f['msrp_usd'],errors='coerce');f['current_price']=pd.to_numeric(f['current_price'],errors='coerce');f['premium_to_msrp']=np.where(f['msrp_usd']>0,f['current_price']/f['msrp_usd']-1,np.nan)
- start=pd.to_datetime(f['sale_start_date'],errors='coerce');end=pd.to_datetime(f['sale_end_date'],errors='coerce');f['sale_window_days']=(end-start).dt.days;f['limited_sale_flag']=f['availability_model'].fillna('').astype(str).str.lower().isin(['time-boxed','limited','limited sale'])
+ rel=to_utc_naive_series(f['release_date']);f['product_age_months']=((utc_naive_today()-rel).dt.days/30.4375).clip(lower=0);f['foil_flag']=f['finish'].astype(str).str.lower().eq('foil');f['universes_beyond_flag']=f['universes_beyond'].astype(str).str.lower().isin(['true','1','yes']);f['artist_count']=f['artist_names'].fillna('').astype(str).map(lambda x:len([a for a in x.replace('|',',').split(',') if a.strip()]));f['card_count']=pd.to_numeric(f['card_count'],errors='coerce');f['msrp_usd']=pd.to_numeric(f['msrp_usd'],errors='coerce');f['current_price']=pd.to_numeric(f['current_price'],errors='coerce');f['premium_to_msrp']=np.where(f['msrp_usd']>0,f['current_price']/f['msrp_usd']-1,np.nan)
+ start=to_utc_naive_series(f['sale_start_date']);end=to_utc_naive_series(f['sale_end_date']);f['sale_window_days']=(end-start).dt.days;f['limited_sale_flag']=f['availability_model'].fillna('').astype(str).str.lower().isin(['time-boxed','limited','limited sale'])
  meta=['drop_name','variant_name','finish','release_date','msrp_usd','franchise','artist_names','card_count'];f['metadata_completeness']=f[meta].notna().mean(axis=1)*100;f['observation_count']=_num(f,'observation_count');f['source_count']=_num(f,'source_count');f['history_span_days']=_num(f,'history_span_days');f['liquidity_score']=_clip(np.minimum(f['observation_count']/12*60,60)+np.minimum(f['source_count']/3*25,25)+np.minimum(f['history_span_days']/365*15,15));f['volatility_proxy']=pd.concat([_num(f,'return_30d'),_num(f,'return_90d'),_num(f,'return_365d')],axis=1).std(axis=1).fillna(0)
  for c in cols:
   if c not in f:f[c]=pd.NA
