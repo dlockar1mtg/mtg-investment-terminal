@@ -9,6 +9,11 @@ import pandas as pd
 from terminal2.config import ROOT_DIR
 
 from .identifiers import normalize_text, stable_key
+from .datetime_utils import (
+    date_string_series,
+    to_utc_naive_scalar,
+    to_utc_naive_series,
+)
 from .metadata import (
     VALID_AVAILABILITY_MODELS,
     VALID_EVENT_TYPES,
@@ -150,10 +155,7 @@ def _quality_findings(registry: pd.DataFrame) -> pd.DataFrame:
                     f"Required field '{field}' is missing.",
                 )
 
-        release = pd.to_datetime(
-            row.get("release_date"),
-            errors="coerce",
-        )
+        release = to_utc_naive_scalar(row.get("release_date"))
         if pd.isna(release):
             add(
                 asset_id,
@@ -257,18 +259,9 @@ def _release_calendar(registry: pd.DataFrame) -> pd.DataFrame:
         return pd.DataFrame(columns=columns)
 
     frame = registry.copy()
-    release = pd.to_datetime(
-        frame["release_date"],
-        errors="coerce",
-    )
-    start = pd.to_datetime(
-        frame["sale_start_date"],
-        errors="coerce",
-    )
-    end = pd.to_datetime(
-        frame["sale_end_date"],
-        errors="coerce",
-    )
+    release = to_utc_naive_series(frame["release_date"])
+    start = to_utc_naive_series(frame["sale_start_date"])
+    end = to_utc_naive_series(frame["sale_end_date"])
     frame["release_year"] = release.dt.year.astype("Int64")
     frame["release_quarter"] = (
         "Q" + release.dt.quarter.astype("Int64").astype("string")

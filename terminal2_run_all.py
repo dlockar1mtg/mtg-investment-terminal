@@ -21,6 +21,8 @@ from terminal2.secret_lair import (
     publish_secret_lair_discovery,
     publish_secret_lair_pricing,
     publish_secret_lair_intelligence_expansion,
+    publish_secret_lair_population,
+    publish_secret_lair_promotion,
     publish_secret_lair_registry,
 )
 
@@ -122,6 +124,17 @@ def main():
     print(f"Executive KPIs: {semantic_status['executive_kpis']}")
     print("Canonical semantic root: data/warehouse/current/semantic/")
 
+    promotion_status = publish_secret_lair_promotion()
+    print("\nSecret Lair production promotion:")
+    print(f"Datasets published: {promotion_status['datasets']}")
+    print(f"Eligible products: {promotion_status['eligible_products']}")
+    print(f"Rejected products: {promotion_status['rejected_products']}")
+    print(f"Review remaining: {promotion_status['review_remaining']}")
+    print(f"Production registry: {promotion_status['production_registry']}")
+    print(f"Production prices: {promotion_status['production_prices']}")
+    print(f"Apply ready: {promotion_status['apply_ready']}")
+    print(f"Last apply status: {promotion_status['last_apply_status']}")
+
     secret_lair_status = publish_secret_lair_registry()
     print("\nSecret Lair registry:")
     print(f"Datasets published: {secret_lair_status['datasets']}")
@@ -177,6 +190,16 @@ def main():
     print(f"Catalog rows: {acquisition['catalog_rows']}")
     print(f"Conflict rows: {acquisition['conflict_rows']}")
     print(f"Backfill ready: {acquisition['backfill_ready']}")
+
+    population = publish_secret_lair_population()
+    print("\nSecret Lair data population:")
+    print(f"Datasets published: {population['datasets']}")
+    print(f"Catalog rows: {population['catalog_rows']}")
+    print(f"Accepted rows: {population['accepted_rows']}")
+    print(f"Review rows: {population['review_rows']}")
+    print(f"Proposed registry assets: {population['registry_assets']}")
+    print(f"Scoring-ready assets: {population['scoring_ready_assets']}")
+    print(f"Apply ready: {population['apply_ready']}")
 
 if __name__ == "__main__":
     main()
