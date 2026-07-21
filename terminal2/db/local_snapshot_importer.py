@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import date
+from datetime import date, datetime, timezone
 from pathlib import Path
 import json
 import sqlite3
@@ -20,6 +20,65 @@ DEFAULT_MODEL_INPUT = (
 )
 
 SOURCE_NAME = "product_master_local_snapshot"
+
+
+def _source_run_id(
+    observation_date: str,
+) -> str:
+    return f"{SOURCE_NAME}:{observation_date}"
+
+
+def _upsert_source_run(
+    *,
+    database_path: Path,
+    source_run_id: str,
+    records_processed: int,
+    source_file: Path,
+) -> None:
+    now_utc = (
+        datetime.now(timezone.utc)
+        .replace(microsecond=0)
+        .isoformat()
+    )
+
+    connection = sqlite3.connect(database_path)
+
+    try:
+        connection.execute(
+            """
+            INSERT INTO source_runs (
+                source_run_id,
+                source_name,
+                run_started_at,
+                run_finished_at,
+                status,
+                records_processed,
+                message
+            )
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+            ON CONFLICT(source_run_id) DO UPDATE SET
+                source_name = excluded.source_name,
+                run_finished_at = excluded.run_finished_at,
+                status = excluded.status,
+                records_processed = excluded.records_processed,
+                message = excluded.message
+            """,
+            (
+                source_run_id,
+                SOURCE_NAME,
+                now_utc,
+                now_utc,
+                "SUCCESS",
+                int(records_processed),
+                (
+                    "Controlled local recovery snapshot from "
+                    f"{Path(source_file)}"
+                ),
+            ),
+        )
+        connection.commit()
+    finally:
+        connection.close()
 
 
 @dataclass(frozen=True)
@@ -342,11 +401,20 @@ def import_local_snapshot(
     inserted = 0
 
     if not dry_run:
+        source_run_id = _source_run_id(
+            prepared.observation_date
+        )
+
+        _upsert_source_run(
+            database_path=database_path,
+            source_run_id=source_run_id,
+            records_processed=len(rows),
+            source_file=prepared.source_file,
+        )
+
         inserted = insert_price_observations(
             rows,
-            source_run_id=(
-                f"{SOURCE_NAME}:{prepared.observation_date}"
-            ),
+            source_run_id=source_run_id,
             db_file=database_path,
         )
 

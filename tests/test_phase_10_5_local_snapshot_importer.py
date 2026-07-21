@@ -227,3 +227,107 @@ def test_nonpositive_price_is_rejected(
             observation_date="2026-07-21",
             dry_run=True,
         )
+
+
+def test_import_creates_matching_source_run(
+    tmp_path: Path,
+) -> None:
+    database_path = tmp_path / "terminal2.sqlite"
+    source_path = tmp_path / "model_input.csv"
+
+    _seed_product(database_path)
+    _write_model_input(source_path)
+
+    result = import_local_snapshot(
+        model_input_path=source_path,
+        database_path=database_path,
+        observation_date="2026-07-21",
+    )
+
+    connection = sqlite3.connect(database_path)
+
+    try:
+        source_run = connection.execute(
+            """
+            SELECT
+                source_run_id,
+                source_name,
+                status,
+                records_processed
+            FROM source_runs
+            """
+        ).fetchone()
+
+        observation_runs = connection.execute(
+            """
+            SELECT DISTINCT source_run_id
+            FROM price_observations
+            """
+        ).fetchall()
+    finally:
+        connection.close()
+
+    assert result.inserted_rows == 1
+    assert source_run == (
+        "product_master_local_snapshot:2026-07-21",
+        "product_master_local_snapshot",
+        "SUCCESS",
+        1,
+    )
+    assert observation_runs == [
+        (
+            "product_master_local_snapshot:"
+            "2026-07-21",
+        )
+    ]
+
+
+def test_source_run_upsert_is_idempotent(
+    tmp_path: Path,
+) -> None:
+    database_path = tmp_path / "terminal2.sqlite"
+    source_path = tmp_path / "model_input.csv"
+
+    _seed_product(database_path)
+    _write_model_input(source_path)
+
+    for _ in range(2):
+        import_local_snapshot(
+            model_input_path=source_path,
+            database_path=database_path,
+            observation_date="2026-07-21",
+        )
+
+    connection = sqlite3.connect(database_path)
+
+    try:
+        source_run_count = connection.execute(
+            """
+            SELECT COUNT(*)
+            FROM source_runs
+            """
+        ).fetchone()[0]
+
+        observation_count = connection.execute(
+            """
+            SELECT COUNT(*)
+            FROM price_observations
+            """
+        ).fetchone()[0]
+
+        semantic_orphans = connection.execute(
+            """
+            SELECT COUNT(*)
+            FROM price_observations p
+            LEFT JOIN source_runs s
+              ON s.source_run_id = p.source_run_id
+            WHERE p.source_run_id IS NOT NULL
+              AND s.source_run_id IS NULL
+            """
+        ).fetchone()[0]
+    finally:
+        connection.close()
+
+    assert source_run_count == 1
+    assert observation_count == 1
+    assert semantic_orphans == 0
