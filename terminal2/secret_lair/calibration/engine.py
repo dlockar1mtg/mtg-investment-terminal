@@ -15,7 +15,12 @@ def _num(df,col,default=0.0):
     return pd.to_numeric(df[col],errors="coerce").fillna(default)
 
 def _clip(values):
-    return pd.Series(values,index=getattr(values,"index",None)).clip(0,100).round(2)
+    series = pd.Series(
+        values,
+        index=getattr(values, "index", None),
+        dtype="float64",
+    )
+    return series.clip(0, 100).round(2)
 
 def _percentile(values,mask=None,neutral=50.0):
     series=pd.to_numeric(values,errors="coerce")

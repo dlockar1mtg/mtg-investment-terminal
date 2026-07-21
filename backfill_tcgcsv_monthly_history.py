@@ -5,13 +5,13 @@ from pathlib import Path
 import argparse
 import csv
 import json
-import shutil
-import subprocess
 import sys
 import time
 import urllib.request
 
 import pandas as pd
+
+from terminal2.sources.archive_utils import extract_7z_archive
 
 from config import (
     PRODUCT_MASTER_FILE,
@@ -105,22 +105,6 @@ def download_archive(snapshot_date: str, force=False):
     out.write_bytes(data)
     return out, "downloaded"
 
-def find_7z():
-    candidates = [
-        shutil.which("7z"),
-        shutil.which("7za"),
-        r"C:\Program Files\7-Zip\7z.exe",
-        r"C:\Program Files (x86)\7-Zip\7z.exe",
-    ]
-    for c in candidates:
-        if c and Path(c).exists():
-            return c
-    raise FileNotFoundError(
-        "Could not find 7-Zip. Install 7-Zip and make sure 7z.exe is on PATH, "
-        "or installed at C:\\Program Files\\7-Zip\\7z.exe."
-    )
-
-
 def extract_archive(snapshot_date: str, force=False):
     archive = archive_file(snapshot_date)
     out_dir = extract_dir(snapshot_date)
@@ -129,22 +113,16 @@ def extract_archive(snapshot_date: str, force=False):
     if expected_date_folder.exists() and not force:
         return expected_date_folder, "cached"
 
-    out_dir.mkdir(parents=True, exist_ok=True)
-    seven_zip = find_7z()
-
-    print(f"Extracting {archive.name}")
-    cmd = [seven_zip, "x", str(archive), f"-o{out_dir}", "-y"]
-    result = subprocess.run(cmd, capture_output=True, text=True)
-
-    if result.returncode != 0:
-        raise RuntimeError(
-            f"7-Zip extraction failed for {archive}. STDOUT={result.stdout} STDERR={result.stderr}"
-        )
+    print(f"Extracting {archive.name} with py7zr")
+    extract_7z_archive(
+        archive,
+        out_dir,
+        force=force,
+    )
 
     if expected_date_folder.exists():
         return expected_date_folder, "extracted"
 
-    # Some archives may extract directly under out_dir. Fall back to out_dir.
     return out_dir, "extracted"
 
 
