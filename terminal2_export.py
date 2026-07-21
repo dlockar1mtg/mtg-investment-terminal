@@ -1,10 +1,24 @@
-from terminal2.exports.export_reports import export_all
+from terminal2.warehouse.dashboard_mart import (
+    build_dashboard_warehouse,
+)
+
 
 def main():
-    outputs = export_all()
-    print("Exports created:")
-    for name, path in outputs.items():
-        print(f"{name}: {path}")
+    manifest, status = build_dashboard_warehouse(
+        create_snapshot=True
+    )
+
+    print("Dashboard warehouse exports created:")
+    print(f"Datasets: {status['datasets_created']}")
+    print(f"Products: {status['product_rows']}")
+    print(
+        "Historical price rows: "
+        f"{status['historical_price_rows']}"
+    )
+    print(f"Manifest: {manifest}")
+    print("Dashboard root: data/dashboard/")
+    print("Analytics root: data/analytics/")
+
 
 if __name__ == "__main__":
     main()

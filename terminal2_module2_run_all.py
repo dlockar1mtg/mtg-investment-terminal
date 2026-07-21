@@ -5,7 +5,6 @@ from terminal2.analytics.scoring import score_from_features
 from terminal2.market.sources.importers import import_all_market_inputs
 from terminal2.market.analytics.intelligence import compute_market_intelligence
 from terminal2.market.analytics.health import compute_source_health, compute_market_health
-from terminal2.exports.export_reports import export_all
 from terminal2.warehouse.dashboard_mart import build_dashboard_warehouse
 from terminal2.market.exports import export_module2_dashboard
 from terminal2.warehouse_migration import migrate_legacy_dashboard_outputs
@@ -35,7 +34,6 @@ def main():
     print(f"Source health rows: {len(source_health)}")
     print(f"Market health rows: {len(market_health)}")
 
-    export_all()
     manifest, status = build_dashboard_warehouse(create_snapshot=True)
     migration_status = migrate_legacy_dashboard_outputs(
         create_snapshots=True,

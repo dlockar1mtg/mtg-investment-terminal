@@ -2,7 +2,6 @@ from terminal2.db.schema import init_db
 from terminal2.db.loaders import sync_product_master
 from terminal2.features.price_features import compute_price_features
 from terminal2.analytics.scoring import score_from_features
-from terminal2.exports.export_reports import export_all
 from terminal2.warehouse.dashboard_mart import build_dashboard_warehouse
 from terminal2.db.module2_migration import migrate_module2
 from terminal2.market.analytics.intelligence import compute_market_intelligence
@@ -53,11 +52,6 @@ def main():
             "rating","buy_signal","expected_cagr","mc_median_5yr","prob_double","prob_loss"
         ] if c in ranked.columns]
         print(ranked[cols].head(30).to_string(index=False))
-
-    outputs = export_all()
-    print("\nCore exports:")
-    for name, path in outputs.items():
-        print(f"{name}: {path}")
 
     manifest, warehouse_status = build_dashboard_warehouse(create_snapshot=True)
     print("\nDashboard warehouse:")
