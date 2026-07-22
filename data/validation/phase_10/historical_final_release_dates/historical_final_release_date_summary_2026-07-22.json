@@ -1,0 +1,26 @@
+{
+  "authoritative_historical_products": 140,
+  "final_eligibility_assigned": false,
+  "final_governed_release_dates": 139,
+  "generated_at_utc": "2026-07-22T18:43:49Z",
+  "governed_release_date_source_counts": {
+    "mtgjson_product_and_tcgcsv_exact_agreement": 40,
+    "mtgjson_product_release_date": 10,
+    "mtgjson_set_release_date_fallback": 87,
+    "official_wizards_magiccon_debut_and_mtgjson_product_agreement": 1,
+    "official_wizards_wpn_availability_announcement": 1
+  },
+  "official_release_exception_rows": 2,
+  "output_files": {
+    "final_governed_release_dates": "data/validation/phase_10/historical_final_release_dates/historical_final_governed_release_dates_2026-07-22.csv",
+    "official_exceptions": "data/validation/phase_10/historical_final_release_dates/historical_official_release_date_exceptions_2026-07-22.csv"
+  },
+  "prior_governed_release_dates": 137,
+  "production_registry_changed": false,
+  "resolution_status": "PASS",
+  "schema_version": "10.5R.1D.2.4H.1",
+  "scoring_allowed_rows": 0,
+  "universal_database_changed": false,
+  "universal_investable_allowed_rows": 0,
+  "unresolved_release_dates": 1
+}
