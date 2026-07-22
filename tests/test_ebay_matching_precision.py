@@ -1,7 +1,8 @@
 from __future__ import annotations
 
+from terminal2.market_sources import ebay_matching as base
 from terminal2.market_sources.ebay_matching import CanonicalProduct
-from terminal2.market_sources.ebay_precision import strict_match_listing
+from terminal2.market_sources.ebay_precision import run_coverage, strict_match_listing
 
 
 def product(name: str = "Alpha Edition - Booster Box") -> CanonicalProduct:
@@ -78,3 +79,23 @@ def test_plural_booster_boxes_count_as_box_form():
         "2026-07-22T00:00:00Z",
     )
     assert "missing_booster_box_form" not in result.exclusion_reasons
+
+
+def test_precision_runner_uses_strict_matcher_without_recursion(monkeypatch, tmp_path):
+    sample_product = product("Amonkhet - Booster Box")
+
+    monkeypatch.setattr(base, "build_universe", lambda: [sample_product])
+    monkeypatch.setattr(base, "OUTPUT_ROOT", tmp_path)
+
+    class FakeClient:
+        def search_many(self, queries, limit=20):
+            return [listing("MTG Magic the Gathering Amonkhet Booster Box Factory Sealed")], 1
+
+    monkeypatch.setattr(base, "EbayBrowseClient", FakeClient)
+
+    summary = run_coverage(limit_per_product=20, max_products=1)
+
+    assert summary["products"] == 1
+    assert summary["listing_rows"] == 1
+    assert summary["accepted_rows"] == 1
+    assert summary["coverage_states"] == {"LIMITED_MATCH_COVERAGE": 1}
