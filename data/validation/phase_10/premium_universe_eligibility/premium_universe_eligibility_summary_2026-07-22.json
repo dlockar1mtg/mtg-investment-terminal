@@ -1,0 +1,61 @@
+{
+  "audit_rows": 5239,
+  "audit_status": "PASS",
+  "canonical_registry_changed": false,
+  "classification_review_rows": 0,
+  "eligibility_promoted": false,
+  "final_eligible_rows": 0,
+  "final_ineligible_rows": 0,
+  "generated_at_utc": "2026-07-22T15:08:19Z",
+  "governed_registry_changed": false,
+  "historical_review_rows": 163,
+  "input_files": {
+    "eligibility_policy": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\config\\premium_mtg_eligibility.yaml",
+    "governed_registry": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\staging\\phase_10\\canonical_registry_governance\\governed_canonical_mtg_registry_2026-07-22.csv"
+  },
+  "not_decided_rows": 5239,
+  "output_files": {
+    "classification_review": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\validation\\phase_10\\premium_universe_eligibility\\sealed_product_classification_review_2026-07-22.csv",
+    "eligibility_audit": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\validation\\phase_10\\premium_universe_eligibility\\premium_universe_eligibility_audit_2026-07-22.csv",
+    "historical_review": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\validation\\phase_10\\premium_universe_eligibility\\historical_booster_review_2026-07-22.csv",
+    "review_queue": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\validation\\phase_10\\premium_universe_eligibility\\premium_universe_eligibility_review_queue_2026-07-22.csv",
+    "secret_lair_candidates": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\validation\\phase_10\\premium_universe_eligibility\\secret_lair_structural_candidates_2026-07-22.csv",
+    "structural_candidates": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\validation\\phase_10\\premium_universe_eligibility\\premium_universe_structural_candidates_2026-07-22.csv",
+    "structural_exclusions": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\validation\\phase_10\\premium_universe_eligibility\\premium_universe_structural_exclusions_2026-07-22.csv"
+  },
+  "production_registry_changed": false,
+  "recommendations_created": false,
+  "review_queue_rows": 163,
+  "schema_version": "10.5R.1D.1",
+  "scoring_allowed_rows": 0,
+  "scoring_applied": false,
+  "secret_lair_candidate_rows": 254,
+  "structural_candidate_rows": 307,
+  "structural_eligibility_reason_counts": {
+    "case_level_product_excluded": 352,
+    "collector_booster_display": 53,
+    "draft_booster_display_requires_premium_history_review": 25,
+    "excluded_product_type:bundle": 122,
+    "excluded_product_type:commander_deck": 194,
+    "excluded_product_type:jumpstart_booster_display": 11,
+    "excluded_product_type:play_booster_display": 20,
+    "excluded_product_type:set_booster_display": 18,
+    "excluded_product_type:theme_booster_display": 14,
+    "individual_card_from_secret_lair_drop": 2371,
+    "sealed_secret_lair_bundle_or_kit": 254,
+    "secret_lair_commander_deck_excluded": 5,
+    "secret_lair_insert_excluded": 27,
+    "separately_listed_secret_lair_card_variant": 1635,
+    "traditional_booster_display_requires_premium_history_review": 138
+  },
+  "structural_eligibility_state_counts": {
+    "historical_review_required": 163,
+    "structurally_eligible": 307,
+    "structurally_ineligible": 4769
+  },
+  "structural_exclusion_rows": 4769,
+  "unique_canonical_product_ids": 5239,
+  "universal_database_changed": false,
+  "universal_investable_allowed_rows": 0,
+  "universal_package_created": false
+}

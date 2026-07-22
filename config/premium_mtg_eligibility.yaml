@@ -1,0 +1,131 @@
+schema_version: 10.5R.1D.1
+policy_name: premium_mtg_universe_eligibility
+platform_id: mtg
+
+principles:
+  canonical_identity_does_not_imply_eligibility: true
+  eligibility_does_not_imply_approval: true
+  approval_does_not_imply_scoring: true
+  universal_identity_does_not_imply_investability: true
+  structural_classification_is_not_final_eligibility: true
+
+eligibility_states:
+  - structurally_eligible
+  - structurally_ineligible
+  - historical_review_required
+  - sealed_product_review_required
+  - classification_review_required
+  - final_eligible
+  - final_ineligible
+
+final_decision_states:
+  - not_decided
+  - eligible
+  - ineligible
+  - review_required
+
+premium_universe_intent:
+  include:
+    - collector_booster_displays
+    - qualifying_pre_collector_premium_booster_displays
+    - sealed_secret_lair_drops
+    - sealed_single_card_secret_lair_drops
+    - sealed_multi_card_secret_lair_drops
+    - qualifying_sealed_secret_lair_bundles_and_kits
+
+  exclude:
+    - all_case_level_products
+    - individual_secret_lair_cards_removed_from_drops
+    - separately_listed_secret_lair_card_variants
+    - commander_decks
+    - ordinary_bundles
+    - play_booster_displays
+    - set_booster_displays
+    - ordinary_draft_booster_displays
+    - individual_secret_lair_inserts
+    - loose_products
+    - non_premium_mass_market_products
+
+case_policy:
+  include_cases: false
+  exclusion_reason: exceeds_personal_monthly_investment_allocation
+
+secret_lair_policy:
+  eligibility_basis: sealed_product_status
+  sealed_single_card_drop_allowed: true
+  sealed_multi_card_drop_allowed: true
+  sealed_bundle_or_kit_allowed: true
+  opened_individual_card_allowed: false
+  separately_listed_card_variant_allowed: false
+  unresolved_sealed_status_requires_review: true
+
+structural_rules:
+  direct_include_product_types:
+    - collector_booster_display
+    - secret_lair_bundle_or_kit
+
+  direct_exclude_product_types:
+    - commander_deck
+    - secret_lair_commander_deck
+    - bundle
+    - play_booster_display
+    - set_booster_display
+    - theme_booster_display
+    - jumpstart_booster_display
+    - secret_lair_card_variant
+
+  historical_review_product_types:
+    - traditional_booster_display
+    - draft_booster_display
+
+  sealed_review_product_types:
+    - secret_lair_card_or_product
+
+  direct_exclude_packaging_levels:
+    - case
+    - individual_card_or_variant
+    - individual_card_insert
+
+historical_review_requirements:
+  required_fields:
+    - release_date_or_year
+    - product_generation
+    - premium_product_indicator
+    - historical_price_coverage
+    - supply_or_print_run_evidence
+
+  qualifying_concepts:
+    - pre_collector_premium_sealed
+    - historically_scarce_booster_display
+
+secret_lair_review_requirements:
+  required_fields:
+    - sealed_product_indicator
+    - individual_card_indicator
+    - release_or_drop_identity
+    - product_composition
+    - card_count_when_available
+
+  qualifying_concepts:
+    - sealed_single_card_secret_lair
+    - sealed_multi_card_secret_lair
+    - sealed_secret_lair_bundle
+    - sealed_secret_lair_kit
+
+blocking_rules:
+  block_final_eligibility_when:
+    - identity_lifecycle_status!=active
+    - source_availability_status!=available
+    - governance_review_status=rejected
+    - universal_export_status=blocked
+    - canonical_product_id_is_blank
+    - tcgplayer_product_id_is_blank
+
+safety_controls:
+  update_production_registry: false
+  update_canonical_registry: false
+  update_governed_registry: false
+  update_universal_database: false
+  create_universal_package: false
+  apply_scoring: false
+  generate_recommendations: false
