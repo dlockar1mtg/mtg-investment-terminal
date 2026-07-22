@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import replace
-from typing import Mapping
+from typing import Mapping, Sequence
 
 from terminal2.market_sources import ebay_matching as base
 from terminal2.market_sources.ebay_universe import build_complete_universe
@@ -126,11 +126,17 @@ def strict_match_listing(
 def run_coverage(
     limit_per_product: int = 20,
     max_products: int | None = None,
+    universe_override: Sequence[base.CanonicalProduct] | None = None,
 ) -> dict[str, object]:
     original_match = base.match_listing
     original_universe = base.build_universe
+    selected_universe = (
+        list(universe_override)
+        if universe_override is not None
+        else build_complete_universe()
+    )
     base.match_listing = strict_match_listing
-    base.build_universe = build_complete_universe
+    base.build_universe = lambda: list(selected_universe)
     try:
         return base.run_coverage(limit_per_product, max_products)
     finally:
