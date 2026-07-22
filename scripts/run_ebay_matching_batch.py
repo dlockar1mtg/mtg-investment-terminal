@@ -56,18 +56,22 @@ def main() -> int:
         print(existing[-1])
         return 0
 
-    original_builder = base.build_universe
     original_output = base.OUTPUT_ROOT
-    base.build_universe = lambda: list(subset)
     base.OUTPUT_ROOT = batch_root
     try:
         summary = run_coverage(
             limit_per_product=args.limit_per_product,
             max_products=None,
+            universe_override=subset,
         )
     finally:
-        base.build_universe = original_builder
         base.OUTPUT_ROOT = original_output
+
+    if int(summary.get("products", -1)) != len(subset):
+        raise RuntimeError(
+            "Batch universe mismatch: "
+            f"selected={len(subset)} processed={summary.get('products')}"
+        )
 
     manifest = {
         "batch_key": batch_key,
