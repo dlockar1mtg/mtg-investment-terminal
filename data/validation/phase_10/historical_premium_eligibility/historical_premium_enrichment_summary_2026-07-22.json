@@ -1,0 +1,45 @@
+{
+  "audit_status": "PASS",
+  "canonical_registry_changed": false,
+  "evidence_state_counts": {
+    "external_enrichment_required": 140
+  },
+  "external_enrichment_queue_rows": 140,
+  "final_eligibility_assigned": false,
+  "final_eligible_rows": 0,
+  "final_ineligible_rows": 0,
+  "generated_at_utc": "2026-07-22T17:31:57Z",
+  "governed_registry_changed": false,
+  "governed_registry_match_rows": 140,
+  "historical_audit_rows": 140,
+  "historical_input_rows": 140,
+  "input_files": {
+    "governed_registry": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\staging\\phase_10\\canonical_registry_governance\\governed_canonical_mtg_registry_2026-07-22.csv",
+    "historical_review_queue": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\validation\\phase_10\\premium_universe_eligibility\\historical_booster_review_2026-07-22.csv",
+    "policy": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\config\\historical_premium_booster_eligibility.yaml"
+  },
+  "mass_market_name_candidate_rows": 0,
+  "not_decided_rows": 140,
+  "output_files": {
+    "enrichment_audit": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\validation\\phase_10\\historical_premium_eligibility\\historical_premium_enrichment_audit_2026-07-22.csv",
+    "external_enrichment_queue": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\validation\\phase_10\\historical_premium_eligibility\\historical_external_enrichment_queue_2026-07-22.csv",
+    "field_coverage": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\validation\\phase_10\\historical_premium_eligibility\\historical_evidence_field_coverage_2026-07-22.csv",
+    "mass_market_name_candidates": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\validation\\phase_10\\historical_premium_eligibility\\historical_mass_market_name_candidates_2026-07-22.csv",
+    "premium_name_candidates": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\validation\\phase_10\\historical_premium_eligibility\\historical_premium_name_candidates_2026-07-22.csv"
+  },
+  "premium_name_candidate_rows": 29,
+  "product_type_counts": {
+    "draft_booster_display": 9,
+    "traditional_booster_display": 131
+  },
+  "production_registry_changed": false,
+  "recommendations_created": false,
+  "schema_version": "10.5R.1D.2.1.1",
+  "scoring_allowed_rows": 0,
+  "scoring_applied": false,
+  "structural_audit_changed": false,
+  "unique_canonical_product_ids": 140,
+  "universal_database_changed": false,
+  "universal_investable_allowed_rows": 0,
+  "universal_package_created": false
+}
