@@ -1,0 +1,39 @@
+{
+  "captured_group_rows": 453,
+  "captured_product_rows": 116546,
+  "classification_applied": false,
+  "collection_started_at_utc": "2026-07-22T12:50:37.084424+00:00",
+  "duplicate_product_id_rows": 0,
+  "duplicate_snapshot_id_rows": 0,
+  "eligibility_changed": false,
+  "failed_groups": 0,
+  "files": {
+    "audit": {
+      "path": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\validation\\phase_10\\external_discovery\\tcgcsv\\tcgcsv_snapshot_audit_2026-07-22.csv",
+      "sha256": "9bd5874c116f6112500bbc03edc948f226af78033e371fe85af8907f433f6014"
+    },
+    "groups": {
+      "path": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\staging\\phase_10\\external_discovery\\tcgcsv\\tcgcsv_magic_groups_2026-07-22.csv",
+      "sha256": "ff893ced94e5bfacfeac846286d780b3208ffb9b6844ffd0f908627982aec2d6"
+    },
+    "products": {
+      "path": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\staging\\phase_10\\external_discovery\\tcgcsv\\tcgcsv_magic_products_2026-07-22.csv",
+      "sha256": "2537e4f722397e2a3ceb3dbbf3f4d56ad306876f334437edd2465cbe1855c9d5"
+    }
+  },
+  "generated_at_utc": "2026-07-22T12:53:13.636259+00:00",
+  "groups_attempted": 453,
+  "limited_run": false,
+  "max_groups": null,
+  "prices_requested": false,
+  "remote_group_count_before_limit": 453,
+  "schema_version": "10.5R.1B.2.1",
+  "sleep_seconds": 0.1,
+  "snapshot_status": "COMPLETE",
+  "source_name": "tcgcsv",
+  "successful_groups": 453,
+  "tcgcsv_category_id": "1",
+  "unique_group_ids": 448,
+  "unique_product_ids": 116546,
+  "unique_snapshot_record_ids": 116546
+}

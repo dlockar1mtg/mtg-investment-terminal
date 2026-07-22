@@ -189,3 +189,6 @@ data/terminal2/secret_lair_promotion/
 data/terminal2/secret_lair_archive/
 
 data/validation/phase_10/production_readiness/
+# Phase 10.5R external discovery raw snapshots
+data/staging/phase_10/external_discovery/tcgcsv/tcgcsv_magic_products_*.csv
+data/validation/phase_10/external_discovery/tcgcsv/tcgcsv_products_not_in_existing_registry.csv
