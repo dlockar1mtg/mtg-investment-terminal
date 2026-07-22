@@ -1,0 +1,40 @@
+schema_version: "10.5R.1D.2.4E.3"
+policy_name: historical_product_scope_exclusions
+
+description: >
+  Product-specific exclusions from the historical premium MTG review
+  population. These exclusions apply only to the explicitly listed products
+  and must not be interpreted as a general language, region, or product-name
+  filtering policy.
+
+excluded_products:
+  - canonical_product_id: "MTG-CANON-TCGPLAYER-245972"
+    tcgplayer_product_id: "245972"
+    canonical_product_name: "Renaissance - Italian Booster Box"
+    exclusion_state: "excluded_by_user_scope"
+    exclusion_reason: >
+      Product-specific scope decision. The user does not wish to include this
+      Italian-language Booster Box in the investment review population.
+      MTGJSON also lacks the governed Italian sealed-product record and the
+      prior similarity process incorrectly selected a German product record.
+    exclusion_basis: "explicit_user_product_scope_decision"
+    general_foreign_language_filter_created: false
+    remove_from_release_date_adjudication: true
+    remove_from_historical_performance_analysis: true
+    remove_from_liquidity_analysis: true
+    remove_from_supply_analysis: true
+    remove_from_affordability_analysis: true
+    remove_from_scoring: true
+    remove_from_universal_investability: true
+
+decision_controls:
+  expected_input_population: 140
+  product_specific_only: true
+  general_language_policy_created: false
+  excluded_product_count: 1
+  remaining_historical_review_population: 139
+  expected_assigned_release_dates_after_exclusion: 139
+  expected_blank_release_dates_after_exclusion: 0
+  final_eligibility_assigned_to_remaining_products: false
+  scoring_allowed_for_remaining_products: false
+  universal_investable_allowed_for_remaining_products: false

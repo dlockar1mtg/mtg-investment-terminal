@@ -1,0 +1,35 @@
+{
+  "active_historical_review_population": 139,
+  "active_rows_with_blank_governed_release_dates": 0,
+  "active_rows_with_populated_governed_release_dates": 139,
+  "excluded_canonical_product_ids": [
+    "MTG-CANON-TCGPLAYER-245972"
+  ],
+  "excluded_product_names": [
+    "Renaissance - Italian Booster Box"
+  ],
+  "excluded_product_removed_from_performance_analysis": true,
+  "excluded_product_removed_from_release_adjudication": true,
+  "excluded_product_removed_from_scoring": true,
+  "excluded_product_removed_from_universal_investability": true,
+  "final_eligibility_assigned_to_active_rows": false,
+  "final_release_dates_assigned_to_active_rows": 139,
+  "general_foreign_language_filter_created": false,
+  "general_language_policy_created": false,
+  "generated_at_utc": "2026-07-22T18:56:53Z",
+  "output_files": {
+    "active_release_adjudication": "data/validation/phase_10/historical_product_scope/historical_active_release_adjudication_2026-07-22.csv",
+    "active_review_population": "data/validation/phase_10/historical_product_scope/historical_active_review_population_2026-07-22.csv",
+    "excluded_release_adjudication": "data/validation/phase_10/historical_product_scope/historical_excluded_release_adjudication_2026-07-22.csv",
+    "product_scope_exclusions": "data/validation/phase_10/historical_product_scope/historical_product_scope_exclusions_2026-07-22.csv"
+  },
+  "prior_historical_review_population": 140,
+  "product_specific_exclusion_rows": 1,
+  "production_registry_changed": false,
+  "remaining_foreign_language_products_reviewed": false,
+  "schema_version": "10.5R.1D.2.4E.3",
+  "scope_resolution_status": "PASS",
+  "scoring_allowed_rows": 0,
+  "universal_database_changed": false,
+  "universal_investable_allowed_rows": 0
+}
