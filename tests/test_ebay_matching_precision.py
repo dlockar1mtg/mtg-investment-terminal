@@ -226,26 +226,70 @@ def test_mixed_product_add_on_is_rejected():
     assert "mixed_product_listing" in result.exclusion_reasons
 
 
-def test_damaged_wrap_is_routed_to_review():
+def test_damaged_wrap_is_rejected():
     result = strict_match_listing(
         product("Chronicles - Booster Box"),
         listing("MTG Chronicles Booster Box Factory Sealed 45 Packs WRAP DAMAGE"),
         "RUN",
         "2026-07-22T00:00:00Z",
     )
-    assert result.match_state == "REVIEW"
+    assert result.match_state == "REJECTED"
     assert "damaged_or_uncertain_seal" in result.exclusion_reasons
 
 
-def test_weak_or_torn_seal_is_routed_to_review():
+def test_weak_or_torn_seal_is_rejected():
     result = strict_match_listing(
         product("Classic Sixth Edition - Booster Box"),
         listing("MTG Classic Sixth Edition Sealed Booster Box WOTC Seal Weak/Torn"),
         "RUN",
         "2026-07-22T00:00:00Z",
     )
-    assert result.match_state == "REVIEW"
+    assert result.match_state == "REJECTED"
     assert "damaged_or_uncertain_seal" in result.exclusion_reasons
+
+
+def test_partial_booster_box_is_rejected():
+    result = strict_match_listing(
+        product("Gatecrash - Booster Box"),
+        listing("Vintage Gatecrash Partial Booster Box 30 Sealed Packs MTG"),
+        "RUN",
+        "2026-07-22T00:00:00Z",
+    )
+    assert result.match_state == "REJECTED"
+    assert "incomplete_product" in result.exclusion_reasons
+
+
+def test_theme_booster_display_is_rejected():
+    result = strict_match_listing(
+        product("Guilds of Ravnica - Booster Box"),
+        listing("MTG Guilds of Ravnica Theme Booster Display Box Sealed 10 Jumbo Packs"),
+        "RUN",
+        "2026-07-22T00:00:00Z",
+    )
+    assert result.match_state == "REJECTED"
+    assert "excluded_product_form" in result.exclusion_reasons
+
+
+def test_set_booster_box_is_rejected_for_draft_box_target():
+    result = strict_match_listing(
+        product("Dominaria - Booster Box"),
+        listing("MTG Dominaria United Set Booster Box English 30 Packs Factory Sealed"),
+        "RUN",
+        "2026-07-22T00:00:00Z",
+    )
+    assert result.match_state == "REJECTED"
+    assert "excluded_product_form" in result.exclusion_reasons
+
+
+def test_dominaria_variants_do_not_match_original_dominaria():
+    result = strict_match_listing(
+        product("Dominaria - Booster Box"),
+        listing("MTG Dominaria Remastered Collector Booster Box Sealed"),
+        "RUN",
+        "2026-07-22T00:00:00Z",
+    )
+    assert result.match_state == "REJECTED"
+    assert "conflicting_set_identity" in result.exclusion_reasons
 
 
 def test_precision_runner_uses_strict_matcher_without_recursion(monkeypatch, tmp_path):
