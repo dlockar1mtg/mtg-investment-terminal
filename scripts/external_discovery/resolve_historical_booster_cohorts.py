@@ -23,8 +23,8 @@ CANDIDATE_LANE_PATH = (
     / "data"
     / "validation"
     / "phase_10"
-    / "historical_candidate_lanes"
-    / "historical_candidate_lane_resolution_2026-07-22.csv"
+    / "premium_universe_eligibility"
+    / "historical_booster_review_2026-07-22.csv"
 )
 
 OUTPUT_ROOT = (
@@ -35,7 +35,7 @@ OUTPUT_ROOT = (
     / "historical_cohort_policy"
 )
 
-SCHEMA_VERSION = "10.5R.1D.2.3C"
+SCHEMA_VERSION = "10.5R.1D.2.3C.1"
 
 OUTPUT_COLUMNS = [
     "canonical_product_id",
@@ -179,9 +179,9 @@ def main() -> int:
         low_memory=False,
     )
 
-    if len(candidates) != 163:
+    if len(candidates) != 140:
         raise RuntimeError(
-            "Expected 163 historical candidates; "
+            "Expected 140 corrected historical candidates; "
             f"found {len(candidates)}."
         )
 
@@ -189,7 +189,7 @@ def main() -> int:
         candidates[
             "canonical_product_id"
         ].nunique()
-        != 163
+        != 140
     ):
         raise RuntimeError(
             "Historical candidate IDs are not unique."
@@ -276,17 +276,13 @@ def main() -> int:
         if structural_pattern.search(
             product_name
         ):
-            cohort = (
-                "structural_exclusion"
+            raise RuntimeError(
+                "Corrected historical input contains a "
+                "structurally excluded product: "
+                f"{canonical_id} | {product_name}"
             )
 
-            reason = (
-                "non_target_sealed_display_or_case_structure"
-            )
-
-            basis = ""
-
-        elif canonical_id in specialty_ids:
+        if canonical_id in specialty_ids:
             if product_type != (
                 "draft_booster_display"
             ):
@@ -332,15 +328,11 @@ def main() -> int:
         elif product_type == (
             "draft_booster_display"
         ):
-            cohort = (
-                "ordinary_draft_exclusion"
+            raise RuntimeError(
+                "Corrected historical input contains an "
+                "unapproved ordinary Draft display: "
+                f"{canonical_id} | {product_name}"
             )
-
-            reason = (
-                "ordinary_draft_display_not_explicitly_specialty"
-            )
-
-            basis = ""
 
         else:
             cohort = (
@@ -449,8 +441,6 @@ def main() -> int:
     }
 
     expected_counts = {
-        "structural_exclusion": 7,
-        "ordinary_draft_exclusion": 16,
         "explicit_specialty_draft_review": 7,
         "commander_draft_policy_review": 2,
         "traditional_historical_review": 131,
@@ -534,16 +524,7 @@ def main() -> int:
         )
     ].copy()
 
-    exclusions = output[
-        output[
-            "governed_candidate_cohort"
-        ].isin(
-            [
-                "structural_exclusion",
-                "ordinary_draft_exclusion",
-            ]
-        )
-    ].copy()
+    exclusions = output.iloc[0:0].copy()
 
     output.to_csv(
         cohort_path,

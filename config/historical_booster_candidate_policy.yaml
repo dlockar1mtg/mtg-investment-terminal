@@ -1,9 +1,9 @@
-schema_version: "10.5R.1D.2.3C"
+schema_version: "10.5R.1D.2.3C.1"
 policy_name: historical_booster_candidate_policy
 
 policy_objective:
   description: >
-    Correct the historical premium-booster candidate universe before
+    Govern the corrected 140-row historical premium-booster universe before
     release-date, liquidity, supply, performance, affordability, scoring,
     or Universal investability decisions are made.
   final_eligibility_assigned: false
