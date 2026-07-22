@@ -87,7 +87,7 @@ def test_precision_runner_uses_strict_matcher_without_recursion(monkeypatch, tmp
 
     monkeypatch.setattr(
         ebay_universe,
-        "ORIGINAL_BUILD_UNIVERSE",
+        "ORIGINAL_CSV_UNIVERSE",
         lambda: [sample_product],
     )
     monkeypatch.setattr(
