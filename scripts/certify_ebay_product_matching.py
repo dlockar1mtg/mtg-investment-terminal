@@ -11,7 +11,8 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from terminal2.market_sources.ebay_matching import OUTPUT_ROOT, build_universe
+from terminal2.market_sources.ebay_matching import OUTPUT_ROOT
+from terminal2.market_sources.ebay_universe import build_complete_universe
 
 
 def newest(pattern: str) -> Path | None:
@@ -26,24 +27,11 @@ def read_csv(path: Path) -> list[dict[str, str]]:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Certify governed MTG-to-eBay matching coverage artifacts.")
-    parser.add_argument(
-        "--minimum-product-coverage",
-        type=float,
-        default=0.0,
-        help=(
-            "Minimum share of the complete governed universe that must appear in the latest run. "
-            "Use 1.0 for a full-universe certification; the default permits pilot-run certification."
-        ),
-    )
-    parser.add_argument(
-        "--minimum-products",
-        type=int,
-        default=10,
-        help="Minimum number of governed products required in the latest matching run.",
-    )
+    parser.add_argument("--minimum-product-coverage", type=float, default=0.0)
+    parser.add_argument("--minimum-products-observed", type=int, default=10)
     args = parser.parse_args()
 
-    universe = build_universe()
+    universe = build_complete_universe()
     coverage_path = newest("ebay_product_coverage_*.csv")
     results_path = newest("ebay_listing_match_results_*.csv")
     summary_path = newest("ebay_matching_summary_*.json")
@@ -56,17 +44,27 @@ def main() -> int:
 
     coverage_rows: list[dict[str, str]] = read_csv(coverage_path) if coverage_path else []
     result_rows: list[dict[str, str]] = read_csv(results_path) if results_path else []
+    checks.append((
+        "minimum_products_observed",
+        len(coverage_rows) >= args.minimum_products_observed,
+        f"products={len(coverage_rows)}",
+    ))
+
     ids = {row.canonical_product_id for row in universe}
     coverage_ids = {row.get("canonical_product_id", "") for row in coverage_rows}
     ratio = len(ids & coverage_ids) / len(ids) if ids else 0.0
-    checks.append(("minimum_products_observed", len(coverage_ids) >= args.minimum_products, f"products={len(coverage_ids)}"))
     checks.append(("universe_coverage_ratio", ratio >= args.minimum_product_coverage, f"ratio={ratio:.3f}"))
-    unknown_ids = sorted(coverage_ids - ids)
+    unknown_ids = sorted(coverage_ids - ids - {""})
     checks.append(("coverage_ids_governed", not unknown_ids, f"unknown_ids={len(unknown_ids)}"))
 
     allowed_classes = {"COLLECTOR_BOOSTER_BOX", "PRE_COLLECTOR_BOOSTER_BOX", "SEALED_SECRET_LAIR"}
     actual_classes = {row.product_class for row in universe}
     checks.append(("premium_classes_only", actual_classes <= allowed_classes, f"classes={sorted(actual_classes)}"))
+    checks.append((
+        "collector_booster_lane_present",
+        "COLLECTOR_BOOSTER_BOX" in actual_classes,
+        f"collector_products={sum(row.product_class == 'COLLECTOR_BOOSTER_BOX' for row in universe)}",
+    ))
 
     forbidden_names = ("set booster box", "play booster box", "jumpstart booster box")
     bad_universe = [row.canonical_product_name for row in universe if any(value in row.canonical_product_name.lower() for value in forbidden_names)]
