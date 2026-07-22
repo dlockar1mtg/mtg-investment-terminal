@@ -18,6 +18,18 @@ def product(name: str = "Alpha Edition - Booster Box") -> CanonicalProduct:
     )
 
 
+def collector_product(name: str) -> CanonicalProduct:
+    return CanonicalProduct(
+        canonical_product_id="MTG-COLLECTOR-TEST",
+        canonical_product_name=name,
+        canonical_set_name=name.replace(" Collector Booster Display", ""),
+        product_class="COLLECTOR_BOOSTER_BOX",
+        tcgplayer_product_id="2",
+        release_date="2025-01-01",
+        ebay_query="query",
+    )
+
+
 def listing(title: str) -> dict[str, object]:
     return {
         "itemId": "1",
@@ -80,6 +92,72 @@ def test_plural_booster_boxes_count_as_box_form():
         "2026-07-22T00:00:00Z",
     )
     assert "missing_booster_box_form" not in result.exclusion_reasons
+
+
+def test_multi_box_case_is_rejected():
+    result = strict_match_listing(
+        collector_product("FINAL FANTASY Collector Booster Display"),
+        listing("MTG Final Fantasy Collector CASE (6 sealed booster boxes)"),
+        "RUN",
+        "2026-07-22T00:00:00Z",
+    )
+    assert result.match_state == "REJECTED"
+    assert "multi_box_case" in result.exclusion_reasons
+
+
+def test_acrylic_protective_case_does_not_trigger_multi_box_case():
+    result = strict_match_listing(
+        collector_product("Innistrad Remastered Collector Booster Display"),
+        listing("MTG Innistrad Remastered Collector Booster Box Sealed W/ Acrylic Case"),
+        "RUN",
+        "2026-07-22T00:00:00Z",
+    )
+    assert "multi_box_case" not in result.exclusion_reasons
+
+
+def test_omega_one_pack_box_is_rejected():
+    result = strict_match_listing(
+        collector_product("Edge of Eternities Collector Booster Display"),
+        listing("MTG Edge of Eternities Collector Omega Booster Box Sealed - 1 Pack"),
+        "RUN",
+        "2026-07-22T00:00:00Z",
+    )
+    assert result.match_state == "REJECTED"
+    assert "single_pack_collector_product" in result.exclusion_reasons
+
+
+def test_one_fifteen_card_pack_box_is_rejected():
+    result = strict_match_listing(
+        collector_product("Innistrad: Midnight Hunt Collector Booster Display"),
+        listing("MTG Innistrad Midnight Hunt Collector Booster Box One 15 Card Pack"),
+        "RUN",
+        "2026-07-22T00:00:00Z",
+    )
+    assert result.match_state == "REJECTED"
+    assert "single_pack_collector_product" in result.exclusion_reasons
+
+
+def test_original_commander_legends_rejects_baldurs_gate_listing():
+    result = strict_match_listing(
+        collector_product("Commander Legends Collector Booster Display"),
+        listing("MTG Commander Legends Battle for Baldur's Gate Collector Display Box Sealed"),
+        "RUN",
+        "2026-07-22T00:00:00Z",
+    )
+    assert result.match_state == "REJECTED"
+    assert "conflicting_set_identity" in result.exclusion_reasons
+
+
+def test_baldurs_gate_product_can_match_baldurs_gate_listing():
+    result = strict_match_listing(
+        collector_product(
+            "Commander Legends: Battle for Baldur's Gate Collector Booster Display"
+        ),
+        listing("MTG Commander Legends Battle for Baldur's Gate Collector Display Box Sealed"),
+        "RUN",
+        "2026-07-22T00:00:00Z",
+    )
+    assert "conflicting_set_identity" not in result.exclusion_reasons
 
 
 def test_precision_runner_uses_strict_matcher_without_recursion(monkeypatch, tmp_path):
