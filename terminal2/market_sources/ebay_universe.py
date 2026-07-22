@@ -2,9 +2,16 @@ from __future__ import annotations
 
 import sqlite3
 from pathlib import Path
+from typing import Callable
 
 from terminal2.config import DB_FILE
 from terminal2.market_sources import ebay_matching as base
+
+
+# Preserve the governed CSV builder before any runtime wrapper temporarily
+# replaces base.build_universe. This prevents the complete-universe builder
+# from recursively calling itself.
+ORIGINAL_BUILD_UNIVERSE: Callable[[], list[base.CanonicalProduct]] = base.build_universe
 
 
 def _normal_key(value: str) -> str:
@@ -102,11 +109,13 @@ def load_operational_collector_products(
 
 def build_complete_universe(
     db_file: Path = DB_FILE,
+    governed_builder: Callable[[], list[base.CanonicalProduct]] | None = None,
 ) -> list[base.CanonicalProduct]:
     """Combine governed CSV lanes with operational Collector Booster products."""
+    builder = governed_builder or ORIGINAL_BUILD_UNIVERSE
     products = {
         product.canonical_product_id: product
-        for product in base.build_universe()
+        for product in builder()
     }
 
     tcgplayer_ids = {
