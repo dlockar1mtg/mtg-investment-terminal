@@ -1,0 +1,25 @@
+{
+  "adjudication_status": "PASS",
+  "final_eligibility_assigned": false,
+  "final_release_dates_assigned": 0,
+  "generated_at_utc": "2026-07-22T18:19:37Z",
+  "mtgjson_product_release_date_rows": 51,
+  "mtgjson_set_release_date_rows": 140,
+  "output_files": {
+    "adjudication": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\validation\\phase_10\\historical_release_adjudication\\historical_release_evidence_adjudication_2026-07-22.csv"
+  },
+  "production_registry_changed": false,
+  "release_evidence_comparison_state_counts": {
+    "mtgjson_product_date_only": 10,
+    "mtgjson_set_date_only": 89,
+    "product_and_tcgcsv_conflict": 1,
+    "product_and_tcgcsv_exact_agreement": 40
+  },
+  "review_product_rows": 140,
+  "schema_version": "10.5R.1D.2.4D.1",
+  "scoring_allowed_rows": 0,
+  "tcgcsv_release_date_rows": 41,
+  "unique_canonical_product_ids": 140,
+  "universal_database_changed": false,
+  "universal_investable_allowed_rows": 0
+}
