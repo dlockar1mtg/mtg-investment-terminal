@@ -1,206 +1,136 @@
-# Phase 10.5R.1D.1 - Premium Universe Structural Eligibility Audit
+# Phase 10.5R.1D.1.1 - Corrected Premium Universe Structural Audit
 
 ## Status
 
-**PASS - STRUCTURAL ELIGIBILITY AUDIT COMPLETE**
+**PASS - CORRECTED STRUCTURAL CLASSIFICATION COMPLETE**
+
+This additive correction supersedes the original Phase 10.5R.1D.1
+population claims. It does not rewrite commit `697a81b`.
 
 ## Purpose
 
-Phase 10.5R.1D.1 establishes the structural eligibility boundary for the
-premium MTG investment universe.
-
-This phase identifies products that structurally match the user's
-investment interests while preserving strict separation between:
+The corrected structural audit separates:
 
 - canonical identity;
-- structural eligibility;
+- structural candidacy;
+- historical evidence review;
 - final investment eligibility;
-- investment approval;
 - scoring;
-- recommendation generation; and
+- recommendations; and
 - Universal investability.
 
-## Approved investment strategy
+Structural inclusion remains a preliminary classification and is not a final
+investment decision.
 
-The structural eligibility framework reflects the following requirements:
+## Corrected premium-universe boundary
 
-### Included for further consideration
+Included for further consideration:
 
-- Collector Booster displays and boxes;
-- sealed Secret Lair drops;
-- sealed single-card Secret Lair drops;
-- sealed multi-card Secret Lair drops;
+- Collector Booster displays;
 - sealed Secret Lair bundles and kits;
-- qualifying historical premium booster displays; and
-- qualifying Draft Booster displays after historical review.
+- genuine traditional Booster Boxes and displays;
+- seven explicitly approved specialty Draft Booster displays; and
+- two Commander Draft products retained for policy review.
 
-### Excluded
+Excluded:
 
-- all case-level products;
+- cases;
 - Commander decks;
-- Secret Lair Commander decks;
 - ordinary bundles;
-- Play Booster displays;
-- Set Booster displays;
-- Theme Booster displays;
-- Jumpstart Booster displays;
-- individual Secret Lair cards opened from drops;
-- separately listed Secret Lair card variants;
-- Secret Lair inserts;
-- loose products; and
-- ordinary mass-market sealed products.
+- Play, Set, Theme, and Jumpstart Booster displays;
+- ordinary Draft Booster displays;
+- individual Secret Lair cards, variants, and inserts; and
+- products mislabeled as traditional Booster displays that are not genuine
+  Booster Box or Booster Display products.
 
-## Secret Lair eligibility boundary
+## Corrected structural results
 
-Secret Lair eligibility is based on sealed-product status rather than card
-count.
+The governed registry contains 5,239 unique canonical identities.
 
-A sealed Secret Lair product may qualify whether it contains one card or
-multiple cards.
-
-An individual card removed from a Secret Lair drop is not eligible.
-
-A separately listed card variant or insert is not eligible.
-
-## Case exclusion
-
-All case-level products are excluded because their purchase price is not
-expected to fit the user's monthly MTG investment allocation.
-
-Case exclusion applies regardless of product quality or historical
-performance.
-
-## Structural audit results
-
-The governed canonical registry contained:
-
-- 5,239 canonical identities;
-- 5,239 unique canonical product IDs.
-
-The structural audit classified:
+The corrected audit classified:
 
 - 307 structurally eligible candidates;
-- 4,769 structurally ineligible products;
-- 163 historical-review products;
+- 4,792 structurally ineligible products;
+- 140 historical-review products; and
 - 0 unresolved classification-review products.
 
-## Structural candidates
+The 307 direct structural candidates consist of:
 
-The 307 structural candidates consist of:
-
-- 53 Collector Booster displays;
+- 53 Collector Booster displays; and
 - 254 sealed Secret Lair bundles or kits.
 
-These records are structural candidates only.
+These rows have not received final investment eligibility.
 
-They have not yet been assigned final investment eligibility.
+## Corrected historical-review population
 
-## Historical review queue
+The 140-row historical-review population consists of:
 
-The 163-product historical review queue consists of:
+- 131 genuine traditional Booster displays;
+- 7 explicitly approved specialty Draft Booster displays; and
+- 2 Commander Draft Booster displays retained for policy review.
 
-- 138 traditional booster displays;
-- 25 Draft Booster displays.
+The specialty Draft population is:
 
-Historical review is required because structural product type alone does
-not establish premium investment suitability.
+- Commander Masters;
+- Dominaria Remastered;
+- Double Masters 2022;
+- Innistrad: Double Feature;
+- Modern Horizons 2;
+- Ravnica Remastered; and
+- Time Spiral: Remastered.
 
-Future review should consider:
+The Commander Draft policy-review population is:
 
-- product age;
-- release generation;
-- historical price coverage;
-- current acquisition price;
-- scarcity;
-- print-run or supply evidence;
-- long-term liquidity;
-- historical appreciation;
-- affordability within the monthly allocation; and
-- whether the product was a genuinely premium release.
+- Commander Legends; and
+- Commander Legends: Battle for Baldur's Gate.
 
-## Structural exclusions
+Ordinary Draft Booster displays are structurally excluded.
 
-The audit excluded products including:
+## Contamination correction
 
-- 352 case-level products;
-- 194 Commander decks;
-- 122 ordinary bundles;
-- 20 Play Booster displays;
-- 18 Set Booster displays;
-- 14 Theme Booster displays;
-- 11 Jumpstart Booster displays;
-- 2,371 individual Secret Lair cards;
-- 1,635 separately listed Secret Lair variants;
-- 27 Secret Lair inserts; and
-- 5 Secret Lair Commander decks.
+Seven rows previously typed as traditional Booster displays were removed from
+the historical-review population because their names establish that they are
+not genuine traditional Booster Box or Booster Display products:
 
-## Generated artifacts
+- one Basic Booster Display;
+- one Planeswalker Deck Display;
+- three Booster Battle Pack displays;
+- one Epilogue Booster Display; and
+- one Beyond Booster Display.
 
-The phase generates:
+Case versions of Beyond and Epilogue products remain excluded under the
+existing case rule.
 
-- `premium_universe_eligibility_audit_2026-07-22.csv`
-- `premium_universe_structural_candidates_2026-07-22.csv`
-- `premium_universe_structural_exclusions_2026-07-22.csv`
-- `premium_universe_eligibility_review_queue_2026-07-22.csv`
-- `secret_lair_structural_candidates_2026-07-22.csv`
-- `historical_booster_review_2026-07-22.csv`
-- `sealed_product_classification_review_2026-07-22.csv`
-- `premium_universe_eligibility_summary_2026-07-22.json`
+## Historical evidence status
 
-All focused outputs are generated reproducibly by the Python audit script.
+Structural correction does not establish historical investment quality.
+
+The separate governed historical evidence process subsequently:
+
+- reduced the active scope from 140 to 139 through the explicit exclusion of
+  the Renaissance Italian Booster Box;
+- established governed release dates for all 139 active products; and
+- preserved eligibility, scoring, and Universal investability as undecided or
+  disabled.
 
 ## Safety controls
 
-This phase did not:
+This corrected phase did not:
 
-- change the canonical registry;
-- change the governed registry;
-- change the production investment registry;
-- assign final eligibility;
-- assign investment approval;
-- enable scoring;
+- modify the canonical or governed source registry;
+- modify the production investment registry;
+- assign final investment eligibility;
+- apply scoring;
 - generate recommendations;
-- create a Universal integration package;
-- update Universal investability; or
+- create a Universal package;
+- change Universal investability; or
 - modify the Universal database.
 
-All 5,239 products remain:
+## Certification boundary
 
-- `final_eligibility_decision=not_decided`
-- `scoring_allowed=false`
-- `universal_investable_allowed=false`
+This document certifies the corrected structural classification and generated
+audit populations only.
 
-## Automated validation
-
-Validation completed successfully:
-
-- Phase-specific tests: 16 passed;
-- external-discovery tests: 86 passed;
-- full repository tests: 232 passed;
-- existing warnings: 13;
-- staged-content check: not yet performed;
-- whitespace validation: passed.
-
-## Certification decision
-
-Phase 10.5R.1D.1 is certified complete because:
-
-1. the user's investment constraints are represented explicitly;
-2. case-level products are excluded;
-3. sealed Secret Lair products remain distinct from opened singles;
-4. Commander decks and mass-market sealed formats are excluded;
-5. Collector Booster displays are retained;
-6. historical booster products are placed into review rather than
-   automatically accepted;
-7. all previously unclassified sealed products have been resolved;
-8. focused output files are reproducible;
-9. no premature eligibility or scoring was applied; and
-10. all automated tests pass.
-
-## Next phase
-
-**Phase 10.5R.1D.2 - Historical Premium Eligibility Resolution**
-
-The next phase will evaluate the 163 historical-review booster displays
-against premium-product, affordability, scarcity, liquidity, age, and
-historical-performance criteria.
+It does not certify that the 139 active historical products are investable.
+Performance, liquidity, supply, affordability, and final eligibility remain
+separate downstream decisions.

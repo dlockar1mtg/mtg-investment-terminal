@@ -81,6 +81,7 @@ def make_row(
     product_type: str = "collector_booster_display",
     packaging_level: str = "display",
     product_name: str = "Example Product",
+    set_name: str = "Example Set",
 ) -> pd.Series:
     return pd.Series(
         {
@@ -90,6 +91,9 @@ def make_row(
             "tcgplayer_product_id": "100",
             "canonical_product_name": (
                 product_name
+            ),
+            "canonical_set_name": (
+                set_name
             ),
             "canonical_product_class": (
                 product_class
@@ -309,22 +313,68 @@ def test_traditional_booster_requires_review() -> None:
     )
 
 
-def test_draft_booster_requires_review() -> None:
+
+def test_ordinary_draft_booster_is_excluded() -> None:
     module = load_module()
 
     state, reason = module.classify_row(
         make_row(
-            product_type="draft_booster_display"
+            set_name="Wilds of Eldraine",
+            product_name=(
+                "Wilds of Eldraine - "
+                "Draft Booster Box"
+            ),
+            product_type="draft_booster_display",
+        )
+    )
+
+    assert state == "structurally_ineligible"
+    assert (
+        reason
+        == "ordinary_draft_booster_display_excluded"
+    )
+
+
+def test_specialty_draft_booster_requires_review() -> None:
+    module = load_module()
+
+    state, reason = module.classify_row(
+        make_row(
+            set_name="Dominaria Remastered",
+            product_name=(
+                "Dominaria Remastered - "
+                "Draft Booster Box"
+            ),
+            product_type="draft_booster_display",
         )
     )
 
     assert state == "historical_review_required"
-
     assert reason == (
-        "draft_booster_display"
+        "specialty_draft_booster_display"
         "_requires_premium_history_review"
     )
 
+
+def test_commander_draft_booster_requires_policy_review() -> None:
+    module = load_module()
+
+    state, reason = module.classify_row(
+        make_row(
+            set_name="Commander Legends",
+            product_name=(
+                "Commander Legends - "
+                "Draft Booster Box"
+            ),
+            product_type="draft_booster_display",
+        )
+    )
+
+    assert state == "historical_review_required"
+    assert reason == (
+        "commander_draft_booster_display"
+        "_requires_policy_review"
+    )
 
 def test_theme_and_jumpstart_are_excluded() -> None:
     module = load_module()
@@ -363,6 +413,7 @@ def test_governance_block_prevents_candidate() -> None:
     assert "source_not_available" in reason
 
 
+
 def test_baseline_output_counts() -> None:
     summary = json.loads(
         SUMMARY_PATH.read_text(
@@ -372,42 +423,81 @@ def test_baseline_output_counts() -> None:
 
     assert summary["audit_status"] == "PASS"
     assert summary["audit_rows"] == 5239
-
     assert (
         summary["unique_canonical_product_ids"]
         == 5239
     )
 
     assert (
+        summary[
+            "structural_eligibility_state_counts"
+        ]
+        == {
+            "historical_review_required": 140,
+            "structurally_eligible": 307,
+            "structurally_ineligible": 4792,
+        }
+    )
+
+    assert (
         summary["structural_candidate_rows"]
         == 307
     )
-
     assert (
         summary["structural_exclusion_rows"]
-        == 4769
+        == 4792
     )
-
-    assert (
-        summary["review_queue_rows"]
-        == 163
-    )
-
+    assert summary["review_queue_rows"] == 140
     assert (
         summary["secret_lair_candidate_rows"]
         == 254
     )
-
     assert (
         summary["historical_review_rows"]
-        == 163
+        == 140
     )
-
     assert (
         summary["classification_review_rows"]
         == 0
     )
 
+    reasons = summary[
+        "structural_eligibility_reason_counts"
+    ]
+
+    assert (
+        reasons[
+            "traditional_booster_display"
+            "_requires_premium_history_review"
+        ]
+        == 131
+    )
+    assert (
+        reasons[
+            "specialty_draft_booster_display"
+            "_requires_premium_history_review"
+        ]
+        == 7
+    )
+    assert (
+        reasons[
+            "commander_draft_booster_display"
+            "_requires_policy_review"
+        ]
+        == 2
+    )
+    assert (
+        reasons[
+            "ordinary_draft_booster_display_excluded"
+        ]
+        == 16
+    )
+    assert (
+        reasons[
+            "non_booster_display_product_excluded"
+        ]
+        == 7
+    )
 
 def test_baseline_has_no_premature_promotion() -> None:
     audit = pd.read_csv(
@@ -427,6 +517,7 @@ def test_baseline_has_no_premature_promotion() -> None:
     assert set(
         audit["universal_investable_allowed"]
     ) == {"False"}
+
 
 
 def test_focused_outputs_match_summary() -> None:
@@ -449,18 +540,55 @@ def test_focused_outputs_match_summary() -> None:
     )
 
     assert len(secret_lair) == 254
-    assert len(historical) == 163
+    assert len(historical) == 140
     assert classification.empty
 
-    assert set(
+    traditional = historical[
         historical[
             "canonical_product_type"
+        ].eq("traditional_booster_display")
+    ]
+
+    draft = historical[
+        historical[
+            "canonical_product_type"
+        ].eq("draft_booster_display")
+    ]
+
+    assert len(traditional) == 131
+    assert len(draft) == 9
+
+    assert set(
+        draft[
+            "structural_eligibility_reason"
         ]
     ) == {
-        "traditional_booster_display",
-        "draft_booster_display",
+        (
+            "specialty_draft_booster_display"
+            "_requires_premium_history_review"
+        ),
+        (
+            "commander_draft_booster_display"
+            "_requires_policy_review"
+        ),
     }
 
+    assert set(
+        draft["canonical_set_name"]
+    ) == {
+        "Commander Masters",
+        "Dominaria Remastered",
+        "Double Masters 2022",
+        "Innistrad: Double Feature",
+        "Modern Horizons 2",
+        "Ravnica Remastered",
+        "Time Spiral: Remastered",
+        "Commander Legends",
+        (
+            "Commander Legends: "
+            "Battle for Baldur's Gate"
+        ),
+    }
 
 def test_safety_controls_remain_false() -> None:
     summary = json.loads(

@@ -1,4 +1,4 @@
-schema_version: 10.5R.1D.1
+schema_version: 10.5R.1D.1.1
 policy_name: premium_mtg_universe_eligibility
 platform_id: mtg
 
@@ -28,6 +28,8 @@ premium_universe_intent:
   include:
     - collector_booster_displays
     - qualifying_pre_collector_premium_booster_displays
+    - explicitly_approved_specialty_draft_booster_displays
+    - explicitly_reviewed_commander_draft_booster_displays
     - sealed_secret_lair_drops
     - sealed_single_card_secret_lair_drops
     - sealed_multi_card_secret_lair_drops
@@ -42,8 +44,9 @@ premium_universe_intent:
     - play_booster_displays
     - set_booster_displays
     - ordinary_draft_booster_displays
-    - individual_secret_lair_inserts
+    - inserts
     - loose_products
+    - non_booster_display_products_mislabeled_as_booster_displays
     - non_premium_mass_market_products
 
 case_policy:
@@ -57,6 +60,8 @@ secret_lair_policy:
   sealed_bundle_or_kit_allowed: true
   opened_individual_card_allowed: false
   separately_listed_card_variant_allowed: false
+  individual_insert_allowed: false
+  commander_deck_allowed: false
   unresolved_sealed_status_requires_review: true
 
 structural_rules:
@@ -66,17 +71,43 @@ structural_rules:
 
   direct_exclude_product_types:
     - commander_deck
-    - secret_lair_commander_deck
     - bundle
     - play_booster_display
     - set_booster_display
     - theme_booster_display
     - jumpstart_booster_display
     - secret_lair_card_variant
+    - secret_lair_insert
 
   historical_review_product_types:
     - traditional_booster_display
+
+  conditional_historical_review_product_types:
     - draft_booster_display
+
+  specialty_draft_review_sets:
+    - Commander Masters
+    - Dominaria Remastered
+    - Double Masters 2022
+    - Innistrad: Double Feature
+    - Modern Horizons 2
+    - Ravnica Remastered
+    - Time Spiral: Remastered
+
+  commander_draft_review_sets:
+    - Commander Legends
+    - "Commander Legends: Battle for Baldur's Gate"
+
+  ordinary_draft_policy:
+    state: structurally_ineligible
+    reason: ordinary_draft_booster_display_excluded
+
+  non_booster_display_name_markers:
+    - planeswalker deck display
+    - booster battle pack
+    - basic booster display
+    - beyond booster
+    - epilogue booster
 
   sealed_review_product_types:
     - secret_lair_card_or_product
@@ -97,6 +128,8 @@ historical_review_requirements:
   qualifying_concepts:
     - pre_collector_premium_sealed
     - historically_scarce_booster_display
+    - explicitly_approved_specialty_draft_display
+    - explicitly_reviewed_commander_draft_display
 
 secret_lair_review_requirements:
   required_fields:

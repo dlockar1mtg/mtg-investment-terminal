@@ -35,7 +35,7 @@ OUTPUT_ROOT = (
     / "premium_universe_eligibility"
 )
 
-ELIGIBILITY_VERSION = "10.5R.1D.1"
+ELIGIBILITY_VERSION = "10.5R.1D.1.1"
 
 AUDIT_COLUMNS = [
     "canonical_product_id",
@@ -85,6 +85,78 @@ def clean_text(value: object) -> str:
         pass
 
     return str(value).strip()
+
+
+def normalize_identity_name(
+    value: object,
+) -> str:
+    text = clean_text(value).casefold()
+
+    for character in (
+        ":",
+        "-",
+        "'",
+        "’",
+        "(",
+        ")",
+        "[",
+        "]",
+        "/",
+        "&",
+    ):
+        text = text.replace(
+            character,
+            " ",
+        )
+
+    return " ".join(
+        text.split()
+    )
+
+
+SPECIALTY_DRAFT_REVIEW_SETS = {
+    normalize_identity_name(
+        "Commander Masters"
+    ),
+    normalize_identity_name(
+        "Dominaria Remastered"
+    ),
+    normalize_identity_name(
+        "Double Masters 2022"
+    ),
+    normalize_identity_name(
+        "Innistrad: Double Feature"
+    ),
+    normalize_identity_name(
+        "Modern Horizons 2"
+    ),
+    normalize_identity_name(
+        "Ravnica Remastered"
+    ),
+    normalize_identity_name(
+        "Time Spiral: Remastered"
+    ),
+}
+
+
+COMMANDER_DRAFT_REVIEW_SETS = {
+    normalize_identity_name(
+        "Commander Legends"
+    ),
+    normalize_identity_name(
+        "Commander Legends: "
+        "Battle for Baldur's Gate"
+    ),
+}
+
+
+NON_BOOSTER_DISPLAY_MARKERS = (
+    "planeswalker deck display",
+    "booster battle pack",
+    "basic booster display",
+    "beyond booster",
+    "epilogue booster",
+)
 
 
 def load_policy(
@@ -207,9 +279,16 @@ def classify_secret_lair(
             "individual_card_from_secret_lair_drop",
         )
 
+    if packaging_level == "deck":
+        return (
+            "structurally_ineligible",
+            "secret_lair_commander_deck_excluded",
+        )
+
     if (
-        packaging_level == "deck"
-        or "commander deck"
+        product_type
+        == "secret_lair_card_or_product"
+        and "commander deck"
         in normalized_name
     ):
         return (
@@ -252,8 +331,15 @@ def classify_sealed(
     product_type: str,
     packaging_level: str,
     product_name: str,
+    set_name: str,
 ) -> tuple[str, str]:
-    normalized_name = product_name.casefold()
+    normalized_name = normalize_identity_name(
+        product_name
+    )
+
+    normalized_set_name = normalize_identity_name(
+        set_name
+    )
 
     if (
         packaging_level == "case"
@@ -287,6 +373,15 @@ def classify_sealed(
             f"excluded_packaging:{packaging_level}",
         )
 
+    if any(
+        marker in normalized_name
+        for marker in NON_BOOSTER_DISPLAY_MARKERS
+    ):
+        return (
+            "structurally_ineligible",
+            "non_booster_display_product_excluded",
+        )
+
     if (
         product_type
         == "collector_booster_display"
@@ -296,16 +391,46 @@ def classify_sealed(
             "collector_booster_display",
         )
 
-    if product_type in {
-        "traditional_booster_display",
-        "draft_booster_display",
-    }:
+    if (
+        product_type
+        == "traditional_booster_display"
+    ):
         return (
             "historical_review_required",
             (
-                f"{product_type}"
+                "traditional_booster_display"
                 "_requires_premium_history_review"
             ),
+        )
+
+    if product_type == "draft_booster_display":
+        if (
+            normalized_set_name
+            in SPECIALTY_DRAFT_REVIEW_SETS
+        ):
+            return (
+                "historical_review_required",
+                (
+                    "specialty_draft_booster_display"
+                    "_requires_premium_history_review"
+                ),
+            )
+
+        if (
+            normalized_set_name
+            in COMMANDER_DRAFT_REVIEW_SETS
+        ):
+            return (
+                "historical_review_required",
+                (
+                    "commander_draft_booster_display"
+                    "_requires_policy_review"
+                ),
+            )
+
+        return (
+            "structurally_ineligible",
+            "ordinary_draft_booster_display_excluded",
         )
 
     if product_type == "sealed_case":
@@ -357,6 +482,12 @@ def classify_row(
         )
     )
 
+    set_name = clean_text(
+        row.get(
+            "canonical_set_name"
+        )
+    )
+
     if product_class == (
         "secret_lair_product"
     ):
@@ -371,6 +502,7 @@ def classify_row(
             product_type=product_type,
             packaging_level=packaging_level,
             product_name=product_name,
+            set_name=set_name,
         )
 
     return (
