@@ -182,6 +182,72 @@ def test_non_acrylic_display_case_is_routed_to_review():
     assert "ambiguous_display_case" in result.exclusion_reasons
 
 
+def test_deprecated_catalog_placeholder_is_rejected():
+    result = strict_match_listing(
+        product("10th Edition - Booster Box"),
+        listing("Booster Box [Deprecated] 10th Edition Core Set Booster Box Magic"),
+        "RUN",
+        "2026-07-22T00:00:00Z",
+    )
+    assert result.match_state == "REJECTED"
+    assert "deprecated_catalog_placeholder" in result.exclusion_reasons
+
+
+def test_incomplete_pack_plus_box_lot_is_rejected():
+    result = strict_match_listing(
+        product("Chronicles - Booster Box"),
+        listing("Magic Chronicles Booster Box lot of 26 packs + box"),
+        "RUN",
+        "2026-07-22T00:00:00Z",
+    )
+    assert result.match_state == "REJECTED"
+    assert "incomplete_pack_box_lot" in result.exclusion_reasons
+
+
+def test_tournament_pack_display_is_rejected():
+    result = strict_match_listing(
+        product("Champions of Kamigawa - Booster Box"),
+        listing("Magic Champions of Kamigawa Tournament Pack Display Box Sealed"),
+        "RUN",
+        "2026-07-22T00:00:00Z",
+    )
+    assert result.match_state == "REJECTED"
+    assert "excluded_product_form" in result.exclusion_reasons
+
+
+def test_mixed_product_add_on_is_rejected():
+    result = strict_match_listing(
+        product("Battlebond - Booster Box"),
+        listing("Battlebond Booster Box Sealed + Kaldheim Collector Booster Magic"),
+        "RUN",
+        "2026-07-22T00:00:00Z",
+    )
+    assert result.match_state == "REJECTED"
+    assert "mixed_product_listing" in result.exclusion_reasons
+
+
+def test_damaged_wrap_is_routed_to_review():
+    result = strict_match_listing(
+        product("Chronicles - Booster Box"),
+        listing("MTG Chronicles Booster Box Factory Sealed 45 Packs WRAP DAMAGE"),
+        "RUN",
+        "2026-07-22T00:00:00Z",
+    )
+    assert result.match_state == "REVIEW"
+    assert "damaged_or_uncertain_seal" in result.exclusion_reasons
+
+
+def test_weak_or_torn_seal_is_routed_to_review():
+    result = strict_match_listing(
+        product("Classic Sixth Edition - Booster Box"),
+        listing("MTG Classic Sixth Edition Sealed Booster Box WOTC Seal Weak/Torn"),
+        "RUN",
+        "2026-07-22T00:00:00Z",
+    )
+    assert result.match_state == "REVIEW"
+    assert "damaged_or_uncertain_seal" in result.exclusion_reasons
+
+
 def test_precision_runner_uses_strict_matcher_without_recursion(monkeypatch, tmp_path):
     sample_product = product("Amonkhet - Booster Box")
 
