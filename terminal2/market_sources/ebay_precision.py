@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 from dataclasses import replace
 from typing import Mapping, Sequence
 
@@ -67,6 +68,52 @@ def _token_coverage(product: base.CanonicalProduct, title_norm: str) -> float:
     return len(present) / len(required)
 
 
+def _is_multi_box_case(title_norm: str) -> bool:
+    if " acrylic case " in title_norm or " protective case " in title_norm:
+        return False
+    return any(
+        phrase in title_norm
+        for phrase in (
+            " case of ",
+            " sealed case ",
+            " master case ",
+            " booster box case ",
+            " collector case ",
+            " case 6 ",
+            " 6 sealed booster boxes ",
+            " 6 booster boxes ",
+            " six sealed booster boxes ",
+            " six booster boxes ",
+        )
+    )
+
+
+def _is_single_pack_collector_product(title_norm: str) -> bool:
+    if " omega booster box " in title_norm or " omega box " in title_norm:
+        return True
+    return bool(
+        re.search(
+            r"\b(?:one|1)\s+(?:\d+\s*card\s+)?pack\b",
+            title_norm,
+        )
+    )
+
+
+def _has_conflicting_set_identity(
+    product: base.CanonicalProduct,
+    title_norm: str,
+) -> bool:
+    product_name = base._norm(product.canonical_product_name)
+    is_original_commander_legends = (
+        " commander legends " in product_name
+        and " battle for baldur s gate " not in product_name
+    )
+    return (
+        is_original_commander_legends
+        and " battle for baldur s gate " in title_norm
+    )
+
+
 def strict_match_listing(
     product: base.CanonicalProduct,
     item: Mapping[str, object],
@@ -98,6 +145,15 @@ def strict_match_listing(
             reasons.append("excluded_product_form")
         if not has_box_form and (" pack " in title_norm or " packs " in title_norm):
             reasons.append("loose_packs")
+        if _is_multi_box_case(title_norm):
+            reasons.append("multi_box_case")
+        if (
+            product.product_class == "COLLECTOR_BOOSTER_BOX"
+            and _is_single_pack_collector_product(title_norm)
+        ):
+            reasons.append("single_pack_collector_product")
+        if _has_conflicting_set_identity(product, title_norm):
+            reasons.append("conflicting_set_identity")
         if token_coverage < 0.75:
             reasons.append("insufficient_product_identity")
 
@@ -107,6 +163,9 @@ def strict_match_listing(
             "missing_booster_box_form",
             "excluded_product_form",
             "loose_packs",
+            "multi_box_case",
+            "single_pack_collector_product",
+            "conflicting_set_identity",
             "insufficient_product_identity",
             "non_english",
             "presale",
