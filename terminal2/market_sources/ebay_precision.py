@@ -6,6 +6,8 @@ from typing import Mapping
 from terminal2.market_sources import ebay_matching as base
 
 
+ORIGINAL_MATCH_LISTING = base.match_listing
+
 MTG_IDENTITY_TERMS = (
     " magic ",
     " mtg ",
@@ -69,7 +71,7 @@ def strict_match_listing(
     run_id: str,
     observed: str,
 ) -> base.MatchResult:
-    result = base.match_listing(product, item, run_id, observed)
+    result = ORIGINAL_MATCH_LISTING(product, item, run_id, observed)
     title_norm = base._norm(result.title)
     reasons = [value for value in result.exclusion_reasons.split("|") if value]
     score = result.match_score
