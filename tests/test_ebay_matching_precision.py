@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from terminal2.market_sources import ebay_matching as base
+from terminal2.market_sources import ebay_universe
 from terminal2.market_sources.ebay_matching import CanonicalProduct
 from terminal2.market_sources.ebay_precision import run_coverage, strict_match_listing
 
@@ -84,7 +85,16 @@ def test_plural_booster_boxes_count_as_box_form():
 def test_precision_runner_uses_strict_matcher_without_recursion(monkeypatch, tmp_path):
     sample_product = product("Amonkhet - Booster Box")
 
-    monkeypatch.setattr(base, "build_universe", lambda: [sample_product])
+    monkeypatch.setattr(
+        ebay_universe,
+        "ORIGINAL_BUILD_UNIVERSE",
+        lambda: [sample_product],
+    )
+    monkeypatch.setattr(
+        ebay_universe,
+        "load_operational_collector_products",
+        lambda db_file=ebay_universe.DB_FILE: [],
+    )
     monkeypatch.setattr(base, "OUTPUT_ROOT", tmp_path)
 
     class FakeClient:
