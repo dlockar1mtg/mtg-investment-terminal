@@ -111,10 +111,16 @@ def _is_multi_unit_lot(title_norm: str) -> bool:
 
 
 def _is_incomplete_pack_box_lot(title_norm: str) -> bool:
+    """Detect an opened/incomplete box sold with a stated number of packs.
+
+    ``base._norm`` removes punctuation such as ``+``, so the normalized form of
+    "26 packs + box" becomes "26 packs box".  Patterns therefore accept both
+    explicit connector words and direct normalized adjacency.
+    """
     patterns = (
-        r"\blot\s+of\s+\d+\s+packs?\s*(?:\+|and|with)\s*(?:the\s+)?box\b",
-        r"\b\d+\s+packs?\s*(?:\+|and|with)\s*(?:the\s+)?box\b",
-        r"\bbox\s*(?:\+|and|with)\s*\d+\s+packs?\b",
+        r"\blot\s+of\s+\d+\s+packs?\s+(?:(?:and|with)\s+)?(?:the\s+)?box\b",
+        r"\b\d+\s+packs?\s+(?:(?:and|with)\s+)?(?:the\s+)?box\b",
+        r"\bbox\s+(?:(?:and|with)\s+)?\d+\s+packs?\b",
     )
     return any(re.search(pattern, title_norm) for pattern in patterns)
 
@@ -134,10 +140,18 @@ def _is_deprecated_catalog_placeholder(title_norm: str) -> bool:
 def _is_mixed_product_listing(
     product: base.CanonicalProduct,
     title_norm: str,
+    raw_title: str,
 ) -> bool:
-    if " + " not in title_norm and " plus " not in title_norm:
+    """Detect a target box bundled with a different sealed product.
+
+    The raw title is used to preserve ``+`` before normalization strips it.
+    """
+    raw_lower = raw_title.lower()
+    has_connector = "+" in raw_title or " plus " in raw_lower
+    if not has_connector:
         return False
-    product_tokens = base._tokens(product.canonical_product_name)
+
+    product_name_norm = base._norm(product.canonical_product_name)
     known_other_products = (
         " collector booster ",
         " commander deck ",
@@ -146,7 +160,23 @@ def _is_mixed_product_listing(
         " fat pack ",
         " bundle ",
     )
-    return any(term in title_norm for term in known_other_products) or len(product_tokens) < 3
+
+    if any(term in title_norm for term in known_other_products):
+        # Collector Booster is not an add-on when the governed target itself is
+        # a Collector Booster display.
+        if (
+            product.product_class == "COLLECTOR_BOOSTER_BOX"
+            and " collector booster " in product_name_norm
+            and not any(
+                term in title_norm
+                for term in known_other_products
+                if term != " collector booster "
+            )
+        ):
+            return False
+        return True
+
+    return False
 
 
 def _is_ambiguous_display_case(title_norm: str) -> bool:
@@ -220,7 +250,7 @@ def strict_match_listing(
             reasons.append("incomplete_pack_box_lot")
         if _is_deprecated_catalog_placeholder(title_norm):
             reasons.append("deprecated_catalog_placeholder")
-        if _is_mixed_product_listing(product, title_norm):
+        if _is_mixed_product_listing(product, title_norm, result.title):
             reasons.append("mixed_product_listing")
         if (
             product.product_class == "COLLECTOR_BOOSTER_BOX"
