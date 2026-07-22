@@ -62,6 +62,16 @@ def make_db(path: Path) -> None:
                     "Japanese",
                 ),
                 (
+                    "MTG-COLLECTOR-JP-NAME",
+                    "FINAL FANTASY",
+                    "FINAL FANTASY Collector Booster Display (Japanese)",
+                    "127",
+                    "Collector Booster Display",
+                    "approved",
+                    "2025-06-13",
+                    "",
+                ),
+                (
                     "MTG-COLLECTOR-PENDING",
                     "Pending Set",
                     "Pending Set Collector Booster Box",
@@ -103,3 +113,4 @@ def test_complete_universe_adds_operational_collector_lane(tmp_path):
     )
     names = "\n".join(product.canonical_product_name.lower() for product in universe)
     assert "play booster box" not in names
+    assert "(japanese)" not in names
