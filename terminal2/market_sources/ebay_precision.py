@@ -4,9 +4,11 @@ from dataclasses import replace
 from typing import Mapping
 
 from terminal2.market_sources import ebay_matching as base
+from terminal2.market_sources.ebay_universe import build_complete_universe
 
 
 ORIGINAL_MATCH_LISTING = base.match_listing
+ORIGINAL_BUILD_UNIVERSE = base.build_universe
 
 MTG_IDENTITY_TERMS = (
     " magic ",
@@ -125,9 +127,12 @@ def run_coverage(
     limit_per_product: int = 20,
     max_products: int | None = None,
 ) -> dict[str, object]:
-    original = base.match_listing
+    original_match = base.match_listing
+    original_universe = base.build_universe
     base.match_listing = strict_match_listing
+    base.build_universe = build_complete_universe
     try:
         return base.run_coverage(limit_per_product, max_products)
     finally:
-        base.match_listing = original
+        base.match_listing = original_match
+        base.build_universe = original_universe
