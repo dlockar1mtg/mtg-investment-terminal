@@ -1,0 +1,38 @@
+{
+  "all_printings_downloaded": false,
+  "final_eligibility_assigned": false,
+  "final_release_dates_assigned": 0,
+  "generated_at_utc": "2026-07-22T18:00:54Z",
+  "matched_set_rows": 128,
+  "mtgjson_set_records": 868,
+  "output_files": {
+    "matched_sets": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\validation\\phase_10\\historical_mtgjson_set_routing\\historical_mtgjson_matched_sets_2026-07-22.csv",
+    "routing": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\validation\\phase_10\\historical_mtgjson_set_routing\\historical_mtgjson_set_routing_2026-07-22.csv",
+    "set_match_review": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\validation\\phase_10\\historical_mtgjson_set_routing\\historical_mtgjson_set_match_review_2026-07-22.csv"
+  },
+  "production_registry_changed": false,
+  "release_date_comparison_counts": {
+    "date_conflict_review_required": 2,
+    "exact_date_agreement": 34,
+    "mtgjson_set_date_available": 90,
+    "near_date_agreement": 2,
+    "release_date_unresolved": 9,
+    "tcgcsv_date_only": 3
+  },
+  "review_product_rows": 140,
+  "routing_status": "PASS",
+  "schema_version": "10.5R.1D.2.4C",
+  "scoring_allowed_rows": 0,
+  "set_list_sha256_verified": true,
+  "set_list_source": "existing_cache",
+  "set_match_review_rows": 12,
+  "set_match_state_counts": {
+    "matched": 128,
+    "unmatched": 12
+  },
+  "sha256_source": "existing_cache",
+  "targeted_set_files_downloaded": 0,
+  "unique_target_set_codes": 126,
+  "universal_database_changed": false,
+  "universal_investable_allowed_rows": 0
+}
