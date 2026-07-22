@@ -268,13 +268,13 @@ def build_evidence_seed() -> list[dict[str, Any]]:
                 "Secret Lair x Hatsune Miku: "
                 "Sakura Superstar EN Foil Edition",
                 "foil",
-                "traditional_foil",
+                "rainbow_foil",
             ),
             (
                 "Secret Lair x Hatsune Miku: "
                 "Sakura Superstar JP Foil Edition",
                 "foil",
-                "traditional_foil",
+                "rainbow_foil",
             ),
             (
                 "Secret Lair x Hatsune Miku: "
