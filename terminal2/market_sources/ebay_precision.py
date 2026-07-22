@@ -44,6 +44,19 @@ NON_BOX_PRODUCT_TERMS = (
     " resealed ",
     " re sealed ",
     " not factory sealed ",
+    " tournament pack ",
+    " tournament display ",
+)
+
+DAMAGED_SEAL_TERMS = (
+    " wrap damage ",
+    " wrapper damage ",
+    " seal weak ",
+    " weak seal ",
+    " seal torn ",
+    " torn seal ",
+    " shrink damage ",
+    " damaged wrap ",
 )
 
 
@@ -95,6 +108,45 @@ def _is_multi_unit_lot(title_norm: str) -> bool:
         r"\b(?:x|qty)\s*(?:2|3|4|5|6)\b.*\bbooster\s+(?:box|display)",
     )
     return any(re.search(pattern, title_norm) for pattern in patterns)
+
+
+def _is_incomplete_pack_box_lot(title_norm: str) -> bool:
+    patterns = (
+        r"\blot\s+of\s+\d+\s+packs?\s*(?:\+|and|with)\s*(?:the\s+)?box\b",
+        r"\b\d+\s+packs?\s*(?:\+|and|with)\s*(?:the\s+)?box\b",
+        r"\bbox\s*(?:\+|and|with)\s*\d+\s+packs?\b",
+    )
+    return any(re.search(pattern, title_norm) for pattern in patterns)
+
+
+def _is_deprecated_catalog_placeholder(title_norm: str) -> bool:
+    return any(
+        phrase in title_norm
+        for phrase in (
+            " deprecated ",
+            " catalog image ",
+            " placeholder ",
+            " stock listing only ",
+        )
+    )
+
+
+def _is_mixed_product_listing(
+    product: base.CanonicalProduct,
+    title_norm: str,
+) -> bool:
+    if " + " not in title_norm and " plus " not in title_norm:
+        return False
+    product_tokens = base._tokens(product.canonical_product_name)
+    known_other_products = (
+        " collector booster ",
+        " commander deck ",
+        " theme deck ",
+        " starter deck ",
+        " fat pack ",
+        " bundle ",
+    )
+    return any(term in title_norm for term in known_other_products) or len(product_tokens) < 3
 
 
 def _is_ambiguous_display_case(title_norm: str) -> bool:
@@ -164,6 +216,12 @@ def strict_match_listing(
             reasons.append("multi_box_case")
         if _is_multi_unit_lot(title_norm):
             reasons.append("multi_unit_lot")
+        if _is_incomplete_pack_box_lot(title_norm):
+            reasons.append("incomplete_pack_box_lot")
+        if _is_deprecated_catalog_placeholder(title_norm):
+            reasons.append("deprecated_catalog_placeholder")
+        if _is_mixed_product_listing(product, title_norm):
+            reasons.append("mixed_product_listing")
         if (
             product.product_class == "COLLECTOR_BOOSTER_BOX"
             and _is_single_pack_collector_product(title_norm)
@@ -182,6 +240,9 @@ def strict_match_listing(
             "loose_packs",
             "multi_box_case",
             "multi_unit_lot",
+            "incomplete_pack_box_lot",
+            "deprecated_catalog_placeholder",
+            "mixed_product_listing",
             "single_pack_collector_product",
             "conflicting_set_identity",
             "insufficient_product_identity",
@@ -191,6 +252,10 @@ def strict_match_listing(
         if hard_reasons.intersection(reasons):
             score = min(score, 0.49)
             state = "REJECTED"
+        elif any(term in title_norm for term in DAMAGED_SEAL_TERMS):
+            reasons.append("damaged_or_uncertain_seal")
+            score = min(score, 0.75)
+            state = "REVIEW"
         elif _is_ambiguous_display_case(title_norm):
             reasons.append("ambiguous_display_case")
             score = min(score, 0.75)
