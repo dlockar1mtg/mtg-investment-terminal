@@ -1,0 +1,141 @@
+canonical_product_id,canonical_product_name,tcgplayer_product_id,canonical_product_type,market_price,low_price,mid_price,high_price,direct_low_price,current_price_candidate,price_source_type,has_market_price,has_candidate_price,price_evidence_state,historical_eligibility_decision,scoring_allowed,universal_investable_allowed
+MTG-CANON-TCGPLAYER-27257,10th Edition - Booster Box,27257,traditional_booster_display,,809.76,824.79,1079.99,,824.79,mid_price_fallback,False,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-27258,7th Edition - Booster Box,27258,traditional_booster_display,3809.94,6994.99,8497.5,13996.0,,3809.94,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-27259,8th Edition - Booster Box,27259,traditional_booster_display,,809.99,991.39,2185.0,,991.39,mid_price_fallback,False,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-27260,9th Edition - Booster Box,27260,traditional_booster_display,,899.88,999.99,1398.95,,999.99,mid_price_fallback,False,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-125794,Aether Revolt - Booster Box,125794,traditional_booster_display,190.34,197.49,249.99,600.0,,190.34,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-31841,Alara Reborn - Booster Box,31841,traditional_booster_display,607.5,700.0,799.95,1114.95,,607.5,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-27261,Alliances - Booster Box,27261,traditional_booster_display,,2049.99,2350.0,9999.99,,2350.0,mid_price_fallback,False,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-27262,Alpha Edition - Booster Box,27262,traditional_booster_display,,,,,,,no_price,False,False,product_price_not_found,not_decided,False,False
+MTG-CANON-TCGPLAYER-127174,Amonkhet - Booster Box,127174,traditional_booster_display,345.41,370.89,400.0,464.0,,345.41,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-27263,Antiquities - Booster Box,27263,traditional_booster_display,,59999.99,59999.99,59999.99,,59999.99,mid_price_fallback,False,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-27264,Apocalypse - Booster Box,27264,traditional_booster_display,1174.27,1394.0,1395.0,1465.49,,1174.27,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-27265,Arabian Nights - Booster Box,27265,traditional_booster_display,,,,,,,no_price,False,False,product_price_not_found,not_decided,False,False
+MTG-CANON-TCGPLAYER-58058,Avacyn Restored - Booster Box,58058,traditional_booster_display,425.35,495.49,598.96,799.0,,425.35,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-102715,Battle for Zendikar - Booster Box,102715,traditional_booster_display,215.38,250.0,292.0,314.96,,215.38,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-166536,Battlebond - Booster Box,166536,traditional_booster_display,297.03,299.99,325.0,449.95,,297.03,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-27266,Beta Edition - Booster Box,27266,traditional_booster_display,,,,,,,no_price,False,False,product_price_not_found,not_decided,False,False
+MTG-CANON-TCGPLAYER-27267,Betrayers of Kamigawa - Booster Box,27267,traditional_booster_display,769.97,849.98,967.44,1499.99,,769.97,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-77321,Born of the Gods - Booster Box,77321,traditional_booster_display,224.67,246.43,300.0,499.99,,224.67,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-27268,Champions of Kamigawa - Booster Box,27268,traditional_booster_display,1067.41,2299.99,2325.0,2499.99,,1067.41,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-27269,Chronicles - Booster Box,27269,traditional_booster_display,758.95,758.89,1079.44,1399.99,,758.95,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-27270,Classic Sixth Edition - Booster Box,27270,traditional_booster_display,,1699.94,1838.48,2499.99,,1838.48,mid_price_fallback,False,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-27271,Coldsnap - Booster Box,27271,traditional_booster_display,917.79,1500.0,1500.0,1500.0,,917.79,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-221319,Commander Legends - Draft Booster Box,221319,draft_booster_display,269.61,250.0,299.95,1000.0,,269.61,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-267019,Commander Legends: Battle for Baldur's Gate - Draft Booster Box,267019,draft_booster_display,295.89,290.0,320.0,500.0,,295.89,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-484924,Commander Masters - Draft Booster Box,484924,draft_booster_display,546.96,540.0,600.0,750.0,,546.96,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-93516,Conflux - Booster Box,93516,traditional_booster_display,641.9,647.09,782.48,995.0,,641.9,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-82200,Conspiracy - Booster Box,82200,traditional_booster_display,240.23,249.99,259.95,450.0,,240.23,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-120965,Conspiracy: Take the Crown - Booster Box,120965,traditional_booster_display,213.93,210.01,249.99,498.0,,213.93,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-166550,Core Set 2019 - Booster Box,166550,traditional_booster_display,195.15,185.75,215.0,299.0,,195.15,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-188210,Core Set 2020 - Booster Box,188210,traditional_booster_display,157.16,150.0,198.88,299.99,,157.16,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-214811,Core Set 2021 - Booster Box,214811,traditional_booster_display,174.47,170.0,199.97,500.0,,174.47,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-57584,Dark Ascension - Booster Box,57584,traditional_booster_display,232.9,245.0,299.99,1000.0,,232.9,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-27272,Darksteel - Booster Box,27272,traditional_booster_display,993.66,1099.95,1250.0,1499.99,,993.66,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-27273,Dissension - Booster Box,27273,traditional_booster_display,861.47,722.95,734.57,995.0,,861.47,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-158423,Dominaria - Booster Box,158423,traditional_booster_display,202.04,165.54,222.5,290.0,,202.04,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-449558,Dominaria Remastered - Draft Booster Box,449558,draft_booster_display,271.9,279.75,300.0,999.0,,271.9,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-214823,Double Masters - Booster Box,214823,traditional_booster_display,894.86,964.0,1088.88,2500.0,,894.86,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-271506,Double Masters 2022 - Draft Booster Box,271506,draft_booster_display,498.26,480.0,582.45,1000.0,,498.26,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-67751,Dragon's Maze - Booster Box,67751,traditional_booster_display,134.33,129.99,146.69,499.99,,134.33,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-96137,Dragons of Tarkir - Booster Box,96137,traditional_booster_display,341.34,337.0,350.01,499.99,,341.34,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-118393,Eldritch Moon - Booster Box,118393,traditional_booster_display,296.25,274.0,305.0,499.95,,296.25,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-114832,Eternal Masters - Booster Box,114832,traditional_booster_display,555.46,789.95,805.0,1000.0,,555.46,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-27274,Eventide - Booster Box,27274,traditional_booster_display,931.65,899.0,982.35,1102.7,,931.65,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-27275,Exodus - Booster Box,27275,traditional_booster_display,,8993.97,8993.97,8993.97,,8993.97,mid_price_fallback,False,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-27276,Fallen Empires - Booster Box,27276,traditional_booster_display,571.66,679.99,1200.0,3995.0,,571.66,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-94746,Fate Reforged - Booster Box,94746,traditional_booster_display,210.09,200.0,219.69,499.99,,210.09,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-27277,Fifth Dawn - Booster Box,27277,traditional_booster_display,789.88,1249.0,1397.5,1499.99,,789.88,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-27278,Fifth Edition - Booster Box,27278,traditional_booster_display,1112.49,1549.98,1549.99,1999.99,,1112.49,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-27279,Fourth Edition - Booster Box,27279,traditional_booster_display,1005.0,1699.94,1699.95,1699.95,,1005.0,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-27280,Future Sight - Booster Box,27280,traditional_booster_display,1266.67,1400.0,2450.0,4500.0,,1266.67,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-67311,Gatecrash - Booster Box,67311,traditional_booster_display,151.13,147.99,167.45,499.99,,151.13,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-27281,Guildpact - Booster Box,27281,traditional_booster_display,597.26,2097.92,2286.47,2479.0,,597.26,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-173362,Guilds of Ravnica - Booster Box,173362,traditional_booster_display,143.68,141.0,169.35,263.99,,143.68,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-27282,Homelands - Booster Box,27282,traditional_booster_display,532.91,527.91,589.62,690.0,,532.91,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-131456,Hour of Devastation - Booster Box,131456,traditional_booster_display,288.78,270.0,314.48,417.98,,288.78,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-27283,Ice Age - Booster Box,27283,traditional_booster_display,1889.15,1888.99,1954.48,3500.0,,1889.15,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-145235,Iconic Masters - Booster Box,145235,traditional_booster_display,325.32,323.39,372.47,1000.0,,325.32,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-208273,Ikoria: Lair of Behemoths - Booster Box,208273,traditional_booster_display,227.59,230.0,250.0,999.0,,227.59,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-47791,Innistrad - Booster Box,47791,traditional_booster_display,575.2,545.97,625.0,1000.0,,575.2,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-255911,Innistrad: Double Feature - Draft Booster Box,255911,draft_booster_display,236.18,263.99,299.99,675.0,,236.18,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-27284,Invasion - Booster Box,27284,traditional_booster_display,999.85,1495.0,1914.0,1999.99,,999.85,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-141989,Ixalan - Booster Box,141989,traditional_booster_display,220.61,207.8,245.95,300.0,,220.61,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-77322,Journey Into Nyx - Booster Box,77322,traditional_booster_display,220.87,230.99,252.5,499.99,,220.87,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-27285,Judgment - Booster Box,27285,traditional_booster_display,811.33,999.69,999.69,999.69,,811.33,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-121527,Kaladesh - Booster Box,121527,traditional_booster_display,483.83,499.99,550.0,1000.0,,483.83,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-91650,Khans of Tarkir - Booster Box,91650,traditional_booster_display,267.85,284.0,299.99,499.99,,267.85,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-27286,Legends - Booster Box,27286,traditional_booster_display,,35000.0,35000.0,35000.0,,35000.0,mid_price_fallback,False,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-27287,Legions - Booster Box,27287,traditional_booster_display,845.12,900.0,1214.0,1799.99,,845.12,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-27288,Lorwyn - Booster Box,27288,traditional_booster_display,1949.48,1799.0,1904.47,2208.22,,1949.48,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-32529,Magic 2010 (M10) - Booster Box,32529,traditional_booster_display,,930.0,944.83,999.99,,944.83,mid_price_fallback,False,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-35372,Magic 2011 (M11) - Booster Box,35372,traditional_booster_display,386.65,393.0,525.0,599.99,,386.65,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-46957,Magic 2012 (M12) - Booster Box,46957,traditional_booster_display,264.45,288.0,406.48,489.96,,264.45,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-59120,Magic 2013 (M13) - Booster Box,59120,traditional_booster_display,311.77,300.0,367.0,492.73,,311.77,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-69243,Magic 2014 (M14) - Booster Box,69243,traditional_booster_display,313.99,297.01,319.99,449.99,,313.99,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-90786,Magic 2015 (M15) - Booster Box,90786,traditional_booster_display,361.14,390.0,401.0,999.99,,361.14,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-96147,Magic Origins - Booster Box,96147,traditional_booster_display,168.4,163.99,177.89,499.99,,168.4,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-157857,Masters 25 - Booster Box,157857,traditional_booster_display,298.32,284.99,319.97,1000.0,,298.32,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-27289,Mercadian Masques - Booster Box,27289,traditional_booster_display,,2209.69,3000.0,15599.99,,3000.0,mid_price_fallback,False,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-27290,Mirage - Booster Box,27290,traditional_booster_display,,,,,,,no_price,False,False,product_price_not_found,not_decided,False,False
+MTG-CANON-TCGPLAYER-27291,Mirrodin - Booster Box,27291,traditional_booster_display,1185.36,1174.99,1375.0,1395.0,,1185.36,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-39109,Mirrodin Besieged - Booster Box,39109,traditional_booster_display,483.4,529.0,614.93,955.0,,483.4,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-185894,Modern Horizons - Booster Box,185894,traditional_booster_display,290.24,279.99,316.0,1000.0,,290.24,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-236354,Modern Horizons 2 - Draft Booster Box,236354,draft_booster_display,298.64,300.0,349.98,1000.0,,298.64,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-68104,Modern Masters - Booster Box,68104,traditional_booster_display,495.66,499.99,522.49,692.99,,495.66,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-95052,Modern Masters 2015 - Booster Box,95052,traditional_booster_display,408.45,624.99,633.24,641.49,,408.45,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-127069,Modern Masters 2017 - Booster Box,127069,traditional_booster_display,327.98,340.0,374.95,1000.0,,327.98,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-27292,Morningtide - Booster Box,27292,traditional_booster_display,753.75,790.0,999.95,1550.0,,753.75,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-217533,Mystery Booster - Booster Box [Convention Edition] (2019),217533,traditional_booster_display,340.25,339.0,375.0,469.69,,340.25,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-246935,Mystery Booster - Booster Box [Convention Edition] (2021),246935,traditional_booster_display,329.43,324.99,380.0,797.0,,329.43,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-208523,Mystery Booster - Booster Box [Retail Exclusive],208523,traditional_booster_display,359.25,400.0,470.5,589.95,,359.25,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-563752,Mystery Booster 2 - Booster Display,563752,traditional_booster_display,303.91,300.0,349.95,999.0,,303.91,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-27293,Nemesis - Booster Box,27293,traditional_booster_display,859.7,1150.0,1150.0,2500.0,,859.7,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-39410,New Phyrexia - Booster Box,39410,traditional_booster_display,935.48,985.0,1156.49,1342.69,,935.48,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-110418,Oath of the Gatewatch - Booster Box,110418,traditional_booster_display,171.2,164.0,186.46,450.0,,171.2,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-27294,Odyssey - Booster Box,27294,traditional_booster_display,1383.98,1701.98,1800.0,1928.99,,1383.98,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-27295,Onslaught - Booster Box,27295,traditional_booster_display,1903.38,2546.99,8773.5,15000.0,,1903.38,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-27296,Planar Chaos - Booster Box,27296,traditional_booster_display,758.33,899.94,944.48,1199.0,,758.33,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-27297,Planeshift - Booster Box,27297,traditional_booster_display,1521.25,2349.0,2349.5,2350.0,,1521.25,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-27298,Portal - Booster Box,27298,traditional_booster_display,1749.5,1899.0,2995.0,3010.89,,1749.5,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-27299,Portal Second Age - Booster Box,27299,traditional_booster_display,,2475.0,2999.99,89905.4,,2999.99,mid_price_fallback,False,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-27300,Portal Three Kingdoms - Booster Box,27300,traditional_booster_display,,,,,,,no_price,False,False,product_price_not_found,not_decided,False,False
+MTG-CANON-TCGPLAYER-27301,Prophecy - Booster Box,27301,traditional_booster_display,1823.5,1850.0,1850.0,1850.0,,1823.5,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-27302,Ravnica - Booster Box,27302,traditional_booster_display,1176.8,1420.68,1420.69,2512.88,,1176.8,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-180734,Ravnica Allegiance - Booster Box,180734,traditional_booster_display,147.96,139.0,166.9,258.0,,147.96,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-517705,Ravnica Remastered - Draft Booster Display,517705,draft_booster_display,294.88,290.0,329.26,399.99,,294.88,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-245970,Renaissance - French Booster Box,245970,traditional_booster_display,,,,,,,no_price,False,False,product_price_not_found,not_decided,False,False
+MTG-CANON-TCGPLAYER-245971,Renaissance - German Booster Box,245971,traditional_booster_display,,,,,,,no_price,False,False,product_price_not_found,not_decided,False,False
+MTG-CANON-TCGPLAYER-245972,Renaissance - Italian Booster Box,245972,traditional_booster_display,,,,,,,no_price,False,False,product_price_not_found,not_decided,False,False
+MTG-CANON-TCGPLAYER-60117,Return to Ravnica - Booster Box,60117,traditional_booster_display,175.46,164.0,189.95,499.99,,175.46,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-27303,Revised Edition - Booster Box,27303,traditional_booster_display,,12999.99,14224.5,19950.0,,14224.5,mid_price_fallback,False,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-34678,Rise of the Eldrazi - Booster Box,34678,traditional_booster_display,1262.9,1884.95,1888.88,2000.0,,1262.9,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-149404,Rivals of Ixalan - Booster Box,149404,traditional_booster_display,193.92,189.99,216.0,350.0,,193.92,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-27304,Saviors of Kamigawa - Booster Box,27304,traditional_booster_display,595.49,649.0,825.0,999.99,,595.49,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-35749,Scars of Mirrodin - Booster Box,35749,traditional_booster_display,664.98,683.0,799.69,1375.0,,664.98,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-27305,Scourge - Booster Box,27305,traditional_booster_display,796.29,799.99,1195.0,1309.98,,796.29,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-27306,Shadowmoor - Booster Box,27306,traditional_booster_display,1399.91,1399.96,1420.69,2800.0,,1399.91,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-112706,Shadows over Innistrad - Booster Box,112706,traditional_booster_display,197.81,173.24,219.85,299.99,,197.81,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-28640,Shards of Alara - Booster Box,28640,traditional_booster_display,708.5,710.0,724.98,1499.99,,708.5,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-27307,Stronghold - Booster Box,27307,traditional_booster_display,3874.5,4997.95,5012.98,7898.99,,3874.5,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-27308,Tempest - Booster Box,27308,traditional_booster_display,2999.95,14995.0,62497.5,109999.99,,2999.95,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-27309,The Dark - Booster Box,27309,traditional_booster_display,,4999.99,5499.69,7100.0,,5499.69,mid_price_fallback,False,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-70960,Theros - Booster Box,70960,traditional_booster_display,286.35,275.0,291.5,499.99,,286.35,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-202298,Theros Beyond Death - Booster Box,202298,traditional_booster_display,179.4,175.0,197.85,999.0,,179.4,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-194891,Throne of Eldraine - Booster Box,194891,traditional_booster_display,185.67,183.5,225.0,999.0,,185.67,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-27310,Time Spiral - Booster Box,27310,traditional_booster_display,1150.0,1599.95,7049.98,12500.0,,1150.0,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-230384,Time Spiral: Remastered - Draft Booster Box,230384,draft_booster_display,389.01,375.0,479.9,1000.0,,389.01,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-27311,Torment - Booster Box,27311,traditional_booster_display,1039.02,1028.76,1154.94,1310.99,,1039.02,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-179444,Ultimate Masters - Booster Box,179444,traditional_booster_display,509.37,510.0,599.99,1000.0,,509.37,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-27312,Unglued - Booster Box,27312,traditional_booster_display,,1499.99,1823.97,2400.0,,1823.97,mid_price_fallback,False,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-79290,Unhinged - Booster Box,79290,traditional_booster_display,,949.94,949.98,1799.99,,949.98,mid_price_fallback,False,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-27313,Unlimited Edition - Booster Box,27313,traditional_booster_display,,,,,,,no_price,False,False,product_price_not_found,not_decided,False,False
+MTG-CANON-TCGPLAYER-149402,Unstable - Booster Box,149402,traditional_booster_display,186.59,185.0,200.0,263.99,,186.59,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-27314,Urza's Destiny - Booster Box,27314,traditional_booster_display,,8499.99,8499.99,8499.99,,8499.99,mid_price_fallback,False,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-27315,Urza's Legacy - Booster Box,27315,traditional_booster_display,3787.5,6000.0,6050.0,6100.0,,3787.5,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-27316,Urza's Saga - Booster Box,27316,traditional_booster_display,,8420.69,8999.99,9400.0,,8999.99,mid_price_fallback,False,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-27317,Visions - Booster Box,27317,traditional_booster_display,1400.0,1499.95,1600.0,1969.0,,1400.0,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-185676,War of the Spark - Booster Box,185676,traditional_booster_display,174.11,169.0,199.89,599.99,,174.11,market_price,True,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-27318,Weatherlight - Booster Box,27318,traditional_booster_display,,1684.5,2499.35,10999.99,,2499.35,mid_price_fallback,False,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-34468,Worldwake - Booster Box,34468,traditional_booster_display,,1200.0,1234.85,1269.69,,1234.85,mid_price_fallback,False,True,current_price_available,not_decided,False,False
+MTG-CANON-TCGPLAYER-32789,Zendikar - Booster Box,32789,traditional_booster_display,938.78,1490.0,1490.0,1490.0,,938.78,market_price,True,True,current_price_available,not_decided,False,False
