@@ -109,3 +109,38 @@ def test_precision_runner_uses_strict_matcher_without_recursion(monkeypatch, tmp
     assert summary["listing_rows"] == 1
     assert summary["accepted_rows"] == 1
     assert summary["coverage_states"] == {"LIMITED_MATCH_COVERAGE": 1}
+
+
+def test_precision_runner_honors_explicit_universe_override(monkeypatch, tmp_path):
+    selected = [
+        product("Amonkhet - Booster Box"),
+        CanonicalProduct(
+            canonical_product_id="MTG-TEST-2",
+            canonical_product_name="Kaladesh - Booster Box",
+            canonical_set_name="Kaladesh",
+            product_class="PRE_COLLECTOR_BOOSTER_BOX",
+            tcgplayer_product_id="2",
+            release_date="2016-09-30",
+            ebay_query="query",
+        ),
+    ]
+    monkeypatch.setattr(base, "OUTPUT_ROOT", tmp_path)
+
+    class FakeClient:
+        def search_product(self, product, limit=20):
+            return [
+                listing(
+                    f"MTG Magic the Gathering {product.canonical_set_name} "
+                    "Booster Box Factory Sealed"
+                )
+            ], 1
+
+    monkeypatch.setattr(base, "EbayBrowseClient", FakeClient)
+
+    summary = run_coverage(
+        limit_per_product=20,
+        universe_override=selected,
+    )
+
+    assert summary["products"] == 2
+    assert summary["listing_rows"] == 2
