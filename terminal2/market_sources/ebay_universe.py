@@ -32,6 +32,12 @@ def _name_identifies_non_english(value: str) -> bool:
     return any(term in normalized for term in NON_ENGLISH_NAME_TERMS)
 
 
+def _is_english_universe_product(product: base.CanonicalProduct) -> bool:
+    return not _name_identifies_non_english(
+        f"{product.canonical_set_name} {product.canonical_product_name}"
+    )
+
+
 def load_operational_collector_products(
     db_file: Path = DB_FILE,
 ) -> list[base.CanonicalProduct]:
@@ -126,10 +132,11 @@ def load_operational_collector_products(
 def build_complete_universe(
     db_file: Path = DB_FILE,
 ) -> list[base.CanonicalProduct]:
-    """Combine governed CSV lanes with operational Collector Booster products."""
+    """Combine governed English CSV lanes with operational Collector Boosters."""
     products = {
         product.canonical_product_id: product
         for product in ORIGINAL_CSV_UNIVERSE()
+        if _is_english_universe_product(product)
     }
 
     tcgplayer_ids = {
