@@ -1,0 +1,13 @@
+canonical_product_id,tcgplayer_product_id,canonical_product_name,canonical_set_name,normalized_product_set_name,tcgcsv_release_date_candidate,set_match_method,set_match_score,set_match_state
+MTG-CANON-TCGPLAYER-27257,27257,10th Edition - Booster Box,10th Edition,10th edition,,no_set_match,0.0,unmatched
+MTG-CANON-TCGPLAYER-27259,27259,8th Edition - Booster Box,8th Edition,8th edition,,no_set_match,0.0,unmatched
+MTG-CANON-TCGPLAYER-27260,27260,9th Edition - Booster Box,9th Edition,9th edition,,no_set_match,0.0,unmatched
+MTG-CANON-TCGPLAYER-32529,32529,Magic 2010 (M10) - Booster Box,Magic 2010 (M10),magic 2010 m10,,no_set_match,0.0,unmatched
+MTG-CANON-TCGPLAYER-35372,35372,Magic 2011 (M11) - Booster Box,Magic 2011 (M11),magic 2011 m11,,no_set_match,0.0,unmatched
+MTG-CANON-TCGPLAYER-46957,46957,Magic 2012 (M12) - Booster Box,Magic 2012 (M12),magic 2012 m12,,no_set_match,0.0,unmatched
+MTG-CANON-TCGPLAYER-59120,59120,Magic 2013 (M13) - Booster Box,Magic 2013 (M13),magic 2013 m13,2012-07-13T00:00:00,no_set_match,0.0,unmatched
+MTG-CANON-TCGPLAYER-69243,69243,Magic 2014 (M14) - Booster Box,Magic 2014 (M14),magic 2014 m14,,no_set_match,0.0,unmatched
+MTG-CANON-TCGPLAYER-90786,90786,Magic 2015 (M15) - Booster Box,Magic 2015 (M15),magic 2015 m15,2014-07-18T00:00:00,no_set_match,0.0,unmatched
+MTG-CANON-TCGPLAYER-217533,217533,Mystery Booster - Booster Box [Convention Edition] (2019),Mystery Booster: Convention Edition Exclusives,mystery booster convention edition exclusives,,no_set_match,0.0,unmatched
+MTG-CANON-TCGPLAYER-246935,246935,Mystery Booster - Booster Box [Convention Edition] (2021),Mystery Booster: Convention Edition Exclusives,mystery booster convention edition exclusives,,no_set_match,0.0,unmatched
+MTG-CANON-TCGPLAYER-208523,208523,Mystery Booster - Booster Box [Retail Exclusive],Mystery Booster: Retail Exclusives,mystery booster retail exclusives,2020-03-13T00:00:00,no_set_match,0.0,unmatched

@@ -1,0 +1,27 @@
+{
+  "final_eligibility_assigned": false,
+  "final_release_dates_assigned": 0,
+  "fully_unresolved_rows": 0,
+  "generated_at_utc": "2026-07-22T18:04:29Z",
+  "governed_exact_alias_rows": 9,
+  "output_files": {
+    "family_review": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\validation\\phase_10\\historical_mtgjson_set_alias_resolution\\historical_mtgjson_set_family_review_2026-07-22.csv",
+    "resolution": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\validation\\phase_10\\historical_mtgjson_set_alias_resolution\\historical_mtgjson_set_alias_resolution_2026-07-22.csv",
+    "targeted_set_scope": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\validation\\phase_10\\historical_mtgjson_set_alias_resolution\\historical_mtgjson_targeted_set_scope_2026-07-22.csv"
+  },
+  "prior_matched_rows": 128,
+  "production_registry_changed": false,
+  "resolution_status": "PASS",
+  "review_product_rows": 140,
+  "schema_version": "10.5R.1D.2.4C.2",
+  "scoring_allowed_rows": 0,
+  "set_family_review_rows": 3,
+  "set_route_state_counts": {
+    "matched": 137,
+    "set_family_review_required": 3
+  },
+  "targeted_set_files_downloaded": 0,
+  "unique_targeted_set_files": 138,
+  "universal_database_changed": false,
+  "universal_investable_allowed_rows": 0
+}
