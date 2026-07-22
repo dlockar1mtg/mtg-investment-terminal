@@ -88,7 +88,7 @@ def test_precision_runner_uses_strict_matcher_without_recursion(monkeypatch, tmp
     monkeypatch.setattr(base, "OUTPUT_ROOT", tmp_path)
 
     class FakeClient:
-        def search_many(self, queries, limit=20):
+        def search_product(self, product, limit=20):
             return [listing("MTG Magic the Gathering Amonkhet Booster Box Factory Sealed")], 1
 
     monkeypatch.setattr(base, "EbayBrowseClient", FakeClient)
