@@ -9,7 +9,7 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from terminal2.market_sources.ebay_matching import run_coverage
+from terminal2.market_sources.ebay_precision import run_coverage
 
 
 def main() -> int:
