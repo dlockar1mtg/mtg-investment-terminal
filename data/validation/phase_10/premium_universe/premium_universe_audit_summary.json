@@ -1,0 +1,27 @@
+{
+  "approved_rows": 234,
+  "case_candidates": 0,
+  "classification_status": "AUDIT_ONLY_NOT_CERTIFIED",
+  "collector_name_candidates": 50,
+  "draft_candidates": 25,
+  "duplicate_approved_id_rows": 0,
+  "explicit_exclusion_candidates": 25,
+  "generic_booster_candidates": 234,
+  "investment_product_type_count": 4,
+  "known_metadata_gaps": [
+    "The product registry has no release-date field.",
+    "The product registry has no release-year field.",
+    "The product registry has no Secret Lair card-count field.",
+    "Legacy booster eligibility cannot be certified without release-date evidence.",
+    "Secret Lair multi-card eligibility cannot be certified without a populated Secret Lair registry."
+  ],
+  "play_candidates": 0,
+  "release_date_coverage": 0,
+  "release_year_coverage": 0,
+  "secret_lair_card_count_coverage": 0,
+  "secret_lair_name_candidates": 0,
+  "set_booster_candidates": 0,
+  "source_file": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\product_master\\investment_products.csv",
+  "source_rows": 4675,
+  "unique_approved_investment_product_ids": 234
+}

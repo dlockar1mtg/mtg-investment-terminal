@@ -1,0 +1,307 @@
+source_name,referencing_file,matched_terms,reference_type
+tcgplayer,approve_product.py,tcgcsv|tcgplayer,keyword_reference
+tcgplayer,backfill_tcgcsv_monthly_history.py,tcgcsv|tcgplayer,keyword_reference
+url,backfill_tcgcsv_monthly_history.py,https://tcgcsv.com/faq,url_reference
+tcgplayer,CHANGELOG_MODULE_1_DATA_FOUNDATION.md,tcgcsv,keyword_reference
+secret_lair,CHANGELOG_MODULE_1_DATA_FOUNDATION.md,secret lair,keyword_reference
+secret_lair,CHANGELOG_TERMINAL_2_10_0A_EMPTY_ARCHIVE_SCHEMA_FIX.md,secret lair,keyword_reference
+secret_lair,CHANGELOG_TERMINAL_2_10_0B_ARCHIVE_PRICING_INTEGRITY.md,secret lair,keyword_reference
+secret_lair,CHANGELOG_TERMINAL_2_10_1_UNIVERSAL_RETURN_ANALYTICS.md,secret lair,keyword_reference
+secret_lair,CHANGELOG_TERMINAL_2_6_0_SECRET_LAIR_FOUNDATION.md,secret lair,keyword_reference
+secret_lair,CHANGELOG_TERMINAL_2_6_1_SECRET_LAIR_PRICING.md,secret lair,keyword_reference
+secret_lair,CHANGELOG_TERMINAL_2_6_2_SECRET_LAIR_BACKFILL.md,secret lair,keyword_reference
+scryfall,CHANGELOG_TERMINAL_2_7_1_SECRET_LAIR_DISCOVERY.md,scryfall,keyword_reference
+mtgjson,CHANGELOG_TERMINAL_2_7_1_SECRET_LAIR_DISCOVERY.md,mtgjson,keyword_reference
+secret_lair,CHANGELOG_TERMINAL_2_7_1_SECRET_LAIR_DISCOVERY.md,secret lair,keyword_reference
+secret_lair,CHANGELOG_TERMINAL_2_9_5_SECRET_LAIR_INTELLIGENCE_EXPANSION.md,secret lair,keyword_reference
+secret_lair,CHANGELOG_TERMINAL_2_9_6_SECRET_LAIR_DATA_POPULATION.md,secret lair,keyword_reference
+tcgplayer,CHANGELOG_TERMINAL_2_9_7_MASTER_SECRET_LAIR_DATABASE.md,tcgcsv,keyword_reference
+scryfall,CHANGELOG_TERMINAL_2_9_7_MASTER_SECRET_LAIR_DATABASE.md,scryfall,keyword_reference
+secret_lair,CHANGELOG_TERMINAL_2_9_8A_SECRET_LAIR_DATETIME_FIX.md,secret lair,keyword_reference
+secret_lair,CHANGELOG_TERMINAL_2_9_8B_SECRET_LAIR_DATETIME_STANDARDIZATION.md,secret lair,keyword_reference
+tcgplayer,CHANGELOG_V13_1.md,tcgcsv,keyword_reference
+tcgplayer,CHANGELOG_V13_2.md,tcgcsv,keyword_reference
+tcgplayer,CHANGELOG_V5.md,tcgcsv|tcgplayer,keyword_reference
+scryfall,CHANGELOG_V5.md,scryfall,keyword_reference
+mtgjson,CHANGELOG_V5.md,mtgjson,keyword_reference
+tcgplayer,CHANGELOG_V5_1.md,tcgcsv,keyword_reference
+tcgplayer,CHANGELOG_V6.md,tcgcsv|tcgplayer,keyword_reference
+tcgplayer,CHANGELOG_V7.md,tcgcsv,keyword_reference
+tcgplayer,CHANGELOG_V8.md,tcgcsv,keyword_reference
+tcgplayer,CHANGELOG_V9.md,tcgcsv,keyword_reference
+mtgjson,collectors/mtgjson.py,mtgjson,keyword_reference
+mtgjson,collectors/mtgjson_collector.py,mtgjson,keyword_reference
+scryfall,collectors/scryfall.py,scryfall,keyword_reference
+scryfall,collectors/scryfall_collector.py,scryfall,keyword_reference
+tcgplayer,collectors/tcgcsv.py,tcgcsv,keyword_reference
+tcgplayer,collectors/tcgcsv_collector.py,tcgcsv|tcgplayer,keyword_reference
+url,collectors/tcgcsv_collector.py,https://tcgcsv.com/tcgplayer/{categoryId}/{groupId}/prices,url_reference
+tcgplayer,collectors/tcgcsv_discovery.py,tcgcsv|tcgplayer,keyword_reference
+tcgplayer,collectors/tcgplayer_api_collector.py,tcgplayer,keyword_reference
+url,collectors/tcgplayer_api_collector.py,https://api.tcgplayer.com/pricing/product/{id_string,url_reference
+tcgplayer,config.example.py,tcgplayer,keyword_reference
+tcgplayer,config.py,tcgcsv|tcgplayer,keyword_reference
+scryfall,config.py,api.scryfall.com|scryfall,keyword_reference
+mtgjson,config.py,mtgjson|mtgjson.com,keyword_reference
+url,config.py,https://api.scryfall.com/bulk-data,url_reference
+url,config.py,https://mtgjson.com/api/v5/AllPrintings.json,url_reference
+url,config.py,https://mtgjson.com/api/v5/SetList.json,url_reference
+url,config.py,https://tcgcsv.com/archive/tcgplayer,url_reference
+url,config.py,https://tcgcsv.com/tcgplayer,url_reference
+secret_lair,data/validation/phase_10/premium_universe/premium_universe_audit_summary.json,secret lair,keyword_reference
+tcgplayer,database/db.py,tcgcsv|tcgplayer,keyword_reference
+tcgplayer,debug_source_layer.py,tcgcsv,keyword_reference
+tcgplayer,discover_categories.py,tcgcsv,keyword_reference
+tcgplayer,docs/MASTER_SECRET_LAIR_DATABASE_ARCHITECTURE.md,tcgcsv,keyword_reference
+scryfall,docs/MASTER_SECRET_LAIR_DATABASE_ARCHITECTURE.md,scryfall,keyword_reference
+secret_lair,docs/MASTER_SECRET_LAIR_DATABASE_ARCHITECTURE.md,secret lair,keyword_reference
+tcgplayer,docs/MASTER_SECRET_LAIR_DATABASE_OPERATIONS.md,tcgcsv,keyword_reference
+tcgplayer,docs/phase_10/PHASE_10_1_BASELINE.md,tcgcsv,keyword_reference
+secret_lair,docs/phase_10/PHASE_10_3_ARCHITECTURE.md,secret lair,keyword_reference
+secret_lair,docs/phase_10/premium_universe/MTG_INVESTMENT_POLICY.md,secret lair,keyword_reference
+secret_lair,docs/SECRET_LAIR_ACQUISITION_CONFIGURATION_GUIDE.md,secret lair,keyword_reference
+secret_lair,docs/SECRET_LAIR_ARCHIVE_REGISTRY_INTEGRITY.md,secret lair,keyword_reference
+secret_lair,docs/SECRET_LAIR_BACKFILL_ARCHITECTURE.md,secret lair,keyword_reference
+secret_lair,docs/SECRET_LAIR_BACKFILL_VALIDATION_CHECKLIST.md,secret lair,keyword_reference
+secret_lair,docs/SECRET_LAIR_DATA_POPULATION_ARCHITECTURE.md,secret lair,keyword_reference
+secret_lair,docs/SECRET_LAIR_DATETIME_STANDARD.md,secret lair,keyword_reference
+scryfall,docs/SECRET_LAIR_DISCOVERY_ARCHITECTURE.md,scryfall,keyword_reference
+mtgjson,docs/SECRET_LAIR_DISCOVERY_ARCHITECTURE.md,mtgjson,keyword_reference
+secret_lair,docs/SECRET_LAIR_DISCOVERY_ARCHITECTURE.md,secret lair,keyword_reference
+scryfall,docs/SECRET_LAIR_DISCOVERY_CONFIGURATION_GUIDE.md,scryfall,keyword_reference
+mtgjson,docs/SECRET_LAIR_DISCOVERY_CONFIGURATION_GUIDE.md,mtgjson,keyword_reference
+secret_lair,docs/SECRET_LAIR_DISCOVERY_CONFIGURATION_GUIDE.md,secret lair,keyword_reference
+secret_lair,docs/SECRET_LAIR_DISCOVERY_VALIDATION_CHECKLIST.md,secret lair,keyword_reference
+secret_lair,docs/SECRET_LAIR_FOUNDATION_ARCHITECTURE.md,secret lair,keyword_reference
+secret_lair,docs/SECRET_LAIR_HISTORICAL_ARCHIVE_GUIDE.md,secret lair,keyword_reference
+secret_lair,docs/SECRET_LAIR_INTELLIGENCE_CALIBRATION_GUIDE.md,secret lair,keyword_reference
+secret_lair,docs/SECRET_LAIR_INTELLIGENCE_DATA_READINESS.md,secret lair,keyword_reference
+secret_lair,docs/SECRET_LAIR_INTELLIGENCE_EXPANSION_ARCHITECTURE.md,secret lair,keyword_reference
+secret_lair,docs/SECRET_LAIR_POPULATION_REVIEW_GUIDE.md,secret lair,keyword_reference
+secret_lair,docs/SECRET_LAIR_PRICE_IMPORT_GUIDE.md,secret lair,keyword_reference
+secret_lair,docs/SECRET_LAIR_PRICING_ARCHITECTURE.md,secret lair,keyword_reference
+secret_lair,docs/SECRET_LAIR_PROMOTION_OPERATIONS.md,secret lair,keyword_reference
+secret_lair,docs/SECRET_LAIR_SOURCE_ACQUISITION_ARCHITECTURE.md,secret lair,keyword_reference
+secret_lair,docs/SECRET_LAIR_SOURCE_INTEGRATION_GUIDE.md,secret lair,keyword_reference
+secret_lair,docs/SECRET_LAIR_VALIDATION_CHECKLIST.md,secret lair,keyword_reference
+secret_lair,docs/UNIVERSAL_RETURN_ANALYTICS_GUIDE.md,secret lair,keyword_reference
+tcgplayer,generate_sample_history.py,tcgplayer,keyword_reference
+tcgplayer,models/canonical_products.py,tcgcsv|tcgplayer,keyword_reference
+tcgplayer,models/historical_importer.py,tcgplayer,keyword_reference
+tcgplayer,models/market_consensus.py,tcgcsv|tcgplayer,keyword_reference
+tcgplayer,models/market_database.py,tcgplayer,keyword_reference
+tcgplayer,models/product_master.py,tcgcsv|tcgplayer,keyword_reference
+tcgplayer,models/source_data.py,tcgcsv|tcgplayer,keyword_reference
+tcgplayer,README.md,tcgcsv|tcgplayer,keyword_reference
+scryfall,README.md,scryfall,keyword_reference
+mtgjson,README.md,mtgjson,keyword_reference
+ebay,README.md,ebay,keyword_reference
+cardmarket,README.md,cardmarket,keyword_reference
+url,README.md,https://tcgcsv.com/archive/tcgplayer/prices-2024-02-08.ppmd.7z,url_reference
+url,README.md,https://tcgcsv.com/faq,url_reference
+tcgplayer,README_MODULE_1_DATA_FOUNDATION.md,tcgcsv,keyword_reference
+secret_lair,README_MODULE_1_DATA_FOUNDATION.md,secret lair,keyword_reference
+tcgplayer,README_TERMINAL_2_0.md,tcgcsv,keyword_reference
+tcgplayer,README_TERMINAL_2_10_0_SECRET_LAIR_HISTORICAL_MARKET_ARCHIVE.md,tcgcsv,keyword_reference
+secret_lair,README_TERMINAL_2_10_0_SECRET_LAIR_HISTORICAL_MARKET_ARCHIVE.md,secret lair,keyword_reference
+secret_lair,README_TERMINAL_2_10_0B_ARCHIVE_PRICING_INTEGRITY.md,secret lair,keyword_reference
+secret_lair,README_TERMINAL_2_10_1_UNIVERSAL_RETURN_ANALYTICS.md,secret lair,keyword_reference
+secret_lair,README_TERMINAL_2_6_0_SECRET_LAIR_FOUNDATION.md,secret lair,keyword_reference
+secret_lair,README_TERMINAL_2_6_1_SECRET_LAIR_PRICING.md,secret lair,keyword_reference
+secret_lair,README_TERMINAL_2_6_2_SECRET_LAIR_BACKFILL.md,secret lair,keyword_reference
+secret_lair,README_TERMINAL_2_7_0_SECRET_LAIR_SOURCE_ACQUISITION.md,secret lair,keyword_reference
+scryfall,README_TERMINAL_2_7_1_SECRET_LAIR_DISCOVERY.md,scryfall,keyword_reference
+mtgjson,README_TERMINAL_2_7_1_SECRET_LAIR_DISCOVERY.md,mtgjson,keyword_reference
+secret_lair,README_TERMINAL_2_7_1_SECRET_LAIR_DISCOVERY.md,secret lair,keyword_reference
+secret_lair,README_TERMINAL_2_9_5_SECRET_LAIR_INTELLIGENCE_EXPANSION.md,secret lair,keyword_reference
+secret_lair,README_TERMINAL_2_9_6_SECRET_LAIR_DATA_POPULATION.md,secret lair,keyword_reference
+tcgplayer,README_TERMINAL_2_9_7_MASTER_SECRET_LAIR_DATABASE.md,tcgcsv,keyword_reference
+scryfall,README_TERMINAL_2_9_7_MASTER_SECRET_LAIR_DATABASE.md,scryfall,keyword_reference
+secret_lair,README_TERMINAL_2_9_7_MASTER_SECRET_LAIR_DATABASE.md,secret lair,keyword_reference
+secret_lair,README_TERMINAL_2_9_8_PRODUCTION_REGISTRY_PROMOTION.md,secret lair,keyword_reference
+secret_lair,README_TERMINAL_2_9_8A_SECRET_LAIR_DATETIME_FIX.md,secret lair,keyword_reference
+secret_lair,README_TERMINAL_2_9_8B_SECRET_LAIR_DATETIME_STANDARDIZATION.md,secret lair,keyword_reference
+secret_lair,README_TERMINAL_2_9_9_SECRET_LAIR_INTELLIGENCE_CALIBRATION.md,secret lair,keyword_reference
+tcgplayer,review_product_master.py,tcgcsv|tcgplayer,keyword_reference
+tcgplayer,run.py,tcgplayer,keyword_reference
+tcgplayer,scripts/investment_universe/audit_premium_universe.py,tcgplayer,keyword_reference
+secret_lair,scripts/investment_universe/audit_premium_universe.py,secret lair,keyword_reference
+tcgplayer,scripts/source_coverage/audit_product_sources.py,tcg csv|tcgcsv|tcgplayer,keyword_reference
+scryfall,scripts/source_coverage/audit_product_sources.py,api.scryfall.com|scryfall,keyword_reference
+mtgjson,scripts/source_coverage/audit_product_sources.py,mtgjson|mtgjson.com,keyword_reference
+ebay,scripts/source_coverage/audit_product_sources.py,api.ebay.com|ebay,keyword_reference
+cardmarket,scripts/source_coverage/audit_product_sources.py,cardmarket|mkmapi,keyword_reference
+card_kingdom,scripts/source_coverage/audit_product_sources.py,card kingdom|cardkingdom,keyword_reference
+star_city_games,scripts/source_coverage/audit_product_sources.py,star city games|starcitygames,keyword_reference
+coolstuffinc,scripts/source_coverage/audit_product_sources.py,cool stuff inc|coolstuffinc,keyword_reference
+wizards,scripts/source_coverage/audit_product_sources.py,magic.wizards.com|wizards of the coast|wizards.com,keyword_reference
+secret_lair,scripts/source_coverage/audit_product_sources.py,secret lair|secretlair,keyword_reference
+pricecharting,scripts/source_coverage/audit_product_sources.py,pricecharting,keyword_reference
+scrydex,scripts/source_coverage/audit_product_sources.py,scrydex,keyword_reference
+tcgplayer,terminal2/assets/product_master2.py,tcgcsv|tcgplayer,keyword_reference
+secret_lair,terminal2/assets/product_master2.py,secret lair,keyword_reference
+tcgplayer,terminal2/certification/production_readiness.py,tcgcsv|tcgplayer,keyword_reference
+scryfall,terminal2/certification/production_readiness.py,scryfall,keyword_reference
+tcgplayer,terminal2/config.py,tcgcsv|tcgplayer,keyword_reference
+secret_lair,terminal2/config.py,secret lair,keyword_reference
+url,terminal2/config.py,https://tcgcsv.com/archive/tcgplayer,url_reference
+tcgplayer,terminal2/db/loaders.py,tcgcsv|tcgplayer,keyword_reference
+secret_lair,terminal2/db/loaders.py,secret lair,keyword_reference
+tcgplayer,terminal2/db/local_snapshot_importer.py,tcgplayer,keyword_reference
+tcgplayer,terminal2/db/schema.py,tcgcsv|tcgplayer,keyword_reference
+tcgplayer,terminal2/history/exports.py,tcgplayer,keyword_reference
+secret_lair,terminal2/portfolio/engine.py,secret lair,keyword_reference
+secret_lair,terminal2/return_analytics/engine.py,secret lair,keyword_reference
+secret_lair,terminal2/secret_lair/__init__.py,secret lair|secretlair,keyword_reference
+secret_lair,terminal2/secret_lair/acquisition/__init__.py,secret lair,keyword_reference
+secret_lair,terminal2/secret_lair/acquisition/contracts.py,secret lair,keyword_reference
+secret_lair,terminal2/secret_lair/acquisition/exports.py,secret lair,keyword_reference
+secret_lair,terminal2/secret_lair/acquisition/validation.py,secret lair,keyword_reference
+tcgplayer,terminal2/secret_lair/archive/contracts.py,tcgcsv|tcgplayer,keyword_reference
+secret_lair,terminal2/secret_lair/archive/contracts.py,secret lair,keyword_reference
+tcgplayer,terminal2/secret_lair/archive/engine.py,tcgcsv|tcgplayer,keyword_reference
+secret_lair,terminal2/secret_lair/archive/exports.py,secret lair,keyword_reference
+secret_lair,terminal2/secret_lair/backfill/__init__.py,secret lair|secretlair,keyword_reference
+secret_lair,terminal2/secret_lair/backfill/contracts.py,secret lair|secretlair,keyword_reference
+secret_lair,terminal2/secret_lair/backfill/exports.py,secret lair,keyword_reference
+secret_lair,terminal2/secret_lair/backfill/validation.py,secret lair|secretlair,keyword_reference
+secret_lair,terminal2/secret_lair/calibration/__init__.py,secret lair,keyword_reference
+secret_lair,terminal2/secret_lair/calibration/contracts.py,secret lair,keyword_reference
+secret_lair,terminal2/secret_lair/calibration/exports.py,secret lair,keyword_reference
+secret_lair,terminal2/secret_lair/calibration/validation.py,secret lair,keyword_reference
+secret_lair,terminal2/secret_lair/contracts.py,secret lair|secretlair,keyword_reference
+secret_lair,terminal2/secret_lair/datetime_utils.py,secret lair,keyword_reference
+secret_lair,terminal2/secret_lair/discovery/contracts.py,secret lair,keyword_reference
+secret_lair,terminal2/secret_lair/discovery/exports.py,secret lair,keyword_reference
+scryfall,terminal2/secret_lair/discovery/parsers.py,scryfall,keyword_reference
+mtgjson,terminal2/secret_lair/discovery/parsers.py,mtgjson,keyword_reference
+secret_lair,terminal2/secret_lair/discovery/parsers.py,secret lair,keyword_reference
+secret_lair,terminal2/secret_lair/discovery/validation.py,secret lair,keyword_reference
+secret_lair,terminal2/secret_lair/exports.py,secret lair,keyword_reference
+secret_lair,terminal2/secret_lair/intelligence_expansion/contracts.py,secret lair,keyword_reference
+secret_lair,terminal2/secret_lair/intelligence_expansion/engine.py,secret lair,keyword_reference
+secret_lair,terminal2/secret_lair/intelligence_expansion/exports.py,secret lair,keyword_reference
+secret_lair,terminal2/secret_lair/intelligence_expansion/validation.py,secret lair,keyword_reference
+secret_lair,terminal2/secret_lair/master_database/__init__.py,secret lair,keyword_reference
+tcgplayer,terminal2/secret_lair/master_database/config.py,tcgcsv|tcgplayer,keyword_reference
+scryfall,terminal2/secret_lair/master_database/config.py,api.scryfall.com|scryfall,keyword_reference
+wizards,terminal2/secret_lair/master_database/config.py,wizards.com,keyword_reference
+secret_lair,terminal2/secret_lair/master_database/config.py,secretlair,keyword_reference
+url,terminal2/secret_lair/master_database/config.py,https://api.scryfall.com/bulk-data,url_reference
+url,terminal2/secret_lair/master_database/config.py,https://secretlair.wizards.com/us/en/past-sales,url_reference
+url,terminal2/secret_lair/master_database/config.py,https://secretlair.wizards.com/us/en/shopall,url_reference
+url,terminal2/secret_lair/master_database/config.py,https://tcgcsv.com/tcgplayer,url_reference
+tcgplayer,terminal2/secret_lair/master_database/contracts.py,tcgcsv|tcgplayer,keyword_reference
+scryfall,terminal2/secret_lair/master_database/contracts.py,scryfall,keyword_reference
+secret_lair,terminal2/secret_lair/master_database/contracts.py,secret lair,keyword_reference
+tcgplayer,terminal2/secret_lair/master_database/engine.py,tcgcsv|tcgplayer,keyword_reference
+scryfall,terminal2/secret_lair/master_database/engine.py,scryfall,keyword_reference
+secret_lair,terminal2/secret_lair/master_database/engine.py,secret lair,keyword_reference
+tcgplayer,terminal2/secret_lair/master_database/exports.py,tcgcsv,keyword_reference
+secret_lair,terminal2/secret_lair/master_database/exports.py,secret lair,keyword_reference
+secret_lair,terminal2/secret_lair/master_database/normalize.py,secret lair,keyword_reference
+tcgplayer,terminal2/secret_lair/master_database/sources.py,tcgcsv|tcgplayer,keyword_reference
+scryfall,terminal2/secret_lair/master_database/sources.py,scryfall,keyword_reference
+wizards,terminal2/secret_lair/master_database/sources.py,wizards.com,keyword_reference
+secret_lair,terminal2/secret_lair/master_database/sources.py,secretlair,keyword_reference
+url,terminal2/secret_lair/master_database/sources.py,https://secretlair.wizards.com,url_reference
+url,terminal2/secret_lair/master_database/sources.py,https://www.tcgplayer.com/product/{pid,url_reference
+secret_lair,terminal2/secret_lair/master_database/validation.py,secret lair,keyword_reference
+secret_lair,terminal2/secret_lair/population/__init__.py,secret lair,keyword_reference
+secret_lair,terminal2/secret_lair/population/exports.py,secret lair,keyword_reference
+secret_lair,terminal2/secret_lair/population/validation.py,secret lair,keyword_reference
+secret_lair,terminal2/secret_lair/pricing.py,secret lair,keyword_reference
+secret_lair,terminal2/secret_lair/pricing_contracts.py,secret lair|secretlair,keyword_reference
+secret_lair,terminal2/secret_lair/pricing_exports.py,secret lair,keyword_reference
+secret_lair,terminal2/secret_lair/pricing_validation.py,secret lair|secretlair,keyword_reference
+tcgplayer,terminal2/secret_lair/promotion/engine.py,tcgcsv,keyword_reference
+secret_lair,terminal2/secret_lair/promotion/engine.py,secret lair,keyword_reference
+secret_lair,terminal2/secret_lair/promotion/validation.py,secret lair,keyword_reference
+secret_lair,terminal2/secret_lair/registry.py,secret lair,keyword_reference
+secret_lair,terminal2/secret_lair/validation.py,secret lair|secretlair,keyword_reference
+tcgplayer,terminal2/sources/daily_prices.py,tcgcsv|tcgplayer,keyword_reference
+tcgplayer,terminal2/sources/product_discovery.py,tcgcsv|tcgplayer,keyword_reference
+secret_lair,terminal2/sources/product_discovery.py,secret lair,keyword_reference
+tcgplayer,terminal2/sources/tcgcsv_archive.py,tcgcsv|tcgplayer,keyword_reference
+url,terminal2/sources/tcgcsv_archive.py,https://tcgcsv.com/faq,url_reference
+secret_lair,terminal2/warehouse/dashboard_mart.py,secret lair,keyword_reference
+tcgplayer,terminal2_backfill_monthly.py,tcgcsv,keyword_reference
+tcgplayer,terminal2_build_master_secret_lair_database.py,tcgcsv,keyword_reference
+secret_lair,terminal2_build_master_secret_lair_database.py,secret lair,keyword_reference
+secret_lair,terminal2_build_secret_lair_historical_archive.py,secret lair,keyword_reference
+secret_lair,terminal2_create_secret_lair_acquisition_template.py,secret lair,keyword_reference
+secret_lair,terminal2_create_secret_lair_backfill_templates.py,secret lair,keyword_reference
+secret_lair,terminal2_create_secret_lair_discovery_template.py,secret lair,keyword_reference
+secret_lair,terminal2_create_secret_lair_price_template.py,secret lair,keyword_reference
+secret_lair,terminal2_create_secret_lair_template.py,secret lair,keyword_reference
+secret_lair,terminal2_discover_assets.py,secret lair,keyword_reference
+secret_lair,terminal2_export_master_secret_lair_imports.py,secret lair,keyword_reference
+secret_lair,terminal2_import_secret_lair_prices.py,secret lair,keyword_reference
+secret_lair,terminal2_import_secret_lair_registry.py,secret lair,keyword_reference
+secret_lair,terminal2_master_secret_lair_validate.py,secret lair,keyword_reference
+secret_lair,terminal2_promote_secret_lair_production.py,secret lair,keyword_reference
+secret_lair,terminal2_publish_secret_lair_intelligence.py,secret lair,keyword_reference
+secret_lair,terminal2_publish_secret_lair_population.py,secret lair,keyword_reference
+secret_lair,terminal2_publish_secret_lair_pricing.py,secret lair,keyword_reference
+secret_lair,terminal2_publish_secret_lair_registry.py,secret lair,keyword_reference
+secret_lair,terminal2_run_all.py,secret lair,keyword_reference
+secret_lair,terminal2_run_secret_lair_acquisition.py,secret lair,keyword_reference
+secret_lair,terminal2_run_secret_lair_backfill.py,secret lair,keyword_reference
+secret_lair,terminal2_run_secret_lair_discovery.py,secret lair,keyword_reference
+tcgplayer,terminal2_seasonality.py,tcgplayer,keyword_reference
+secret_lair,terminal2_secret_lair_acquisition_validate.py,secret lair,keyword_reference
+secret_lair,terminal2_secret_lair_archive_validate.py,secret lair,keyword_reference
+secret_lair,terminal2_secret_lair_backfill_validate.py,secret lair,keyword_reference
+secret_lair,terminal2_secret_lair_calibration_validate.py,secret lair,keyword_reference
+secret_lair,terminal2_secret_lair_discovery_validate.py,secret lair,keyword_reference
+secret_lair,terminal2_secret_lair_intelligence_validate.py,secret lair,keyword_reference
+secret_lair,terminal2_secret_lair_population_validate.py,secret lair,keyword_reference
+secret_lair,terminal2_secret_lair_pricing_validate.py,secret lair,keyword_reference
+secret_lair,terminal2_secret_lair_promotion_validate.py,secret lair,keyword_reference
+secret_lair,terminal2_secret_lair_validate.py,secret lair,keyword_reference
+tcgplayer,terminal2_sync_products.py,tcgplayer,keyword_reference
+tcgplayer,tests/test_historical_publication.py,tcgcsv,keyword_reference
+tcgplayer,tests/test_market_publication.py,tcgcsv,keyword_reference
+tcgplayer,tests/test_master_secret_lair_engine.py,tcgcsv|tcgplayer,keyword_reference
+scryfall,tests/test_master_secret_lair_engine.py,scryfall,keyword_reference
+secret_lair,tests/test_master_secret_lair_engine.py,secret lair,keyword_reference
+url,tests/test_master_secret_lair_engine.py,https://official/cats,url_reference
+url,tests/test_master_secret_lair_engine.py,https://tcg/100,url_reference
+tcgplayer,tests/test_master_secret_lair_registry_export.py,tcgcsv,keyword_reference
+tcgplayer,tests/test_phase_10_5_local_snapshot_importer.py,tcgplayer,keyword_reference
+secret_lair,tests/test_portfolio_engine.py,secret lair,keyword_reference
+secret_lair,tests/test_secret_lair_archive_empty_preview.py,secretlair,keyword_reference
+tcgplayer,tests/test_secret_lair_archive_engine.py,tcgcsv,keyword_reference
+tcgplayer,tests/test_secret_lair_archive_registry_integrity.py,tcgcsv|tcgplayer,keyword_reference
+secret_lair,tests/test_secret_lair_archive_registry_integrity.py,secretlair,keyword_reference
+secret_lair,tests/test_secret_lair_backfill_contracts.py,secretlair,keyword_reference
+secret_lair,tests/test_secret_lair_backfill_engine.py,secretlair,keyword_reference
+secret_lair,tests/test_secret_lair_backfill_matching.py,secretlair,keyword_reference
+secret_lair,tests/test_secret_lair_backfill_publication.py,secretlair,keyword_reference
+secret_lair,tests/test_secret_lair_calibration_engine.py,secret lair,keyword_reference
+secret_lair,tests/test_secret_lair_contracts.py,secretlair,keyword_reference
+secret_lair,tests/test_secret_lair_datetime_utils.py,secretlair,keyword_reference
+scryfall,tests/test_secret_lair_discovery_parsers.py,scryfall,keyword_reference
+secret_lair,tests/test_secret_lair_discovery_parsers.py,secret lair,keyword_reference
+url,tests/test_secret_lair_discovery_parsers.py,https://example.com/shopall,url_reference
+secret_lair,tests/test_secret_lair_imports.py,secretlair,keyword_reference
+secret_lair,tests/test_secret_lair_intelligence_datetime.py,secret lair|secretlair,keyword_reference
+tcgplayer,tests/test_secret_lair_price_imports.py,tcgplayer,keyword_reference
+secret_lair,tests/test_secret_lair_price_imports.py,secretlair,keyword_reference
+tcgplayer,tests/test_secret_lair_pricing.py,tcgplayer,keyword_reference
+secret_lair,tests/test_secret_lair_pricing.py,secretlair,keyword_reference
+secret_lair,tests/test_secret_lair_pricing_contracts.py,secretlair,keyword_reference
+secret_lair,tests/test_secret_lair_pricing_publication.py,secretlair,keyword_reference
+tcgplayer,tests/test_secret_lair_pricing_timezone.py,tcgcsv,keyword_reference
+secret_lair,tests/test_secret_lair_pricing_timezone.py,secretlair,keyword_reference
+tcgplayer,tests/test_secret_lair_promotion_engine.py,tcgcsv,keyword_reference
+secret_lair,tests/test_secret_lair_publication.py,secretlair,keyword_reference
+secret_lair,tests/test_secret_lair_registry.py,secretlair,keyword_reference
+secret_lair,tests/test_secret_lair_registry_datetime.py,secretlair,keyword_reference
+tcgplayer,tests/test_semantic_engine.py,tcgcsv,keyword_reference
+secret_lair,tests/test_universal_return_analytics_engine.py,secret lair,keyword_reference
+tcgplayer,update_prices.py,tcgcsv|tcgplayer,keyword_reference
+scryfall,update_prices.py,scryfall,keyword_reference
+mtgjson,update_prices.py,mtgjson,keyword_reference
+tcgplayer,utils/io.py,tcgplayer,keyword_reference
+tcgplayer,validate_discovery.py,tcgcsv|tcgplayer,keyword_reference

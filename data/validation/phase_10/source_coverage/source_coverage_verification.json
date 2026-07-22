@@ -1,0 +1,27 @@
+{
+  "certification_status": "NOT_CERTIFIED_EXTERNAL_COVERAGE_REQUIRED",
+  "conclusions": [
+    "Code presence is evidence of implementation, not proof of current successful retrieval.",
+    "The approved registry is not considered a complete external MTG product universe.",
+    "External catalog reconciliation is required before investment eligibility certification.",
+    "Secret Lair templates do not count as populated product coverage."
+  ],
+  "database_product_rows": 234,
+  "generated_at": "2026-07-22T12:15:43.316792+00:00",
+  "next_phase": "10.5R.1B External Product Discovery",
+  "not_implemented_sources": [
+    "card_kingdom",
+    "cardmarket",
+    "coolstuffinc",
+    "ebay",
+    "star_city_games"
+  ],
+  "operational_source_candidates": [
+    "scryfall",
+    "tcgcsv",
+    "tcgplayer_api"
+  ],
+  "registry_approved_rows": 234,
+  "registry_source_rows": 4675,
+  "verification_status": "OPERATIONAL_SOURCE_REVIEW_COMPLETE"
+}

@@ -1,0 +1,116 @@
+{
+  "approval_status_counts": {
+    "approved": 234
+  },
+  "column_coverage": {
+    "approval_method": {
+      "coverage_pct": 100.0,
+      "populated_rows": 234
+    },
+    "approval_status": {
+      "coverage_pct": 100.0,
+      "populated_rows": 234
+    },
+    "asset_class": {
+      "coverage_pct": 100.0,
+      "populated_rows": 234
+    },
+    "box_name": {
+      "coverage_pct": 100.0,
+      "populated_rows": 234
+    },
+    "created_at": {
+      "coverage_pct": 100.0,
+      "populated_rows": 234
+    },
+    "era": {
+      "coverage_pct": 0.0,
+      "populated_rows": 0
+    },
+    "foil_variant": {
+      "coverage_pct": 0.0,
+      "populated_rows": 0
+    },
+    "franchise": {
+      "coverage_pct": 0.0,
+      "populated_rows": 0
+    },
+    "investment_product_id": {
+      "coverage_pct": 100.0,
+      "populated_rows": 234
+    },
+    "language": {
+      "coverage_pct": 100.0,
+      "populated_rows": 234
+    },
+    "masters_product": {
+      "coverage_pct": 100.0,
+      "populated_rows": 234
+    },
+    "notes": {
+      "coverage_pct": 100.0,
+      "populated_rows": 234
+    },
+    "product_type": {
+      "coverage_pct": 100.0,
+      "populated_rows": 234
+    },
+    "release_date": {
+      "coverage_pct": 0.0,
+      "populated_rows": 0
+    },
+    "release_year": {
+      "coverage_pct": 0.0,
+      "populated_rows": 0
+    },
+    "secret_lair": {
+      "coverage_pct": 100.0,
+      "populated_rows": 234
+    },
+    "set_name": {
+      "coverage_pct": 100.0,
+      "populated_rows": 234
+    },
+    "tcgcsv_category_id": {
+      "coverage_pct": 100.0,
+      "populated_rows": 234
+    },
+    "tcgcsv_group_id": {
+      "coverage_pct": 100.0,
+      "populated_rows": 234
+    },
+    "tcgplayer_product_id": {
+      "coverage_pct": 100.0,
+      "populated_rows": 234
+    },
+    "universes_beyond": {
+      "coverage_pct": 100.0,
+      "populated_rows": 234
+    },
+    "updated_at": {
+      "coverage_pct": 100.0,
+      "populated_rows": 234
+    }
+  },
+  "database_exists": true,
+  "product_count": 234,
+  "product_type_counts": {
+    "Collector Booster Display": 50,
+    "Draft Booster Display": 23,
+    "Masters Booster Display": 10,
+    "Traditional Booster Display": 151
+  },
+  "source_table_counts": {
+    "investment_scores": 48,
+    "market_health_history": 0,
+    "market_intelligence": 0,
+    "price_observations": 48,
+    "product_features": 48,
+    "product_metadata": 0,
+    "products": 234,
+    "sales_observations": 0,
+    "source_health_history": 0,
+    "source_runs": 1,
+    "supply_observations": 0
+  }
+}

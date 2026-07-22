@@ -1,0 +1,65 @@
+{
+  "approval_status_counts": {
+    "approved": 234,
+    "review_required": 4441
+  },
+  "approved_count": 234,
+  "column_coverage": {
+    "approval_method": {
+      "coverage_pct": 100.0,
+      "populated_rows": 4675
+    },
+    "approval_status": {
+      "coverage_pct": 100.0,
+      "populated_rows": 4675
+    },
+    "approved_product_name": {
+      "coverage_pct": 100.0,
+      "populated_rows": 4675
+    },
+    "approved_tcgplayer_product_id": {
+      "coverage_pct": 100.0,
+      "populated_rows": 4675
+    },
+    "box_name": {
+      "coverage_pct": 100.0,
+      "populated_rows": 4675
+    },
+    "investment_product_id": {
+      "coverage_pct": 100.0,
+      "populated_rows": 4675
+    },
+    "investment_product_type": {
+      "coverage_pct": 100.0,
+      "populated_rows": 4675
+    },
+    "notes": {
+      "coverage_pct": 100.0,
+      "populated_rows": 4675
+    },
+    "set_name": {
+      "coverage_pct": 100.0,
+      "populated_rows": 4675
+    },
+    "tcgcsv_category_id": {
+      "coverage_pct": 100.0,
+      "populated_rows": 4675
+    },
+    "tcgcsv_group_id": {
+      "coverage_pct": 100.0,
+      "populated_rows": 4675
+    }
+  },
+  "file_exists": true,
+  "product_type_counts": {
+    "Collector Booster Display": 77,
+    "Draft Booster Display": 42,
+    "Masters Booster Display": 19,
+    "Secret Lair Drop": 4327,
+    "Traditional Booster Display": 210
+  },
+  "row_count": 4675,
+  "unapproved_count": 4441,
+  "unique_investment_product_ids": 4675,
+  "unique_tcgplayer_product_ids": 4675
+}
