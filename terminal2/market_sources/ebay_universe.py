@@ -2,20 +2,34 @@ from __future__ import annotations
 
 import sqlite3
 from pathlib import Path
-from typing import Callable
 
 from terminal2.config import DB_FILE
 from terminal2.market_sources import ebay_matching as base
 
 
-# Preserve the governed CSV builder before any runtime wrapper temporarily
-# replaces base.build_universe. This prevents the complete-universe builder
-# from recursively calling itself.
-ORIGINAL_BUILD_UNIVERSE: Callable[[], list[base.CanonicalProduct]] = base.build_universe
+ORIGINAL_CSV_UNIVERSE = base.build_universe
+NON_ENGLISH_NAME_TERMS = (
+    " japanese ",
+    " german ",
+    " french ",
+    " italian ",
+    " spanish ",
+    " portuguese ",
+    " korean ",
+    " chinese ",
+    " russian ",
+    " jp ",
+    " jpn ",
+)
 
 
 def _normal_key(value: str) -> str:
     return " ".join(base._norm(value).split())
+
+
+def _name_identifies_non_english(value: str) -> bool:
+    normalized = base._norm(value)
+    return any(term in normalized for term in NON_ENGLISH_NAME_TERMS)
 
 
 def load_operational_collector_products(
@@ -91,6 +105,8 @@ def load_operational_collector_products(
         )
         if not product_id or not name:
             continue
+        if _name_identifies_non_english(f"{set_name} {name}"):
+            continue
 
         products.append(
             base.CanonicalProduct(
@@ -109,13 +125,11 @@ def load_operational_collector_products(
 
 def build_complete_universe(
     db_file: Path = DB_FILE,
-    governed_builder: Callable[[], list[base.CanonicalProduct]] | None = None,
 ) -> list[base.CanonicalProduct]:
     """Combine governed CSV lanes with operational Collector Booster products."""
-    builder = governed_builder or ORIGINAL_BUILD_UNIVERSE
     products = {
         product.canonical_product_id: product
-        for product in builder()
+        for product in ORIGINAL_CSV_UNIVERSE()
     }
 
     tcgplayer_ids = {
