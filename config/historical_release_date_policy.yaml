@@ -1,0 +1,71 @@
+schema_version: "10.5R.1D.2.4G.1"
+policy_name: historical_release_date_governance
+
+description: >
+  Governs release-date evidence for the authoritative historical premium MTG review
+  population. Product-level dates are preferred. MTGJSON set release dates may
+  be used as governed fallbacks when the sealed-product identity is exact and
+  no substantive edition-specific timing conflict exists.
+
+evidence_precedence:
+  - priority: 1
+    evidence_class: "product_and_tcgcsv_exact_agreement"
+    governed_source: "mtgjson_product_and_tcgcsv_exact_agreement"
+    assign_release_date: true
+
+  - priority: 2
+    evidence_class: "mtgjson_product_date_only"
+    governed_source: "mtgjson_product_release_date"
+    assign_release_date: true
+
+  - priority: 3
+    evidence_class: "approved_mtgjson_set_date_fallback"
+    governed_source: "mtgjson_set_release_date_fallback"
+    assign_release_date: true
+
+approved_set_date_fallback_exceptions:
+  description: >
+    These naming patterns were conservatively flagged during the fallback
+    safety audit but do not represent substantive product-date conflicts.
+
+  allow_edition_name_marker: true
+
+  allow_core_set_marketing_year_difference: true
+
+  allow_remaining_language_specific_products: true
+
+unresolved_products:
+  - canonical_product_id: "MTG-CANON-TCGPLAYER-245972"
+    canonical_product_name: "Renaissance - Italian Booster Box"
+    unresolved_reason: >
+      The canonical product is the Italian Renaissance booster box, but the
+      selected MTGJSON sealed-product record is the German booster box. The
+      product identity is not exact, so the generic Renaissance set date is not
+      accepted as the product release date.
+    release_date_state: "sealed_product_identity_review_required"
+
+  - canonical_product_id: "MTG-CANON-TCGPLAYER-246935"
+    canonical_product_name: >
+      Mystery Booster - Booster Box [Convention Edition] (2021)
+    unresolved_reason: >
+      The exact sealed-product identity is established, but the routed parent
+      MTGJSON set date is 2019-11-07 while the product is explicitly the 2021
+      Convention Edition. The parent set date is not accepted as the product
+      release date.
+    release_date_state: "edition_specific_release_date_required"
+
+  - canonical_product_id: "MTG-CANON-TCGPLAYER-563752"
+    canonical_product_name: "Mystery Booster 2 - Booster Display"
+    unresolved_reason: >
+      TCGCSV reports 2024-09-20, the MTGJSON sealed-product record reports
+      2024-10-25, and the MTGJSON set record reports 2024-08-02. The conflicting
+      product-level dates require separate adjudication.
+    release_date_state: "product_date_conflict_unresolved"
+
+decision_controls:
+  expected_authoritative_population: 140
+  expected_governed_release_dates: 137
+  expected_unresolved_release_dates: 3
+  final_eligibility_assigned: false
+  scoring_allowed: false
+  universal_investable_allowed: false

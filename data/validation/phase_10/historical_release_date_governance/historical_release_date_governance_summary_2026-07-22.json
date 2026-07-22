@@ -1,0 +1,28 @@
+{
+  "authoritative_historical_review_rows": 140,
+  "final_eligibility_assigned": false,
+  "generated_at_utc": "2026-07-22T18:34:22Z",
+  "governance_status": "PASS",
+  "governed_release_date_rows": 137,
+  "governed_release_date_source_counts": {
+    "mtgjson_product_and_tcgcsv_exact_agreement": 40,
+    "mtgjson_product_release_date": 10,
+    "mtgjson_set_release_date_fallback": 87
+  },
+  "output_files": {
+    "audit": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\validation\\phase_10\\historical_release_date_governance\\historical_release_date_governance_audit_2026-07-22.csv",
+    "governed_release_dates": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\validation\\phase_10\\historical_release_date_governance\\historical_governed_release_dates_2026-07-22.csv",
+    "unresolved_release_dates": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\validation\\phase_10\\historical_release_date_governance\\historical_unresolved_release_dates_2026-07-22.csv"
+  },
+  "production_registry_changed": false,
+  "schema_version": "10.5R.1D.2.4G.1",
+  "scoring_allowed_rows": 0,
+  "universal_database_changed": false,
+  "universal_investable_allowed_rows": 0,
+  "unresolved_canonical_product_ids": [
+    "MTG-CANON-TCGPLAYER-245972",
+    "MTG-CANON-TCGPLAYER-246935",
+    "MTG-CANON-TCGPLAYER-563752"
+  ],
+  "unresolved_release_date_rows": 3
+}
