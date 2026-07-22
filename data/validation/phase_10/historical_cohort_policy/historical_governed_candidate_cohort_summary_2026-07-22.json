@@ -1,0 +1,28 @@
+{
+  "cohort_counts": {
+    "commander_draft_policy_review": 2,
+    "explicit_specialty_draft_review": 7,
+    "ordinary_draft_exclusion": 16,
+    "structural_exclusion": 7,
+    "traditional_historical_review": 131
+  },
+  "final_eligibility_assigned": false,
+  "generated_at_utc": "2026-07-22T17:16:12Z",
+  "historical_candidate_rows": 163,
+  "output_files": {
+    "all_cohorts": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\validation\\phase_10\\historical_cohort_policy\\historical_governed_candidate_cohorts_2026-07-22.csv",
+    "commander_policy_review": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\validation\\phase_10\\historical_cohort_policy\\historical_commander_draft_policy_review_2026-07-22.csv",
+    "exclusions": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\validation\\phase_10\\historical_cohort_policy\\historical_structural_and_ordinary_draft_exclusions_2026-07-22.csv",
+    "explicit_specialty_review": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\validation\\phase_10\\historical_cohort_policy\\historical_explicit_specialty_draft_review_2026-07-22.csv"
+  },
+  "production_registry_changed": false,
+  "products_remaining_in_historical_review": 140,
+  "products_removed_from_premium_candidate_population": 23,
+  "release_timing_resolved_rows": 0,
+  "resolution_status": "PASS",
+  "schema_version": "10.5R.1D.2.3C",
+  "scoring_allowed_rows": 0,
+  "unique_canonical_product_ids": 163,
+  "universal_database_changed": false,
+  "universal_investable_allowed_rows": 0
+}

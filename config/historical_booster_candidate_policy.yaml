@@ -1,0 +1,113 @@
+schema_version: "10.5R.1D.2.3C"
+policy_name: historical_booster_candidate_policy
+
+policy_objective:
+  description: >
+    Correct the historical premium-booster candidate universe before
+    release-date, liquidity, supply, performance, affordability, scoring,
+    or Universal investability decisions are made.
+  final_eligibility_assigned: false
+  scoring_allowed: false
+  universal_investable_allowed: false
+
+structural_exclusion_name_patterns:
+  - "Planeswalker Deck Display"
+  - "Booster Battle Pack Display"
+  - "Basic Booster Display"
+  - "Beyond Booster Display"
+  - "Epilogue Booster Display"
+  - "Theme Booster Display"
+  - "Jumpstart Booster Display"
+  - "Booster Box Case"
+  - "Booster Display Case"
+  - "Draft Booster Case"
+  - "Display Case"
+  - "Master Case"
+  - "Case (6 boxes)"
+  - "Case (6 Boxes)"
+
+explicit_specialty_draft_product_ids:
+  - "MTG-CANON-TCGPLAYER-484924"
+  - "MTG-CANON-TCGPLAYER-449558"
+  - "MTG-CANON-TCGPLAYER-271506"
+  - "MTG-CANON-TCGPLAYER-255911"
+  - "MTG-CANON-TCGPLAYER-236354"
+  - "MTG-CANON-TCGPLAYER-517705"
+  - "MTG-CANON-TCGPLAYER-230384"
+
+explicit_specialty_draft_products:
+  - canonical_product_id: "MTG-CANON-TCGPLAYER-484924"
+    canonical_product_name: "Commander Masters - Draft Booster Box"
+    specialty_basis: "masters_product_line"
+
+  - canonical_product_id: "MTG-CANON-TCGPLAYER-449558"
+    canonical_product_name: "Dominaria Remastered - Draft Booster Box"
+    specialty_basis: "remastered_product_line"
+
+  - canonical_product_id: "MTG-CANON-TCGPLAYER-271506"
+    canonical_product_name: "Double Masters 2022 - Draft Booster Box"
+    specialty_basis: "masters_product_line"
+
+  - canonical_product_id: "MTG-CANON-TCGPLAYER-255911"
+    canonical_product_name: "Innistrad: Double Feature - Draft Booster Box"
+    specialty_basis: "specialty_compilation_product"
+
+  - canonical_product_id: "MTG-CANON-TCGPLAYER-236354"
+    canonical_product_name: "Modern Horizons 2 - Draft Booster Box"
+    specialty_basis: "premium_nonstandard_product_line"
+
+  - canonical_product_id: "MTG-CANON-TCGPLAYER-517705"
+    canonical_product_name: "Ravnica Remastered - Draft Booster Display"
+    specialty_basis: "remastered_product_line"
+
+  - canonical_product_id: "MTG-CANON-TCGPLAYER-230384"
+    canonical_product_name: "Time Spiral: Remastered - Draft Booster Box"
+    specialty_basis: "remastered_product_line"
+
+commander_draft_policy_review_product_ids:
+  - "MTG-CANON-TCGPLAYER-221319"
+  - "MTG-CANON-TCGPLAYER-267019"
+
+commander_draft_policy_review_products:
+  - canonical_product_id: "MTG-CANON-TCGPLAYER-221319"
+    canonical_product_name: "Commander Legends - Draft Booster Box"
+    review_reason: >
+      Commander-focused Draft product requiring an explicit policy decision;
+      not approved merely because the name contains Commander Legends.
+
+  - canonical_product_id: "MTG-CANON-TCGPLAYER-267019"
+    canonical_product_name: >
+      Commander Legends: Battle for Baldur's Gate - Draft Booster Box
+    review_reason: >
+      Commander-focused Draft product requiring an explicit policy decision;
+      not approved merely because the name contains Commander Legends.
+
+ordinary_draft_policy:
+  default_state: ordinary_draft_exclusion
+  description: >
+    A Draft Booster display that is not explicitly identified as a specialty
+    product remains outside the premium historical candidate universe.
+  price_does_not_override_structure: true
+
+traditional_display_policy:
+  default_state: traditional_historical_review
+  description: >
+    Genuine traditional sealed Booster Box or Booster Display products remain
+    candidates for historical review. This state is not final eligibility.
+  requires_release_timing: true
+  requires_price_quality_review: true
+  requires_liquidity_review: true
+  requires_supply_review: true
+  requires_historical_performance_review: true
+
+decision_controls:
+  allowed_output_states:
+    - structural_exclusion
+    - ordinary_draft_exclusion
+    - explicit_specialty_draft_review
+    - commander_draft_policy_review
+    - traditional_historical_review
+
+  final_eligibility_decision: not_decided
+  scoring_allowed: false
+  universal_investable_allowed: false
