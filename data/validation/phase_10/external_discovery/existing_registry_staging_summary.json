@@ -1,0 +1,45 @@
+{
+  "approval_status_counts": {
+    "approved": 234,
+    "review_required": 4441
+  },
+  "approved_snapshot_count": 234,
+  "certification_status": "STAGING_COMPLETE_NOT_ELIGIBILITY_CERTIFIED",
+  "duplicate_candidate_row_count": 0,
+  "duplicate_group_count": 0,
+  "generated_at": "2026-07-22T12:22:22.417574+00:00",
+  "invariants": {
+    "all_source_rows_preserved": true,
+    "approval_status_preserved": true,
+    "source_ids_unique": true,
+    "stage_ids_unique": true
+  },
+  "output_files": {
+    "approved_snapshot": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\validation\\phase_10\\external_discovery\\existing_registry_approved_snapshot.csv",
+    "canonical_stage": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\staging\\phase_10\\external_discovery\\existing_registry_canonical_stage.csv",
+    "duplicate_candidates": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\validation\\phase_10\\external_discovery\\existing_registry_duplicate_candidates.csv",
+    "review_queue": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\validation\\phase_10\\external_discovery\\existing_registry_review_queue.csv",
+    "unclassified": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\validation\\phase_10\\external_discovery\\existing_registry_unclassified.csv"
+  },
+  "product_family_counts": {
+    "booster_display": 348,
+    "secret_lair": 4327
+  },
+  "product_subtype_counts": {
+    "collector_booster_display": 77,
+    "draft_booster_display": 42,
+    "jumpstart_booster_display": 15,
+    "masters_booster_display": 19,
+    "secret_lair_drop": 4327,
+    "theme_booster_display": 18,
+    "traditional_booster_display": 177
+  },
+  "review_queue_count": 4446,
+  "source_path": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\product_master\\investment_products.csv",
+  "source_row_count": 4675,
+  "staged_row_count": 4675,
+  "unclassified_count": 0,
+  "unique_source_record_id_count": 4675,
+  "unique_stage_id_count": 4675,
+  "unique_tcgplayer_product_id_count": 4675
+}
