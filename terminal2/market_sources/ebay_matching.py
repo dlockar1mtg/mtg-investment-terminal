@@ -7,14 +7,13 @@ import json
 import os
 import re
 import time
-import urllib.error
 import urllib.parse
 import urllib.request
 from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 from statistics import median
-from typing import Iterable, Mapping, Sequence
+from typing import Mapping, Sequence
 
 ROOT = Path(__file__).resolve().parents[2]
 BOOSTER_SOURCE = ROOT / "data/validation/phase_10/historical_product_scope/historical_active_review_population_2026-07-22.csv"
@@ -23,23 +22,28 @@ OUTPUT_ROOT = ROOT / "data/validation/phase_10/ebay_matching"
 
 COLLECTOR_ERA_START = "2019-10-04"
 NEGATIVE_TERMS = (
-    " single pack ", " booster pack ", " pack only ", " empty ", " opened ",
-    " repack ", " proxy ", " damaged ", " case of ", " sealed case ",
-    " display box only ", " box only no packs ", " digital ", " arena code ",
+    " single pack ", " booster pack ", " individual pack ", " pack only ",
+    " lot of packs ", " loose pack ", " empty ", " empty box ", " opened ",
+    " repack ", " resealed ", " re sealed ", " not factory sealed ",
+    " proxy ", " damaged ", " case of ", " sealed case ", " master case ",
+    " display box only ", " box only no packs ", " box topper only ",
+    " wrapper ", " replica ", " custom ", " digital ", " arena code ",
 )
 NON_ENGLISH_TERMS = (
     " japanese ", " german ", " french ", " italian ", " spanish ",
     " portuguese ", " korean ", " chinese ", " russian ",
 )
-PRESALE_TERMS = (" presale ", " pre-sale ", " preorder ", " pre-order ")
+PRESALE_TERMS = (" presale ", " pre sale ", " preorder ", " pre order ")
+NUMBERED_EDITION_ALIASES = {
+    "7th edition": ("seventh edition", "7e", "7ed"),
+    "8th edition": ("eighth edition", "8e", "8ed"),
+    "9th edition": ("ninth edition", "9e", "9ed"),
+    "10th edition": ("tenth edition", "10e", "10ed"),
+}
 
 
 def _clean(value: object) -> str:
     return str(value or "").strip()
-
-
-def _truthy(value: object) -> bool:
-    return _clean(value).lower() in {"1", "true", "yes", "y"}
 
 
 def _norm(value: object) -> str:
@@ -121,12 +125,57 @@ def classify_booster(row: Mapping[str, str]) -> str | None:
     return None
 
 
-def build_query(name: str, product_class: str) -> str:
+def _clean_product_name(name: str) -> str:
     cleaned = re.sub(r"\s+-\s+", " ", name).strip()
-    cleaned = re.sub(r"\bMagic:\s*The Gathering\b", "", cleaned, flags=re.I).strip()
+    return re.sub(r"\bMagic:\s*The Gathering\b", "", cleaned, flags=re.I).strip()
+
+
+def build_query(name: str, product_class: str) -> str:
+    cleaned = _clean_product_name(name)
     if product_class == "SEALED_SECRET_LAIR":
         return f'Magic The Gathering Secret Lair "{cleaned}" sealed'
     return f'Magic The Gathering "{cleaned}" sealed'
+
+
+def build_query_ladder(product: CanonicalProduct) -> list[str]:
+    cleaned = _clean_product_name(product.canonical_product_name)
+    base = re.sub(r"\b(Collector\s+)?Booster\s+(Box|Display)\b", "", cleaned, flags=re.I).strip()
+    queries = [product.ebay_query]
+
+    if product.product_class == "SEALED_SECRET_LAIR":
+        queries.extend([
+            f'MTG Secret Lair {cleaned} sealed',
+            f'Secret Lair {cleaned}',
+        ])
+    elif product.product_class == "COLLECTOR_BOOSTER_BOX":
+        queries.extend([
+            f'MTG {base} Collector Booster Box sealed',
+            f'MTG {base} Collector Booster Display sealed',
+            f'{base} Collector Booster Box',
+        ])
+    else:
+        queries.extend([
+            f'MTG {base} Booster Box sealed',
+            f'MTG {base} Booster Display sealed',
+            f'{base} factory sealed booster box',
+        ])
+        normal_base = _norm(base)
+        for key, aliases in NUMBERED_EDITION_ALIASES.items():
+            if f" {key} " in normal_base:
+                for alias in aliases:
+                    queries.extend([
+                        f'MTG {alias} Booster Box sealed',
+                        f'MTG {alias} Booster Display sealed',
+                    ])
+
+    unique: list[str] = []
+    seen: set[str] = set()
+    for query in queries:
+        normalized = " ".join(query.split()).lower()
+        if normalized and normalized not in seen:
+            seen.add(normalized)
+            unique.append(" ".join(query.split()))
+    return unique
 
 
 def build_universe() -> list[CanonicalProduct]:
@@ -173,7 +222,10 @@ def build_universe() -> list[CanonicalProduct]:
 
 
 def _tokens(name: str) -> set[str]:
-    ignored = {"magic", "the", "gathering", "mtg", "sealed", "booster", "box", "display", "secret", "lair", "drop", "edition"}
+    ignored = {
+        "magic", "the", "gathering", "mtg", "sealed", "factory", "booster",
+        "box", "display", "secret", "lair", "drop", "edition",
+    }
     return {part for part in _norm(name).split() if len(part) > 2 and part not in ignored}
 
 
@@ -195,9 +247,10 @@ def match_listing(product: CanonicalProduct, item: Mapping[str, object], run_id:
 
     if product.product_class == "COLLECTOR_BOOSTER_BOX":
         score += 0.10 if " collector " in title_norm else -0.25
-        score += 0.10 if " box " in title_norm else -0.15
+        score += 0.10 if (" booster box " in title_norm or " booster display " in title_norm) else -0.15
     elif product.product_class == "PRE_COLLECTOR_BOOSTER_BOX":
-        score += 0.10 if " booster box " in title_norm else -0.15
+        product_form = " booster box " in title_norm or " booster display " in title_norm or " factory sealed box " in title_norm
+        score += 0.10 if product_form else -0.15
         score -= 0.20 if " collector " in title_norm else 0.0
     else:
         score += 0.10 if " secret lair " in title_norm else -0.25
@@ -276,6 +329,22 @@ class EbayBrowseClient:
             payload = json.load(response)
         return list(payload.get("itemSummaries") or [])
 
+    def search_product(self, product: CanonicalProduct, limit: int = 20) -> tuple[list[dict[str, object]], int]:
+        collected: dict[str, dict[str, object]] = {}
+        queries_used = 0
+        for query in build_query_ladder(product):
+            if len(collected) >= limit:
+                break
+            queries_used += 1
+            remaining = max(1, limit - len(collected))
+            for item in self.search(query, remaining):
+                item_id = _clean(item.get("itemId"))
+                dedupe_key = item_id or hashlib.sha256(_clean(item.get("title")).encode("utf-8")).hexdigest()
+                collected.setdefault(dedupe_key, item)
+                if len(collected) >= limit:
+                    break
+        return list(collected.values())[:limit], queries_used
+
 
 def run_coverage(limit_per_product: int = 20, max_products: int | None = None) -> dict[str, object]:
     universe = build_universe()
@@ -288,8 +357,9 @@ def run_coverage(limit_per_product: int = 20, max_products: int | None = None) -
     coverage_rows: list[dict[str, object]] = []
 
     for index, product in enumerate(universe, start=1):
+        queries_used = 0
         try:
-            items = client.search(product.ebay_query, limit_per_product)
+            items, queries_used = client.search_product(product, limit_per_product)
             matches = [match_listing(product, item, run_id, observed) for item in items]
             error = ""
         except Exception as exc:
@@ -312,13 +382,17 @@ def run_coverage(limit_per_product: int = 20, max_products: int | None = None) -
         else:
             state = "NO_MATCHES"
         coverage_rows.append({
-            **asdict(product), "results_found": len(matches), "accepted_listing_count": len(accepted),
-            "review_listing_count": len(review), "rejected_listing_count": len(rejected),
+            **asdict(product), "queries_used": queries_used, "results_found": len(matches),
+            "accepted_listing_count": len(accepted), "review_listing_count": len(review),
+            "rejected_listing_count": len(rejected),
             "median_accepted_landed_price": round(median(prices), 2) if prices else "",
             "lowest_accepted_landed_price": round(min(prices), 2) if prices else "",
             "accepted_seller_count": len(sellers), "coverage_state": state, "source_error": error,
         })
-        print(f"[{index}/{len(universe)}] {product.canonical_product_name}: {state} ({len(accepted)} accepted)")
+        print(
+            f"[{index}/{len(universe)}] {product.canonical_product_name}: {state} "
+            f"({len(accepted)} accepted, {len(matches)} found, {queries_used} queries)"
+        )
 
     OUTPUT_ROOT.mkdir(parents=True, exist_ok=True)
     date = datetime.now(timezone.utc).date().isoformat()
@@ -327,18 +401,26 @@ def run_coverage(limit_per_product: int = 20, max_products: int | None = None) -
     _write_csv(OUTPUT_ROOT / f"ebay_canonical_match_universe_{date}.csv", universe_rows, CanonicalProduct.__dataclass_fields__.keys())
     _write_csv(OUTPUT_ROOT / f"ebay_listing_match_results_{date}.csv", result_rows, MatchResult.__dataclass_fields__.keys())
     coverage_fields = list(CanonicalProduct.__dataclass_fields__.keys()) + [
-        "results_found", "accepted_listing_count", "review_listing_count", "rejected_listing_count",
-        "median_accepted_landed_price", "lowest_accepted_landed_price", "accepted_seller_count", "coverage_state", "source_error",
+        "queries_used", "results_found", "accepted_listing_count", "review_listing_count",
+        "rejected_listing_count", "median_accepted_landed_price", "lowest_accepted_landed_price",
+        "accepted_seller_count", "coverage_state", "source_error",
     ]
     _write_csv(OUTPUT_ROOT / f"ebay_product_coverage_{date}.csv", coverage_rows, coverage_fields)
     manual = [row for row in result_rows if row["match_state"] == "REVIEW"]
     _write_csv(OUTPUT_ROOT / f"ebay_manual_review_{date}.csv", manual, MatchResult.__dataclass_fields__.keys())
     summary = {
-        "run_id": run_id, "observed_at_utc": observed, "products": len(universe), "listing_rows": len(results),
+        "run_id": run_id,
+        "observed_at_utc": observed,
+        "products": len(universe),
+        "listing_rows": len(results),
+        "queries_used": sum(int(row["queries_used"]) for row in coverage_rows),
         "accepted_rows": sum(row.match_state == "ACCEPTED" for row in results),
         "review_rows": sum(row.match_state == "REVIEW" for row in results),
         "rejected_rows": sum(row.match_state == "REJECTED" for row in results),
-        "coverage_states": {state: sum(row["coverage_state"] == state for row in coverage_rows) for state in sorted({row["coverage_state"] for row in coverage_rows})},
+        "coverage_states": {
+            state: sum(row["coverage_state"] == state for row in coverage_rows)
+            for state in sorted({row["coverage_state"] for row in coverage_rows})
+        },
         "credentials_printed": False,
     }
     (OUTPUT_ROOT / f"ebay_matching_summary_{date}.json").write_text(json.dumps(summary, indent=2), encoding="utf-8")
