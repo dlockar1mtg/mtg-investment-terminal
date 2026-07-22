@@ -381,7 +381,7 @@ def build_evidence_seed() -> list[dict[str, Any]]:
                     component_name + " Foil Edition"
                 ),
                 official_finish="foil",
-                local_finish="foil",
+                local_finish="traditional_foil",
                 quantity=1,
                 source_url=(
                     "https://secretlair.wizards.com/"
