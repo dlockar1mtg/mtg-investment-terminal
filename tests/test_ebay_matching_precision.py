@@ -160,6 +160,28 @@ def test_baldurs_gate_product_can_match_baldurs_gate_listing():
     assert "conflicting_set_identity" not in result.exclusion_reasons
 
 
+def test_multi_unit_booster_box_lot_is_rejected():
+    result = strict_match_listing(
+        collector_product("Tarkir: Dragonstorm Collector Booster Display"),
+        listing("MTG Tarkir Dragonstorm TDM LOT of 2 Collector Booster Boxes NEW Sealed Magic"),
+        "RUN",
+        "2026-07-22T00:00:00Z",
+    )
+    assert result.match_state == "REJECTED"
+    assert "multi_unit_lot" in result.exclusion_reasons
+
+
+def test_non_acrylic_display_case_is_routed_to_review():
+    result = strict_match_listing(
+        collector_product("Universes Beyond: Assassin's Creed Collector Booster Display"),
+        listing("MTG Universes Beyond Assassin's Creed Collector Booster Display Case ACR"),
+        "RUN",
+        "2026-07-22T00:00:00Z",
+    )
+    assert result.match_state == "REVIEW"
+    assert "ambiguous_display_case" in result.exclusion_reasons
+
+
 def test_precision_runner_uses_strict_matcher_without_recursion(monkeypatch, tmp_path):
     sample_product = product("Amonkhet - Booster Box")
 
