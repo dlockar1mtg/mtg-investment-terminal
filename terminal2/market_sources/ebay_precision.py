@@ -88,6 +88,21 @@ def _is_multi_box_case(title_norm: str) -> bool:
     )
 
 
+def _is_multi_unit_lot(title_norm: str) -> bool:
+    patterns = (
+        r"\blot\s+of\s+(?:two|2|three|3|four|4|five|5|six|6)\b",
+        r"\b(?:two|2|three|3|four|4|five|5|six|6)\s+(?:sealed\s+)?(?:collector\s+)?booster\s+(?:boxes|displays)\b",
+        r"\b(?:x|qty)\s*(?:2|3|4|5|6)\b.*\bbooster\s+(?:box|display)",
+    )
+    return any(re.search(pattern, title_norm) for pattern in patterns)
+
+
+def _is_ambiguous_display_case(title_norm: str) -> bool:
+    if " acrylic case " in title_norm or " protective case " in title_norm:
+        return False
+    return " display case " in title_norm
+
+
 def _is_single_pack_collector_product(title_norm: str) -> bool:
     if " omega booster box " in title_norm or " omega box " in title_norm:
         return True
@@ -147,6 +162,8 @@ def strict_match_listing(
             reasons.append("loose_packs")
         if _is_multi_box_case(title_norm):
             reasons.append("multi_box_case")
+        if _is_multi_unit_lot(title_norm):
+            reasons.append("multi_unit_lot")
         if (
             product.product_class == "COLLECTOR_BOOSTER_BOX"
             and _is_single_pack_collector_product(title_norm)
@@ -164,6 +181,7 @@ def strict_match_listing(
             "excluded_product_form",
             "loose_packs",
             "multi_box_case",
+            "multi_unit_lot",
             "single_pack_collector_product",
             "conflicting_set_identity",
             "insufficient_product_identity",
@@ -173,6 +191,10 @@ def strict_match_listing(
         if hard_reasons.intersection(reasons):
             score = min(score, 0.49)
             state = "REJECTED"
+        elif _is_ambiguous_display_case(title_norm):
+            reasons.append("ambiguous_display_case")
+            score = min(score, 0.75)
+            state = "REVIEW"
 
     return replace(
         result,
