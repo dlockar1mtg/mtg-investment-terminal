@@ -131,6 +131,16 @@ def _is_incomplete_pack_box_lot(title_norm: str) -> bool:
     return any(re.search(pattern, title_norm) for pattern in patterns)
 
 
+def _is_ambiguous_plural_box_listing(title_norm: str) -> bool:
+    # The pricing lane governs one complete retail box per listing.
+    # A plural form without an explicit single-unit qualifier does not
+    # establish that the observed price represents one box.
+    return (
+        " booster boxes " in title_norm
+        or " booster displays " in title_norm
+    )
+
+
 def _is_incomplete_product(title_norm: str) -> bool:
     return any(
         phrase in title_norm
@@ -328,6 +338,8 @@ def strict_match_listing(
             reasons.append("incomplete_pack_box_lot")
         if _is_incomplete_product(title_norm):
             reasons.append("incomplete_product")
+        if _is_ambiguous_plural_box_listing(title_norm):
+            reasons.append("ambiguous_multi_unit_listing")
         if _is_deprecated_catalog_placeholder(title_norm):
             reasons.append("deprecated_catalog_placeholder")
         if _is_mixed_product_listing(product, title_norm, result.title):
@@ -356,6 +368,7 @@ def strict_match_listing(
             "multi_unit_lot",
             "incomplete_pack_box_lot",
             "incomplete_product",
+            "ambiguous_multi_unit_listing",
             "deprecated_catalog_placeholder",
             "mixed_product_listing",
             "damaged_or_uncertain_seal",

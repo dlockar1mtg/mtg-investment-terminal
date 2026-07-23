@@ -445,6 +445,17 @@ def test_factory_sealed_unstable_unset_remains_accepted():
     )
     assert result.match_state == "ACCEPTED"
 
+
+def test_plural_booster_boxes_are_rejected_as_ambiguous_multi_unit():
+    result = strict_match_listing(
+        product("Amonkhet - Booster Box"),
+        listing("MtG Magic the Gathering Amonkhet Booster Boxes"),
+        "RUN",
+        "2026-07-23T00:00:00Z",
+    )
+    assert result.match_state == "REJECTED"
+    assert "ambiguous_multi_unit_listing" in result.exclusion_reasons
+
 def test_precision_runner_uses_strict_matcher_without_recursion(monkeypatch, tmp_path):
     sample_product = product("Amonkhet - Booster Box")
 

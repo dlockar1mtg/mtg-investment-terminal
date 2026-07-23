@@ -24,6 +24,7 @@ HARD_EXCLUSION_REASONS = {
     "loose_packs",
     "multi_box_case",
     "multi_unit_lot",
+    "ambiguous_multi_unit_listing",
     "incomplete_pack_box_lot",
     "incomplete_product",
     "deprecated_catalog_placeholder",
