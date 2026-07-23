@@ -6,12 +6,15 @@ from terminal2.market_sources.ebay_matching import CanonicalProduct
 from terminal2.market_sources.ebay_precision import run_coverage, strict_match_listing
 
 
-def product(name: str = "Alpha Edition - Booster Box") -> CanonicalProduct:
+def product(
+    name: str = "Alpha Edition - Booster Box",
+    product_class: str = "PRE_COLLECTOR_BOOSTER_BOX",
+) -> CanonicalProduct:
     return CanonicalProduct(
         canonical_product_id="MTG-TEST",
         canonical_product_name=name,
         canonical_set_name=name.replace(" - Booster Box", ""),
-        product_class="PRE_COLLECTOR_BOOSTER_BOX",
+        product_class=product_class,
         tcgplayer_product_id="1",
         release_date="1993-08-05",
         ebay_query="query",
@@ -455,6 +458,75 @@ def test_plural_booster_boxes_are_rejected_as_ambiguous_multi_unit():
     )
     assert result.match_state == "REJECTED"
     assert "ambiguous_multi_unit_listing" in result.exclusion_reasons
+
+
+def test_secret_lair_nonfoil_rejects_foil_variant():
+    result = strict_match_listing(
+        product(
+            "Secret Lair Drop: Astrology Lands (Aquarius) Bundle - Non-Foil Edition",
+            product_class="SEALED_SECRET_LAIR",
+        ),
+        listing("MTG Secret Lair Astrology Lands Aquarius Foil Edition Sealed"),
+        "RUN",
+        "2026-07-23T00:00:00Z",
+    )
+    assert result.match_state == "REJECTED"
+    assert "secret_lair_variant_conflict" in result.exclusion_reasons
+
+
+def test_secret_lair_foil_rejects_nonfoil_variant():
+    result = strict_match_listing(
+        product(
+            "Secret Lair Drop: Astrology Lands (Aquarius) Bundle - Traditional Foil Edition",
+            product_class="SEALED_SECRET_LAIR",
+        ),
+        listing("MTG Secret Lair Astrology Lands Aquarius Non-Foil Edition Sealed"),
+        "RUN",
+        "2026-07-23T00:00:00Z",
+    )
+    assert result.match_state == "REJECTED"
+    assert "secret_lair_variant_conflict" in result.exclusion_reasons
+
+
+def test_secret_lair_rejects_wrong_astrology_sign():
+    result = strict_match_listing(
+        product(
+            "Secret Lair Drop: Astrology Lands (Aquarius) Bundle - Traditional Foil Edition",
+            product_class="SEALED_SECRET_LAIR",
+        ),
+        listing("MTG Secret Lair Astrology Lands Pisces Foil Edition Sealed"),
+        "RUN",
+        "2026-07-23T00:00:00Z",
+    )
+    assert result.match_state == "REJECTED"
+    assert "secret_lair_variant_conflict" in result.exclusion_reasons
+
+
+def test_secret_lair_book_club_requires_book_club_identity():
+    result = strict_match_listing(
+        product(
+            "Secret Lair Countdown Kit: An Encyclopedia of Magic Book Club Bundle",
+            product_class="SEALED_SECRET_LAIR",
+        ),
+        listing("MTG Secret Lair Countdown Kit An Encyclopedia of Magic Factory Sealed"),
+        "RUN",
+        "2026-07-23T00:00:00Z",
+    )
+    assert result.match_state == "REJECTED"
+    assert "secret_lair_variant_conflict" in result.exclusion_reasons
+
+
+def test_secret_lair_exact_astrology_variant_can_be_accepted():
+    result = strict_match_listing(
+        product(
+            "Secret Lair Drop: Astrology Lands (Aquarius) Bundle - Traditional Foil Edition",
+            product_class="SEALED_SECRET_LAIR",
+        ),
+        listing("MTG Secret Lair Drop Astrology Lands Aquarius Traditional Foil Edition Sealed"),
+        "RUN",
+        "2026-07-23T00:00:00Z",
+    )
+    assert result.match_state == "ACCEPTED"
 
 def test_precision_runner_uses_strict_matcher_without_recursion(monkeypatch, tmp_path):
     sample_product = product("Amonkhet - Booster Box")

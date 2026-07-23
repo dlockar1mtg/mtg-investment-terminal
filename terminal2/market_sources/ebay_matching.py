@@ -17,7 +17,7 @@ from typing import Mapping, Sequence
 
 ROOT = Path(__file__).resolve().parents[2]
 BOOSTER_SOURCE = ROOT / "data/validation/phase_10/historical_product_scope/historical_active_review_population_2026-07-22.csv"
-SECRET_LAIR_SOURCE = ROOT / "data/validation/phase_10/premium_universe_eligibility/secret_lair_structural_candidates_2026-07-22.csv"
+SECRET_LAIR_SOURCE = ROOT / "data/validation/phase_10/premium_universe_eligibility/secret_lair_master_registry_ready_universe.csv"
 OUTPUT_ROOT = ROOT / "data/validation/phase_10/ebay_matching"
 
 COLLECTOR_ERA_START = "2019-10-04"
@@ -199,22 +199,34 @@ def build_universe() -> list[CanonicalProduct]:
         )
 
     for row in _read_csv(SECRET_LAIR_SOURCE):
-        name = _clean(row.get("canonical_product_name"))
-        product_id = _clean(row.get("canonical_product_id"))
-        if not product_id or not name:
+        # The certified master export uses Secret Lair-native field names.
+        # Legacy aliases remain supported so historical snapshots can still load.
+        governance_status = _clean(row.get("governance_status")).upper()
+        ebay_allowed = _clean(row.get("ebay_matching_allowed")).lower()
+        if governance_status and governance_status != "REGISTRY_READY":
             continue
-        text = _norm(" ".join(_clean(row.get(key)) for key in (
-            "canonical_product_class", "canonical_product_family",
-            "canonical_product_type", "canonical_packaging_level", name,
-        )))
-        if " secret lair " not in text:
+        if ebay_allowed and ebay_allowed not in {"true", "1", "yes"}:
             continue
+
+        name = _clean(row.get("product_name") or row.get("canonical_product_name"))
+        product_id = _clean(row.get("secret_lair_id") or row.get("canonical_product_id"))
+        tcgplayer_product_id = _clean(row.get("tcgplayer_product_id"))
+        set_name = _clean(
+            row.get("superdrop_name")
+            or row.get("drop_name")
+            or row.get("canonical_set_name")
+        )
+        if not product_id or not name or not tcgplayer_product_id:
+            continue
+
+        # Master release_date currently contains source-publication timestamps for
+        # many TCGCSV records, so it is intentionally not used for age analytics.
         products[product_id] = CanonicalProduct(
             product_id,
             name,
-            _clean(row.get("canonical_set_name")),
+            set_name,
             "SEALED_SECRET_LAIR",
-            _clean(row.get("tcgplayer_product_id")),
+            tcgplayer_product_id,
             "",
             build_query(name, "SEALED_SECRET_LAIR"),
         )

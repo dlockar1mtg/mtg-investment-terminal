@@ -299,6 +299,97 @@ def _has_conflicting_set_identity(
     )
 
 
+SECRET_LAIR_ZODIAC_SIGNS = (
+    "aquarius",
+    "aries",
+    "cancer",
+    "capricorn",
+    "gemini",
+    "leo",
+    "libra",
+    "pisces",
+    "sagittarius",
+    "scorpio",
+    "taurus",
+    "virgo",
+)
+
+
+def _secret_lair_variant_conflict(
+    product: base.CanonicalProduct,
+    title_norm: str,
+) -> bool:
+    product_norm = base._norm(product.canonical_product_name)
+
+    product_nonfoil = " non foil " in product_norm
+    product_foil = (
+        " traditional foil " in product_norm
+        or (" foil " in product_norm and not product_nonfoil)
+    )
+    title_nonfoil = " non foil " in title_norm or " nonfoil " in title_norm
+    title_foil = (
+        " traditional foil " in title_norm
+        or (" foil " in title_norm and not title_nonfoil)
+    )
+    if product_nonfoil and title_foil:
+        return True
+    if product_foil and title_nonfoil:
+        return True
+
+    product_sign = next(
+        (sign for sign in SECRET_LAIR_ZODIAC_SIGNS if f" {sign} " in product_norm),
+        None,
+    )
+    if product_sign is not None:
+        listed_signs = {
+            sign
+            for sign in SECRET_LAIR_ZODIAC_SIGNS
+            if f" {sign} " in title_norm
+        }
+        if listed_signs and listed_signs != {product_sign}:
+            return True
+
+    if " book club bundle " in product_norm and " book club " not in title_norm:
+        return True
+
+    return False
+
+
+def _secret_lair_strong_identity(
+    product: base.CanonicalProduct,
+    title_norm: str,
+) -> bool:
+    product_norm = base._norm(product.canonical_product_name)
+    if " secret lair " not in title_norm or " sealed " not in title_norm:
+        return False
+    if _token_coverage(product, title_norm) < 0.70:
+        return False
+
+    product_sign = next(
+        (sign for sign in SECRET_LAIR_ZODIAC_SIGNS if f" {sign} " in product_norm),
+        None,
+    )
+    if product_sign is not None and f" {product_sign} " not in title_norm:
+        return False
+
+    if " book club bundle " in product_norm and " book club " not in title_norm:
+        return False
+
+    product_nonfoil = " non foil " in product_norm
+    product_foil = (
+        " traditional foil " in product_norm
+        or (" foil " in product_norm and not product_nonfoil)
+    )
+    if product_nonfoil and not (
+        " non foil " in title_norm or " nonfoil " in title_norm
+    ):
+        return False
+    if product_foil and " foil " not in title_norm:
+        return False
+
+    return True
+
+
 def strict_match_listing(
     product: base.CanonicalProduct,
     item: Mapping[str, object],
@@ -385,6 +476,15 @@ def strict_match_listing(
             reasons.append("ambiguous_display_case")
             score = min(score, 0.75)
             state = "REVIEW"
+
+    elif product.product_class == "SEALED_SECRET_LAIR":
+        if _secret_lair_variant_conflict(product, title_norm):
+            reasons.append("secret_lair_variant_conflict")
+            score = min(score, 0.49)
+            state = "REJECTED"
+        elif _secret_lair_strong_identity(product, title_norm) and not reasons:
+            score = max(score, 0.82)
+            state = "ACCEPTED"
 
     return replace(
         result,
