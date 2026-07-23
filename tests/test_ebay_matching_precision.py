@@ -369,6 +369,28 @@ def test_jp_language_marker_is_rejected():
     assert result.match_state == "REJECTED"
     assert "non_english" in result.exclusion_reasons
 
+
+def test_battle_pack_display_is_rejected():
+    result = strict_match_listing(
+        product("Return to Ravnica - Booster Box"),
+        listing("MTG Return to Ravnica Battle Pack Display Box New"),
+        "RUN",
+        "2026-07-23T00:00:00Z",
+    )
+    assert result.match_state == "REJECTED"
+    assert "excluded_product_form" in result.exclusion_reasons
+
+
+def test_theme_deck_display_is_rejected():
+    result = strict_match_listing(
+        product("Scourge - Booster Box"),
+        listing("MTG Scourge Theme Deck Display Box Factory Sealed"),
+        "RUN",
+        "2026-07-23T00:00:00Z",
+    )
+    assert result.match_state == "REJECTED"
+    assert "excluded_product_form" in result.exclusion_reasons
+
 def test_precision_runner_uses_strict_matcher_without_recursion(monkeypatch, tmp_path):
     sample_product = product("Amonkhet - Booster Box")
 

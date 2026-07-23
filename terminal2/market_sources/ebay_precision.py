@@ -32,6 +32,8 @@ UNRELATED_GAME_TERMS = (
 NON_BOX_PRODUCT_TERMS = (
     " starter set ",
     " starter deck ",
+    " theme deck ",
+    " battle pack ",
     " blaster box ",
     " fat pack ",
     " gift pack ",
