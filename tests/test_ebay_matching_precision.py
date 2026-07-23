@@ -880,3 +880,110 @@ def test_secret_lair_pixelsnowlands_generic_foil_rejects_traditional_canonical()
     assert result.match_state == "REJECTED"
     assert "secret_lair_variant_conflict" in result.exclusion_reasons
 
+
+def test_secret_lair_brain_dead_creatures_lands_collision_is_rejected():
+    result = strict_match_listing(
+        product("Drop: Secret Lair x Brain Dead: Creatures - Rainbow Foil Edition", product_class="SEALED_SECRET_LAIR"),
+        listing("MTG Secret Lair x Brain Dead: Lands Rainbow Foil Sealed"),
+        "RUN",
+        "2026-07-23T00:00:00Z",
+    )
+    assert result.match_state == "REJECTED"
+
+
+def test_secret_lair_arcane_base_lands_collision_is_rejected():
+    result = strict_match_listing(
+        product("Drop: Secret Lair x Arcane - Traditional Foil Edition", product_class="SEALED_SECRET_LAIR"),
+        listing("Secret Lair x Arcane: Lands Traditional Foil Edition Sealed"),
+        "RUN",
+        "2026-07-23T00:00:00Z",
+    )
+    assert result.match_state == "REJECTED"
+
+
+def test_secret_lair_spiderman_heroic_villainous_collision_is_rejected():
+    result = strict_match_listing(
+        product("Drop: Secret Lair x Marvel's Spider-Man: Heroic Deeds - Rainbow Foil Edition", product_class="SEALED_SECRET_LAIR"),
+        listing("Secret Lair Spider-Man Villainous Plots Rainbow Foil Sealed"),
+        "RUN",
+        "2026-07-23T00:00:00Z",
+    )
+    assert result.match_state == "REJECTED"
+
+
+def test_secret_lair_beholder_volume_collision_is_rejected():
+    result = strict_match_listing(
+        product("Drop: Secret Lair x Dungeons & Dragons: Death is in the Eyes of the Beholder II - Rainbow Foil Edition", product_class="SEALED_SECRET_LAIR"),
+        listing("Secret Lair Dungeons & Dragons Death is in the Eyes of the Beholder I Foil"),
+        "RUN",
+        "2026-07-23T00:00:00Z",
+    )
+    assert result.match_state == "REJECTED"
+
+
+def test_secret_lair_monty_python_volume_collision_is_rejected():
+    result = strict_match_listing(
+        product("Drop: Secret Lair x Monty Python: Monty Python and the Holy Grail: Vol. 1 - Traditional Foil Edition", product_class="SEALED_SECRET_LAIR"),
+        listing("Secret Lair Monty Python and the Holy Grail Vol. 2 Foil Edition Box"),
+        "RUN",
+        "2026-07-23T00:00:00Z",
+    )
+    assert result.match_state == "REJECTED"
+
+
+def test_secret_lair_venom_colors_inks_collision_is_rejected():
+    result = strict_match_listing(
+        product("Drop: Secret Lair x Marvel's Spider-Man: Venom Unleashed (Colors) - Rainbow Foil Edition", product_class="SEALED_SECRET_LAIR"),
+        listing("Secret Lair Spider-Man Venom Unleashed Inks Rainbow Foil Sealed"),
+        "RUN",
+        "2026-07-23T00:00:00Z",
+    )
+    assert result.match_state == "REJECTED"
+
+
+def test_secret_lair_venom_generic_variant_is_rejected():
+    result = strict_match_listing(
+        product("Drop: Secret Lair x Marvel's Spider-Man: Venom Unleashed (Colors) - Rainbow Foil Edition", product_class="SEALED_SECRET_LAIR"),
+        listing("Secret Lair Spider-Man Venom Unleashed Foil Edition Sealed"),
+        "RUN",
+        "2026-07-23T00:00:00Z",
+    )
+    assert result.match_state == "REJECTED"
+
+
+def test_secret_lair_twisted_metal_sol_ring_does_not_match_generic_promo():
+    result = strict_match_listing(
+        product("Drop: Secret Lair Promo: Sol Ring - Rainbow Foil Edition", product_class="SEALED_SECRET_LAIR"),
+        listing("MTG Sol Ring Rainbow Foil Secret Lair Promo Twisted Metal Sealed"),
+        "RUN",
+        "2026-07-23T00:00:00Z",
+    )
+    assert result.match_state == "REJECTED"
+
+
+def test_secret_lair_beholder_roman_two_rejects_numeric_one_listing():
+    result = strict_match_listing(
+        product(
+            "Drop: Secret Lair x Dungeons & Dragons: Death is in the Eyes of the Beholder II - Rainbow Foil Edition",
+            product_class="SEALED_SECRET_LAIR",
+        ),
+        listing("FOIL Secret Lair x Dungeons & Dragons Death Is in the Eyes of the Beholder 1"),
+        "RUN",
+        "2026-07-23T00:00:00Z",
+    )
+    assert result.match_state == "REJECTED"
+    assert "secret_lair_variant_conflict" in result.exclusion_reasons
+
+
+def test_secret_lair_beholder_roman_one_allows_numeric_one_listing():
+    result = strict_match_listing(
+        product(
+            "Drop: Secret Lair x Dungeons & Dragons: Death is in the Eyes of the Beholder I - Rainbow Foil Edition",
+            product_class="SEALED_SECRET_LAIR",
+        ),
+        listing("FOIL Secret Lair x Dungeons & Dragons Death Is in the Eyes of the Beholder 1"),
+        "RUN",
+        "2026-07-23T00:00:00Z",
+    )
+    assert result.match_state != "REJECTED"
+

@@ -70,7 +70,8 @@ def as_float(value: str | None) -> float | None:
 
 
 def norm(value: str | None) -> str:
-    return re.sub(r"\s+", " ", (value or "").strip())
+    text = (value or "").translate(str.maketrans({"‑": "-", "–": "-", "—": "-", "−": "-"}))
+    return re.sub(r"\s+", " ", text.strip())
 
 
 def finish_subtype(value: str) -> str | None:

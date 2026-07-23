@@ -360,6 +360,9 @@ def _secret_lair_explicit_identity_conflict(product_norm: str, title_norm: str) 
         (" extra life 2020 ", " extra life 2022 "),
         (" kevin eastman colors ", " kevin eastman inks "),
         (" li l er walkers ", " li l est walkers "),
+        (" venom unleashed colors ", " venom unleashed inks "),
+        (" heroic deeds ", " villainous plots "),
+        (" brain dead creatures ", " brain dead lands "),
     )
     for left, right in paired_identities:
         if left in product_norm and right in title_norm:
@@ -377,6 +380,44 @@ def _secret_lair_variant_conflict(
 
     if _secret_lair_explicit_identity_conflict(product_norm, title_norm):
         return True
+
+
+    # Arcane and Arcane: Lands are separate sealed products.
+    product_arcane_lands = " secret lair x arcane lands " in product_norm
+    title_arcane_lands = " secret lair x arcane lands " in title_norm
+    product_arcane_base = " secret lair x arcane " in product_norm and not product_arcane_lands
+    title_arcane_base = " secret lair x arcane " in title_norm and not title_arcane_lands
+    if (product_arcane_base and title_arcane_lands) or (product_arcane_lands and title_arcane_base):
+        return True
+
+    # Death Is in the Eyes of the Beholder I and II must agree explicitly.
+    product_beholder = re.search(r" death is in the eyes of the beholder (i{1,2}) ", product_norm)
+    title_beholder = re.search(r" death is in the eyes of the beholder (i{1,2}) ", title_norm)
+    if product_beholder and title_beholder and product_beholder.group(1) != title_beholder.group(1):
+        return True
+
+    # Monty Python Holy Grail Vol. 1 and Vol. 2 must agree explicitly.
+    product_monty_volume = re.search(r" holy grail vol (1|2) ", product_norm)
+    title_monty_volume = re.search(r" holy grail vol (1|2) ", title_norm)
+    if product_monty_volume and title_monty_volume and product_monty_volume.group(1) != title_monty_volume.group(1):
+        return True
+
+    # A Twisted Metal promo cannot map to the generic Secret Lair promo Sol Ring.
+    product_twisted_metal = " twisted metal " in product_norm
+    title_twisted_metal = " twisted metal " in title_norm
+    product_promo_sol_ring = " promo " in product_norm and " sol ring " in product_norm
+    title_promo_sol_ring = " promo " in title_norm and " sol ring " in title_norm
+    if product_promo_sol_ring and title_promo_sol_ring and product_twisted_metal != title_twisted_metal:
+        return True
+
+    # Venom Unleashed Colors/Inks canonicals require the listing to identify the variant.
+    if " venom unleashed " in product_norm:
+        product_venom_colors = " venom unleashed colors " in product_norm
+        product_venom_inks = " venom unleashed inks " in product_norm
+        title_venom_colors = " venom unleashed colors " in title_norm
+        title_venom_inks = " venom unleashed inks " in title_norm
+        if (product_venom_colors or product_venom_inks) and not (title_venom_colors or title_venom_inks):
+            return True
 
     product_second_helpings = " just add milk second helpings " in product_norm
     title_second_helpings = " just add milk second helpings " in title_norm
@@ -407,6 +448,27 @@ def _secret_lair_variant_conflict(
             and title_has_generic_foil
             and not title_has_explicit_traditional
         ):
+            return True
+
+
+    if " death is in the eyes of the beholder " in product_norm:
+        product_is_one = (
+            " beholder i " in product_norm
+            or " beholder 1 " in product_norm
+        )
+        product_is_two = (
+            " beholder ii " in product_norm
+            or " beholder 2 " in product_norm
+        )
+        title_is_one = (
+            " beholder i " in title_norm
+            or " beholder 1 " in title_norm
+        )
+        title_is_two = (
+            " beholder ii " in title_norm
+            or " beholder 2 " in title_norm
+        )
+        if (product_is_one and title_is_two) or (product_is_two and title_is_one):
             return True
 
     product_foil_subtype = _secret_lair_foil_subtype(product_norm)
