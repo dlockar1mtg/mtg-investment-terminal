@@ -987,3 +987,84 @@ def test_secret_lair_beholder_roman_one_allows_numeric_one_listing():
     )
     assert result.match_state != "REJECTED"
 
+
+def test_secret_lair_kaldheim_part_one_rejects_part_two_listing():
+    result = strict_match_listing(
+        product(
+            "Drop: Showcase: Kaldheim - Part 1 - Traditional Foil Edition",
+            product_class="SEALED_SECRET_LAIR",
+        ),
+        listing("MTG Secret Lair Showcase Kaldheim Part 2 Foil New Sealed"),
+        "RUN",
+        "2026-07-23T00:00:00Z",
+    )
+    assert result.match_state == "REJECTED"
+    assert "secret_lair_variant_conflict" in result.exclusion_reasons
+
+
+def test_secret_lair_kaldheim_part_two_allows_part_two_listing():
+    result = strict_match_listing(
+        product(
+            "Drop: Showcase: Kaldheim - Part 2 - Traditional Foil Edition",
+            product_class="SEALED_SECRET_LAIR",
+        ),
+        listing("MTG Secret Lair Showcase Kaldheim Part 2 Foil New Sealed"),
+        "RUN",
+        "2026-07-23T00:00:00Z",
+    )
+    assert result.match_state != "REJECTED"
+
+
+def test_secret_lair_march_machine_volume_one_rejects_volume_two_listing():
+    result = strict_match_listing(
+        product(
+            "Drop: Showcase: March of the Machine Vol. 1 - Halo Foil Edition",
+            product_class="SEALED_SECRET_LAIR",
+        ),
+        listing("Showcase March of the Machine Vol. 2 Halo Foil Secret Lair Sealed"),
+        "RUN",
+        "2026-07-23T00:00:00Z",
+    )
+    assert result.match_state == "REJECTED"
+    assert "secret_lair_variant_conflict" in result.exclusion_reasons
+
+
+def test_secret_lair_march_machine_volume_two_allows_volume_two_listing():
+    result = strict_match_listing(
+        product(
+            "Drop: Showcase: March of the Machine Vol. 2 - Halo Foil Edition",
+            product_class="SEALED_SECRET_LAIR",
+        ),
+        listing("Showcase March of the Machine Vol. 2 Halo Foil Secret Lair Sealed"),
+        "RUN",
+        "2026-07-23T00:00:00Z",
+    )
+    assert result.match_state != "REJECTED"
+
+
+def test_secret_lair_read_fine_print_traditional_rejects_etched_listing():
+    result = strict_match_listing(
+        product(
+            "Drop: Showcase: Read The Fine Print - Traditional Foil Edition",
+            product_class="SEALED_SECRET_LAIR",
+        ),
+        listing("Secret Lair Showcase Read The Fine Print Foil Etched Edition New Sealed"),
+        "RUN",
+        "2026-07-23T00:00:00Z",
+    )
+    assert result.match_state == "REJECTED"
+    assert "secret_lair_variant_conflict" in result.exclusion_reasons
+
+
+def test_secret_lair_read_fine_print_etched_allows_etched_listing():
+    result = strict_match_listing(
+        product(
+            "Drop: Showcase: Read The Fine Print - Foil Etched Edition",
+            product_class="SEALED_SECRET_LAIR",
+        ),
+        listing("Secret Lair Showcase Read The Fine Print Foil Etched Edition New Sealed"),
+        "RUN",
+        "2026-07-23T00:00:00Z",
+    )
+    assert result.match_state != "REJECTED"
+

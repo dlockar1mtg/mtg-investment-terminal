@@ -10,7 +10,13 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from terminal2.market_sources import ebay_matching as base
+from terminal2.market_sources.ebay_matching import EbayBrowseClient
 from terminal2.market_sources.ebay_precision import run_coverage
+from terminal2.market_sources.ebay_resilience import (
+    estimate_batch_calls,
+    format_reset_local,
+    get_browse_quota,
+)
 from terminal2.market_sources.ebay_universe import build_complete_universe
 
 
@@ -30,6 +36,8 @@ def main() -> int:
     parser.add_argument("--batch-size", type=int, default=25)
     parser.add_argument("--limit-per-product", type=int, default=20)
     parser.add_argument("--force", action="store_true")
+    parser.add_argument("--skip-quota-check", action="store_true")
+    parser.add_argument("--quota-reserve", type=int, default=100)
     args = parser.parse_args()
 
     if args.offset < 0:
@@ -46,6 +54,28 @@ def main() -> int:
     if not subset:
         print("No products remain for this batch selection.")
         return 0
+
+    if args.quota_reserve < 0:
+        raise SystemExit("--quota-reserve must be zero or greater")
+
+    if not args.skip_quota_check:
+        client = EbayBrowseClient()
+        quota = get_browse_quota(client)
+        estimated_calls = estimate_batch_calls(len(subset))
+        print("EBAY BROWSE QUOTA PREFLIGHT")
+        print(f"  limit: {quota.limit}")
+        print(f"  used: {quota.count}")
+        print(f"  remaining: {quota.remaining}")
+        print(f"  estimated maximum calls: {estimated_calls}")
+        print(f"  reserve: {args.quota_reserve}")
+        print(f"  reset UTC: {quota.reset or 'unknown'}")
+        print(f"  reset local: {format_reset_local(quota.reset)}")
+        if not quota.supports(estimated_calls, reserve_calls=args.quota_reserve):
+            raise SystemExit(
+                "INSUFFICIENT EBAY BROWSE QUOTA: "
+                f"remaining={quota.remaining}, required={estimated_calls}, "
+                f"reserve={args.quota_reserve}, reset={quota.reset or 'unknown'}"
+            )
 
     end = args.offset + len(subset) - 1
     batch_key = f"{args.product_class.lower()}_{args.offset:04d}_{end:04d}"

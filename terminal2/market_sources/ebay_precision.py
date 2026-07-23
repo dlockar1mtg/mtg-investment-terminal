@@ -419,6 +419,52 @@ def _secret_lair_variant_conflict(
         if (product_venom_colors or product_venom_inks) and not (title_venom_colors or title_venom_inks):
             return True
 
+
+    # Showcase: Kaldheim Part 1 and Part 2 must agree explicitly.
+    if " showcase kaldheim " in product_norm:
+        product_kaldheim_part = re.search(r" showcase kaldheim part (1|2) ", product_norm)
+        title_kaldheim_part = re.search(r" showcase kaldheim part (1|2) ", title_norm)
+        if (
+            product_kaldheim_part
+            and title_kaldheim_part
+            and product_kaldheim_part.group(1) != title_kaldheim_part.group(1)
+        ):
+            return True
+
+    # Showcase: March of the Machine Vol. 1/2/3 must agree explicitly.
+    if " showcase march of the machine vol " in product_norm:
+        product_mom_volume = re.search(
+            r" showcase march of the machine vol (1|2|3) ",
+            product_norm,
+        )
+        title_mom_volume = re.search(
+            r" showcase march of the machine vol (1|2|3) ",
+            title_norm,
+        )
+        if (
+            product_mom_volume
+            and title_mom_volume
+            and product_mom_volume.group(1) != title_mom_volume.group(1)
+        ):
+            return True
+
+    # Read The Fine Print has distinct Foil Etched and Traditional Foil products.
+    if " showcase read the fine print " in product_norm:
+        product_read_etched = (
+            " foil etched " in product_norm
+            or " etched foil " in product_norm
+        )
+        product_read_traditional = " traditional foil " in product_norm
+        title_read_etched = (
+            " foil etched " in title_norm
+            or " etched foil " in title_norm
+        )
+        title_read_traditional = " traditional foil " in title_norm
+        if (product_read_etched and title_read_traditional) or (
+            product_read_traditional and title_read_etched
+        ):
+            return True
+
     product_second_helpings = " just add milk second helpings " in product_norm
     title_second_helpings = " just add milk second helpings " in title_norm
     product_base_milk = " just add milk " in product_norm and not product_second_helpings
