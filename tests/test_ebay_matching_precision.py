@@ -391,6 +391,60 @@ def test_theme_deck_display_is_rejected():
     assert result.match_state == "REJECTED"
     assert "excluded_product_form" in result.exclusion_reasons
 
+
+def test_theros_beyond_death_is_rejected_for_original_theros():
+    result = strict_match_listing(
+        product("Theros - Booster Box"),
+        listing("MTG Theros Beyond Death Collector Booster Box 12 Pack English New"),
+        "RUN",
+        "2026-07-23T00:00:00Z",
+    )
+    assert result.match_state == "REJECTED"
+    assert "conflicting_set_identity" in result.exclusion_reasons
+
+
+def test_zendikar_rising_is_rejected_for_original_zendikar():
+    result = strict_match_listing(
+        product("Zendikar - Booster Box"),
+        listing("MTG Zendikar Rising Collector Booster Box English Factory Sealed"),
+        "RUN",
+        "2026-07-23T00:00:00Z",
+    )
+    assert result.match_state == "REJECTED"
+    assert "conflicting_set_identity" in result.exclusion_reasons
+
+
+def test_retail_cardboard_display_is_rejected():
+    result = strict_match_listing(
+        product("Time Spiral - Booster Box"),
+        listing("Magic the Gathering Time Spiral Booster Retail Cardboard Walmart Display Box MTG"),
+        "RUN",
+        "2026-07-23T00:00:00Z",
+    )
+    assert result.match_state == "REJECTED"
+    assert "excluded_product_form" in result.exclusion_reasons
+
+
+def test_box_only_listing_is_rejected():
+    result = strict_match_listing(
+        product("Unhinged - Booster Box"),
+        listing("Magic The Gathering MTG Unhinged Booster Box Box Only"),
+        "RUN",
+        "2026-07-23T00:00:00Z",
+    )
+    assert result.match_state == "REJECTED"
+    assert "excluded_product_form" in result.exclusion_reasons
+
+
+def test_factory_sealed_unstable_unset_remains_accepted():
+    result = strict_match_listing(
+        product("Unstable - Booster Box"),
+        listing("MTG Unstable Booster Box Factory Sealed Unopened Magic The Gathering Un-Set"),
+        "RUN",
+        "2026-07-23T00:00:00Z",
+    )
+    assert result.match_state == "ACCEPTED"
+
 def test_precision_runner_uses_strict_matcher_without_recursion(monkeypatch, tmp_path):
     sample_product = product("Amonkhet - Booster Box")
 

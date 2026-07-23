@@ -41,6 +41,9 @@ NON_BOX_PRODUCT_TERMS = (
     " booster lot ",
     " lot of packs ",
     " empty box ",
+    " box only ",
+    " retail cardboard ",
+    " walmart display ",
     " box topper only ",
     " wrapper ",
     " resealed ",
@@ -271,6 +274,12 @@ def _has_conflicting_set_identity(
         "modern horizons booster box": (
             " modern horizons 2 ",
             " modern horizons 3 ",
+        ),
+        "theros booster box": (
+            " theros beyond death ",
+        ),
+        "zendikar booster box": (
+            " zendikar rising ",
         ),
     }
 
