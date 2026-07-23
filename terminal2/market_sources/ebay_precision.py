@@ -352,6 +352,13 @@ def _secret_lair_variant_conflict(
     if " book club bundle " in product_norm and " book club " not in title_norm:
         return True
 
+    product_is_bundle = " bundle " in product_norm
+    title_is_bundle = " bundle " in title_norm
+    if product_is_bundle and not title_is_bundle:
+        return True
+    if not product_is_bundle and title_is_bundle:
+        return True
+
     return False
 
 
@@ -373,6 +380,11 @@ def _secret_lair_strong_identity(
         return False
 
     if " book club bundle " in product_norm and " book club " not in title_norm:
+        return False
+
+    product_is_bundle = " bundle " in product_norm
+    title_is_bundle = " bundle " in title_norm
+    if product_is_bundle != title_is_bundle:
         return False
 
     product_nonfoil = " non foil " in product_norm

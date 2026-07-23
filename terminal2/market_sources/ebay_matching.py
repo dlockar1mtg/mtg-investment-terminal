@@ -33,7 +33,7 @@ NON_ENGLISH_TERMS = (
     " japanese ", " german ", " french ", " italian ", " spanish ",
     " portuguese ", " korean ", " chinese ", " russian ",
 )
-PRESALE_TERMS = (" presale ", " pre sale ", " preorder ", " pre order ")
+PRESALE_TERMS = (" presale ", " pre sale ", " presell ", " pre sell ", " preorder ", " pre order ", " pre aug ")
 NUMBERED_EDITION_ALIASES = {
     "7th edition": ("seventh edition", "7e", "7ed"),
     "8th edition": ("eighth edition", "8e", "8ed"),

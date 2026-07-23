@@ -516,13 +516,68 @@ def test_secret_lair_book_club_requires_book_club_identity():
     assert "secret_lair_variant_conflict" in result.exclusion_reasons
 
 
-def test_secret_lair_exact_astrology_variant_can_be_accepted():
+def test_secret_lair_bundle_rejects_individual_drop_listing():
+    result = strict_match_listing(
+        product(
+            "Secret Lair Drop: Astrology Lands (Aries) Bundle - Non-Foil Edition",
+            product_class="SEALED_SECRET_LAIR",
+        ),
+        listing("MTG Secret Lair Astrology Lands Aries Non-Foil Edition Sealed"),
+        "RUN",
+        "2026-07-23T00:00:00Z",
+    )
+    assert result.match_state == "REJECTED"
+    assert "secret_lair_variant_conflict" in result.exclusion_reasons
+
+
+def test_secret_lair_individual_drop_rejects_bundle_listing():
+    result = strict_match_listing(
+        product(
+            "Secret Lair Drop: Astrology Lands (Aries) - Non-Foil Edition",
+            product_class="SEALED_SECRET_LAIR",
+        ),
+        listing("MTG Secret Lair Astrology Lands Aries Non-Foil Bundle Sealed"),
+        "RUN",
+        "2026-07-23T00:00:00Z",
+    )
+    assert result.match_state == "REJECTED"
+    assert "secret_lair_variant_conflict" in result.exclusion_reasons
+
+
+def test_secret_lair_exact_bundle_identity_can_be_accepted():
+    result = strict_match_listing(
+        product(
+            "Secret Lair Drop: Astrology Lands (Aries) Bundle - Non-Foil Edition",
+            product_class="SEALED_SECRET_LAIR",
+        ),
+        listing("MTG Secret Lair Astrology Lands Aries Non-Foil Bundle Sealed"),
+        "RUN",
+        "2026-07-23T00:00:00Z",
+    )
+    assert result.match_state == "ACCEPTED"
+
+
+def test_secret_lair_bundle_without_bundle_identity_is_rejected():
     result = strict_match_listing(
         product(
             "Secret Lair Drop: Astrology Lands (Aquarius) Bundle - Traditional Foil Edition",
             product_class="SEALED_SECRET_LAIR",
         ),
         listing("MTG Secret Lair Drop Astrology Lands Aquarius Traditional Foil Edition Sealed"),
+        "RUN",
+        "2026-07-23T00:00:00Z",
+    )
+    assert result.match_state == "REJECTED"
+    assert "secret_lair_variant_conflict" in result.exclusion_reasons
+
+
+def test_secret_lair_exact_astrology_bundle_variant_can_be_accepted():
+    result = strict_match_listing(
+        product(
+            "Secret Lair Drop: Astrology Lands (Aquarius) Bundle - Traditional Foil Edition",
+            product_class="SEALED_SECRET_LAIR",
+        ),
+        listing("MTG Secret Lair Drop Astrology Lands Aquarius Bundle Traditional Foil Edition Sealed"),
         "RUN",
         "2026-07-23T00:00:00Z",
     )
@@ -590,3 +645,20 @@ def test_precision_runner_honors_explicit_universe_override(monkeypatch, tmp_pat
 
     assert summary["products"] == 2
     assert summary["listing_rows"] == 2
+
+def test_secret_lair_presell_listing_is_rejected():
+    result = strict_match_listing(
+        product(
+            "Reality Fracture - Secret Lair Bundle",
+            product_class="SEALED_SECRET_LAIR",
+        ),
+        listing(
+            "Magic The Gathering Reality Fracture Secret Lair Bundle "
+            "(Presell) English Factory Sealed"
+        ),
+        "RUN",
+        "2026-07-23T00:00:00Z",
+    )
+    assert result.match_state == "REJECTED"
+    assert "presale" in result.exclusion_reasons
+
