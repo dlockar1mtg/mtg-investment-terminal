@@ -48,6 +48,7 @@ NON_BOX_PRODUCT_TERMS = (
     " tournament display ",
     " theme booster ",
     " set booster ",
+    " play booster ",
 )
 
 DAMAGED_SEAL_TERMS = (
@@ -207,24 +208,34 @@ def _has_conflicting_set_identity(
     title_norm: str,
 ) -> bool:
     product_name = base._norm(product.canonical_product_name)
+    product_key = product_name.strip()
 
-    if (
-        " commander legends " in product_name
-        and " battle for baldur s gate " not in product_name
-        and " battle for baldur s gate " in title_norm
-    ):
-        return True
+    conflict_phrases: dict[str, tuple[str, ...]] = {
+        "commander legends collector booster display": (
+            " battle for baldur s gate ",
+        ),
+        "dominaria booster box": (
+            " dominaria remastered ",
+            " dominaria united ",
+        ),
+        "innistrad booster box": (
+            " innistrad remastered ",
+            " innistrad midnight hunt ",
+            " innistrad crimson vow ",
+        ),
+        "lorwyn booster box": (
+            " lorwyn eclipsed ",
+        ),
+        "modern horizons booster box": (
+            " modern horizons 2 ",
+            " modern horizons 3 ",
+        ),
+    }
 
-    if product_name.strip() == "dominaria booster box":
-        return any(
-            phrase in title_norm
-            for phrase in (
-                " dominaria remastered ",
-                " dominaria united ",
-            )
-        )
-
-    return False
+    return any(
+        phrase in title_norm
+        for phrase in conflict_phrases.get(product_key, ())
+    )
 
 
 def strict_match_listing(

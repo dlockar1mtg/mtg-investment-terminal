@@ -292,6 +292,61 @@ def test_dominaria_variants_do_not_match_original_dominaria():
     assert "conflicting_set_identity" in result.exclusion_reasons
 
 
+
+def test_play_booster_box_is_rejected_for_historical_box():
+    result = strict_match_listing(
+        product("Lorwyn - Booster Box"),
+        listing("MTG Lorwyn Eclipsed Play Booster Box Factory Sealed"),
+        "RUN",
+        "2026-07-23T00:00:00Z",
+    )
+    assert result.match_state == "REJECTED"
+    assert "excluded_product_form" in result.exclusion_reasons
+
+
+def test_innistrad_remastered_is_rejected_for_original_innistrad():
+    result = strict_match_listing(
+        product("Innistrad - Booster Box"),
+        listing("MTG Innistrad Remastered Collector Booster Box New Sealed"),
+        "RUN",
+        "2026-07-23T00:00:00Z",
+    )
+    assert result.match_state == "REJECTED"
+    assert "conflicting_set_identity" in result.exclusion_reasons
+
+
+def test_midnight_hunt_is_rejected_for_original_innistrad():
+    result = strict_match_listing(
+        product("Innistrad - Booster Box"),
+        listing("MTG Innistrad Midnight Hunt Collector Booster Box Sealed"),
+        "RUN",
+        "2026-07-23T00:00:00Z",
+    )
+    assert result.match_state == "REJECTED"
+    assert "conflicting_set_identity" in result.exclusion_reasons
+
+
+def test_lorwyn_eclipsed_is_rejected_for_original_lorwyn():
+    result = strict_match_listing(
+        product("Lorwyn - Booster Box"),
+        listing("MTG Lorwyn Eclipsed Collector Booster Box Factory Sealed"),
+        "RUN",
+        "2026-07-23T00:00:00Z",
+    )
+    assert result.match_state == "REJECTED"
+    assert "conflicting_set_identity" in result.exclusion_reasons
+
+
+def test_modern_horizons_three_is_rejected_for_original_modern_horizons():
+    result = strict_match_listing(
+        product("Modern Horizons - Booster Box"),
+        listing("MTG Modern Horizons 3 Play Booster Box Factory Sealed"),
+        "RUN",
+        "2026-07-23T00:00:00Z",
+    )
+    assert result.match_state == "REJECTED"
+    assert "conflicting_set_identity" in result.exclusion_reasons
+
 def test_precision_runner_uses_strict_matcher_without_recursion(monkeypatch, tmp_path):
     sample_product = product("Amonkhet - Booster Box")
 
