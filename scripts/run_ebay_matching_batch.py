@@ -1,8 +1,10 @@
 from __future__ import annotations
 
 import argparse
+from datetime import datetime, timezone
 import json
 from pathlib import Path
+import shutil
 import sys
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -80,6 +82,8 @@ def main() -> int:
     end = args.offset + len(subset) - 1
     batch_key = f"{args.product_class.lower()}_{args.offset:04d}_{end:04d}"
     batch_root = base.OUTPUT_ROOT / "batches" / batch_key
+    attempt_key = datetime.now(timezone.utc).strftime("attempt_%Y%m%dT%H%M%SZ")
+    attempt_root = batch_root / "attempts" / attempt_key
     existing = sorted(batch_root.glob("ebay_matching_summary_*.json"))
     if existing and not args.force:
         print(f"BATCH ALREADY COMPLETE: {batch_key}")
@@ -87,7 +91,7 @@ def main() -> int:
         return 0
 
     original_output = base.OUTPUT_ROOT
-    base.OUTPUT_ROOT = batch_root
+    base.OUTPUT_ROOT = attempt_root
     try:
         summary = run_coverage(
             limit_per_product=args.limit_per_product,
@@ -97,11 +101,22 @@ def main() -> int:
     finally:
         base.OUTPUT_ROOT = original_output
 
-    if int(summary.get("products", -1)) != len(subset):
-        raise RuntimeError(
-            "Batch universe mismatch: "
-            f"selected={len(subset)} processed={summary.get('products')}"
+    processed = int(summary.get("products", -1))
+    source_errors = int(summary.get("coverage_states", {}).get("SOURCE_ERROR", 0))
+    aborted_early = bool(summary.get("aborted_early", False))
+    if processed != len(subset) or source_errors or aborted_early:
+        print("\nEBAY MATCHING BATCH: INCOMPLETE")
+        print(f"Attempt preserved at: {attempt_root}")
+        print(
+            f"selected={len(subset)} processed={processed} "
+            f"source_errors={source_errors} aborted_early={aborted_early}"
         )
+        raise SystemExit(2)
+
+    batch_root.mkdir(parents=True, exist_ok=True)
+    for path in attempt_root.iterdir():
+        if path.is_file():
+            shutil.copy2(path, batch_root / path.name)
 
     manifest = {
         "batch_key": batch_key,

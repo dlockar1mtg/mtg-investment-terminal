@@ -7,6 +7,7 @@ import json
 import os
 import re
 import time
+import urllib.error
 import urllib.parse
 import urllib.request
 from dataclasses import asdict, dataclass
@@ -301,6 +302,14 @@ def match_listing(product: CanonicalProduct, item: Mapping[str, object], run_id:
     )
 
 
+
+
+class EbayRateLimitError(RuntimeError):
+    def __init__(self, message: str, retry_after: str = ""):
+        super().__init__(message)
+        self.retry_after = retry_after
+
+
 class EbayBrowseClient:
     def __init__(self, timeout: int = 30):
         _load_dotenv()
@@ -337,8 +346,17 @@ class EbayBrowseClient:
             f"https://api.ebay.com/buy/browse/v1/item_summary/search?{params}",
             headers={"Authorization": f"Bearer {self.token()}", "X-EBAY-C-MARKETPLACE-ID": self.marketplace, "Accept": "application/json"},
         )
-        with urllib.request.urlopen(request, timeout=self.timeout) as response:
-            payload = json.load(response)
+        try:
+            with urllib.request.urlopen(request, timeout=self.timeout) as response:
+                payload = json.load(response)
+        except urllib.error.HTTPError as exc:
+            if exc.code == 429:
+                retry_after = exc.headers.get("Retry-After", "") if exc.headers else ""
+                raise EbayRateLimitError(
+                    "eBay Browse API rate limit reached",
+                    retry_after=retry_after,
+                ) from exc
+            raise
         return list(payload.get("itemSummaries") or [])
 
     def search_product(self, product: CanonicalProduct, limit: int = 20) -> tuple[list[dict[str, object]], int]:
@@ -374,6 +392,29 @@ def run_coverage(limit_per_product: int = 20, max_products: int | None = None) -
             items, queries_used = client.search_product(product, limit_per_product)
             matches = [match_listing(product, item, run_id, observed) for item in items]
             error = ""
+        except EbayRateLimitError as exc:
+            matches = []
+            error = f"{type(exc).__name__}: {exc}"
+            results.extend(matches)
+            coverage_rows.append({
+                **asdict(product), "queries_used": queries_used, "results_found": 0,
+                "accepted_listing_count": 0, "review_listing_count": 0,
+                "rejected_listing_count": 0,
+                "median_accepted_landed_price": "",
+                "lowest_accepted_landed_price": "",
+                "accepted_seller_count": 0,
+                "coverage_state": "SOURCE_ERROR",
+                "source_error": error,
+            })
+            print(
+                f"[{index}/{len(universe)}] {product.canonical_product_name}: SOURCE_ERROR "
+                f"(0 accepted, 0 found, {queries_used} queries)"
+            )
+            print(
+                "EBAY RATE LIMIT REACHED: aborting batch immediately"
+                + (f"; retry_after={exc.retry_after}" if exc.retry_after else "")
+            )
+            break
         except Exception as exc:
             matches = []
             error = f"{type(exc).__name__}: {exc}"
@@ -423,7 +464,9 @@ def run_coverage(limit_per_product: int = 20, max_products: int | None = None) -
     summary = {
         "run_id": run_id,
         "observed_at_utc": observed,
-        "products": len(universe),
+        "products": len(coverage_rows),
+        "expected_products": len(universe),
+        "aborted_early": len(coverage_rows) < len(universe),
         "listing_rows": len(results),
         "queries_used": sum(int(row["queries_used"]) for row in coverage_rows),
         "accepted_rows": sum(row.match_state == "ACCEPTED" for row in results),

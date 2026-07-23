@@ -151,7 +151,7 @@ RUNNER_OUTPUT_NEW = '''    original_output = base.OUTPUT_ROOT
     source_errors = int(summary.get("coverage_states", {}).get("SOURCE_ERROR", 0))
     aborted_early = bool(summary.get("aborted_early", False))
     if processed != len(subset) or source_errors or aborted_early:
-        print("\nEBAY MATCHING BATCH: INCOMPLETE")
+        print("\\nEBAY MATCHING BATCH: INCOMPLETE")
         print(f"Attempt preserved at: {attempt_root}")
         print(
             f"selected={len(subset)} processed={processed} "

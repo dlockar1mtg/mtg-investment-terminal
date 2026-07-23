@@ -46,3 +46,9 @@ def test_quota_supports_required_calls_and_reserve():
 
 def test_estimate_batch_calls_uses_three_query_ceiling():
     assert estimate_batch_calls(200) == 600
+
+
+def test_browse_quota_exhausted_property():
+    quota = parse_browse_quota(payload(remaining=0, count=5000))
+    assert quota.exhausted is True
+
