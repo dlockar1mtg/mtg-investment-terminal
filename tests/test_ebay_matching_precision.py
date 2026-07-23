@@ -662,3 +662,49 @@ def test_secret_lair_presell_listing_is_rejected():
     assert result.match_state == "REJECTED"
     assert "presale" in result.exclusion_reasons
 
+def test_secret_lair_traditional_foil_rejects_explicit_rainbow_foil_listing():
+    result = strict_match_listing(
+        product(
+            "Drop: Aether Drifters - Traditional Foil Edition",
+            product_class="SEALED_SECRET_LAIR",
+        ),
+        listing(
+            "MTG Secret Lair Aether Drifters Rainbow Foil Sealed in Hand"
+        ),
+        "RUN",
+        "2026-07-23T00:00:00Z",
+    )
+    assert result.match_state == "REJECTED"
+    assert "secret_lair_variant_conflict" in result.exclusion_reasons
+
+
+def test_secret_lair_rainbow_foil_rejects_explicit_traditional_foil_listing():
+    result = strict_match_listing(
+        product(
+            "Drop: Arcade Racers - Rainbow Foil Edition",
+            product_class="SEALED_SECRET_LAIR",
+        ),
+        listing(
+            "MTG Secret Lair Arcade Racers Traditional Foil Edition Sealed"
+        ),
+        "RUN",
+        "2026-07-23T00:00:00Z",
+    )
+    assert result.match_state == "REJECTED"
+    assert "secret_lair_variant_conflict" in result.exclusion_reasons
+
+
+def test_secret_lair_traditional_foil_allows_generic_foil_listing():
+    result = strict_match_listing(
+        product(
+            "Drop: Absolute Annihilation - Traditional Foil Edition",
+            product_class="SEALED_SECRET_LAIR",
+        ),
+        listing(
+            "MTG Secret Lair Absolute Annihilation Foil Edition Sealed"
+        ),
+        "RUN",
+        "2026-07-23T00:00:00Z",
+    )
+    assert result.match_state == "ACCEPTED"
+

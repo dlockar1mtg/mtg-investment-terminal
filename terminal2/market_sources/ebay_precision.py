@@ -315,11 +315,31 @@ SECRET_LAIR_ZODIAC_SIGNS = (
 )
 
 
+
+def _secret_lair_foil_subtype(value_norm: str) -> str | None:
+    if " double rainbow foil " in value_norm:
+        return "double_rainbow"
+    if " rainbow foil " in value_norm:
+        return "rainbow"
+    if " traditional foil " in value_norm:
+        return "traditional"
+    return None
+
 def _secret_lair_variant_conflict(
     product: base.CanonicalProduct,
     title_norm: str,
 ) -> bool:
     product_norm = base._norm(product.canonical_product_name)
+
+
+    product_foil_subtype = _secret_lair_foil_subtype(product_norm)
+    title_foil_subtype = _secret_lair_foil_subtype(title_norm)
+    if (
+        product_foil_subtype is not None
+        and title_foil_subtype is not None
+        and product_foil_subtype != title_foil_subtype
+    ):
+        return True
 
     product_nonfoil = " non foil " in product_norm
     product_foil = (
