@@ -359,6 +359,7 @@ def _secret_lair_explicit_identity_conflict(product_norm: str, title_norm: str) 
         (" allied talismans ", " enemy talismans "),
         (" extra life 2020 ", " extra life 2022 "),
         (" kevin eastman colors ", " kevin eastman inks "),
+        (" li l er walkers ", " li l est walkers "),
     )
     for left, right in paired_identities:
         if left in product_norm and right in title_norm:
@@ -377,6 +378,36 @@ def _secret_lair_variant_conflict(
     if _secret_lair_explicit_identity_conflict(product_norm, title_norm):
         return True
 
+    product_second_helpings = " just add milk second helpings " in product_norm
+    title_second_helpings = " just add milk second helpings " in title_norm
+    product_base_milk = " just add milk " in product_norm and not product_second_helpings
+    title_base_milk = " just add milk " in title_norm and not title_second_helpings
+    if (product_base_milk and title_second_helpings) or (product_second_helpings and title_base_milk):
+        return True
+
+
+
+    if " pixelsnowlands jpg " in product_norm:
+        product_is_etched = (
+            " foil etched " in product_norm
+            or " etched foil " in product_norm
+        )
+        product_is_traditional = " traditional foil " in product_norm
+        title_has_explicit_etched = (
+            " foil etched " in title_norm
+            or " etched foil " in title_norm
+        )
+        title_has_explicit_traditional = " traditional foil " in title_norm
+        title_has_generic_foil = " foil " in title_norm
+
+        if product_is_etched and title_has_generic_foil and not title_has_explicit_etched:
+            return True
+        if (
+            product_is_traditional
+            and title_has_generic_foil
+            and not title_has_explicit_traditional
+        ):
+            return True
 
     product_foil_subtype = _secret_lair_foil_subtype(product_norm)
     title_foil_subtype = _secret_lair_foil_subtype(title_norm)

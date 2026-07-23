@@ -811,3 +811,72 @@ def test_secret_lair_kevin_eastman_colors_inks_collision_is_rejected():
     assert result.match_state == "REJECTED"
     assert "secret_lair_variant_conflict" in result.exclusion_reasons
 
+
+def test_secret_lair_just_add_milk_second_helpings_collision_is_rejected():
+    result = strict_match_listing(
+        product(
+            "Drop: Just Add Milk - Non-Foil Edition",
+            product_class="SEALED_SECRET_LAIR",
+        ),
+        listing("Just Add Milk Second Helpings Non Foil Secret Lair New Sealed"),
+        "RUN",
+        "2026-07-23T00:00:00Z",
+    )
+    assert result.match_state == "REJECTED"
+    assert "secret_lair_variant_conflict" in result.exclusion_reasons
+
+
+def test_secret_lair_just_add_milk_second_helpings_exact_match_is_allowed():
+    result = strict_match_listing(
+        product(
+            "Drop: Just Add Milk: Second Helpings - Non-Foil Edition",
+            product_class="SEALED_SECRET_LAIR",
+        ),
+        listing("Just Add Milk Second Helpings Non Foil Secret Lair New Sealed"),
+        "RUN",
+        "2026-07-23T00:00:00Z",
+    )
+    assert result.match_state == "ACCEPTED"
+
+
+def test_secret_lair_liler_lilest_walkers_collision_is_rejected():
+    result = strict_match_listing(
+        product(
+            "Drop: Li'l'er Walkers - Non-Foil Edition",
+            product_class="SEALED_SECRET_LAIR",
+        ),
+        listing("MTG Secret Lair Drop Li'l'est Walkers Non Foil Edition Sealed"),
+        "RUN",
+        "2026-07-23T00:00:00Z",
+    )
+    assert result.match_state == "REJECTED"
+    assert "secret_lair_variant_conflict" in result.exclusion_reasons
+
+
+def test_secret_lair_pixelsnowlands_generic_foil_rejects_etched_canonical():
+    result = strict_match_listing(
+        product(
+            "Drop: PixelSnowLands.jpg - Foil Etched Edition",
+            product_class="SEALED_SECRET_LAIR",
+        ),
+        listing("MTG Secret Lair PixelSnowLands.jpg Foil Edition Sealed"),
+        "RUN",
+        "2026-07-23T00:00:00Z",
+    )
+    assert result.match_state == "REJECTED"
+    assert "secret_lair_variant_conflict" in result.exclusion_reasons
+
+
+def test_secret_lair_pixelsnowlands_generic_foil_rejects_traditional_canonical():
+    result = strict_match_listing(
+        product(
+            "Drop: PixelSnowLands.jpg - Traditional Foil Edition",
+            product_class="SEALED_SECRET_LAIR",
+        ),
+        listing("MTG Secret Lair PixelSnowLands.jpg Foil Edition Sealed"),
+        "RUN",
+        "2026-07-23T00:00:00Z",
+    )
+    assert result.match_state == "REJECTED"
+    assert "secret_lair_variant_conflict" in result.exclusion_reasons
+
