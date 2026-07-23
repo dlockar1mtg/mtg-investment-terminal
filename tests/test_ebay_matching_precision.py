@@ -756,3 +756,58 @@ def test_secret_lair_nonfoil_rejects_upick_finish_listing():
     assert result.match_state == "REJECTED"
     assert "secret_lair_variant_conflict" in result.exclusion_reasons
 
+def test_secret_lair_cats_dogs_title_collision_is_rejected():
+    result = strict_match_listing(
+        product(
+            "Drop: Cats Are Better Than Dogs - Non-Foil Edition",
+            product_class="SEALED_SECRET_LAIR",
+        ),
+        listing("MTG Secret Lair Dogs Are Better Than Cats Non-Foil Sealed"),
+        "RUN",
+        "2026-07-23T00:00:00Z",
+    )
+    assert result.match_state == "REJECTED"
+    assert "secret_lair_variant_conflict" in result.exclusion_reasons
+
+
+def test_secret_lair_allied_enemy_talisman_collision_is_rejected():
+    result = strict_match_listing(
+        product(
+            "Drop: Dan Frazier Is Back Again: The Enemy Talismans - Foil Etched Edition",
+            product_class="SEALED_SECRET_LAIR",
+        ),
+        listing("Secret Lair Dan Frazier Allied Talismans Foil Etched Sealed"),
+        "RUN",
+        "2026-07-23T00:00:00Z",
+    )
+    assert result.match_state == "REJECTED"
+    assert "secret_lair_variant_conflict" in result.exclusion_reasons
+
+
+def test_secret_lair_extra_life_year_collision_is_rejected():
+    result = strict_match_listing(
+        product(
+            "Drop: Extra Life 2022 - Traditional Foil Edition",
+            product_class="SEALED_SECRET_LAIR",
+        ),
+        listing("MTG Secret Lair Extra Life 2020 Traditional Foil Edition Sealed"),
+        "RUN",
+        "2026-07-23T00:00:00Z",
+    )
+    assert result.match_state == "REJECTED"
+    assert "secret_lair_variant_conflict" in result.exclusion_reasons
+
+
+def test_secret_lair_kevin_eastman_colors_inks_collision_is_rejected():
+    result = strict_match_listing(
+        product(
+            "Drop: Featuring: Kevin Eastman (Colors) - Traditional Foil Edition",
+            product_class="SEALED_SECRET_LAIR",
+        ),
+        listing("Secret Lair Featuring Kevin Eastman Inks Traditional Foil Sealed"),
+        "RUN",
+        "2026-07-23T00:00:00Z",
+    )
+    assert result.match_state == "REJECTED"
+    assert "secret_lair_variant_conflict" in result.exclusion_reasons
+

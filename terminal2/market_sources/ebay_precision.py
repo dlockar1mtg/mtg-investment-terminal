@@ -351,11 +351,31 @@ def _secret_lair_declares_single_finish(value_norm: str) -> bool:
         or " foil " in value_norm
     )
 
+
+
+def _secret_lair_explicit_identity_conflict(product_norm: str, title_norm: str) -> bool:
+    paired_identities = (
+        (" cats are better than dogs ", " dogs are better than cats "),
+        (" allied talismans ", " enemy talismans "),
+        (" extra life 2020 ", " extra life 2022 "),
+        (" kevin eastman colors ", " kevin eastman inks "),
+    )
+    for left, right in paired_identities:
+        if left in product_norm and right in title_norm:
+            return True
+        if right in product_norm and left in title_norm:
+            return True
+    return False
+
+
 def _secret_lair_variant_conflict(
     product: base.CanonicalProduct,
     title_norm: str,
 ) -> bool:
     product_norm = base._norm(product.canonical_product_name)
+
+    if _secret_lair_explicit_identity_conflict(product_norm, title_norm):
+        return True
 
 
     product_foil_subtype = _secret_lair_foil_subtype(product_norm)

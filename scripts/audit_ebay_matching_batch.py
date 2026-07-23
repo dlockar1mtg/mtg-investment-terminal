@@ -11,7 +11,7 @@ from typing import Any
 
 
 SUSPICIOUS_PATTERN = re.compile(
-    r"presell|pre[- ]?sale|pre[- ]?order|pre aug|opened|empty|proxy|digital|"
+    r"presell|pre[- ]?sale|pre[- ]?order|pre aug|\bopened\b|empty|proxy|digital|"
     r"single card|case of|upick|u[- ]?pick|you pick|choice of|"
     r"foil\s*/\s*non[- ]?foil|non[- ]?foil\s*\+\s*foil|"
     r"foil\s*\+\s*non[- ]?foil|foil and non[- ]?foil|"
