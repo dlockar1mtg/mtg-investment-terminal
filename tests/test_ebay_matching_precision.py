@@ -347,6 +347,28 @@ def test_modern_horizons_three_is_rejected_for_original_modern_horizons():
     assert result.match_state == "REJECTED"
     assert "conflicting_set_identity" in result.exclusion_reasons
 
+
+def test_ampersand_two_product_listing_is_rejected():
+    result = strict_match_listing(
+        product("Journey Into Nyx - Booster Box"),
+        listing("Magic the Gathering Journey into Nyx & Origins Booster Boxes JP NEW SEALED"),
+        "RUN",
+        "2026-07-23T00:00:00Z",
+    )
+    assert result.match_state == "REJECTED"
+    assert "mixed_product_listing" in result.exclusion_reasons
+
+
+def test_jp_language_marker_is_rejected():
+    result = strict_match_listing(
+        product("Journey Into Nyx - Booster Box"),
+        listing("Magic the Gathering Journey into Nyx Booster Box *JP* NEW SEALED"),
+        "RUN",
+        "2026-07-23T00:00:00Z",
+    )
+    assert result.match_state == "REJECTED"
+    assert "non_english" in result.exclusion_reasons
+
 def test_precision_runner_uses_strict_matcher_without_recursion(monkeypatch, tmp_path):
     sample_product = product("Amonkhet - Booster Box")
 

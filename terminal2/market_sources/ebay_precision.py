@@ -158,8 +158,27 @@ def _is_mixed_product_listing(
     raw_title: str,
 ) -> bool:
     raw_lower = raw_title.lower()
-    if "+" not in raw_title and " plus " not in raw_lower:
+    has_connector = (
+        "+" in raw_title
+        or " plus " in raw_lower
+        or " & " in raw_title
+        or " and " in raw_lower
+    )
+    if not has_connector:
         return False
+
+    # A title such as "Journey into Nyx & Origins Booster Boxes" names
+    # two products but contains the product-form phrase only once.  Detect the
+    # connector plus a plural box form instead of requiring two repetitions of
+    # "booster box".
+    if (
+        (" & " in raw_title or " and " in raw_lower)
+        and " booster boxes " in title_norm
+    ):
+        return True
+
+    if re.search(r"\bbooster\s+boxes?\b.*\bbooster\s+boxes?\b", title_norm):
+        return True
 
     product_name_norm = base._norm(product.canonical_product_name)
     known_other_products = (
@@ -184,6 +203,27 @@ def _is_mixed_product_listing(
     ):
         return False
     return True
+
+
+def _has_non_english_marker(title_norm: str, raw_title: str) -> bool:
+    raw_upper = raw_title.upper()
+    shorthand_markers = ("*JP*", "[JP]", "(JP)", " JP ", " JPN ")
+    if any(marker in raw_upper for marker in shorthand_markers):
+        return True
+    return any(
+        phrase in title_norm
+        for phrase in (
+            " japanese ",
+            " german ",
+            " french ",
+            " italian ",
+            " spanish ",
+            " portuguese ",
+            " korean ",
+            " chinese ",
+            " russian ",
+        )
+    )
 
 
 def _is_ambiguous_display_case(title_norm: str) -> bool:
@@ -281,6 +321,8 @@ def strict_match_listing(
             reasons.append("deprecated_catalog_placeholder")
         if _is_mixed_product_listing(product, title_norm, result.title):
             reasons.append("mixed_product_listing")
+        if _has_non_english_marker(title_norm, result.title):
+            reasons.append("non_english")
         if any(term in title_norm for term in DAMAGED_SEAL_TERMS):
             reasons.append("damaged_or_uncertain_seal")
         if (
