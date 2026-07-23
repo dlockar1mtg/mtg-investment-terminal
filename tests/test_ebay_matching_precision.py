@@ -708,3 +708,51 @@ def test_secret_lair_traditional_foil_allows_generic_foil_listing():
     )
     assert result.match_state == "ACCEPTED"
 
+
+def test_secret_lair_nonfoil_rejects_mixed_rainbow_and_nonfoil_set_listing():
+    result = strict_match_listing(
+        product(
+            "Drop: Artist Series: Kieran Yanner - Non-Foil Edition",
+            product_class="SEALED_SECRET_LAIR",
+        ),
+        listing(
+            "MTG Secret Lair Artist Series Kieran Yanner Rainbow Foil Non Foil Set Sealed"
+        ),
+        "RUN",
+        "2026-07-23T00:00:00Z",
+    )
+    assert result.match_state == "REJECTED"
+    assert "secret_lair_variant_conflict" in result.exclusion_reasons
+
+
+def test_secret_lair_nonfoil_rejects_combined_foil_nonfoil_listing():
+    result = strict_match_listing(
+        product(
+            "Drop: Artist Series: Livia Prima - Non-Foil Edition",
+            product_class="SEALED_SECRET_LAIR",
+        ),
+        listing(
+            "MTG Secret Lair Artist Series Livia Prima Non-Foil+Foil Edition Sealed"
+        ),
+        "RUN",
+        "2026-07-23T00:00:00Z",
+    )
+    assert result.match_state == "REJECTED"
+    assert "secret_lair_variant_conflict" in result.exclusion_reasons
+
+
+def test_secret_lair_nonfoil_rejects_upick_finish_listing():
+    result = strict_match_listing(
+        product(
+            "Drop: Artist Series: Ryan Alexander Lee - Non-Foil Edition",
+            product_class="SEALED_SECRET_LAIR",
+        ),
+        listing(
+            "MTG Secret Lair Artist Series Ryan Alexander Lee Upick Foil/Non Foil SLD"
+        ),
+        "RUN",
+        "2026-07-23T00:00:00Z",
+    )
+    assert result.match_state == "REJECTED"
+    assert "secret_lair_variant_conflict" in result.exclusion_reasons
+

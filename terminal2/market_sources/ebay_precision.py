@@ -325,6 +325,32 @@ def _secret_lair_foil_subtype(value_norm: str) -> str | None:
         return "traditional"
     return None
 
+
+def _secret_lair_mixed_finish_or_choice(value_norm: str) -> bool:
+    choice_terms = (
+        " upick ",
+        " u pick ",
+        " you pick ",
+        " choice of ",
+        " choose foil ",
+        " choose non foil ",
+    )
+    if any(term in value_norm for term in choice_terms):
+        return True
+
+    has_nonfoil = " non foil " in value_norm or " nonfoil " in value_norm
+    without_nonfoil = value_norm.replace(" non foil ", " ").replace(" nonfoil ", " ")
+    has_positive_foil = " foil " in without_nonfoil
+    return has_nonfoil and has_positive_foil
+
+
+def _secret_lair_declares_single_finish(value_norm: str) -> bool:
+    return (
+        " non foil " in value_norm
+        or " nonfoil " in value_norm
+        or " foil " in value_norm
+    )
+
 def _secret_lair_variant_conflict(
     product: base.CanonicalProduct,
     title_norm: str,
@@ -338,6 +364,12 @@ def _secret_lair_variant_conflict(
         product_foil_subtype is not None
         and title_foil_subtype is not None
         and product_foil_subtype != title_foil_subtype
+    ):
+        return True
+
+    if (
+        _secret_lair_declares_single_finish(product_norm)
+        and _secret_lair_mixed_finish_or_choice(title_norm)
     ):
         return True
 
