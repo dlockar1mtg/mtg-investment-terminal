@@ -5,10 +5,9 @@ from pathlib import Path
 PRECISION_PATH = Path("terminal2/market_sources/ebay_precision.py")
 TEST_PATH = Path("tests/test_ebay_matching_precision.py")
 
-PAIR_INSERTS = (
-    '        (" just add milk ", " just add milk second helpings "),\n',
-    '        (" li l er walkers ", " li l est walkers "),\n',
-)
+PAIR_INSERT = '        (" li l er walkers ", " li l est walkers "),\n'
+
+JUST_ADD_MILK_RULE = '''\n    product_second_helpings = " just add milk second helpings " in product_norm\n    title_second_helpings = " just add milk second helpings " in title_norm\n    product_base_milk = " just add milk " in product_norm and not product_second_helpings\n    title_base_milk = " just add milk " in title_norm and not title_second_helpings\n    if (product_base_milk and title_second_helpings) or (product_second_helpings and title_base_milk):\n        return True\n'''
 
 PIXEL_RULE = '''\n    if " pixelsnowlands jpg " in product_norm:\n        product_pixel_subtype = _secret_lair_foil_subtype(product_norm)\n        title_pixel_subtype = _secret_lair_foil_subtype(title_norm)\n        title_has_generic_foil = " foil " in title_norm\n        if (\n            product_pixel_subtype in {"traditional", "etched"}\n            and title_has_generic_foil\n            and title_pixel_subtype is None\n        ):\n            return True\n'''
 
@@ -27,6 +26,19 @@ def test_secret_lair_just_add_milk_second_helpings_collision_is_rejected():
     )
     assert result.match_state == "REJECTED"
     assert "secret_lair_variant_conflict" in result.exclusion_reasons
+
+
+def test_secret_lair_just_add_milk_second_helpings_exact_match_is_allowed():
+    result = strict_match_listing(
+        product(
+            "Drop: Just Add Milk: Second Helpings - Non-Foil Edition",
+            product_class="SEALED_SECRET_LAIR",
+        ),
+        listing("Just Add Milk Second Helpings Non Foil Secret Lair New Sealed"),
+        "RUN",
+        "2026-07-23T00:00:00Z",
+    )
+    assert result.match_state == "ACCEPTED"
 
 
 def test_secret_lair_liler_lilest_walkers_collision_is_rejected():
@@ -78,10 +90,18 @@ def apply() -> None:
     tuple_anchor = '        (" kevin eastman colors ", " kevin eastman inks "),\n'
     if tuple_anchor not in precision:
         raise RuntimeError("Expected identity-pair anchor not found")
+    if PAIR_INSERT not in precision:
+        precision = precision.replace(tuple_anchor, tuple_anchor + PAIR_INSERT, 1)
 
-    for pair_line in PAIR_INSERTS:
-        if pair_line not in precision:
-            precision = precision.replace(tuple_anchor, tuple_anchor + pair_line, 1)
+    identity_call_anchor = "    if _secret_lair_explicit_identity_conflict(product_norm, title_norm):\n        return True\n"
+    if JUST_ADD_MILK_RULE.strip() not in precision:
+        if identity_call_anchor not in precision:
+            raise RuntimeError("Expected identity-conflict call anchor not found")
+        precision = precision.replace(
+            identity_call_anchor,
+            identity_call_anchor + JUST_ADD_MILK_RULE,
+            1,
+        )
 
     pixel_anchor = "    product_foil_subtype = _secret_lair_foil_subtype(product_norm)\n"
     if PIXEL_RULE.strip() not in precision:
