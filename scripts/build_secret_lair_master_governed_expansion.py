@@ -38,30 +38,28 @@ def clean(value: object) -> str:
 
 
 def norm(value: object) -> str:
-    text = clean(value).lower()
-    replacements = {
-        "non-foil": "nonfoil",
-        "non foil": "nonfoil",
-        "traditional foil edition": "foil",
-        "rainbow foil edition": "foil",
-        "foil edition": "foil",
-        "standard edition": "",
-        "secret lair promo": "",
-        "secret lair": "",
-        "drop": "",
-        "edition": "",
-        "the last air bender": "the last airbender",
-        "mother's": "mothers",
-    }
-    for old, new in replacements.items():
-        text = text.replace(old, new)
+    text = clean(value).lower().replace("mother's", "mothers")
     text = re.sub(r"[^a-z0-9]+", " ", text)
     return " ".join(text.split())
 
 
+def identity_core(value: object) -> str:
+    text = norm(value)
+    phrases = (
+        "traditional foil edition", "rainbow foil edition", "non foil edition",
+        "nonfoil edition", "foil edition", "standard edition", "traditional foil",
+        "rainbow foil", "etched foil", "galaxy foil", "gilded foil",
+        "textured foil", "non foil", "nonfoil",
+    )
+    for phrase in phrases:
+        text = text.replace(phrase, " ")
+    text = re.sub(r"\b(secret lair promo|secret lair|drop|edition)\b", " ", text)
+    text = text.replace("the last air bender", "the last airbender")
+    return " ".join(text.split())
+
+
 def infer_detailed_finish(row: dict[str, str]) -> str:
-    value = norm(f"{row.get('product_name', '')} {row.get('drop_name', '')} {row.get('variant_name', '')}")
-    raw = clean(f"{row.get('product_name', '')} {row.get('drop_name', '')}").lower()
+    raw = clean(f"{row.get('product_name', '')} {row.get('drop_name', '')} {row.get('variant_name', '')}").lower()
     if "rainbow foil" in raw:
         return "rainbow_foil"
     if "traditional foil" in raw:
@@ -74,7 +72,7 @@ def infer_detailed_finish(row: dict[str, str]) -> str:
         return "gilded_foil"
     if "textured foil" in raw:
         return "textured_foil"
-    if "nonfoil" in value:
+    if "non-foil" in raw or "nonfoil" in raw or "non foil" in raw:
         return "nonfoil"
     if clean(row.get("finish")).lower() == "foil":
         return "foil_unspecified"
@@ -88,6 +86,27 @@ def infer_language(row: dict[str, str]) -> str:
     if " EN " in value or value.rstrip().endswith(" EN"):
         return "EN"
     return ""
+
+
+def infer_configuration(row: dict[str, str]) -> str:
+    value = norm(f"{row.get('product_name', '')} {row.get('drop_name', '')} {row.get('product_family', '')}")
+    if "festival in a box" in value:
+        return "festival_in_a_box"
+    if "commander deck" in value or re.search(r"\bdeck\b", value):
+        return "deck"
+    if "countdown kit" in value or re.search(r"\bkit\b", value):
+        return "kit"
+    if "bundle" in value:
+        return "bundle"
+    return "individual_drop"
+
+
+def finish_compatible(owned: str, candidate: str) -> bool:
+    if owned == "unspecified":
+        return True
+    if owned == candidate:
+        return True
+    return owned in {"traditional_foil", "rainbow_foil", "etched_foil", "galaxy_foil", "gilded_foil", "textured_foil"} and candidate == "foil_unspecified"
 
 
 def read_csv(path: Path) -> list[dict[str, str]]:
@@ -120,72 +139,108 @@ def main() -> None:
         mappings = map_by_id.get(sl_id, [])
         tcg_ids = sorted({clean(x.get("tcgplayer_product_id")) for x in mappings if clean(x.get("tcgplayer_product_id"))})
         confidence = int(float(clean(row.get("source_confidence")) or 0))
-        finish = clean(row.get("finish")).lower() or "unknown"
-        governance_status = "REGISTRY_READY" if confidence >= 75 and finish != "unknown" else "REVIEW_REQUIRED"
-        review_reason = ""
+        detailed_finish = infer_detailed_finish(row)
+        configuration = infer_configuration(row)
+        finish_required = configuration == "individual_drop"
+        reasons: list[str] = []
         if confidence < 75:
-            review_reason = "LOW_SOURCE_CONFIDENCE"
-        if finish == "unknown":
-            review_reason = f"{review_reason}|UNKNOWN_FINISH".strip("|")
-        governed.append(
-            {
-                **row,
-                "detailed_finish": infer_detailed_finish(row),
-                "language": infer_language(row),
-                "tcgplayer_product_id": "|".join(tcg_ids),
-                "tcgplayer_mapping_count": len(tcg_ids),
-                "governance_status": governance_status,
-                "review_reason": review_reason,
-                "ebay_matching_allowed": governance_status == "REGISTRY_READY",
-                "normalized_identity": norm(row.get("product_name")),
-            }
-        )
+            reasons.append("LOW_SOURCE_CONFIDENCE")
+        if finish_required and detailed_finish == "unknown":
+            reasons.append("UNKNOWN_FINISH_INDIVIDUAL_DROP")
+        if not tcg_ids:
+            reasons.append("MISSING_TCGPLAYER_ID")
+        governance_status = "REGISTRY_READY" if not reasons else "REVIEW_REQUIRED"
+        governed.append({
+            **row,
+            "detailed_finish": detailed_finish,
+            "language": infer_language(row),
+            "sealed_configuration": configuration,
+            "finish_required": finish_required,
+            "tcgplayer_product_id": "|".join(tcg_ids),
+            "tcgplayer_mapping_count": len(tcg_ids),
+            "governance_status": governance_status,
+            "review_reason": "|".join(reasons),
+            "ebay_matching_allowed": governance_status == "REGISTRY_READY",
+            "normalized_identity": identity_core(row.get("product_name")),
+        })
 
     old_ids = {clean(row.get("tcgplayer_product_id")) for row in old_candidates if clean(row.get("tcgplayer_product_id"))}
-    old_names = {norm(row.get("canonical_product_name")) for row in old_candidates if norm(row.get("canonical_product_name"))}
+    old_names = {identity_core(row.get("canonical_product_name")) for row in old_candidates if identity_core(row.get("canonical_product_name"))}
     for row in governed:
         tcg_ids = [x for x in clean(row.get("tcgplayer_product_id")).split("|") if x]
-        row["in_old_phase_10_subset"] = any(x in old_ids for x in tcg_ids) or norm(row.get("product_name")) in old_names
+        row["in_old_phase_10_subset"] = any(x in old_ids for x in tcg_ids) or clean(row.get("normalized_identity")) in old_names
 
     owned_crosswalk: list[dict[str, object]] = []
     for owned_name, owned_finish, owned_language in OWNED_PRODUCTS:
-        owned_key = norm(owned_name)
-        scored: list[tuple[float, dict[str, object]]] = []
+        owned_core = identity_core(owned_name)
+        candidates: list[tuple[float, dict[str, object]]] = []
         for row in governed:
-            candidate_key = clean(row.get("normalized_identity"))
-            score = SequenceMatcher(None, owned_key, candidate_key).ratio()
-            if owned_key and (owned_key in candidate_key or candidate_key in owned_key):
-                score = max(score, 0.93)
+            candidate_core = clean(row.get("normalized_identity"))
+            if not candidate_core:
+                continue
+            score = SequenceMatcher(None, owned_core, candidate_core).ratio()
+            if owned_core == candidate_core:
+                score = 1.0
+            elif owned_core in candidate_core or candidate_core in owned_core:
+                score = max(score, 0.94)
+            elif not set(owned_core.split()).intersection(candidate_core.split()):
+                continue
             candidate_finish = clean(row.get("detailed_finish"))
-            if owned_finish != "unspecified":
-                if owned_finish == candidate_finish:
-                    score += 0.05
-                elif owned_finish in {"traditional_foil", "rainbow_foil"} and candidate_finish == "foil_unspecified":
-                    score += 0.01
-                elif candidate_finish == "nonfoil":
-                    score -= 0.15
-            if owned_language and clean(row.get("language")) == owned_language:
-                score += 0.03
-            scored.append((score, row))
-        scored.sort(key=lambda item: item[0], reverse=True)
-        best_score, best = scored[0]
-        status = "MATCHED_CONFIDENT" if best_score >= 0.90 else "MATCHED_REVIEW" if best_score >= 0.72 else "MISSING_NEEDS_ID_RESOLUTION"
-        owned_crosswalk.append(
-            {
+            compatible_finish = finish_compatible(owned_finish, candidate_finish)
+            if owned_finish != "unspecified" and not compatible_finish:
+                continue
+            candidate_language = clean(row.get("language"))
+            if owned_language and candidate_language and candidate_language != owned_language:
+                continue
+            if owned_finish != "unspecified" and candidate_finish == owned_finish:
+                score += 0.04
+            if owned_language and candidate_language == owned_language:
+                score += 0.02
+            candidates.append((score, row))
+
+        candidates.sort(key=lambda item: item[0], reverse=True)
+        if not candidates:
+            owned_crosswalk.append({
                 "owned_product_name": owned_name,
                 "owned_finish": owned_finish,
                 "owned_language": owned_language,
-                "crosswalk_status": status,
-                "match_score": round(best_score, 4),
-                "secret_lair_id": best.get("secret_lair_id", ""),
-                "master_product_name": best.get("product_name", ""),
-                "master_detailed_finish": best.get("detailed_finish", ""),
-                "master_language": best.get("language", ""),
-                "tcgplayer_product_id": best.get("tcgplayer_product_id", ""),
-                "governance_status": best.get("governance_status", ""),
-                "ebay_matching_allowed": best.get("ebay_matching_allowed", ""),
-            }
-        )
+                "crosswalk_status": "MISSING_NEEDS_ID_RESOLUTION",
+                "match_score": 0,
+                "ambiguity_reason": "NO_TITLE_AND_VARIANT_COMPATIBLE_MATCH",
+            })
+            continue
+
+        best_score, best = candidates[0]
+        same_core = [row for _, row in candidates if clean(row.get("normalized_identity")) == owned_core]
+        same_core_finishes = sorted({clean(row.get("detailed_finish")) for row in same_core})
+        ambiguity = ""
+        if owned_finish == "unspecified" and len(same_core_finishes) > 1:
+            ambiguity = "OWNED_FINISH_UNSPECIFIED_MULTIPLE_MASTER_VARIANTS"
+        elif len(candidates) > 1 and abs(best_score - candidates[1][0]) < 0.02:
+            ambiguity = "MULTIPLE_NEAR_EQUAL_IDENTITY_MATCHES"
+
+        if best_score >= 0.94 and not ambiguity:
+            status = "MATCHED_CONFIDENT"
+        elif best_score >= 0.78:
+            status = "MATCHED_REVIEW"
+        else:
+            status = "MISSING_NEEDS_ID_RESOLUTION"
+
+        owned_crosswalk.append({
+            "owned_product_name": owned_name,
+            "owned_finish": owned_finish,
+            "owned_language": owned_language,
+            "crosswalk_status": status,
+            "match_score": round(best_score, 4),
+            "ambiguity_reason": ambiguity,
+            "secret_lair_id": best.get("secret_lair_id", ""),
+            "master_product_name": best.get("product_name", ""),
+            "master_detailed_finish": best.get("detailed_finish", ""),
+            "master_language": best.get("language", ""),
+            "tcgplayer_product_id": best.get("tcgplayer_product_id", ""),
+            "governance_status": best.get("governance_status", ""),
+            "ebay_matching_allowed": best.get("ebay_matching_allowed", ""),
+        })
 
     fields = list(governed[0].keys()) if governed else []
     ready = [row for row in governed if row["governance_status"] == "REGISTRY_READY"]
@@ -193,24 +248,13 @@ def main() -> None:
     write_csv(FULL_OUTPUT, governed, fields)
     write_csv(READY_OUTPUT, ready, fields)
     write_csv(REVIEW_OUTPUT, review, fields)
-    write_csv(
-        OWNED_OUTPUT,
-        owned_crosswalk,
-        [
-            "owned_product_name",
-            "owned_finish",
-            "owned_language",
-            "crosswalk_status",
-            "match_score",
-            "secret_lair_id",
-            "master_product_name",
-            "master_detailed_finish",
-            "master_language",
-            "tcgplayer_product_id",
-            "governance_status",
-            "ebay_matching_allowed",
-        ],
-    )
+    owned_fields = [
+        "owned_product_name", "owned_finish", "owned_language", "crosswalk_status",
+        "match_score", "ambiguity_reason", "secret_lair_id", "master_product_name",
+        "master_detailed_finish", "master_language", "tcgplayer_product_id",
+        "governance_status", "ebay_matching_allowed",
+    ]
+    write_csv(OWNED_OUTPUT, owned_crosswalk, owned_fields)
 
     summary = [
         {"metric": "master_catalog_rows", "value": len(governed)},
