@@ -117,9 +117,10 @@ def flag_row(row: dict[str, str], low_score_threshold: float) -> list[str]:
     if canonical_subtype and title_subtype and canonical_subtype != title_subtype:
         reasons.append("explicit_finish_subtype_mismatch")
 
-    canonical_nonfoil = bool(re.search(r"\bnon[- ]?foil\b", canonical, re.IGNORECASE))
-    title_nonfoil = bool(re.search(r"\bnon[- ]?foil\b", title, re.IGNORECASE))
-    title_without_nonfoil = re.sub(r"\bnon[- ]?foil\b", " ", title, flags=re.IGNORECASE)
+    nonfoil_pattern = r"\bnon(?:foil|\s*-\s*foil|\s+foil)\b"
+    canonical_nonfoil = bool(re.search(nonfoil_pattern, canonical, re.IGNORECASE))
+    title_nonfoil = bool(re.search(nonfoil_pattern, title, re.IGNORECASE))
+    title_without_nonfoil = re.sub(nonfoil_pattern, " ", title, flags=re.IGNORECASE)
     title_positive_foil = bool(re.search(r"\bfoil\b", title_without_nonfoil, re.IGNORECASE))
     if canonical_nonfoil and title_positive_foil:
         reasons.append("nonfoil_canonical_with_positive_foil_title")

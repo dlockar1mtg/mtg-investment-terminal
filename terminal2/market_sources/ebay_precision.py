@@ -319,6 +319,14 @@ SECRET_LAIR_ZODIAC_SIGNS = (
 def _secret_lair_foil_subtype(value_norm: str) -> str | None:
     if " double rainbow foil " in value_norm:
         return "double_rainbow"
+    if " confetti foil " in value_norm:
+        return "confetti"
+    if " galaxy foil " in value_norm:
+        return "galaxy"
+    if " raised foil " in value_norm:
+        return "raised"
+    if " foil etched " in value_norm or " etched foil " in value_norm:
+        return "etched"
     if " rainbow foil " in value_norm:
         return "rainbow"
     if " traditional foil " in value_norm:
@@ -380,6 +388,42 @@ def _secret_lair_variant_conflict(
 
     if _secret_lair_explicit_identity_conflict(product_norm, title_norm):
         return True
+
+    # Furby drops share many generic tokens, so the named drop identity must agree.
+    furby_identities = (
+        " doo ay noo lah ",
+        " the gathering ",
+        " the oddbodies ",
+    )
+    product_furby = next(
+        (identity for identity in furby_identities if identity in product_norm),
+        None,
+    )
+    title_furby = next(
+        (identity for identity in furby_identities if identity in title_norm),
+        None,
+    )
+    if product_furby is not None and title_furby is not None and product_furby != title_furby:
+        return True
+
+    # The Last of Us Part I and Part II are distinct sealed products. Accept either
+    # Roman or Arabic numbering, but require the listing's explicit part to agree.
+    if " the last of us part " in product_norm:
+        product_last_part = re.search(r" the last of us part (i{1,2}|1|2) ", product_norm)
+        title_last_part = re.search(r" the last of us part (i{1,2}|1|2) ", title_norm)
+        if product_last_part and title_last_part:
+            normalize_part = {"i": "1", "ii": "2", "1": "1", "2": "2"}
+            if normalize_part[product_last_part.group(1)] != normalize_part[title_last_part.group(1)]:
+                return True
+
+    # Post Malone Backstage Pass and The Lands are separate drops.
+    if " post malone " in product_norm:
+        product_backstage = " backstage pass " in product_norm
+        product_lands = " the lands " in product_norm
+        title_backstage = " backstage pass " in title_norm
+        title_lands = " the lands " in title_norm
+        if (product_backstage and title_lands) or (product_lands and title_backstage):
+            return True
 
 
     # Arcane and Arcane: Lands are separate sealed products.
@@ -532,7 +576,7 @@ def _secret_lair_variant_conflict(
     ):
         return True
 
-    product_nonfoil = " non foil " in product_norm
+    product_nonfoil = " non foil " in product_norm or " nonfoil " in product_norm
     product_foil = (
         " traditional foil " in product_norm
         or (" foil " in product_norm and not product_nonfoil)

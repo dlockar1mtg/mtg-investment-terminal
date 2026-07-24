@@ -1068,3 +1068,89 @@ def test_secret_lair_read_fine_print_etched_allows_etched_listing():
     )
     assert result.match_state != "REJECTED"
 
+
+
+
+def secret_lair_product(name: str) -> CanonicalProduct:
+    return CanonicalProduct(
+        canonical_product_id="SL-TEST",
+        canonical_product_name=name,
+        canonical_set_name="Secret Lair",
+        product_class="SEALED_SECRET_LAIR",
+        tcgplayer_product_id="3",
+        release_date="",
+        ebay_query="query",
+    )
+
+
+def test_final_batch_furby_drop_identity_conflict_is_rejected():
+    result = strict_match_listing(
+        secret_lair_product("x Furby: The Gathering - Confetti Foil Edition — Foil Edition"),
+        listing("MTG Secret Lair x Furby The Oddbodies Confetti Foil Edition Sealed"),
+        "RUN",
+        "2026-07-24T00:00:00Z",
+    )
+    assert result.match_state == "REJECTED"
+    assert "secret_lair_variant_conflict" in result.exclusion_reasons
+
+
+def test_final_batch_furby_finish_subtype_conflict_is_rejected():
+    result = strict_match_listing(
+        secret_lair_product("x Furby: The Oddbodies - Confetti Foil Edition — Foil Edition"),
+        listing("MTG Secret Lair x Furby The Oddbodies Rainbow Foil Edition Sealed"),
+        "RUN",
+        "2026-07-24T00:00:00Z",
+    )
+    assert result.match_state == "REJECTED"
+
+
+def test_final_batch_last_of_us_part_identity_conflict_is_rejected():
+    result = strict_match_listing(
+        secret_lair_product("x The Last of Us Part I - Rainbow Foil Edition — Foil Edition"),
+        listing("MTG Secret Lair x The Last of Us Part II Rainbow Foil Sealed"),
+        "RUN",
+        "2026-07-24T00:00:00Z",
+    )
+    assert result.match_state == "REJECTED"
+
+
+def test_final_batch_last_of_us_arabic_alias_can_match():
+    result = strict_match_listing(
+        secret_lair_product("x The Last of Us Part I - Rainbow Foil Edition — Foil Edition"),
+        listing("MTG Secret Lair x The Last of Us Part 1 Rainbow Foil Sealed"),
+        "RUN",
+        "2026-07-24T00:00:00Z",
+    )
+    assert "secret_lair_variant_conflict" not in result.exclusion_reasons
+
+
+def test_final_batch_post_malone_drop_identity_conflict_is_rejected():
+    result = strict_match_listing(
+        secret_lair_product("x Post Malone: The Lands - Traditional Foil Edition — Foil Edition"),
+        listing("MTG Secret Lair Post Malone Backstage Pass Traditional Foil Sealed"),
+        "RUN",
+        "2026-07-24T00:00:00Z",
+    )
+    assert result.match_state == "REJECTED"
+
+
+
+def test_compact_nonfoil_canonical_rejects_rainbow_foil_listing():
+    result = strict_match_listing(
+        secret_lair_product("x NALAC Drop: Nuestra Magia — Nonfoil Edition"),
+        listing("MTG Secret Lair x NALAC Drop Nuestra Magia Rainbow Foil Sealed"),
+        "RUN",
+        "2026-07-24T00:00:00Z",
+    )
+    assert result.match_state == "REJECTED"
+    assert "secret_lair_variant_conflict" in result.exclusion_reasons
+
+
+def test_compact_nonfoil_canonical_accepts_true_nonfoil_listing():
+    result = strict_match_listing(
+        secret_lair_product("x NALAC Drop: Nuestra Magia — Nonfoil Edition"),
+        listing("MTG Secret Lair x NALAC Drop Nuestra Magia Nonfoil Edition Sealed"),
+        "RUN",
+        "2026-07-24T00:00:00Z",
+    )
+    assert "secret_lair_variant_conflict" not in result.exclusion_reasons
