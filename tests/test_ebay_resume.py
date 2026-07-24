@@ -1,7 +1,7 @@
 import csv
 from pathlib import Path
 
-from terminal2.market_sources.ebay_resume import build_resume_plan
+from terminal2.market_sources.ebay_resume import build_resume_plan, select_pending_products
 
 
 def write_coverage(path: Path, rows: list[dict[str, str]]) -> None:
@@ -83,4 +83,24 @@ def test_new_attempt_supersedes_legacy_batch_root_state(tmp_path):
     assert plan.completed_product_ids == ("A",)
     assert plan.pending_product_ids == ()
     assert len(plan.coverage_files) == 2
+
+
+def test_select_pending_products_preserves_universe_order():
+    class Product:
+        def __init__(self, product_id):
+            self.canonical_product_id = product_id
+
+    products = [Product("A"), Product("B"), Product("C")]
+    selected = select_pending_products(products, ["C", "B"])
+    assert [product.canonical_product_id for product in selected] == ["B", "C"]
+
+
+def test_select_pending_products_excludes_completed_products():
+    class Product:
+        def __init__(self, product_id):
+            self.canonical_product_id = product_id
+
+    products = [Product("A"), Product("B"), Product("C")]
+    selected = select_pending_products(products, ["B"])
+    assert [product.canonical_product_id for product in selected] == ["B"]
 
