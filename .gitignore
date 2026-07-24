@@ -192,3 +192,8 @@ data/validation/phase_10/production_readiness/
 # Phase 10.5R external discovery raw snapshots
 data/staging/phase_10/external_discovery/tcgcsv/tcgcsv_magic_products_*.csv
 data/validation/phase_10/external_discovery/tcgcsv/tcgcsv_products_not_in_existing_registry.csv
+
+# Phase 10 Secret Lair local holdings and generated production artifacts
+data/portfolio/
+data/validation/phase_10/ebay_matching/
+data/validation/phase_10/premium_universe_eligibility/
