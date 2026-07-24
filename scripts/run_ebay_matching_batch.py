@@ -19,6 +19,7 @@ from terminal2.market_sources.ebay_resilience import (
     format_reset_local,
     get_browse_quota,
 )
+from terminal2.market_sources.ebay_resume import build_resume_plan, select_pending_products
 from terminal2.market_sources.ebay_universe import build_complete_universe
 
 
@@ -40,6 +41,11 @@ def main() -> int:
     parser.add_argument("--force", action="store_true")
     parser.add_argument("--skip-quota-check", action="store_true")
     parser.add_argument("--quota-reserve", type=int, default=100)
+    parser.add_argument(
+        "--resume-plan",
+        action="store_true",
+        help="Inspect prior attempts and report which selected products remain unfinished.",
+    )
     args = parser.parse_args()
 
     if args.offset < 0:
@@ -82,6 +88,26 @@ def main() -> int:
     end = args.offset + len(subset) - 1
     batch_key = f"{args.product_class.lower()}_{args.offset:04d}_{end:04d}"
     batch_root = base.OUTPUT_ROOT / "batches" / batch_key
+
+    if args.resume_plan:
+        plan = build_resume_plan(
+            batch_root,
+            [product.canonical_product_id for product in subset],
+        )
+        print("EBAY BATCH RESUME PLAN")
+        print(f"  batch: {batch_key}")
+        print(f"  expected products: {len(plan.expected_product_ids)}")
+        print(f"  completed products: {len(plan.completed_product_ids)}")
+        print(f"  pending products: {len(plan.pending_product_ids)}")
+        print(f"  prior source errors: {len(plan.source_error_product_ids)}")
+        print(f"  coverage files inspected: {len(plan.coverage_files)}")
+        print(f"  estimated maximum resume calls: {estimate_batch_calls(len(plan.pending_product_ids))}")
+        if plan.pending_product_ids:
+            print("  pending product IDs:")
+            for product_id in plan.pending_product_ids:
+                print(f"    {product_id}")
+        return 0
+
     attempt_key = datetime.now(timezone.utc).strftime("attempt_%Y%m%dT%H%M%SZ")
     attempt_root = batch_root / "attempts" / attempt_key
     existing = sorted(batch_root.glob("ebay_matching_summary_*.json"))
