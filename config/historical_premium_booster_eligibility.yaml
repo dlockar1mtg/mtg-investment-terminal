@@ -1,0 +1,139 @@
+schema_version: 10.5R.1D.2.1.1
+policy_name: historical_premium_booster_eligibility
+platform_id: mtg
+
+purpose:
+  evaluate_historical_booster_displays: true
+  assign_final_eligibility_in_this_step: false
+  enable_scoring_in_this_step: false
+  update_universal_investability_in_this_step: false
+
+scope:
+  allowed_structural_states:
+    - historical_review_required
+
+  allowed_product_types:
+    - traditional_booster_display
+    - draft_booster_display
+
+  expected_input_rows: 140
+
+review_dimensions:
+  - product_identity
+  - release_timing
+  - product_generation
+  - specialty_or_premium_status
+  - historical_price_coverage
+  - current_acquisition_price
+  - affordability
+  - scarcity_or_supply_evidence
+  - long_term_liquidity
+  - historical_appreciation
+  - source_quality
+
+premium_product_indicators:
+  name_patterns:
+    - masters
+    - remastered
+    - horizons
+    - mystery booster
+    - convention edition
+    - portal three kingdoms
+    - collector
+    - premium
+    - limited edition
+    - alpha
+    - beta
+    - unlimited
+    - arabian nights
+    - antiquities
+    - legends
+    - the dark
+
+  specialty_release_concepts:
+    - masters_product
+    - remastered_product
+    - supplemental_product
+    - limited_print_specialty_product
+    - early_era_premium_product
+    - convention_or_event_product
+
+mass_market_indicators:
+  name_patterns:
+    - planeswalker deck display
+    - booster battle pack display
+    - basic booster display
+    - epilogue booster display
+    - beyond booster display
+
+  automatic_rejection_in_this_step: false
+  reason: evidence_audit_precedes_final_resolution
+
+affordability:
+  monthly_mtg_allocation_required: true
+  maximum_purchase_price: unresolved
+  cases_always_excluded: true
+  missing_price_requires_review: true
+
+evidence_requirements:
+  preferred_fields:
+    identity:
+      - canonical_product_id
+      - tcgplayer_product_id
+      - canonical_product_name
+      - canonical_set_name
+      - canonical_product_type
+
+    timing:
+      - release_date
+      - release_year
+      - first_available_date
+      - first_available_date_utc
+      - product_release_date
+
+    pricing:
+      - market_price
+      - current_market_price
+      - low_price
+      - mid_price
+      - listed_median_price
+      - latest_price
+      - price_date
+      - historical_price_points
+
+    liquidity:
+      - sales_count
+      - listing_count
+      - transaction_count
+      - market_liquidity
+      - liquidity_tier
+
+    supply:
+      - print_run
+      - supply_status
+      - scarcity_indicator
+      - limited_release_indicator
+      - specialty_release_indicator
+
+evidence_states:
+  - evidence_complete
+  - evidence_partial
+  - external_enrichment_required
+  - manual_review_required
+
+decision_states:
+  - not_decided
+  - eligible
+  - ineligible
+  - review_required
+
+safety_controls:
+  update_structural_audit: false
+  update_canonical_registry: false
+  update_governed_registry: false
+  update_production_registry: false
+  assign_final_eligibility: false
+  enable_scoring: false
+  generate_recommendations: false
+  create_universal_package: false
+  update_universal_database: false

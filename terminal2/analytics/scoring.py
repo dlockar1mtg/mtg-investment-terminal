@@ -69,7 +69,22 @@ def score_from_features():
     if df.empty:
         return df
 
-    latest = pd.to_numeric(df["latest_price"], errors="coerce").fillna(0)
+    df["latest_price"] = pd.to_numeric(
+        df["latest_price"],
+        errors="coerce",
+    )
+    df = df[df["latest_price"].gt(0)].copy()
+
+    if df.empty:
+        conn = get_connection()
+        try:
+            conn.execute("DELETE FROM investment_scores")
+            conn.commit()
+        finally:
+            conn.close()
+        return df
+
+    latest = df["latest_price"]
     trend = pd.to_numeric(df["trend_score"], errors="coerce").fillna(50)
     vol_score = pd.to_numeric(df["volatility_score"], errors="coerce").fillna(50)
     hist_conf = pd.to_numeric(df["history_confidence"], errors="coerce").fillna(0)
@@ -123,8 +138,25 @@ def score_from_features():
     df["prob_double"] = (0.10 + (score / 100) * 0.30).round(4)
     df["prob_loss"] = (0.45 - (score / 100) * 0.25).clip(0.05, 0.50).round(4)
 
+    eligible_ids = (
+        df["investment_product_id"]
+        .dropna()
+        .astype(str)
+        .tolist()
+    )
+
     conn = get_connection()
     try:
+        placeholders = ",".join("?" for _ in eligible_ids)
+
+        conn.execute(
+            f"""
+            DELETE FROM investment_scores
+            WHERE investment_product_id NOT IN ({placeholders})
+            """,
+            eligible_ids,
+        )
+
         for _, r in df.iterrows():
             params = (
                 _scalar(r, "investment_product_id"),

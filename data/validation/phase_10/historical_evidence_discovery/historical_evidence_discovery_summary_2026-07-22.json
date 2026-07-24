@@ -1,0 +1,25 @@
+{
+  "discovery_status": "PASS",
+  "eligibility_changed": false,
+  "files_inspected": 898,
+  "files_with_any_historical_overlap": 55,
+  "files_with_liquidity_fields": 4,
+  "files_with_performance_fields": 1,
+  "files_with_pricing_fields": 26,
+  "files_with_supply_fields": 8,
+  "files_with_timing_fields": 45,
+  "generated_at_utc": "2026-07-22T17:21:03Z",
+  "historical_product_rows": 140,
+  "maximum_canonical_id_overlap": 140,
+  "maximum_product_name_overlap": 140,
+  "maximum_tcgplayer_id_overlap": 140,
+  "output_files": {
+    "complete_inventory": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\validation\\phase_10\\historical_evidence_discovery\\repository_evidence_file_inventory_2026-07-22.csv",
+    "ranked_sources": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\validation\\phase_10\\historical_evidence_discovery\\ranked_historical_evidence_sources_2026-07-22.csv"
+  },
+  "production_registry_changed": false,
+  "relevant_files_found": 88,
+  "schema_version": "10.5R.1D.2.2A",
+  "scoring_applied": false,
+  "universal_database_changed": false
+}

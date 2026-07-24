@@ -1,0 +1,34 @@
+{
+  "adapter_status": "PASS",
+  "downloaded_groups": 0,
+  "existing_cache_groups": 137,
+  "failed_group_payloads": 0,
+  "final_eligibility_assigned": false,
+  "generated_at_utc": "2026-07-22T17:26:59Z",
+  "historical_routing_rows": 140,
+  "output_files": {
+    "group_fetch_errors": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\validation\\phase_10\\historical_tcgcsv_price_enrichment\\historical_tcgcsv_group_fetch_errors_2026-07-22.csv",
+    "price_enrichment": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\validation\\phase_10\\historical_tcgcsv_price_enrichment\\historical_tcgcsv_current_price_enrichment_2026-07-22.csv",
+    "price_review_queue": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\validation\\phase_10\\historical_tcgcsv_price_enrichment\\historical_tcgcsv_price_review_queue_2026-07-22.csv"
+  },
+  "price_enrichment_rows": 140,
+  "price_evidence_state_counts": {
+    "current_price_available": 131,
+    "product_price_not_found": 9
+  },
+  "production_registry_changed": false,
+  "routed_product_rows": 140,
+  "rows_requiring_price_review": 9,
+  "rows_with_current_price_candidate": 131,
+  "schema_version": "10.5R.1D.2.2D.2.1",
+  "scoring_allowed_rows": 0,
+  "selection_method_counts": {
+    "no_price_records": 9,
+    "normal_subtype": 131
+  },
+  "successful_group_payloads": 137,
+  "unique_routed_groups": 137,
+  "universal_database_changed": false,
+  "universal_investable_allowed_rows": 0,
+  "unrouted_product_rows": 0
+}

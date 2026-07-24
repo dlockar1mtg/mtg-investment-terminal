@@ -1,0 +1,25 @@
+{
+  "discovery_boundary_frozen": true,
+  "discovery_status": "PASS",
+  "excluded_downstream_root_count": 11,
+  "existing_cached_release_rows": 41,
+  "external_download_performed": false,
+  "final_eligibility_assigned": false,
+  "generated_at_utc": "2026-07-22T17:57:17Z",
+  "maximum_unresolved_name_overlap": 99,
+  "mtgjson_named_files": 0,
+  "output_files": {
+    "inventory": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\validation\\phase_10\\historical_release_source_discovery\\historical_release_source_inventory_2026-07-22.csv",
+    "ranked_candidates": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\validation\\phase_10\\historical_release_source_discovery\\historical_release_source_ranked_candidates_2026-07-22.csv"
+  },
+  "production_registry_changed": false,
+  "ranked_candidate_files": 488,
+  "release_dates_assigned": false,
+  "release_field_files": 457,
+  "relevant_source_files": 489,
+  "schema_version": "10.5R.1D.2.4B.1",
+  "scoring_allowed_rows": 0,
+  "universal_database_changed": false,
+  "universal_investable_allowed_rows": 0,
+  "unresolved_release_rows": 99
+}

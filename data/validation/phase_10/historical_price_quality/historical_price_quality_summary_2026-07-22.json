@@ -1,0 +1,42 @@
+{
+  "audit_status": "PASS",
+  "authoritative_input_rows": 140,
+  "commander_draft_policy_review_rows": 2,
+  "draft_cohort_counts": {
+    "commander_draft_policy_review": 2,
+    "explicit_specialty_draft_review": 7
+  },
+  "draft_review_rows": 9,
+  "explicit_specialty_draft_rows": 7,
+  "extreme_spread_rows": 7,
+  "generated_at_utc": "2026-07-22T17:42:39Z",
+  "governed_cohort_input_rows": 140,
+  "historical_eligibility_assigned": false,
+  "output_files": {
+    "draft_review": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\validation\\phase_10\\historical_price_quality\\historical_draft_booster_review_2026-07-22.csv",
+    "price_quality": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\validation\\phase_10\\historical_price_quality\\historical_price_quality_2026-07-22.csv",
+    "price_spread_audit": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\validation\\phase_10\\historical_price_quality\\historical_price_spread_audit_2026-07-22.csv",
+    "structural_exclusion_candidates": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\validation\\phase_10\\historical_price_quality\\historical_structural_exclusion_candidates_2026-07-22.csv"
+  },
+  "price_enrichment_input_rows": 140,
+  "price_evidence_state_counts": {
+    "current_price_available": 131,
+    "product_price_not_found": 9
+  },
+  "price_quality_rows": 140,
+  "price_source_type_counts": {
+    "market_price": 112,
+    "mid_price_fallback": 19,
+    "no_price": 9
+  },
+  "price_spread_rows": 140,
+  "production_registry_changed": false,
+  "rows_with_candidate_price": 131,
+  "rows_with_market_price": 112,
+  "rows_without_candidate_price": 9,
+  "schema_version": "10.5R.1F.5C.1",
+  "scoring_allowed_rows": 0,
+  "structural_exclusion_candidate_rows": 0,
+  "universal_database_changed": false,
+  "universal_investable_allowed_rows": 0
+}

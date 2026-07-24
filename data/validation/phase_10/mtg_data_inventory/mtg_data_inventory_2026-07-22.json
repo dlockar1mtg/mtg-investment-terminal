@@ -1,0 +1,1315 @@
+{
+  "eligibility_changed": false,
+  "files_inspected": 843,
+  "forecasts_changed": false,
+  "generated_at_utc": "2026-07-22T19:16:50Z",
+  "known_datasets": {
+    "active_booster_display_products": {
+      "error": "",
+      "exists": true,
+      "path": "data/validation/phase_10/historical_product_scope/historical_active_review_population_2026-07-22.csv",
+      "rows": 139,
+      "unique_canonical_product_ids": 139
+    },
+    "governed_booster_display_products": {
+      "error": "",
+      "exists": true,
+      "path": "data/validation/phase_10/historical_final_release_dates/historical_final_governed_release_dates_2026-07-22.csv",
+      "rows": 140,
+      "unique_canonical_product_ids": 140
+    },
+    "historical_routed_candidates": {
+      "error": "",
+      "exists": true,
+      "path": "data/validation/phase_10/historical_tcgcsv_routing/historical_tcgcsv_product_routing_2026-07-22.csv",
+      "rows": 163,
+      "unique_canonical_product_ids": 163
+    },
+    "product_scope_exclusions": {
+      "error": "",
+      "exists": true,
+      "path": "data/validation/phase_10/historical_product_scope/historical_product_scope_exclusions_2026-07-22.csv",
+      "rows": 1,
+      "unique_canonical_product_ids": 1
+    }
+  },
+  "lane_file_counts": {
+    "booster_display": 5,
+    "forecasting": 5,
+    "holdings": 13,
+    "pricing": 674,
+    "registry": 30,
+    "secret_lair": 125,
+    "unified": 6
+  },
+  "production_data_changed": false,
+  "repository_root": ".",
+  "schema_version": "10.5R.2.1",
+  "scoring_changed": false,
+  "secret_lair_candidate_files": [
+    {
+      "column_count": 10,
+      "columns": [
+        "source_name",
+        "connector_type",
+        "location",
+        "enabled",
+        "priority",
+        "source_quality",
+        "default_currency",
+        "catalog_mapping_json",
+        "price_mapping_json",
+        "notes"
+      ],
+      "extension": ".csv",
+      "inspection_error": "",
+      "path": "data/templates/secret_lair_acquisition_sources_template.csv",
+      "row_count": 0,
+      "size_bytes": 132
+    },
+    {
+      "column_count": 12,
+      "columns": [
+        "source_name",
+        "connector_type",
+        "endpoint",
+        "enabled",
+        "priority",
+        "parser_name",
+        "timeout_seconds",
+        "max_retries",
+        "cache_ttl_hours",
+        "source_quality",
+        "query_json",
+        "notes"
+      ],
+      "extension": ".csv",
+      "inspection_error": "",
+      "path": "data/templates/secret_lair_discovery_sources_template.csv",
+      "row_count": 0,
+      "size_bytes": 142
+    },
+    {
+      "column_count": 5,
+      "columns": [
+        "source_name",
+        "source_record_id",
+        "secret_lair_id",
+        "override_action",
+        "notes"
+      ],
+      "extension": ".csv",
+      "inspection_error": "",
+      "path": "data/templates/secret_lair_match_overrides_template.csv",
+      "row_count": 0,
+      "size_bytes": 67
+    },
+    {
+      "column_count": 12,
+      "columns": [
+        "observation_date",
+        "secret_lair_id",
+        "source_name",
+        "market_price",
+        "low_price",
+        "listing_count",
+        "sales_count_30d",
+        "currency",
+        "source_url",
+        "source_record_id",
+        "price_data_quality",
+        "notes"
+      ],
+      "extension": ".csv",
+      "inspection_error": "",
+      "path": "data/templates/secret_lair_price_observations_template.csv",
+      "row_count": 0,
+      "size_bytes": 160
+    },
+    {
+      "column_count": 23,
+      "columns": [
+        "secret_lair_id",
+        "drop_name",
+        "variant_name",
+        "finish",
+        "product_family",
+        "release_date",
+        "sale_start_date",
+        "sale_end_date",
+        "msrp_usd",
+        "currency",
+        "franchise",
+        "ip_category",
+        "universes_beyond",
+        "artist_names",
+        "card_count",
+        "superdrop_name",
+        "event_type",
+        "availability_model",
+        "status",
+        "official_url",
+        "source_name",
+        "source_record_id",
+        "notes"
+      ],
+      "extension": ".csv",
+      "inspection_error": "",
+      "path": "data/templates/secret_lair_registry_template.csv",
+      "row_count": 0,
+      "size_bytes": 285
+    },
+    {
+      "column_count": 22,
+      "columns": [
+        "source_name",
+        "source_record_id",
+        "drop_name",
+        "variant_name",
+        "finish",
+        "product_family",
+        "release_date",
+        "sale_start_date",
+        "sale_end_date",
+        "msrp_usd",
+        "currency",
+        "franchise",
+        "ip_category",
+        "universes_beyond",
+        "artist_names",
+        "card_count",
+        "superdrop_name",
+        "event_type",
+        "availability_model",
+        "status",
+        "official_url",
+        "notes"
+      ],
+      "extension": ".csv",
+      "inspection_error": "",
+      "path": "data/templates/secret_lair_source_catalog_template.csv",
+      "row_count": 0,
+      "size_bytes": 270
+    },
+    {
+      "column_count": 11,
+      "columns": [
+        "source_name",
+        "source_record_id",
+        "observation_date",
+        "market_price",
+        "low_price",
+        "listing_count",
+        "sales_count_30d",
+        "currency",
+        "source_url",
+        "price_data_quality",
+        "notes"
+      ],
+      "extension": ".csv",
+      "inspection_error": "",
+      "path": "data/templates/secret_lair_source_prices_template.csv",
+      "row_count": 0,
+      "size_bytes": 145
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".html",
+      "inspection_error": "",
+      "path": "data/terminal2/secret_lair_discovery_raw/official/SLD20260721T214542197148.html",
+      "row_count": null,
+      "size_bytes": 71
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".html",
+      "inspection_error": "",
+      "path": "data/terminal2/secret_lair_discovery_raw/official/SLD20260721T214925837596.html",
+      "row_count": null,
+      "size_bytes": 71
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".html",
+      "inspection_error": "",
+      "path": "data/terminal2/secret_lair_discovery_raw/official/SLD20260721T215646126284.html",
+      "row_count": null,
+      "size_bytes": 71
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".html",
+      "inspection_error": "",
+      "path": "data/terminal2/secret_lair_discovery_raw/official/SLD20260721T221717222360.html",
+      "row_count": null,
+      "size_bytes": 71
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".html",
+      "inspection_error": "",
+      "path": "data/terminal2/secret_lair_discovery_raw/official/SLD20260721T225047687899.html",
+      "row_count": null,
+      "size_bytes": 71
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".html",
+      "inspection_error": "",
+      "path": "data/terminal2/secret_lair_discovery_raw/official/SLD20260721T230743934917.html",
+      "row_count": null,
+      "size_bytes": 71
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".html",
+      "inspection_error": "",
+      "path": "data/terminal2/secret_lair_discovery_raw/official/SLD20260722T121803821857.html",
+      "row_count": null,
+      "size_bytes": 71
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".html",
+      "inspection_error": "",
+      "path": "data/terminal2/secret_lair_discovery_raw/official/SLD20260722T122941188428.html",
+      "row_count": null,
+      "size_bytes": 71
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".html",
+      "inspection_error": "",
+      "path": "data/terminal2/secret_lair_discovery_raw/official/SLD20260722T131128260083.html",
+      "row_count": null,
+      "size_bytes": 71
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".html",
+      "inspection_error": "",
+      "path": "data/terminal2/secret_lair_discovery_raw/official/SLD20260722T132000021691.html",
+      "row_count": null,
+      "size_bytes": 71
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".html",
+      "inspection_error": "",
+      "path": "data/terminal2/secret_lair_discovery_raw/official/SLD20260722T135252143529.html",
+      "row_count": null,
+      "size_bytes": 71
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".html",
+      "inspection_error": "",
+      "path": "data/terminal2/secret_lair_discovery_raw/official/SLD20260722T135458835800.html",
+      "row_count": null,
+      "size_bytes": 71
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".html",
+      "inspection_error": "",
+      "path": "data/terminal2/secret_lair_discovery_raw/official/SLD20260722T140536931631.html",
+      "row_count": null,
+      "size_bytes": 71
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".html",
+      "inspection_error": "",
+      "path": "data/terminal2/secret_lair_discovery_raw/official/SLD20260722T140844077179.html",
+      "row_count": null,
+      "size_bytes": 71
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".html",
+      "inspection_error": "",
+      "path": "data/terminal2/secret_lair_discovery_raw/official/SLD20260722T141812766345.html",
+      "row_count": null,
+      "size_bytes": 71
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".html",
+      "inspection_error": "",
+      "path": "data/terminal2/secret_lair_discovery_raw/official/SLD20260722T142520089836.html",
+      "row_count": null,
+      "size_bytes": 71
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".html",
+      "inspection_error": "",
+      "path": "data/terminal2/secret_lair_discovery_raw/official/SLD20260722T143520732981.html",
+      "row_count": null,
+      "size_bytes": 71
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".html",
+      "inspection_error": "",
+      "path": "data/terminal2/secret_lair_discovery_raw/official/SLD20260722T143817050598.html",
+      "row_count": null,
+      "size_bytes": 71
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".html",
+      "inspection_error": "",
+      "path": "data/terminal2/secret_lair_discovery_raw/official/SLD20260722T150906382669.html",
+      "row_count": null,
+      "size_bytes": 71
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".html",
+      "inspection_error": "",
+      "path": "data/terminal2/secret_lair_discovery_raw/official/SLD20260722T151117157466.html",
+      "row_count": null,
+      "size_bytes": 71
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".html",
+      "inspection_error": "",
+      "path": "data/terminal2/secret_lair_discovery_raw/official/SLD20260722T171304098062.html",
+      "row_count": null,
+      "size_bytes": 71
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".html",
+      "inspection_error": "",
+      "path": "data/terminal2/secret_lair_discovery_raw/official/SLD20260722T171840222831.html",
+      "row_count": null,
+      "size_bytes": 71
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".html",
+      "inspection_error": "",
+      "path": "data/terminal2/secret_lair_discovery_raw/official/SLD20260722T172207703832.html",
+      "row_count": null,
+      "size_bytes": 71
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".html",
+      "inspection_error": "",
+      "path": "data/terminal2/secret_lair_discovery_raw/official/SLD20260722T172416042086.html",
+      "row_count": null,
+      "size_bytes": 71
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".html",
+      "inspection_error": "",
+      "path": "data/terminal2/secret_lair_discovery_raw/official/SLD20260722T172724864855.html",
+      "row_count": null,
+      "size_bytes": 71
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".html",
+      "inspection_error": "",
+      "path": "data/terminal2/secret_lair_discovery_raw/official/SLD20260722T173223950058.html",
+      "row_count": null,
+      "size_bytes": 71
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".html",
+      "inspection_error": "",
+      "path": "data/terminal2/secret_lair_discovery_raw/official/SLD20260722T173847394004.html",
+      "row_count": null,
+      "size_bytes": 71
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".html",
+      "inspection_error": "",
+      "path": "data/terminal2/secret_lair_discovery_raw/official/SLD20260722T174310142760.html",
+      "row_count": null,
+      "size_bytes": 71
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".html",
+      "inspection_error": "",
+      "path": "data/terminal2/secret_lair_discovery_raw/official/SLD20260722T174956132095.html",
+      "row_count": null,
+      "size_bytes": 71
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".html",
+      "inspection_error": "",
+      "path": "data/terminal2/secret_lair_discovery_raw/official/SLD20260722T175210347719.html",
+      "row_count": null,
+      "size_bytes": 71
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".html",
+      "inspection_error": "",
+      "path": "data/terminal2/secret_lair_discovery_raw/official/SLD20260722T175728351304.html",
+      "row_count": null,
+      "size_bytes": 71
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".html",
+      "inspection_error": "",
+      "path": "data/terminal2/secret_lair_discovery_raw/official/SLD20260722T180105771656.html",
+      "row_count": null,
+      "size_bytes": 71
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".html",
+      "inspection_error": "",
+      "path": "data/terminal2/secret_lair_discovery_raw/official/SLD20260722T180440797755.html",
+      "row_count": null,
+      "size_bytes": 71
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".html",
+      "inspection_error": "",
+      "path": "data/terminal2/secret_lair_discovery_raw/official/SLD20260722T180846927826.html",
+      "row_count": null,
+      "size_bytes": 71
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".html",
+      "inspection_error": "",
+      "path": "data/terminal2/secret_lair_discovery_raw/official/SLD20260722T181947901294.html",
+      "row_count": null,
+      "size_bytes": 71
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".html",
+      "inspection_error": "",
+      "path": "data/terminal2/secret_lair_discovery_raw/official/SLD20260722T182228786404.html",
+      "row_count": null,
+      "size_bytes": 71
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".html",
+      "inspection_error": "",
+      "path": "data/terminal2/secret_lair_discovery_raw/official/SLD20260722T182902129219.html",
+      "row_count": null,
+      "size_bytes": 71
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".html",
+      "inspection_error": "",
+      "path": "data/terminal2/secret_lair_discovery_raw/official/SLD20260722T183120470853.html",
+      "row_count": null,
+      "size_bytes": 71
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".html",
+      "inspection_error": "",
+      "path": "data/terminal2/secret_lair_discovery_raw/official/SLD20260722T183636049642.html",
+      "row_count": null,
+      "size_bytes": 71
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".html",
+      "inspection_error": "",
+      "path": "data/terminal2/secret_lair_discovery_raw/official/SLD20260722T184443919296.html",
+      "row_count": null,
+      "size_bytes": 71
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".html",
+      "inspection_error": "",
+      "path": "data/terminal2/secret_lair_discovery_raw/official/SLD20260722T185210823806.html",
+      "row_count": null,
+      "size_bytes": 71
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".html",
+      "inspection_error": "",
+      "path": "data/terminal2/secret_lair_discovery_raw/official/SLD20260722T185712529594.html",
+      "row_count": null,
+      "size_bytes": 71
+    },
+    {
+      "column_count": 2,
+      "columns": [
+        "source_name",
+        "source_record_id"
+      ],
+      "extension": ".csv",
+      "inspection_error": "",
+      "path": "data/terminal2/secret_lair_discovery_state.csv",
+      "row_count": 1,
+      "size_bytes": 44
+    },
+    {
+      "column_count": 10,
+      "columns": [
+        "snapshot_record_id",
+        "tcgcsv_category_id",
+        "tcgcsv_group_id",
+        "tcgplayer_product_id",
+        "group_name",
+        "group_published_on",
+        "product_name",
+        "evidence_class",
+        "sealed_drop_status",
+        "review_reason"
+      ],
+      "extension": ".csv",
+      "inspection_error": "",
+      "path": "data/validation/phase_10/external_discovery/tcgcsv/tcgcsv_secret_lair_product_evidence_2026-07-22.csv",
+      "row_count": 4347,
+      "size_bytes": 1018241
+    },
+    {
+      "column_count": 22,
+      "columns": [
+        "canonical_product_id",
+        "tcgplayer_product_id",
+        "canonical_set_name",
+        "canonical_product_name",
+        "canonical_product_class",
+        "canonical_product_family",
+        "canonical_product_type",
+        "canonical_packaging_level",
+        "identity_lifecycle_status",
+        "source_availability_status",
+        "governance_review_status",
+        "investment_approval_status",
+        "prior_investment_eligibility_status",
+        "structural_eligibility_state",
+        "structural_eligibility_reason",
+        "final_eligibility_decision",
+        "final_decision_reason",
+        "historical_review_required",
+        "sealed_product_review_required",
+        "classification_review_required",
+        "scoring_allowed",
+        "universal_investable_allowed"
+      ],
+      "extension": ".csv",
+      "inspection_error": "",
+      "path": "data/validation/phase_10/premium_universe_eligibility/secret_lair_structural_candidates_2026-07-22.csv",
+      "row_count": 254,
+      "size_bytes": 89810
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".py",
+      "inspection_error": "",
+      "path": "terminal2/secret_lair/__init__.py",
+      "row_count": null,
+      "size_bytes": 3759
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".py",
+      "inspection_error": "",
+      "path": "terminal2/secret_lair/acquisition/__init__.py",
+      "row_count": null,
+      "size_bytes": 652
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".py",
+      "inspection_error": "",
+      "path": "terminal2/secret_lair/acquisition/config.py",
+      "row_count": null,
+      "size_bytes": 1749
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".py",
+      "inspection_error": "",
+      "path": "terminal2/secret_lair/acquisition/connectors.py",
+      "row_count": null,
+      "size_bytes": 2244
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".py",
+      "inspection_error": "",
+      "path": "terminal2/secret_lair/acquisition/contracts.py",
+      "row_count": null,
+      "size_bytes": 3058
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".py",
+      "inspection_error": "",
+      "path": "terminal2/secret_lair/acquisition/engine.py",
+      "row_count": null,
+      "size_bytes": 6587
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".py",
+      "inspection_error": "",
+      "path": "terminal2/secret_lair/acquisition/exports.py",
+      "row_count": null,
+      "size_bytes": 1153
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".py",
+      "inspection_error": "",
+      "path": "terminal2/secret_lair/acquisition/normalize.py",
+      "row_count": null,
+      "size_bytes": 1980
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".py",
+      "inspection_error": "",
+      "path": "terminal2/secret_lair/acquisition/validation.py",
+      "row_count": null,
+      "size_bytes": 2733
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".py",
+      "inspection_error": "",
+      "path": "terminal2/secret_lair/archive/__init__.py",
+      "row_count": null,
+      "size_bytes": 505
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".py",
+      "inspection_error": "",
+      "path": "terminal2/secret_lair/archive/contracts.py",
+      "row_count": null,
+      "size_bytes": 3049
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".py",
+      "inspection_error": "",
+      "path": "terminal2/secret_lair/archive/engine.py",
+      "row_count": null,
+      "size_bytes": 12460
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".py",
+      "inspection_error": "",
+      "path": "terminal2/secret_lair/archive/exports.py",
+      "row_count": null,
+      "size_bytes": 804
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".py",
+      "inspection_error": "",
+      "path": "terminal2/secret_lair/archive/validation.py",
+      "row_count": null,
+      "size_bytes": 1974
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".py",
+      "inspection_error": "",
+      "path": "terminal2/secret_lair/backfill/__init__.py",
+      "row_count": null,
+      "size_bytes": 902
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".py",
+      "inspection_error": "",
+      "path": "terminal2/secret_lair/backfill/contracts.py",
+      "row_count": null,
+      "size_bytes": 4422
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".py",
+      "inspection_error": "",
+      "path": "terminal2/secret_lair/backfill/engine.py",
+      "row_count": null,
+      "size_bytes": 11143
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".py",
+      "inspection_error": "",
+      "path": "terminal2/secret_lair/backfill/exports.py",
+      "row_count": null,
+      "size_bytes": 1697
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".py",
+      "inspection_error": "",
+      "path": "terminal2/secret_lair/backfill/matching.py",
+      "row_count": null,
+      "size_bytes": 9631
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".py",
+      "inspection_error": "",
+      "path": "terminal2/secret_lair/backfill/sources.py",
+      "row_count": null,
+      "size_bytes": 4642
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".py",
+      "inspection_error": "",
+      "path": "terminal2/secret_lair/backfill/validation.py",
+      "row_count": null,
+      "size_bytes": 4013
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".py",
+      "inspection_error": "",
+      "path": "terminal2/secret_lair/calibration/__init__.py",
+      "row_count": null,
+      "size_bytes": 649
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".py",
+      "inspection_error": "",
+      "path": "terminal2/secret_lair/calibration/contracts.py",
+      "row_count": null,
+      "size_bytes": 2711
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".py",
+      "inspection_error": "",
+      "path": "terminal2/secret_lair/calibration/engine.py",
+      "row_count": null,
+      "size_bytes": 12402
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".py",
+      "inspection_error": "",
+      "path": "terminal2/secret_lair/calibration/exports.py",
+      "row_count": null,
+      "size_bytes": 1449
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".py",
+      "inspection_error": "",
+      "path": "terminal2/secret_lair/calibration/validation.py",
+      "row_count": null,
+      "size_bytes": 2769
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".py",
+      "inspection_error": "",
+      "path": "terminal2/secret_lair/contracts.py",
+      "row_count": null,
+      "size_bytes": 4158
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".py",
+      "inspection_error": "",
+      "path": "terminal2/secret_lair/datetime_utils.py",
+      "row_count": null,
+      "size_bytes": 1400
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".py",
+      "inspection_error": "",
+      "path": "terminal2/secret_lair/discovery/__init__.py",
+      "row_count": null,
+      "size_bytes": 678
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".py",
+      "inspection_error": "",
+      "path": "terminal2/secret_lair/discovery/config.py",
+      "row_count": null,
+      "size_bytes": 2010
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".py",
+      "inspection_error": "",
+      "path": "terminal2/secret_lair/discovery/connectors.py",
+      "row_count": null,
+      "size_bytes": 1925
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".py",
+      "inspection_error": "",
+      "path": "terminal2/secret_lair/discovery/contracts.py",
+      "row_count": null,
+      "size_bytes": 2618
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".py",
+      "inspection_error": "",
+      "path": "terminal2/secret_lair/discovery/engine.py",
+      "row_count": null,
+      "size_bytes": 9668
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".py",
+      "inspection_error": "",
+      "path": "terminal2/secret_lair/discovery/exports.py",
+      "row_count": null,
+      "size_bytes": 1085
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".py",
+      "inspection_error": "",
+      "path": "terminal2/secret_lair/discovery/http_client.py",
+      "row_count": null,
+      "size_bytes": 2167
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".py",
+      "inspection_error": "",
+      "path": "terminal2/secret_lair/discovery/parsers.py",
+      "row_count": null,
+      "size_bytes": 7008
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".py",
+      "inspection_error": "",
+      "path": "terminal2/secret_lair/discovery/validation.py",
+      "row_count": null,
+      "size_bytes": 2470
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".py",
+      "inspection_error": "",
+      "path": "terminal2/secret_lair/exports.py",
+      "row_count": null,
+      "size_bytes": 2308
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".py",
+      "inspection_error": "",
+      "path": "terminal2/secret_lair/identifiers.py",
+      "row_count": null,
+      "size_bytes": 1058
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".py",
+      "inspection_error": "",
+      "path": "terminal2/secret_lair/imports.py",
+      "row_count": null,
+      "size_bytes": 3599
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".py",
+      "inspection_error": "",
+      "path": "terminal2/secret_lair/intelligence_expansion/__init__.py",
+      "row_count": null,
+      "size_bytes": 553
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".py",
+      "inspection_error": "",
+      "path": "terminal2/secret_lair/intelligence_expansion/contracts.py",
+      "row_count": null,
+      "size_bytes": 4207
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".py",
+      "inspection_error": "",
+      "path": "terminal2/secret_lair/intelligence_expansion/engine.py",
+      "row_count": null,
+      "size_bytes": 17020
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".py",
+      "inspection_error": "",
+      "path": "terminal2/secret_lair/intelligence_expansion/exports.py",
+      "row_count": null,
+      "size_bytes": 1065
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".py",
+      "inspection_error": "",
+      "path": "terminal2/secret_lair/intelligence_expansion/validation.py",
+      "row_count": null,
+      "size_bytes": 1718
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".py",
+      "inspection_error": "",
+      "path": "terminal2/secret_lair/master_database/__init__.py",
+      "row_count": null,
+      "size_bytes": 621
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".py",
+      "inspection_error": "",
+      "path": "terminal2/secret_lair/master_database/config.py",
+      "row_count": null,
+      "size_bytes": 681
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".py",
+      "inspection_error": "",
+      "path": "terminal2/secret_lair/master_database/contracts.py",
+      "row_count": null,
+      "size_bytes": 2971
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".py",
+      "inspection_error": "",
+      "path": "terminal2/secret_lair/master_database/engine.py",
+      "row_count": null,
+      "size_bytes": 8559
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".py",
+      "inspection_error": "",
+      "path": "terminal2/secret_lair/master_database/exports.py",
+      "row_count": null,
+      "size_bytes": 1128
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".py",
+      "inspection_error": "",
+      "path": "terminal2/secret_lair/master_database/http_client.py",
+      "row_count": null,
+      "size_bytes": 1238
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".py",
+      "inspection_error": "",
+      "path": "terminal2/secret_lair/master_database/normalize.py",
+      "row_count": null,
+      "size_bytes": 1360
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".py",
+      "inspection_error": "",
+      "path": "terminal2/secret_lair/master_database/registry_export.py",
+      "row_count": null,
+      "size_bytes": 1459
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".py",
+      "inspection_error": "",
+      "path": "terminal2/secret_lair/master_database/sources.py",
+      "row_count": null,
+      "size_bytes": 5371
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".py",
+      "inspection_error": "",
+      "path": "terminal2/secret_lair/master_database/validation.py",
+      "row_count": null,
+      "size_bytes": 2081
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".py",
+      "inspection_error": "",
+      "path": "terminal2/secret_lair/metadata.py",
+      "row_count": null,
+      "size_bytes": 677
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".py",
+      "inspection_error": "",
+      "path": "terminal2/secret_lair/population/__init__.py",
+      "row_count": null,
+      "size_bytes": 562
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".py",
+      "inspection_error": "",
+      "path": "terminal2/secret_lair/population/contracts.py",
+      "row_count": null,
+      "size_bytes": 3057
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".py",
+      "inspection_error": "",
+      "path": "terminal2/secret_lair/population/engine.py",
+      "row_count": null,
+      "size_bytes": 8548
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".py",
+      "inspection_error": "",
+      "path": "terminal2/secret_lair/population/exports.py",
+      "row_count": null,
+      "size_bytes": 936
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".py",
+      "inspection_error": "",
+      "path": "terminal2/secret_lair/population/validation.py",
+      "row_count": null,
+      "size_bytes": 2104
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".py",
+      "inspection_error": "",
+      "path": "terminal2/secret_lair/price_imports.py",
+      "row_count": null,
+      "size_bytes": 3556
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".py",
+      "inspection_error": "",
+      "path": "terminal2/secret_lair/pricing.py",
+      "row_count": null,
+      "size_bytes": 17299
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".py",
+      "inspection_error": "",
+      "path": "terminal2/secret_lair/pricing_contracts.py",
+      "row_count": null,
+      "size_bytes": 4457
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".py",
+      "inspection_error": "",
+      "path": "terminal2/secret_lair/pricing_exports.py",
+      "row_count": null,
+      "size_bytes": 2087
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".py",
+      "inspection_error": "",
+      "path": "terminal2/secret_lair/pricing_validation.py",
+      "row_count": null,
+      "size_bytes": 4144
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".py",
+      "inspection_error": "",
+      "path": "terminal2/secret_lair/promotion/__init__.py",
+      "row_count": null,
+      "size_bytes": 734
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".py",
+      "inspection_error": "",
+      "path": "terminal2/secret_lair/promotion/contracts.py",
+      "row_count": null,
+      "size_bytes": 3649
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".py",
+      "inspection_error": "",
+      "path": "terminal2/secret_lair/promotion/engine.py",
+      "row_count": null,
+      "size_bytes": 18775
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".py",
+      "inspection_error": "",
+      "path": "terminal2/secret_lair/promotion/exports.py",
+      "row_count": null,
+      "size_bytes": 1607
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".py",
+      "inspection_error": "",
+      "path": "terminal2/secret_lair/promotion/validation.py",
+      "row_count": null,
+      "size_bytes": 3026
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".py",
+      "inspection_error": "",
+      "path": "terminal2/secret_lair/registry.py",
+      "row_count": null,
+      "size_bytes": 12433
+    },
+    {
+      "column_count": null,
+      "columns": [],
+      "extension": ".py",
+      "inspection_error": "",
+      "path": "terminal2/secret_lair/validation.py",
+      "row_count": null,
+      "size_bytes": 3567
+    }
+  ]
+}

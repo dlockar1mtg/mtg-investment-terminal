@@ -1,0 +1,63 @@
+schema_version: "10.5R.1D.2.4H.1"
+policy_name: historical_official_release_date_exceptions
+
+description: >
+  Product-specific release-date resolutions based on official Wizards of the
+  Coast announcements. These exceptions resolve the two Mystery Booster
+  products supported by official evidence. Renaissance Italian remains
+  unresolved because exact sealed-product identity evidence is unavailable.
+
+official_release_date_exceptions:
+  - canonical_product_id: "MTG-CANON-TCGPLAYER-246935"
+    tcgplayer_product_id: "246935"
+    canonical_product_name: >
+      Mystery Booster - Booster Box [Convention Edition] (2021)
+    governed_release_date: "2021-08-20"
+    governed_release_date_source: >
+      official_wizards_wpn_availability_announcement
+    evidence_title: >
+      Mystery Booster: Convention Edition Returns with In-Store Events
+    evidence_statement: >
+      Wizards announced that limited quantities of Mystery Booster:
+      Convention Edition would be available at WPN stores beginning
+      August 20, 2021.
+    resolution_basis: >
+      Product-specific WPN retail availability date. The 2019 parent-set date
+      is rejected for the governed 2021 Convention Edition product.
+    prior_unresolved_state: >
+      edition_specific_release_date_required
+
+  - canonical_product_id: "MTG-CANON-TCGPLAYER-563752"
+    tcgplayer_product_id: "563752"
+    canonical_product_name: "Mystery Booster 2 - Booster Display"
+    governed_release_date: "2024-10-25"
+    governed_release_date_source: >
+      official_wizards_magiccon_debut_and_mtgjson_product_agreement
+    evidence_title: >
+      MagicCon Las Vegas Mystery Booster 2 Official Debut
+    evidence_statement: >
+      Wizards identified October 25, 2024 as the beginning of Mystery
+      Booster 2's official debut at MagicCon: Las Vegas.
+    resolution_basis: >
+      The September 20 TCGCSV date aligns with publication of the Mystery
+      Booster 2 Release Notes rather than the official sealed-product debut.
+      The October 25 official debut date also agrees with the MTGJSON
+      sealed-product release date.
+    rejected_tcgcsv_date: "2024-09-20"
+    rejected_mtgjson_set_date: "2024-08-02"
+    supporting_mtgjson_product_date: "2024-10-25"
+    prior_unresolved_state: >
+      product_date_conflict_unresolved
+
+decision_controls:
+  expected_authoritative_population: 140
+  expected_prior_governed_release_dates: 137
+  expected_prior_unresolved_release_dates: 3
+  official_exception_rows: 2
+  expected_final_governed_release_dates: 139
+  unresolved_release_dates_after_resolution: 1
+  remaining_unresolved_canonical_product_ids:
+    - "MTG-CANON-TCGPLAYER-245972"
+  final_eligibility_assigned: false
+  scoring_allowed: false
+  universal_investable_allowed: false

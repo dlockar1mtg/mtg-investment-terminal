@@ -1,0 +1,31 @@
+{
+  "active_rows": 5239,
+  "asset_class_counts": {
+    "collectible": 5239
+  },
+  "asset_master_rows": 5239,
+  "asset_subclass_counts": {
+    "mtg_sealed_product": 892,
+    "mtg_secret_lair_product": 4347
+  },
+  "contract_version": "1.0.0",
+  "generated_at_utc": "2026-07-22T14:21:56Z",
+  "input_files": {
+    "governed_registry": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\staging\\phase_10\\canonical_registry_governance\\governed_canonical_mtg_registry_2026-07-22.csv"
+  },
+  "investable_rows": 0,
+  "mapping_status": "PASS",
+  "mtg_production_registry_changed": false,
+  "non_investable_rows": 5239,
+  "output_files": {
+    "asset_master_preview": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\staging\\phase_10\\universal_mapping\\asset_master_preview_2026-07-22.csv",
+    "identity_map": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\validation\\phase_10\\universal_mapping\\canonical_to_universal_identity_map_2026-07-22.csv"
+  },
+  "platform_id": "mtg",
+  "schema_version": "10.5R.1C.2.2",
+  "unique_platform_asset_ids": 5239,
+  "unique_universal_asset_ids": 5239,
+  "universal_database_changed": false,
+  "universal_package_created": false,
+  "validation_errors": []
+}

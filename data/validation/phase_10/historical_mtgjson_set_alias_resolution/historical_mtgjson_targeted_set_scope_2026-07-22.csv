@@ -1,0 +1,139 @@
+mtgjson_set_code,mtgjson_set_name,mtgjson_set_release_date,target_set_file_url,target_set_cache_path,routed_product_count,route_methods
+10E,Tenth Edition,2007-07-13,https://mtgjson.com/api/v5/10E.json,data\raw\mtgjson\sets\10E.json,1,governed_exact_alias
+2ED,Unlimited Edition,1993-12-01,https://mtgjson.com/api/v5/2ED.json,data\raw\mtgjson\sets\2ED.json,1,exact_normalized_set_name
+2X2,Double Masters 2022,2022-07-08,https://mtgjson.com/api/v5/2X2.json,data\raw\mtgjson\sets\2X2.json,1,exact_normalized_set_name
+2XM,Double Masters,2020-08-07,https://mtgjson.com/api/v5/2XM.json,data\raw\mtgjson\sets\2XM.json,1,exact_normalized_set_name
+3ED,Revised Edition,1994-04-11,https://mtgjson.com/api/v5/3ED.json,data\raw\mtgjson\sets\3ED.json,1,exact_normalized_set_name
+4ED,Fourth Edition,1995-04-01,https://mtgjson.com/api/v5/4ED.json,data\raw\mtgjson\sets\4ED.json,1,exact_normalized_set_name
+5DN,Fifth Dawn,2004-06-04,https://mtgjson.com/api/v5/5DN.json,data\raw\mtgjson\sets\5DN.json,1,exact_normalized_set_name
+5ED,Fifth Edition,1997-03-24,https://mtgjson.com/api/v5/5ED.json,data\raw\mtgjson\sets\5ED.json,1,exact_normalized_set_name
+6ED,Classic Sixth Edition,1999-04-21,https://mtgjson.com/api/v5/6ED.json,data\raw\mtgjson\sets\6ED.json,1,exact_normalized_set_name
+7ED,Seventh Edition,2001-04-11,https://mtgjson.com/api/v5/7ED.json,data\raw\mtgjson\sets\7ED.json,1,exact_tcgplayer_group_id
+8ED,Eighth Edition,2003-07-28,https://mtgjson.com/api/v5/8ED.json,data\raw\mtgjson\sets\8ED.json,1,governed_exact_alias
+9ED,Ninth Edition,2005-07-29,https://mtgjson.com/api/v5/9ED.json,data\raw\mtgjson\sets\9ED.json,1,governed_exact_alias
+A25,Masters 25,2018-03-16,https://mtgjson.com/api/v5/A25.json,data\raw\mtgjson\sets\A25.json,1,exact_normalized_set_name
+AER,Aether Revolt,2017-01-20,https://mtgjson.com/api/v5/AER.json,data\raw\mtgjson\sets\AER.json,1,exact_normalized_set_name
+AKH,Amonkhet,2017-04-28,https://mtgjson.com/api/v5/AKH.json,data\raw\mtgjson\sets\AKH.json,1,exact_normalized_set_name
+ALA,Shards of Alara,2008-10-03,https://mtgjson.com/api/v5/ALA.json,data\raw\mtgjson\sets\ALA.json,1,exact_normalized_set_name
+ALL,Alliances,1996-06-10,https://mtgjson.com/api/v5/ALL.json,data\raw\mtgjson\sets\ALL.json,1,exact_normalized_set_name
+APC,Apocalypse,2001-06-04,https://mtgjson.com/api/v5/APC.json,data\raw\mtgjson\sets\APC.json,1,exact_normalized_set_name
+ARB,Alara Reborn,2009-04-30,https://mtgjson.com/api/v5/ARB.json,data\raw\mtgjson\sets\ARB.json,1,exact_normalized_set_name
+ARN,Arabian Nights,1993-12-17,https://mtgjson.com/api/v5/ARN.json,data\raw\mtgjson\sets\ARN.json,1,exact_normalized_set_name
+ATQ,Antiquities,1994-03-04,https://mtgjson.com/api/v5/ATQ.json,data\raw\mtgjson\sets\ATQ.json,1,exact_normalized_set_name
+AVR,Avacyn Restored,2012-05-04,https://mtgjson.com/api/v5/AVR.json,data\raw\mtgjson\sets\AVR.json,1,exact_normalized_set_name
+BBD,Battlebond,2018-06-08,https://mtgjson.com/api/v5/BBD.json,data\raw\mtgjson\sets\BBD.json,1,exact_normalized_set_name
+BFZ,Battle for Zendikar,2015-10-02,https://mtgjson.com/api/v5/BFZ.json,data\raw\mtgjson\sets\BFZ.json,1,exact_normalized_set_name
+BNG,Born of the Gods,2014-02-07,https://mtgjson.com/api/v5/BNG.json,data\raw\mtgjson\sets\BNG.json,1,exact_normalized_set_name
+BOK,Betrayers of Kamigawa,2005-02-04,https://mtgjson.com/api/v5/BOK.json,data\raw\mtgjson\sets\BOK.json,1,exact_normalized_set_name
+CHK,Champions of Kamigawa,2004-10-01,https://mtgjson.com/api/v5/CHK.json,data\raw\mtgjson\sets\CHK.json,1,exact_normalized_set_name
+CHR,Chronicles,1995-07-01,https://mtgjson.com/api/v5/CHR.json,data\raw\mtgjson\sets\CHR.json,1,exact_normalized_set_name
+CLB,Commander Legends: Battle for Baldur's Gate,2022-06-10,https://mtgjson.com/api/v5/CLB.json,data\raw\mtgjson\sets\CLB.json,1,exact_normalized_set_name
+CMB1,Mystery Booster Playtest Cards 2019,2019-11-07,https://mtgjson.com/api/v5/CMB1.json,data\raw\mtgjson\sets\CMB1.json,1,governed_multi_set_family
+CMB2,Mystery Booster Playtest Cards 2021,2021-08-20,https://mtgjson.com/api/v5/CMB2.json,data\raw\mtgjson\sets\CMB2.json,1,governed_multi_set_family
+CMM,Commander Masters,2023-08-04,https://mtgjson.com/api/v5/CMM.json,data\raw\mtgjson\sets\CMM.json,1,exact_normalized_set_name
+CMR,Commander Legends,2020-11-20,https://mtgjson.com/api/v5/CMR.json,data\raw\mtgjson\sets\CMR.json,1,exact_normalized_set_name
+CN2,Conspiracy: Take the Crown,2016-08-26,https://mtgjson.com/api/v5/CN2.json,data\raw\mtgjson\sets\CN2.json,1,exact_normalized_set_name
+CNS,Conspiracy,2014-06-06,https://mtgjson.com/api/v5/CNS.json,data\raw\mtgjson\sets\CNS.json,1,exact_normalized_set_name
+CON,Conflux,2009-02-06,https://mtgjson.com/api/v5/CON.json,data\raw\mtgjson\sets\CON.json,1,exact_normalized_set_name
+CSP,Coldsnap,2006-07-21,https://mtgjson.com/api/v5/CSP.json,data\raw\mtgjson\sets\CSP.json,1,exact_normalized_set_name
+DBL,Innistrad: Double Feature,2022-01-28,https://mtgjson.com/api/v5/DBL.json,data\raw\mtgjson\sets\DBL.json,1,exact_normalized_set_name
+DGM,Dragon's Maze,2013-05-03,https://mtgjson.com/api/v5/DGM.json,data\raw\mtgjson\sets\DGM.json,1,exact_normalized_set_name
+DIS,Dissension,2006-05-05,https://mtgjson.com/api/v5/DIS.json,data\raw\mtgjson\sets\DIS.json,1,exact_normalized_set_name
+DKA,Dark Ascension,2012-02-03,https://mtgjson.com/api/v5/DKA.json,data\raw\mtgjson\sets\DKA.json,1,exact_normalized_set_name
+DMR,Dominaria Remastered,2023-01-13,https://mtgjson.com/api/v5/DMR.json,data\raw\mtgjson\sets\DMR.json,1,exact_normalized_set_name
+DOM,Dominaria,2018-04-27,https://mtgjson.com/api/v5/DOM.json,data\raw\mtgjson\sets\DOM.json,1,exact_normalized_set_name
+DRK,The Dark,1994-08-01,https://mtgjson.com/api/v5/DRK.json,data\raw\mtgjson\sets\DRK.json,1,exact_normalized_set_name
+DST,Darksteel,2004-02-06,https://mtgjson.com/api/v5/DST.json,data\raw\mtgjson\sets\DST.json,1,exact_normalized_set_name
+DTK,Dragons of Tarkir,2015-03-27,https://mtgjson.com/api/v5/DTK.json,data\raw\mtgjson\sets\DTK.json,1,exact_normalized_set_name
+ELD,Throne of Eldraine,2019-10-04,https://mtgjson.com/api/v5/ELD.json,data\raw\mtgjson\sets\ELD.json,1,exact_normalized_set_name
+EMA,Eternal Masters,2016-06-10,https://mtgjson.com/api/v5/EMA.json,data\raw\mtgjson\sets\EMA.json,1,exact_normalized_set_name
+EMN,Eldritch Moon,2016-07-22,https://mtgjson.com/api/v5/EMN.json,data\raw\mtgjson\sets\EMN.json,1,exact_normalized_set_name
+EVE,Eventide,2008-07-25,https://mtgjson.com/api/v5/EVE.json,data\raw\mtgjson\sets\EVE.json,1,exact_normalized_set_name
+EXO,Exodus,1998-06-15,https://mtgjson.com/api/v5/EXO.json,data\raw\mtgjson\sets\EXO.json,1,exact_normalized_set_name
+FEM,Fallen Empires,1994-11-01,https://mtgjson.com/api/v5/FEM.json,data\raw\mtgjson\sets\FEM.json,1,exact_normalized_set_name
+FRF,Fate Reforged,2015-01-23,https://mtgjson.com/api/v5/FRF.json,data\raw\mtgjson\sets\FRF.json,1,exact_normalized_set_name
+FUT,Future Sight,2007-05-04,https://mtgjson.com/api/v5/FUT.json,data\raw\mtgjson\sets\FUT.json,1,exact_normalized_set_name
+GPT,Guildpact,2006-02-03,https://mtgjson.com/api/v5/GPT.json,data\raw\mtgjson\sets\GPT.json,1,exact_normalized_set_name
+GRN,Guilds of Ravnica,2018-10-05,https://mtgjson.com/api/v5/GRN.json,data\raw\mtgjson\sets\GRN.json,1,exact_normalized_set_name
+GTC,Gatecrash,2013-02-01,https://mtgjson.com/api/v5/GTC.json,data\raw\mtgjson\sets\GTC.json,1,exact_normalized_set_name
+HML,Homelands,1995-10-01,https://mtgjson.com/api/v5/HML.json,data\raw\mtgjson\sets\HML.json,1,exact_normalized_set_name
+HOU,Hour of Devastation,2017-07-14,https://mtgjson.com/api/v5/HOU.json,data\raw\mtgjson\sets\HOU.json,1,exact_normalized_set_name
+ICE,Ice Age,1995-06-03,https://mtgjson.com/api/v5/ICE.json,data\raw\mtgjson\sets\ICE.json,1,exact_normalized_set_name
+IKO,Ikoria: Lair of Behemoths,2020-04-24,https://mtgjson.com/api/v5/IKO.json,data\raw\mtgjson\sets\IKO.json,1,exact_normalized_set_name
+IMA,Iconic Masters,2017-11-17,https://mtgjson.com/api/v5/IMA.json,data\raw\mtgjson\sets\IMA.json,1,exact_normalized_set_name
+INV,Invasion,2000-10-02,https://mtgjson.com/api/v5/INV.json,data\raw\mtgjson\sets\INV.json,1,exact_normalized_set_name
+ISD,Innistrad,2011-09-30,https://mtgjson.com/api/v5/ISD.json,data\raw\mtgjson\sets\ISD.json,1,exact_normalized_set_name
+JOU,Journey into Nyx,2014-05-02,https://mtgjson.com/api/v5/JOU.json,data\raw\mtgjson\sets\JOU.json,1,exact_normalized_set_name
+JUD,Judgment,2002-05-27,https://mtgjson.com/api/v5/JUD.json,data\raw\mtgjson\sets\JUD.json,1,exact_normalized_set_name
+KLD,Kaladesh,2016-09-30,https://mtgjson.com/api/v5/KLD.json,data\raw\mtgjson\sets\KLD.json,1,exact_normalized_set_name
+KTK,Khans of Tarkir,2014-09-26,https://mtgjson.com/api/v5/KTK.json,data\raw\mtgjson\sets\KTK.json,1,exact_normalized_set_name
+LEA,Limited Edition Alpha,1993-08-05,https://mtgjson.com/api/v5/LEA.json,data\raw\mtgjson\sets\LEA.json,1,exact_tcgplayer_group_id
+LEB,Limited Edition Beta,1993-10-04,https://mtgjson.com/api/v5/LEB.json,data\raw\mtgjson\sets\LEB.json,1,exact_tcgplayer_group_id
+LEG,Legends,1994-06-01,https://mtgjson.com/api/v5/LEG.json,data\raw\mtgjson\sets\LEG.json,1,exact_normalized_set_name
+LGN,Legions,2003-02-03,https://mtgjson.com/api/v5/LGN.json,data\raw\mtgjson\sets\LGN.json,1,exact_normalized_set_name
+LRW,Lorwyn,2007-10-12,https://mtgjson.com/api/v5/LRW.json,data\raw\mtgjson\sets\LRW.json,1,exact_normalized_set_name
+M10,Magic 2010,2009-07-17,https://mtgjson.com/api/v5/M10.json,data\raw\mtgjson\sets\M10.json,1,governed_exact_alias
+M11,Magic 2011,2010-07-16,https://mtgjson.com/api/v5/M11.json,data\raw\mtgjson\sets\M11.json,1,governed_exact_alias
+M12,Magic 2012,2011-07-15,https://mtgjson.com/api/v5/M12.json,data\raw\mtgjson\sets\M12.json,1,governed_exact_alias
+M13,Magic 2013,2012-07-13,https://mtgjson.com/api/v5/M13.json,data\raw\mtgjson\sets\M13.json,1,governed_exact_alias
+M14,Magic 2014,2013-07-19,https://mtgjson.com/api/v5/M14.json,data\raw\mtgjson\sets\M14.json,1,governed_exact_alias
+M15,Magic 2015,2014-07-18,https://mtgjson.com/api/v5/M15.json,data\raw\mtgjson\sets\M15.json,1,governed_exact_alias
+M19,Core Set 2019,2018-07-13,https://mtgjson.com/api/v5/M19.json,data\raw\mtgjson\sets\M19.json,1,exact_normalized_set_name
+M20,Core Set 2020,2019-07-12,https://mtgjson.com/api/v5/M20.json,data\raw\mtgjson\sets\M20.json,1,exact_normalized_set_name
+M21,Core Set 2021,2020-07-03,https://mtgjson.com/api/v5/M21.json,data\raw\mtgjson\sets\M21.json,1,exact_normalized_set_name
+MB1,Mystery Booster,2019-11-07,https://mtgjson.com/api/v5/MB1.json,data\raw\mtgjson\sets\MB1.json,3,governed_multi_set_family
+MB2,Mystery Booster 2,2024-08-02,https://mtgjson.com/api/v5/MB2.json,data\raw\mtgjson\sets\MB2.json,1,exact_normalized_set_name
+MBS,Mirrodin Besieged,2011-02-04,https://mtgjson.com/api/v5/MBS.json,data\raw\mtgjson\sets\MBS.json,1,exact_normalized_set_name
+MH1,Modern Horizons,2019-06-14,https://mtgjson.com/api/v5/MH1.json,data\raw\mtgjson\sets\MH1.json,1,exact_normalized_set_name
+MH2,Modern Horizons 2,2021-06-18,https://mtgjson.com/api/v5/MH2.json,data\raw\mtgjson\sets\MH2.json,1,exact_normalized_set_name
+MIR,Mirage,1996-10-08,https://mtgjson.com/api/v5/MIR.json,data\raw\mtgjson\sets\MIR.json,1,exact_normalized_set_name
+MM2,Modern Masters 2015,2015-05-22,https://mtgjson.com/api/v5/MM2.json,data\raw\mtgjson\sets\MM2.json,1,exact_normalized_set_name
+MM3,Modern Masters 2017,2017-03-17,https://mtgjson.com/api/v5/MM3.json,data\raw\mtgjson\sets\MM3.json,1,exact_normalized_set_name
+MMA,Modern Masters,2013-06-07,https://mtgjson.com/api/v5/MMA.json,data\raw\mtgjson\sets\MMA.json,1,exact_normalized_set_name
+MMQ,Mercadian Masques,1999-10-04,https://mtgjson.com/api/v5/MMQ.json,data\raw\mtgjson\sets\MMQ.json,1,exact_normalized_set_name
+MOR,Morningtide,2008-02-01,https://mtgjson.com/api/v5/MOR.json,data\raw\mtgjson\sets\MOR.json,1,exact_normalized_set_name
+MRD,Mirrodin,2003-10-02,https://mtgjson.com/api/v5/MRD.json,data\raw\mtgjson\sets\MRD.json,1,exact_normalized_set_name
+NEM,Nemesis,2000-02-14,https://mtgjson.com/api/v5/NEM.json,data\raw\mtgjson\sets\NEM.json,1,exact_normalized_set_name
+NPH,New Phyrexia,2011-05-13,https://mtgjson.com/api/v5/NPH.json,data\raw\mtgjson\sets\NPH.json,1,exact_normalized_set_name
+ODY,Odyssey,2001-10-01,https://mtgjson.com/api/v5/ODY.json,data\raw\mtgjson\sets\ODY.json,1,exact_normalized_set_name
+OGW,Oath of the Gatewatch,2016-01-22,https://mtgjson.com/api/v5/OGW.json,data\raw\mtgjson\sets\OGW.json,1,exact_normalized_set_name
+ONS,Onslaught,2002-10-07,https://mtgjson.com/api/v5/ONS.json,data\raw\mtgjson\sets\ONS.json,1,exact_normalized_set_name
+ORI,Magic Origins,2015-07-17,https://mtgjson.com/api/v5/ORI.json,data\raw\mtgjson\sets\ORI.json,1,exact_normalized_set_name
+P02,Portal Second Age,1998-06-24,https://mtgjson.com/api/v5/P02.json,data\raw\mtgjson\sets\P02.json,1,exact_normalized_set_name
+PCY,Prophecy,2000-06-05,https://mtgjson.com/api/v5/PCY.json,data\raw\mtgjson\sets\PCY.json,1,exact_normalized_set_name
+PLC,Planar Chaos,2007-02-02,https://mtgjson.com/api/v5/PLC.json,data\raw\mtgjson\sets\PLC.json,1,exact_normalized_set_name
+PLS,Planeshift,2001-02-05,https://mtgjson.com/api/v5/PLS.json,data\raw\mtgjson\sets\PLS.json,1,exact_normalized_set_name
+POR,Portal,1997-05-01,https://mtgjson.com/api/v5/POR.json,data\raw\mtgjson\sets\POR.json,1,exact_normalized_set_name
+PTK,Portal Three Kingdoms,1999-05-01,https://mtgjson.com/api/v5/PTK.json,data\raw\mtgjson\sets\PTK.json,1,exact_normalized_set_name
+RAV,Ravnica: City of Guilds,2005-10-07,https://mtgjson.com/api/v5/RAV.json,data\raw\mtgjson\sets\RAV.json,1,exact_normalized_set_name
+REN,Renaissance,1995-08-01,https://mtgjson.com/api/v5/REN.json,data\raw\mtgjson\sets\REN.json,3,exact_normalized_set_name
+RIX,Rivals of Ixalan,2018-01-19,https://mtgjson.com/api/v5/RIX.json,data\raw\mtgjson\sets\RIX.json,1,exact_normalized_set_name
+RNA,Ravnica Allegiance,2019-01-25,https://mtgjson.com/api/v5/RNA.json,data\raw\mtgjson\sets\RNA.json,1,exact_normalized_set_name
+ROE,Rise of the Eldrazi,2010-04-23,https://mtgjson.com/api/v5/ROE.json,data\raw\mtgjson\sets\ROE.json,1,exact_normalized_set_name
+RTR,Return to Ravnica,2012-10-05,https://mtgjson.com/api/v5/RTR.json,data\raw\mtgjson\sets\RTR.json,1,exact_normalized_set_name
+RVR,Ravnica Remastered,2024-01-12,https://mtgjson.com/api/v5/RVR.json,data\raw\mtgjson\sets\RVR.json,1,exact_normalized_set_name
+SCG,Scourge,2003-05-26,https://mtgjson.com/api/v5/SCG.json,data\raw\mtgjson\sets\SCG.json,1,exact_normalized_set_name
+SHM,Shadowmoor,2008-05-02,https://mtgjson.com/api/v5/SHM.json,data\raw\mtgjson\sets\SHM.json,1,exact_normalized_set_name
+SOI,Shadows over Innistrad,2016-04-08,https://mtgjson.com/api/v5/SOI.json,data\raw\mtgjson\sets\SOI.json,1,exact_normalized_set_name
+SOK,Saviors of Kamigawa,2005-06-03,https://mtgjson.com/api/v5/SOK.json,data\raw\mtgjson\sets\SOK.json,1,exact_normalized_set_name
+SOM,Scars of Mirrodin,2010-10-01,https://mtgjson.com/api/v5/SOM.json,data\raw\mtgjson\sets\SOM.json,1,exact_normalized_set_name
+STH,Stronghold,1998-03-02,https://mtgjson.com/api/v5/STH.json,data\raw\mtgjson\sets\STH.json,1,exact_normalized_set_name
+THB,Theros Beyond Death,2020-01-24,https://mtgjson.com/api/v5/THB.json,data\raw\mtgjson\sets\THB.json,1,exact_normalized_set_name
+THS,Theros,2013-09-27,https://mtgjson.com/api/v5/THS.json,data\raw\mtgjson\sets\THS.json,1,exact_normalized_set_name
+TMP,Tempest,1997-10-14,https://mtgjson.com/api/v5/TMP.json,data\raw\mtgjson\sets\TMP.json,1,exact_normalized_set_name
+TOR,Torment,2002-02-04,https://mtgjson.com/api/v5/TOR.json,data\raw\mtgjson\sets\TOR.json,1,exact_normalized_set_name
+TSP,Time Spiral,2006-10-06,https://mtgjson.com/api/v5/TSP.json,data\raw\mtgjson\sets\TSP.json,1,exact_normalized_set_name
+TSR,Time Spiral Remastered,2021-03-19,https://mtgjson.com/api/v5/TSR.json,data\raw\mtgjson\sets\TSR.json,1,exact_normalized_set_name
+UDS,Urza's Destiny,1999-06-07,https://mtgjson.com/api/v5/UDS.json,data\raw\mtgjson\sets\UDS.json,1,exact_normalized_set_name
+UGL,Unglued,1998-08-11,https://mtgjson.com/api/v5/UGL.json,data\raw\mtgjson\sets\UGL.json,1,exact_normalized_set_name
+ULG,Urza's Legacy,1999-02-15,https://mtgjson.com/api/v5/ULG.json,data\raw\mtgjson\sets\ULG.json,1,exact_normalized_set_name
+UMA,Ultimate Masters,2018-12-07,https://mtgjson.com/api/v5/UMA.json,data\raw\mtgjson\sets\UMA.json,1,exact_normalized_set_name
+UNH,Unhinged,2004-11-19,https://mtgjson.com/api/v5/UNH.json,data\raw\mtgjson\sets\UNH.json,1,exact_normalized_set_name
+USG,Urza's Saga,1998-10-12,https://mtgjson.com/api/v5/USG.json,data\raw\mtgjson\sets\USG.json,1,exact_normalized_set_name
+UST,Unstable,2017-12-08,https://mtgjson.com/api/v5/UST.json,data\raw\mtgjson\sets\UST.json,1,exact_normalized_set_name
+VIS,Visions,1997-02-03,https://mtgjson.com/api/v5/VIS.json,data\raw\mtgjson\sets\VIS.json,1,exact_normalized_set_name
+WAR,War of the Spark,2019-05-03,https://mtgjson.com/api/v5/WAR.json,data\raw\mtgjson\sets\WAR.json,1,exact_normalized_set_name
+WTH,Weatherlight,1997-06-09,https://mtgjson.com/api/v5/WTH.json,data\raw\mtgjson\sets\WTH.json,1,exact_normalized_set_name
+WWK,Worldwake,2010-02-05,https://mtgjson.com/api/v5/WWK.json,data\raw\mtgjson\sets\WWK.json,1,exact_normalized_set_name
+XLN,Ixalan,2017-09-29,https://mtgjson.com/api/v5/XLN.json,data\raw\mtgjson\sets\XLN.json,1,exact_normalized_set_name
+ZEN,Zendikar,2009-10-02,https://mtgjson.com/api/v5/ZEN.json,data\raw\mtgjson\sets\ZEN.json,1,exact_normalized_set_name

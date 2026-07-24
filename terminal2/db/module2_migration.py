@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+from pathlib import Path
+
+from terminal2.config import DB_FILE
 from terminal2.db.module1_migration import migrate_module1
 from terminal2.db.schema import get_connection
 
@@ -18,8 +21,13 @@ CREATE TABLE IF NOT EXISTS supply_observations (
     source_confidence REAL,
     raw_payload TEXT,
     created_at TEXT DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE(observation_date, investment_product_id, source_name),
-    FOREIGN KEY(investment_product_id) REFERENCES products(investment_product_id)
+    UNIQUE(
+        observation_date,
+        investment_product_id,
+        source_name
+    ),
+    FOREIGN KEY(investment_product_id)
+        REFERENCES products(investment_product_id)
 );
 
 CREATE TABLE IF NOT EXISTS sales_observations (
@@ -35,8 +43,13 @@ CREATE TABLE IF NOT EXISTS sales_observations (
     source_confidence REAL,
     raw_payload TEXT,
     created_at TEXT DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE(observation_date, investment_product_id, source_name),
-    FOREIGN KEY(investment_product_id) REFERENCES products(investment_product_id)
+    UNIQUE(
+        observation_date,
+        investment_product_id,
+        source_name
+    ),
+    FOREIGN KEY(investment_product_id)
+        REFERENCES products(investment_product_id)
 );
 
 CREATE TABLE IF NOT EXISTS market_intelligence (
@@ -58,7 +71,8 @@ CREATE TABLE IF NOT EXISTS market_intelligence (
     market_intelligence_confidence REAL,
     signal_basis TEXT,
     updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY(investment_product_id) REFERENCES products(investment_product_id)
+    FOREIGN KEY(investment_product_id)
+        REFERENCES products(investment_product_id)
 );
 
 CREATE TABLE IF NOT EXISTS market_health_history (
@@ -105,22 +119,42 @@ CREATE TABLE IF NOT EXISTS source_health_history (
 );
 
 CREATE INDEX IF NOT EXISTS idx_supply_product_date
-ON supply_observations(investment_product_id, observation_date);
+ON supply_observations(
+    investment_product_id,
+    observation_date
+);
 
 CREATE INDEX IF NOT EXISTS idx_sales_product_date
-ON sales_observations(investment_product_id, observation_date);
+ON sales_observations(
+    investment_product_id,
+    observation_date
+);
 
 CREATE INDEX IF NOT EXISTS idx_market_intelligence_score
-ON market_intelligence(market_intelligence_score DESC);
+ON market_intelligence(
+    market_intelligence_score DESC
+);
 """
 
 
-def migrate_module2():
-    migrate_module1()
-    connection = get_connection()
+def migrate_module2(
+    db_file: Path = DB_FILE,
+) -> None:
+    """Apply Modules 1 and 2 to the selected SQLite database."""
+
+    db_file = Path(db_file)
+    migrate_module1(db_file)
+
+    connection = get_connection(db_file)
+
     try:
         connection.executescript(MODULE2_SQL)
         connection.commit()
+
+    except Exception:
+        connection.rollback()
+        raise
+
     finally:
         connection.close()
 

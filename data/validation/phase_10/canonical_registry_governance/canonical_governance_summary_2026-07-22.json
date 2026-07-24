@@ -1,0 +1,47 @@
+{
+  "canonical_registry_changed": false,
+  "database_changed": false,
+  "eligibility_recalculated": false,
+  "generated_at_utc": "2026-07-22T14:17:30.795183+00:00",
+  "governance_review_rows": 565,
+  "governance_review_status_counts": {
+    "not_required": 4674,
+    "required": 565
+  },
+  "governance_status": "GOVERNANCE_MODEL_APPLIED",
+  "governed_registry_rows": 5239,
+  "identity_lifecycle_status_counts": {
+    "active": 5239
+  },
+  "input_files": {
+    "canonical_registry": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\staging\\phase_10\\canonical_registry\\canonical_mtg_product_registry_2026-07-22.csv",
+    "governance_policy": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\config\\canonical_registry_governance.yaml"
+  },
+  "investment_approval_status_counts": {
+    "approved": 234,
+    "review_required": 5005
+  },
+  "investment_eligibility_status_counts": {
+    "not_evaluated": 5239
+  },
+  "output_files": {
+    "governance_review_queue": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\validation\\phase_10\\canonical_registry_governance\\canonical_governance_review_queue_2026-07-22.csv",
+    "governed_registry": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\staging\\phase_10\\canonical_registry_governance\\governed_canonical_mtg_registry_2026-07-22.csv"
+  },
+  "production_registry_changed": false,
+  "recommendations_created": false,
+  "schema_version": "10.5R.1C.2.1",
+  "scoring_applied": false,
+  "scoring_status_counts": {
+    "not_scored": 5239
+  },
+  "source_availability_status_counts": {
+    "available": 5239
+  },
+  "unique_canonical_product_ids": 5239,
+  "universal_export_status_counts": {
+    "identity_ready": 5239
+  },
+  "universal_identity_ready_rows": 5239,
+  "universal_package_created": false
+}

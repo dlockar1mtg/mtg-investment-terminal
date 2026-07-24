@@ -3,12 +3,12 @@ from __future__ import annotations
 from pathlib import Path
 import csv
 import json
-import shutil
-import subprocess
 import time
 import urllib.request
 
 import pandas as pd
+
+from terminal2.sources.archive_utils import extract_7z_archive
 
 from terminal2.config import (
     ARCHIVE_CACHE_DIR,
@@ -42,19 +42,6 @@ def extracted_root(snapshot_date):
     return Path(ARCHIVE_EXTRACT_DIR) / snapshot_date
 
 
-def find_7z():
-    candidates = [
-        shutil.which("7z"),
-        shutil.which("7za"),
-        r"C:\Program Files\7-Zip\7z.exe",
-        r"C:\Program Files (x86)\7-Zip\7z.exe",
-    ]
-    for c in candidates:
-        if c and Path(c).exists():
-            return c
-    raise FileNotFoundError("Could not find 7-Zip. Install it or add 7z.exe to PATH.")
-
-
 def download_archive(snapshot_date, force=False):
     ARCHIVE_CACHE_DIR.mkdir(parents=True, exist_ok=True)
     out = archive_file(snapshot_date)
@@ -80,15 +67,11 @@ def extract_archive(snapshot_date, force=False):
     if date_folder.exists() and not force:
         return date_folder, "cached"
 
-    root.mkdir(parents=True, exist_ok=True)
-    seven_zip = find_7z()
-    result = subprocess.run(
-        [seven_zip, "x", str(archive_file(snapshot_date)), f"-o{root}", "-y"],
-        capture_output=True,
-        text=True,
+    extract_7z_archive(
+        archive_file(snapshot_date),
+        root,
+        force=force,
     )
-    if result.returncode != 0:
-        raise RuntimeError(f"7z failed: {result.stderr}")
     return date_folder if date_folder.exists() else root, "extracted"
 
 

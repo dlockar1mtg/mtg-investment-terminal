@@ -1,7 +1,7 @@
 from __future__ import annotations
 from pathlib import Path
 import pandas as pd
-from terminal2.config import PRODUCT_MASTER_FILE
+from terminal2.config import DB_FILE, PRODUCT_MASTER_FILE
 from terminal2.db.schema import get_connection, init_db
 from terminal2.db.module1_migration import migrate_module1
 
@@ -47,9 +47,18 @@ def load_products_df():
     finally: connection.close()
 
 
-def insert_price_observations(rows, source_run_id=None):
-    if not rows: return 0
-    init_db(); connection = get_connection(); count = 0
+def insert_price_observations(
+    rows,
+    source_run_id=None,
+    db_file=None,
+):
+    if not rows:
+        return 0
+
+    database_path = DB_FILE if db_file is None else Path(db_file)
+    init_db(database_path)
+    connection = get_connection(database_path)
+    count = 0
     try:
         for row in rows:
             connection.execute("""INSERT INTO price_observations (observation_date,investment_product_id,tcgplayer_product_id,price_source,market_price,low_price,mid_price,high_price,price_data_quality,source_run_id,raw_payload) VALUES (?,?,?,?,?,?,?,?,?,?,?) ON CONFLICT(observation_date,investment_product_id,price_source) DO UPDATE SET tcgplayer_product_id=excluded.tcgplayer_product_id,market_price=excluded.market_price,low_price=excluded.low_price,mid_price=excluded.mid_price,high_price=excluded.high_price,price_data_quality=excluded.price_data_quality,source_run_id=excluded.source_run_id,raw_payload=excluded.raw_payload,created_at=CURRENT_TIMESTAMP""", (row.get("observation_date"), row.get("investment_product_id"), row.get("tcgplayer_product_id"), row.get("price_source", "unknown"), row.get("market_price"), row.get("low_price"), row.get("mid_price"), row.get("high_price"), row.get("price_data_quality", 80), source_run_id, row.get("raw_payload", "{}")))

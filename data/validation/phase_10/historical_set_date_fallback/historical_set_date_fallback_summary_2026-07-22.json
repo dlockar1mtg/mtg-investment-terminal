@@ -1,0 +1,30 @@
+{
+  "audit_status": "PASS",
+  "authoritative_historical_review_rows": 140,
+  "final_eligibility_assigned": false,
+  "final_release_dates_assigned": 0,
+  "generated_at_utc": "2026-07-22T18:28:45Z",
+  "output_files": {
+    "audit": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\validation\\phase_10\\historical_set_date_fallback\\historical_set_date_fallback_audit_2026-07-22.csv",
+    "fallback_candidates": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\validation\\phase_10\\historical_set_date_fallback\\historical_set_date_fallback_candidates_2026-07-22.csv",
+    "review_queue": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\validation\\phase_10\\historical_set_date_fallback\\historical_set_date_fallback_review_queue_2026-07-22.csv"
+  },
+  "production_registry_changed": false,
+  "review_reason_counts": {
+    "governed_multi_set_family_route": 1,
+    "product_edition_or_language_marker": 15,
+    "product_identity_not_exactly_matched": 1,
+    "product_name_year_conflicts_with_set_year": 5
+  },
+  "schema_version": "10.5R.1D.2.4F.1",
+  "scoring_allowed_rows": 0,
+  "set_date_fallback_candidate_rows": 70,
+  "set_date_fallback_review_rows": 19,
+  "set_date_fallback_state_counts": {
+    "set_date_fallback_candidate": 70,
+    "set_date_fallback_review_required": 19
+  },
+  "set_date_only_rows": 89,
+  "universal_database_changed": false,
+  "universal_investable_allowed_rows": 0
+}

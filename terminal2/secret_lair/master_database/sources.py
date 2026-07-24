@@ -5,11 +5,13 @@ import pandas as pd
 from .config import OFFICIAL_URLS,SCRYFALL_BULK_INDEX_URL,TCGCSV_BASE_URL,REQUEST_DELAY_SECONDS
 from .normalize import canonical_name,infer_finish,infer_family,is_sealed_secret_lair,key,text
 
+
 def _results(payload):
  if isinstance(payload,dict):
   value=payload.get("results") or payload.get("data") or []
   return value if isinstance(value,list) else []
  return payload if isinstance(payload,list) else []
+
 
 def official_records(client,refresh=False):
  rows=[]
@@ -33,6 +35,7 @@ def official_records(client,refresh=False):
     if name and is_sealed_secret_lair(name):rows.append({"source_name":"official_secret_lair","source_record_id":href or name,"source_product_name":name,"source_url":href or url,"group_name":"","published_on":"","market_price":None,"low_price":None,"tcgplayer_product_id":"","tcgcsv_group_id":"","tcgcsv_category_id":"","raw_json":json.dumps(item)})
  return pd.DataFrame(rows).drop_duplicates(["source_name","source_record_id"]) if rows else pd.DataFrame()
 
+
 def _magic_category(client,refresh=False):
  cats=pd.DataFrame(_results(client.get_json(f"{TCGCSV_BASE_URL}/categories",refresh=refresh)))
  for _,row in cats.iterrows():
@@ -40,6 +43,7 @@ def _magic_category(client,refresh=False):
   if "magic" in label:
    return int(row.get("categoryId") or row.get("category_id"))
  raise RuntimeError("Unable to detect the TCGCSV Magic category.")
+
 
 def tcgcsv_records(client,refresh=False,max_groups=None):
  category=_magic_category(client,refresh=refresh)
@@ -69,14 +73,24 @@ def tcgcsv_records(client,refresh=False,max_groups=None):
   time.sleep(REQUEST_DELAY_SECONDS)
  return pd.DataFrame(rows)
 
+
 def scryfall_cards(client,refresh=False):
- index=client.get_json(SCRYFALL_BULK_INDEX_URL,refresh=refresh)
- items=index.get("data",[]) if isinstance(index,dict) else []
- target=next((x for x in items if x.get("type")=="default_cards"),None)
- if not target:return pd.DataFrame()
- cards=client.download_json(target["download_uri"],refresh=refresh)
+ """Retrieve only Secret Lair cards through Scryfall's paginated search API.
+
+ This replaces the previous default_cards bulk download, which loaded the full
+ Magic card corpus into memory even though the master database only needs SLD
+ records.
+ """
+ url="https://api.scryfall.com/cards/search?q=set%3Asld&unique=prints&order=set"
  rows=[]
- for card in cards:
-  if str(card.get("set","")).lower()!="sld":continue
-  rows.append({"scryfall_id":card.get("id"),"card_name":card.get("name"),"released_at":card.get("released_at"),"artist":card.get("artist"),"collector_number":card.get("collector_number"),"finishes":"|".join(card.get("finishes") or []),"tcgplayer_id":card.get("tcgplayer_id"),"oracle_id":card.get("oracle_id"),"promo_types":"|".join(card.get("promo_types") or []),"source_url":card.get("scryfall_uri")})
+ seen_urls=set()
+ while url and url not in seen_urls:
+  seen_urls.add(url)
+  payload=client.get_json(url,refresh=refresh)
+  cards=payload.get("data",[]) if isinstance(payload,dict) else []
+  for card in cards:
+   if str(card.get("set","")).lower()!="sld":continue
+   rows.append({"scryfall_id":card.get("id"),"card_name":card.get("name"),"released_at":card.get("released_at"),"artist":card.get("artist"),"collector_number":card.get("collector_number"),"finishes":"|".join(card.get("finishes") or []),"tcgplayer_id":card.get("tcgplayer_id"),"oracle_id":card.get("oracle_id"),"promo_types":"|".join(card.get("promo_types") or []),"source_url":card.get("scryfall_uri")})
+  url=payload.get("next_page") if isinstance(payload,dict) and payload.get("has_more") else None
+  if url:time.sleep(REQUEST_DELAY_SECONDS)
  return pd.DataFrame(rows)

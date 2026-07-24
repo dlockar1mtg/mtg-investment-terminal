@@ -1,5 +1,10 @@
 from __future__ import annotations
+
+from pathlib import Path
+
+from terminal2.config import DB_FILE
 from terminal2.db.schema import get_connection, init_db
+
 
 PRODUCT_COLUMNS = {
     "asset_class": "TEXT",
@@ -13,6 +18,7 @@ PRODUCT_COLUMNS = {
     "foil_variant": "TEXT",
     "language": "TEXT DEFAULT 'English'",
 }
+
 
 METADATA_SQL = """
 CREATE TABLE IF NOT EXISTS product_metadata (
@@ -35,21 +41,54 @@ CREATE TABLE IF NOT EXISTS product_metadata (
     confidence REAL,
     notes TEXT,
     updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY(investment_product_id) REFERENCES products(investment_product_id)
+    FOREIGN KEY(investment_product_id)
+        REFERENCES products(investment_product_id)
 );
 """
 
 
-def migrate_module1():
-    init_db()
-    connection = get_connection()
+def migrate_module1(
+    db_file: Path = DB_FILE,
+) -> None:
+    """Apply Module 1 schema changes to the selected SQLite database."""
+
+    db_file = Path(db_file)
+    init_db(db_file)
+
+    connection = get_connection(db_file)
+
     try:
-        existing = {row[1] for row in connection.execute("PRAGMA table_info(products)")}
+        existing = {
+            row[1]
+            for row in connection.execute(
+                "PRAGMA table_info(products)"
+            )
+        }
+
         for column, sql_type in PRODUCT_COLUMNS.items():
             if column not in existing:
-                connection.execute(f"ALTER TABLE products ADD COLUMN {column} {sql_type}")
+                connection.execute(
+                    f"ALTER TABLE products "
+                    f"ADD COLUMN {column} {sql_type}"
+                )
+
         connection.executescript(METADATA_SQL)
-        connection.execute("CREATE INDEX IF NOT EXISTS idx_products_type ON products(product_type)")
+
+        connection.execute(
+            "CREATE INDEX IF NOT EXISTS "
+            "idx_products_type ON products(product_type)"
+        )
+
         connection.commit()
+
+    except Exception:
+        connection.rollback()
+        raise
+
     finally:
         connection.close()
+
+
+if __name__ == "__main__":
+    migrate_module1()
+    print("Module 1 database migration complete.")

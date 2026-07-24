@@ -1,0 +1,29 @@
+{
+  "canonical_registry_changed": false,
+  "change_report_rows": 0,
+  "change_type_counts": {
+    "unchanged": 5239
+  },
+  "classification_changed_rows": 0,
+  "comparison_rows": 5239,
+  "generated_at_utc": "2026-07-22T14:34:33Z",
+  "identity_conflict_rows": 0,
+  "input_files": {
+    "current_canonical_registry": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\staging\\phase_10\\canonical_registry\\canonical_mtg_product_registry_2026-07-22.csv",
+    "prior_governed_registry": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\staging\\phase_10\\canonical_registry_governance\\governed_canonical_mtg_registry_2026-07-22.csv"
+  },
+  "new_identity_rows": 0,
+  "output_files": {
+    "change_report": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\validation\\phase_10\\canonical_registry_refresh\\canonical_registry_change_report_2026-07-22.csv",
+    "review_queue": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\validation\\phase_10\\canonical_registry_refresh\\canonical_registry_change_review_queue_2026-07-22.csv"
+  },
+  "production_registry_changed": false,
+  "refresh_validation_status": "PASS",
+  "review_queue_rows": 0,
+  "schema_version": "10.5R.1C.2.3",
+  "silent_deletions_applied": false,
+  "source_name_changed_rows": 0,
+  "source_unavailable_rows": 0,
+  "unchanged_rows": 5239,
+  "universal_database_changed": false
+}

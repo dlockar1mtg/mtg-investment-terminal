@@ -1,0 +1,11 @@
+source_name,candidate_file_count,files_present,operational_file_count,network_capable_file_count,product_discovery_file_count,price_related_file_count,provisional_operational_status,expected_capabilities
+card_kingdom,1,0,0,0,0,0,not_implemented,retail_prices|inventory
+cardmarket,1,0,0,0,0,0,not_implemented,market_prices|supply_demand
+coolstuffinc,1,0,0,0,0,0,not_implemented,retail_prices|inventory
+ebay,1,0,0,0,0,0,not_implemented,market_prices|sold_listings|supply_demand
+mtgjson,4,4,3,0,2,2,local_or_support_only,card_catalog|set_metadata|sealed_product_enrichment|secret_lair_discovery
+scryfall,4,4,3,1,2,3,operational_candidate,card_catalog|set_metadata|secret_lair_discovery
+star_city_games,1,0,0,0,0,0,not_implemented,retail_prices|inventory
+tcgcsv,6,6,5,1,6,5,operational_candidate,sealed_product_discovery|product_identifiers|market_prices|historical_archives
+tcgplayer_api,1,1,1,1,1,1,operational_candidate,product_identifiers|market_prices
+wizards,2,2,2,0,2,2,local_or_support_only,official_release_metadata|secret_lair_discovery

@@ -1,0 +1,68 @@
+{
+  "canonical_packaging_level_counts": {
+    "bundle": 376,
+    "case": 352,
+    "deck": 200,
+    "display": 279,
+    "individual_card_insert": 27,
+    "individual_card_or_variant": 4005
+  },
+  "canonical_product_class_counts": {
+    "sealed_product": 892,
+    "secret_lair_product": 4347
+  },
+  "canonical_product_family_counts": {
+    "booster_display": 304,
+    "bundle": 173,
+    "preconstructed_deck": 210,
+    "sealed_case": 205,
+    "secret_lair": 4347
+  },
+  "canonical_product_type_counts": {
+    "bundle": 173,
+    "collector_booster_display": 78,
+    "commander_deck": 210,
+    "draft_booster_display": 25,
+    "jumpstart_booster_display": 11,
+    "play_booster_display": 20,
+    "sealed_case": 205,
+    "secret_lair_bundle_or_kit": 254,
+    "secret_lair_card_or_product": 2395,
+    "secret_lair_card_variant": 1670,
+    "secret_lair_case": 1,
+    "secret_lair_insert": 27,
+    "set_booster_display": 18,
+    "theme_booster_display": 14,
+    "traditional_booster_display": 138
+  },
+  "canonical_registry_rows": 5239,
+  "canonical_registry_status": "IDENTITY_REGISTRY_COMPLETE",
+  "database_changed": false,
+  "duplicate_canonical_id_rows": 0,
+  "duplicate_tcgplayer_id_rows": 0,
+  "eligibility_recalculated": false,
+  "established_existing_identity_rows": 4674,
+  "generated_at_utc": "2026-07-22T14:04:53.364197+00:00",
+  "identity_review_rows": 0,
+  "input_files": {
+    "candidate_universe": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\staging\\phase_10\\external_discovery\\tcgcsv\\tcgcsv_premium_candidate_universe_2026-07-22.csv",
+    "existing_registry": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\product_master\\investment_products.csv",
+    "reconciliation": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\staging\\phase_10\\external_discovery\\tcgcsv\\reconciliation\\tcgcsv_candidate_reconciliation_2026-07-22.csv"
+  },
+  "investment_approval_status_counts": {
+    "approved": 234,
+    "review_required": 5005
+  },
+  "new_source_identity_rows": 565,
+  "output_files": {
+    "canonical_registry": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\staging\\phase_10\\canonical_registry\\canonical_mtg_product_registry_2026-07-22.csv",
+    "identity_review_queue": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\validation\\phase_10\\canonical_registry\\canonical_registry_identity_review_queue_2026-07-22.csv",
+    "new_products": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\validation\\phase_10\\canonical_registry\\canonical_registry_new_products_2026-07-22.csv"
+  },
+  "production_registry_changed": false,
+  "recommendations_created": false,
+  "schema_version": "10.5R.1C.1",
+  "scoring_applied": false,
+  "unique_canonical_product_ids": 5239,
+  "unique_tcgplayer_product_ids": 5239
+}

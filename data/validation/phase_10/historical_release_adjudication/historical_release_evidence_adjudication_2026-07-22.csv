@@ -1,0 +1,141 @@
+canonical_product_id,canonical_product_name,sealed_match_state,sealed_match_method,tcgcsv_release_date,mtgjson_product_release_date,mtgjson_set_release_date,product_vs_tcgcsv_days,product_vs_set_days,release_evidence_comparison_state,final_release_date,final_release_date_source,final_release_date_assigned,historical_eligibility_decision,scoring_allowed,universal_investable_allowed
+MTG-CANON-TCGPLAYER-27257,10th Edition - Booster Box,matched,exact_tcgplayer_product_id,,,2007-07-13,,,mtgjson_set_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-27258,7th Edition - Booster Box,matched,exact_tcgplayer_product_id,,,2001-04-11,,,mtgjson_set_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-27259,8th Edition - Booster Box,matched,exact_tcgplayer_product_id,,,2003-07-28,,,mtgjson_set_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-27260,9th Edition - Booster Box,matched,exact_tcgplayer_product_id,,,2005-07-29,,,mtgjson_set_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-125794,Aether Revolt - Booster Box,matched,exact_tcgplayer_product_id,,,2017-01-20,,,mtgjson_set_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-31841,Alara Reborn - Booster Box,matched,exact_tcgplayer_product_id,,,2009-04-30,,,mtgjson_set_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-27261,Alliances - Booster Box,matched,exact_tcgplayer_product_id,,,1996-06-10,,,mtgjson_set_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-27262,Alpha Edition - Booster Box,matched,exact_tcgplayer_product_id,,,1993-08-05,,,mtgjson_set_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-27263,Antiquities - Booster Box,matched,exact_tcgplayer_product_id,,,1994-03-04,,,mtgjson_set_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-27264,Apocalypse - Booster Box,matched,exact_tcgplayer_product_id,,,2001-06-04,,,mtgjson_set_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-27265,Arabian Nights - Booster Box,matched,exact_tcgplayer_product_id,,,1993-12-17,,,mtgjson_set_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-102715,Battle for Zendikar - Booster Box,matched,exact_tcgplayer_product_id,,,2015-10-02,,,mtgjson_set_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-27266,Beta Edition - Booster Box,matched,exact_tcgplayer_product_id,,,1993-10-04,,,mtgjson_set_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-27267,Betrayers of Kamigawa - Booster Box,matched,exact_tcgplayer_product_id,,,2005-02-04,,,mtgjson_set_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-27268,Champions of Kamigawa - Booster Box,matched,exact_tcgplayer_product_id,,,2004-10-01,,,mtgjson_set_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-27269,Chronicles - Booster Box,matched,exact_tcgplayer_product_id,,,1995-07-01,,,mtgjson_set_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-27270,Classic Sixth Edition - Booster Box,matched,exact_tcgplayer_product_id,,,1999-04-21,,,mtgjson_set_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-27271,Coldsnap - Booster Box,matched,exact_tcgplayer_product_id,,,2006-07-21,,,mtgjson_set_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-93516,Conflux - Booster Box,matched,exact_tcgplayer_product_id,,,2009-02-06,,,mtgjson_set_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-27272,Darksteel - Booster Box,matched,exact_tcgplayer_product_id,,,2004-02-06,,,mtgjson_set_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-27273,Dissension - Booster Box,matched,exact_tcgplayer_product_id,,,2006-05-05,,,mtgjson_set_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-27274,Eventide - Booster Box,matched,exact_tcgplayer_product_id,,,2008-07-25,,,mtgjson_set_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-27275,Exodus - Booster Box,matched,exact_tcgplayer_product_id,,,1998-06-15,,,mtgjson_set_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-27276,Fallen Empires - Booster Box,matched,exact_tcgplayer_product_id,,,1994-11-01,,,mtgjson_set_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-27277,Fifth Dawn - Booster Box,matched,exact_tcgplayer_product_id,,,2004-06-04,,,mtgjson_set_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-27278,Fifth Edition - Booster Box,matched,exact_tcgplayer_product_id,,,1997-03-24,,,mtgjson_set_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-27279,Fourth Edition - Booster Box,matched,exact_tcgplayer_product_id,,,1995-04-01,,,mtgjson_set_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-27280,Future Sight - Booster Box,matched,exact_tcgplayer_product_id,,,2007-05-04,,,mtgjson_set_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-67311,Gatecrash - Booster Box,matched,exact_tcgplayer_product_id,,,2013-02-01,,,mtgjson_set_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-27281,Guildpact - Booster Box,matched,exact_tcgplayer_product_id,,,2006-02-03,,,mtgjson_set_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-27282,Homelands - Booster Box,matched,exact_tcgplayer_product_id,,,1995-10-01,,,mtgjson_set_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-27283,Ice Age - Booster Box,matched,exact_tcgplayer_product_id,,,1995-06-03,,,mtgjson_set_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-47791,Innistrad - Booster Box,matched,exact_tcgplayer_product_id,,,2011-09-30,,,mtgjson_set_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-27284,Invasion - Booster Box,matched,exact_tcgplayer_product_id,,,2000-10-02,,,mtgjson_set_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-77322,Journey Into Nyx - Booster Box,matched,exact_tcgplayer_product_id,,,2014-05-02,,,mtgjson_set_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-27285,Judgment - Booster Box,matched,exact_tcgplayer_product_id,,,2002-05-27,,,mtgjson_set_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-91650,Khans of Tarkir - Booster Box,matched,exact_tcgplayer_product_id,,,2014-09-26,,,mtgjson_set_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-27286,Legends - Booster Box,matched,exact_tcgplayer_product_id,,,1994-06-01,,,mtgjson_set_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-27287,Legions - Booster Box,matched,exact_tcgplayer_product_id,,,2003-02-03,,,mtgjson_set_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-27288,Lorwyn - Booster Box,matched,exact_tcgplayer_product_id,,,2007-10-12,,,mtgjson_set_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-32529,Magic 2010 (M10) - Booster Box,matched,exact_tcgplayer_product_id,,,2009-07-17,,,mtgjson_set_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-35372,Magic 2011 (M11) - Booster Box,matched,exact_tcgplayer_product_id,,,2010-07-16,,,mtgjson_set_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-46957,Magic 2012 (M12) - Booster Box,matched,exact_tcgplayer_product_id,,,2011-07-15,,,mtgjson_set_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-69243,Magic 2014 (M14) - Booster Box,matched,exact_tcgplayer_product_id,,,2013-07-19,,,mtgjson_set_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-27289,Mercadian Masques - Booster Box,matched,exact_tcgplayer_product_id,,,1999-10-04,,,mtgjson_set_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-27290,Mirage - Booster Box,matched,exact_tcgplayer_product_id,,,1996-10-08,,,mtgjson_set_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-27291,Mirrodin - Booster Box,matched,exact_tcgplayer_product_id,,,2003-10-02,,,mtgjson_set_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-39109,Mirrodin Besieged - Booster Box,matched,exact_tcgplayer_product_id,,,2011-02-04,,,mtgjson_set_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-68104,Modern Masters - Booster Box,matched,exact_tcgplayer_product_id,,,2013-06-07,,,mtgjson_set_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-27292,Morningtide - Booster Box,matched,exact_tcgplayer_product_id,,,2008-02-01,,,mtgjson_set_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-246935,Mystery Booster - Booster Box [Convention Edition] (2021),matched,exact_tcgplayer_product_id,,,2019-11-07,,,mtgjson_set_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-27293,Nemesis - Booster Box,matched,exact_tcgplayer_product_id,,,2000-02-14,,,mtgjson_set_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-39410,New Phyrexia - Booster Box,matched,exact_tcgplayer_product_id,,,2011-05-13,,,mtgjson_set_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-27294,Odyssey - Booster Box,matched,exact_tcgplayer_product_id,,,2001-10-01,,,mtgjson_set_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-27295,Onslaught - Booster Box,matched,exact_tcgplayer_product_id,,,2002-10-07,,,mtgjson_set_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-27296,Planar Chaos - Booster Box,matched,exact_tcgplayer_product_id,,,2007-02-02,,,mtgjson_set_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-27297,Planeshift - Booster Box,matched,exact_tcgplayer_product_id,,,2001-02-05,,,mtgjson_set_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-27298,Portal - Booster Box,matched,exact_tcgplayer_product_id,,,1997-05-01,,,mtgjson_set_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-27299,Portal Second Age - Booster Box,matched,exact_tcgplayer_product_id,,,1998-06-24,,,mtgjson_set_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-27300,Portal Three Kingdoms - Booster Box,matched,exact_tcgplayer_product_id,,,1999-05-01,,,mtgjson_set_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-27301,Prophecy - Booster Box,matched,exact_tcgplayer_product_id,,,2000-06-05,,,mtgjson_set_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-27302,Ravnica - Booster Box,matched,exact_tcgplayer_product_id,,,2005-10-07,,,mtgjson_set_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-245970,Renaissance - French Booster Box,matched,exact_tcgplayer_product_id,,,1995-08-01,,,mtgjson_set_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-245971,Renaissance - German Booster Box,matched,exact_tcgplayer_product_id,,,1995-08-01,,,mtgjson_set_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-60117,Return to Ravnica - Booster Box,matched,exact_tcgplayer_product_id,,,2012-10-05,,,mtgjson_set_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-27303,Revised Edition - Booster Box,matched,exact_tcgplayer_product_id,,,1994-04-11,,,mtgjson_set_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-34678,Rise of the Eldrazi - Booster Box,matched,exact_tcgplayer_product_id,,,2010-04-23,,,mtgjson_set_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-27304,Saviors of Kamigawa - Booster Box,matched,exact_tcgplayer_product_id,,,2005-06-03,,,mtgjson_set_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-35749,Scars of Mirrodin - Booster Box,matched,exact_tcgplayer_product_id,,,2010-10-01,,,mtgjson_set_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-27305,Scourge - Booster Box,matched,exact_tcgplayer_product_id,,,2003-05-26,,,mtgjson_set_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-27306,Shadowmoor - Booster Box,matched,exact_tcgplayer_product_id,,,2008-05-02,,,mtgjson_set_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-28640,Shards of Alara - Booster Box,matched,exact_tcgplayer_product_id,,,2008-10-03,,,mtgjson_set_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-27307,Stronghold - Booster Box,matched,exact_tcgplayer_product_id,,,1998-03-02,,,mtgjson_set_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-27308,Tempest - Booster Box,matched,exact_tcgplayer_product_id,,,1997-10-14,,,mtgjson_set_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-27309,The Dark - Booster Box,matched,exact_tcgplayer_product_id,,,1994-08-01,,,mtgjson_set_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-70960,Theros - Booster Box,matched,exact_tcgplayer_product_id,,,2013-09-27,,,mtgjson_set_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-27310,Time Spiral - Booster Box,matched,exact_tcgplayer_product_id,,,2006-10-06,,,mtgjson_set_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-27311,Torment - Booster Box,matched,exact_tcgplayer_product_id,,,2002-02-04,,,mtgjson_set_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-27312,Unglued - Booster Box,matched,exact_tcgplayer_product_id,,,1998-08-11,,,mtgjson_set_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-79290,Unhinged - Booster Box,matched,exact_tcgplayer_product_id,,,2004-11-19,,,mtgjson_set_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-27313,Unlimited Edition - Booster Box,matched,exact_tcgplayer_product_id,,,1993-12-01,,,mtgjson_set_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-27314,Urza's Destiny - Booster Box,matched,exact_tcgplayer_product_id,,,1999-06-07,,,mtgjson_set_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-27315,Urza's Legacy - Booster Box,matched,exact_tcgplayer_product_id,,,1999-02-15,,,mtgjson_set_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-27316,Urza's Saga - Booster Box,matched,exact_tcgplayer_product_id,,,1998-10-12,,,mtgjson_set_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-27317,Visions - Booster Box,matched,exact_tcgplayer_product_id,,,1997-02-03,,,mtgjson_set_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-27318,Weatherlight - Booster Box,matched,exact_tcgplayer_product_id,,,1997-06-09,,,mtgjson_set_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-34468,Worldwake - Booster Box,matched,exact_tcgplayer_product_id,,,2010-02-05,,,mtgjson_set_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-32789,Zendikar - Booster Box,matched,exact_tcgplayer_product_id,,,2009-10-02,,,mtgjson_set_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-127174,Amonkhet - Booster Box,matched,exact_tcgplayer_product_id,2017-04-28T00:00:00,2017-04-28,2017-04-28,0,0,product_and_tcgcsv_exact_agreement,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-58058,Avacyn Restored - Booster Box,matched,exact_tcgplayer_product_id,2012-05-04T00:00:00,2012-05-04,2012-05-04,0,0,product_and_tcgcsv_exact_agreement,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-166536,Battlebond - Booster Box,matched,exact_tcgplayer_product_id,2018-06-08T00:00:00,2018-06-08,2018-06-08,0,0,product_and_tcgcsv_exact_agreement,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-77321,Born of the Gods - Booster Box,matched,exact_tcgplayer_product_id,2014-02-07T00:00:00,2014-02-07,2014-02-07,0,0,product_and_tcgcsv_exact_agreement,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-221319,Commander Legends - Draft Booster Box,matched,exact_tcgplayer_product_id,2020-11-20T00:00:00,2020-11-20,2020-11-20,0,0,product_and_tcgcsv_exact_agreement,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-267019,Commander Legends: Battle for Baldur's Gate - Draft Booster Box,matched,exact_tcgplayer_product_id,2022-06-10T00:00:00,2022-06-10,2022-06-10,0,0,product_and_tcgcsv_exact_agreement,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-484924,Commander Masters - Draft Booster Box,matched,exact_tcgplayer_product_id,2023-08-04T00:00:00,2023-08-04,2023-08-04,0,0,product_and_tcgcsv_exact_agreement,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-82200,Conspiracy - Booster Box,matched,exact_tcgplayer_product_id,2014-06-06T00:00:00,2014-06-06,2014-06-06,0,0,product_and_tcgcsv_exact_agreement,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-120965,Conspiracy: Take the Crown - Booster Box,matched,exact_tcgplayer_product_id,,2016-03-01,2016-08-26,,178,mtgjson_product_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-166550,Core Set 2019 - Booster Box,matched,exact_tcgplayer_product_id,2018-07-13T00:00:00,2018-07-13,2018-07-13,0,0,product_and_tcgcsv_exact_agreement,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-188210,Core Set 2020 - Booster Box,matched,exact_tcgplayer_product_id,2019-07-12T00:00:00,2019-07-12,2019-07-12,0,0,product_and_tcgcsv_exact_agreement,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-214811,Core Set 2021 - Booster Box,matched,exact_tcgplayer_product_id,2020-07-03T00:00:00,2020-07-03,2020-07-03,0,0,product_and_tcgcsv_exact_agreement,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-57584,Dark Ascension - Booster Box,matched,exact_tcgplayer_product_id,2012-02-03T00:00:00,2012-02-03,2012-02-03,0,0,product_and_tcgcsv_exact_agreement,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-158423,Dominaria - Booster Box,matched,exact_tcgplayer_product_id,2018-04-27T00:00:00,2018-04-27,2018-04-27,0,0,product_and_tcgcsv_exact_agreement,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-449558,Dominaria Remastered - Draft Booster Box,matched,exact_tcgplayer_product_id,,2023-01-13,2023-01-13,,0,mtgjson_product_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-214823,Double Masters - Booster Box,matched,exact_tcgplayer_product_id,2020-08-07T00:00:00,2020-08-07,2020-08-07,0,0,product_and_tcgcsv_exact_agreement,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-271506,Double Masters 2022 - Draft Booster Box,matched,exact_tcgplayer_product_id,,2022-05-13,2022-07-08,,56,mtgjson_product_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-67751,Dragon's Maze - Booster Box,matched,exact_tcgplayer_product_id,2013-05-03T00:00:00,2013-05-03,2013-05-03,0,0,product_and_tcgcsv_exact_agreement,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-96137,Dragons of Tarkir - Booster Box,matched,exact_tcgplayer_product_id,,2015-03-04,2015-03-27,,23,mtgjson_product_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-118393,Eldritch Moon - Booster Box,matched,exact_tcgplayer_product_id,,2016-02-16,2016-07-22,,157,mtgjson_product_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-114832,Eternal Masters - Booster Box,matched,exact_tcgplayer_product_id,,2016-02-16,2016-06-10,,115,mtgjson_product_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-94746,Fate Reforged - Booster Box,matched,exact_tcgplayer_product_id,2015-01-21T00:00:00,2015-01-21,2015-01-23,0,2,product_and_tcgcsv_exact_agreement,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-173362,Guilds of Ravnica - Booster Box,matched,exact_tcgplayer_product_id,2018-10-05T00:00:00,2018-10-05,2018-10-05,0,0,product_and_tcgcsv_exact_agreement,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-131456,Hour of Devastation - Booster Box,matched,exact_tcgplayer_product_id,2017-07-14T00:00:00,2017-07-14,2017-07-14,0,0,product_and_tcgcsv_exact_agreement,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-145235,Iconic Masters - Booster Box,matched,exact_tcgplayer_product_id,2017-11-17T00:00:00,2017-11-17,2017-11-17,0,0,product_and_tcgcsv_exact_agreement,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-208273,Ikoria: Lair of Behemoths - Booster Box,matched,exact_tcgplayer_product_id,2020-05-15T00:00:00,2020-05-15,2020-04-24,0,21,product_and_tcgcsv_exact_agreement,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-255911,Innistrad: Double Feature - Draft Booster Box,matched,exact_tcgplayer_product_id,2022-01-28T00:00:00,2022-01-28,2022-01-28,0,0,product_and_tcgcsv_exact_agreement,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-141989,Ixalan - Booster Box,matched,exact_tcgplayer_product_id,2017-09-29T00:00:00,2017-09-29,2017-09-29,0,0,product_and_tcgcsv_exact_agreement,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-121527,Kaladesh - Booster Box,matched,exact_tcgplayer_product_id,,2016-05-30,2016-09-30,,123,mtgjson_product_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-59120,Magic 2013 (M13) - Booster Box,matched,exact_tcgplayer_product_id,2012-07-13T00:00:00,2012-07-13,2012-07-13,0,0,product_and_tcgcsv_exact_agreement,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-90786,Magic 2015 (M15) - Booster Box,matched,exact_tcgplayer_product_id,2014-07-18T00:00:00,2014-07-18,2014-07-18,0,0,product_and_tcgcsv_exact_agreement,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-96147,Magic Origins - Booster Box,matched,exact_tcgplayer_product_id,,2015-06-03,2015-07-17,,44,mtgjson_product_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-157857,Masters 25 - Booster Box,matched,exact_tcgplayer_product_id,2018-03-16T00:00:00,2018-03-16,2018-03-16,0,0,product_and_tcgcsv_exact_agreement,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-185894,Modern Horizons - Booster Box,matched,exact_tcgplayer_product_id,2019-06-13T00:00:00,2019-06-13,2019-06-14,0,1,product_and_tcgcsv_exact_agreement,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-236354,Modern Horizons 2 - Draft Booster Box,matched,exact_tcgplayer_product_id,2021-06-18T00:00:00,2021-06-18,2021-06-18,0,0,product_and_tcgcsv_exact_agreement,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-95052,Modern Masters 2015 - Booster Box,matched,exact_tcgplayer_product_id,2015-05-22T00:00:00,2015-05-22,2015-05-22,0,0,product_and_tcgcsv_exact_agreement,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-127069,Modern Masters 2017 - Booster Box,matched,exact_tcgplayer_product_id,2017-03-17T00:00:00,2017-03-17,2017-03-17,0,0,product_and_tcgcsv_exact_agreement,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-217533,Mystery Booster - Booster Box [Convention Edition] (2019),matched,exact_tcgplayer_product_id,,2021-08-13,2019-11-07,,645,mtgjson_product_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-208523,Mystery Booster - Booster Box [Retail Exclusive],matched,exact_tcgplayer_product_id,2020-03-13T00:00:00,2020-03-13,2019-11-07,0,127,product_and_tcgcsv_exact_agreement,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-563752,Mystery Booster 2 - Booster Display,matched,exact_tcgplayer_product_id,2024-09-20T00:00:00,2024-10-25,2024-08-02,35,84,product_and_tcgcsv_conflict,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-110418,Oath of the Gatewatch - Booster Box,matched,exact_tcgplayer_product_id,2016-01-22T00:00:00,2016-01-22,2016-01-22,0,0,product_and_tcgcsv_exact_agreement,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-180734,Ravnica Allegiance - Booster Box,matched,exact_tcgplayer_product_id,2019-01-25T00:00:00,2019-01-25,2019-01-25,0,0,product_and_tcgcsv_exact_agreement,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-517705,Ravnica Remastered - Draft Booster Display,matched,exact_tcgplayer_product_id,,2024-01-12,2024-01-12,,0,mtgjson_product_date_only,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-149404,Rivals of Ixalan - Booster Box,matched,exact_tcgplayer_product_id,2018-01-19T00:00:00,2018-01-19,2018-01-19,0,0,product_and_tcgcsv_exact_agreement,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-112706,Shadows over Innistrad - Booster Box,matched,exact_tcgplayer_product_id,2016-04-08T00:00:00,2016-04-08,2016-04-08,0,0,product_and_tcgcsv_exact_agreement,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-202298,Theros Beyond Death - Booster Box,matched,exact_tcgplayer_product_id,2020-01-24T00:00:00,2020-01-24,2020-01-24,0,0,product_and_tcgcsv_exact_agreement,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-194891,Throne of Eldraine - Booster Box,matched,exact_tcgplayer_product_id,2019-10-04T00:00:00,2019-10-04,2019-10-04,0,0,product_and_tcgcsv_exact_agreement,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-230384,Time Spiral: Remastered - Draft Booster Box,matched,exact_tcgplayer_product_id,2021-03-19T00:00:00,2021-03-19,2021-03-19,0,0,product_and_tcgcsv_exact_agreement,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-179444,Ultimate Masters - Booster Box,matched,exact_tcgplayer_product_id,2018-12-07T00:00:00,2018-12-07,2018-12-07,0,0,product_and_tcgcsv_exact_agreement,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-149402,Unstable - Booster Box,matched,exact_tcgplayer_product_id,2017-12-08T00:00:00,2017-12-08,2017-12-08,0,0,product_and_tcgcsv_exact_agreement,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-185676,War of the Spark - Booster Box,matched,exact_tcgplayer_product_id,2019-05-03T00:00:00,2019-05-03,2019-05-03,0,0,product_and_tcgcsv_exact_agreement,,,False,not_decided,False,False
+MTG-CANON-TCGPLAYER-245972,Renaissance - Italian Booster Box,review_required,sealed_name_similarity,,,1995-08-01,,,mtgjson_set_date_only,,,False,not_decided,False,False

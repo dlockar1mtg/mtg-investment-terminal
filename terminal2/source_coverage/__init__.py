@@ -1,0 +1,1 @@
+"""MTG product-source discovery and coverage auditing."""

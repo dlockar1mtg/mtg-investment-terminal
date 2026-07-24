@@ -1,0 +1,31 @@
+{
+  "candidate_rows": 892,
+  "candidate_type_counts": {
+    "bundle": 173,
+    "collector_booster_display": 78,
+    "commander_deck": 210,
+    "draft_booster_display": 25,
+    "jumpstart_booster_display": 11,
+    "play_booster_display": 20,
+    "sealed_case": 205,
+    "set_booster_display": 18,
+    "theme_booster_display": 14,
+    "traditional_booster_display": 138
+  },
+  "classification_status": "CANDIDATE_EXTRACTION_ONLY",
+  "database_changed": false,
+  "eligibility_changed": false,
+  "excluded_candidate_rows": 1,
+  "generated_at_utc": "2026-07-22T13:05:02.741411+00:00",
+  "output_files": {
+    "candidates": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\staging\\phase_10\\external_discovery\\tcgcsv\\tcgcsv_sealed_product_candidates_2026-07-22.csv",
+    "excluded_candidates": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\validation\\phase_10\\external_discovery\\tcgcsv\\tcgcsv_candidate_exclusions_2026-07-22.csv",
+    "secret_lair_product_evidence": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\validation\\phase_10\\external_discovery\\tcgcsv\\tcgcsv_secret_lair_product_evidence_2026-07-22.csv"
+  },
+  "registry_changed": false,
+  "secret_lair_product_evidence_rows": 4347,
+  "secret_lair_sealed_drop_count": "NOT_DETERMINED",
+  "source_product_rows": 116546,
+  "source_snapshot": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\staging\\phase_10\\external_discovery\\tcgcsv\\tcgcsv_magic_products_2026-07-22.csv",
+  "unique_candidate_product_ids": 892
+}

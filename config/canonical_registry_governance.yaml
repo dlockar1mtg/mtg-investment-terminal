@@ -1,0 +1,105 @@
+schema_version: 10.5R.1C.2.1
+policy_name: canonical_mtg_registry_governance
+platform_id: mtg-investment-terminal
+
+identity_lifecycle_states:
+  - active
+  - source_unavailable
+  - superseded
+  - merged_after_review
+  - retired
+  - identity_review_required
+
+source_availability_states:
+  - available
+  - unavailable
+  - unknown
+
+governance_review_states:
+  - not_required
+  - required
+  - approved
+  - rejected
+
+investment_eligibility_states:
+  - eligible
+  - ineligible
+  - not_evaluated
+  - review_required
+
+investment_approval_states:
+  - approved
+  - review_required
+  - rejected
+
+scoring_states:
+  - scored
+  - not_scored
+  - scoring_unavailable
+  - scoring_failed
+
+universal_export_states:
+  - identity_ready
+  - analytics_ready
+  - recommendation_ready
+  - blocked
+  - not_evaluated
+
+default_rules:
+  identity_lifecycle_status: active
+  source_availability_status: available
+  governance_review_status: not_required
+  universal_export_status: identity_ready
+
+new_identity_rules:
+  governance_review_status: required
+  investment_eligibility_status: not_evaluated
+  investment_approval_status: review_required
+  scoring_status: not_scored
+  universal_export_status: identity_ready
+
+existing_identity_rules:
+  preserve_existing_approval_status: true
+  preserve_existing_eligibility_status: true
+  preserve_existing_scoring_status: true
+
+universal_export_rules:
+  identity_ready:
+    requires:
+      - canonical_product_id
+      - canonical_product_name
+      - canonical_product_class
+      - tcgplayer_product_id
+      - source_lineage
+
+  analytics_ready:
+    requires:
+      - identity_ready
+      - investment_eligibility_status=eligible
+      - scoring_status=scored
+
+  recommendation_ready:
+    requires:
+      - analytics_ready
+      - investment_approval_status=approved
+
+  blocked_when:
+    - identity_lifecycle_status=retired
+    - identity_lifecycle_status=superseded
+    - identity_lifecycle_status=identity_review_required
+    - source_availability_status=unavailable
+    - governance_review_status=rejected
+
+supersession_rules:
+  silent_deletion_allowed: false
+  preserve_prior_identity: true
+  preserve_source_lineage: true
+  require_replacement_id_for_superseded: true
+  require_review_for_merge: true
+
+universal_mapping:
+  universal_asset_class: collectible
+  sealed_asset_subclass: mtg_sealed_product
+  secret_lair_asset_subclass: mtg_secret_lair_product
+  source_asset_id_field: canonical_product_id
+  external_asset_id_field: tcgplayer_product_id

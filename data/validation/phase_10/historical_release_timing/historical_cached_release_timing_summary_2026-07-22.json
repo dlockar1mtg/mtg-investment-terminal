@@ -1,0 +1,46 @@
+{
+  "audit_status": "PASS",
+  "cached_product_file_rows": 140,
+  "cached_product_record_rows": 140,
+  "cached_release_date_rows": 41,
+  "cohort_release_timing_coverage": {
+    "commander_draft_policy_review": {
+      "release_dates_available": 2,
+      "release_dates_unresolved": 0,
+      "rows": 2
+    },
+    "explicit_specialty_draft_review": {
+      "release_dates_available": 4,
+      "release_dates_unresolved": 3,
+      "rows": 7
+    },
+    "traditional_historical_review": {
+      "release_dates_available": 35,
+      "release_dates_unresolved": 96,
+      "rows": 131
+    }
+  },
+  "error_rows": 0,
+  "external_release_timing_required_rows": 99,
+  "final_eligibility_assigned": false,
+  "generated_at_utc": "2026-07-22T17:49:37Z",
+  "modified_on_used_as_release_date": false,
+  "output_files": {
+    "audit": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\validation\\phase_10\\historical_release_timing\\historical_cached_release_timing_audit_2026-07-22.csv",
+    "cached_dates_available": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\validation\\phase_10\\historical_release_timing\\historical_cached_release_dates_available_2026-07-22.csv",
+    "errors": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\validation\\phase_10\\historical_release_timing\\historical_cached_release_timing_errors_2026-07-22.csv",
+    "external_timing_queue": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\validation\\phase_10\\historical_release_timing\\historical_external_release_timing_queue_2026-07-22.csv"
+  },
+  "production_registry_changed": false,
+  "release_timing_evidence_state_counts": {
+    "cached_product_found_release_date_blank": 99,
+    "cached_release_date_available": 41
+  },
+  "review_product_rows": 140,
+  "schema_version": "10.5R.1D.2.4A.1",
+  "scoring_allowed_rows": 0,
+  "unique_canonical_product_ids": 140,
+  "universal_database_changed": false,
+  "universal_investable_allowed_rows": 0,
+  "valid_tcgcsv_route_rows": 140
+}

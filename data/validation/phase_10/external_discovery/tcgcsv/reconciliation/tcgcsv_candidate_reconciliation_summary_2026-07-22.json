@@ -1,0 +1,48 @@
+{
+  "ambiguous_or_missing_id_rows": 0,
+  "approval_status_changed": false,
+  "buy_recommendations_created": false,
+  "candidate_class_counts": {
+    "sealed_product": 892,
+    "secret_lair_product": 4347
+  },
+  "candidate_rows": 5239,
+  "candidate_source_path": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\staging\\phase_10\\external_discovery\\tcgcsv\\tcgcsv_premium_candidate_universe_2026-07-22.csv",
+  "database_changed": false,
+  "eligibility_changed": false,
+  "exact_id_match_rows": 4674,
+  "generated_at_utc": "2026-07-22T13:51:08.256739+00:00",
+  "new_candidate_rows": 565,
+  "normalized_name_match_rows": 0,
+  "output_files": {
+    "ambiguous_matches": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\validation\\phase_10\\external_discovery\\tcgcsv\\reconciliation\\tcgcsv_ambiguous_matches_2026-07-22.csv",
+    "exact_id_matches": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\validation\\phase_10\\external_discovery\\tcgcsv\\reconciliation\\tcgcsv_exact_id_matches_2026-07-22.csv",
+    "full_reconciliation": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\staging\\phase_10\\external_discovery\\tcgcsv\\reconciliation\\tcgcsv_candidate_reconciliation_2026-07-22.csv",
+    "new_candidates": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\validation\\phase_10\\external_discovery\\tcgcsv\\reconciliation\\tcgcsv_new_candidates_2026-07-22.csv",
+    "normalized_name_matches": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\validation\\phase_10\\external_discovery\\tcgcsv\\reconciliation\\tcgcsv_normalized_name_matches_2026-07-22.csv",
+    "review_queue": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\validation\\phase_10\\external_discovery\\tcgcsv\\reconciliation\\tcgcsv_reconciliation_review_queue_2026-07-22.csv",
+    "type_conflicts": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\validation\\phase_10\\external_discovery\\tcgcsv\\reconciliation\\tcgcsv_type_conflicts_2026-07-22.csv"
+  },
+  "reconciled_rows": 5239,
+  "reconciliation_status": "COMPLETE",
+  "reconciliation_status_counts": {
+    "exact_id_match": 4674,
+    "new_candidate": 565
+  },
+  "registry_changed": false,
+  "registry_rows": 4675,
+  "registry_source_path": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\product_master\\investment_products.csv",
+  "review_queue_rows": 0,
+  "schema_version": "10.5R.1B.3",
+  "scoring_applied": false,
+  "type_alignment_counts": {
+    "compatible": 485,
+    "compatible_registry_generic_booster_display": 27,
+    "compatible_registry_generic_case_packaging": 90,
+    "compatible_registry_generic_secret_lair": 4072,
+    "not_applicable": 565
+  },
+  "type_conflict_or_review_rows": 0,
+  "unique_candidate_product_ids": 5239,
+  "unique_candidate_record_ids": 5239
+}

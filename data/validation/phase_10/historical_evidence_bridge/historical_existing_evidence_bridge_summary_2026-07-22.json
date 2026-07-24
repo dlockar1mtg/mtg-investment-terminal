@@ -1,0 +1,39 @@
+{
+  "asset_preview_identity_match_rows": 140,
+  "audit_status": "PASS",
+  "bridge_state_counts": {
+    "identity_only": 140
+  },
+  "final_eligibility_assigned": false,
+  "generated_at_utc": "2026-07-22T17:21:08Z",
+  "historical_rows": 140,
+  "match_method_counts": {
+    "unmatched": 140
+  },
+  "output_files": {
+    "bridge_audit": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\validation\\phase_10\\historical_evidence_bridge\\historical_existing_evidence_bridge_audit_2026-07-22.csv",
+    "matched_products": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\validation\\phase_10\\historical_evidence_bridge\\historical_product_master_matches_2026-07-22.csv",
+    "unmatched_products": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\validation\\phase_10\\historical_evidence_bridge\\historical_product_master_unmatched_2026-07-22.csv"
+  },
+  "product_master_identity_columns": [
+    "tcgplayer_product_id",
+    "tcgplayer_product_id_str",
+    "approved_tcgplayer_product_id",
+    "approved_tcgplayer_product_id_str",
+    "investment_product_id"
+  ],
+  "product_master_match_rows": 0,
+  "product_master_name_column": "official_product_name",
+  "product_master_set_column": "set_name",
+  "product_master_unmatched_rows": 140,
+  "production_registry_changed": false,
+  "rows_with_current_price_candidate": 0,
+  "rows_with_performance_evidence": 0,
+  "rows_with_price_evidence": 0,
+  "schema_version": "10.5R.1D.2.2B",
+  "scoring_allowed_rows": 0,
+  "timing_match_rows": 0,
+  "unique_canonical_product_ids": 140,
+  "universal_database_changed": false,
+  "universal_investable_allowed_rows": 0
+}

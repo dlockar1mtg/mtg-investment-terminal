@@ -48,6 +48,8 @@ def load_forecast_universe() -> pd.DataFrame:
             LEFT JOIN market_intelligence mi
               ON mi.investment_product_id = p.investment_product_id
             WHERE LOWER(COALESCE(p.approval_status, '')) = 'approved'
+              AND s.current_price IS NOT NULL
+              AND s.current_price > 0
             """,
             connection,
         )

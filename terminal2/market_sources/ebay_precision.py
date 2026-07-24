@@ -1,0 +1,782 @@
+from __future__ import annotations
+
+import re
+from dataclasses import replace
+from typing import Mapping, Sequence
+
+from terminal2.market_sources import ebay_matching as base
+from terminal2.market_sources.ebay_universe import build_complete_universe
+
+
+ORIGINAL_MATCH_LISTING = base.match_listing
+ORIGINAL_BUILD_UNIVERSE = base.build_universe
+
+MTG_IDENTITY_TERMS = (
+    " magic ",
+    " mtg ",
+    " wotc ",
+    " wizards of the coast ",
+)
+
+UNRELATED_GAME_TERMS = (
+    " sorcery contested realm ",
+    " flesh and blood ",
+    " alpha clash ",
+    " life tcg ",
+    " pokemon ",
+    " yugioh ",
+    " yu gi oh ",
+    " battle arena ",
+)
+
+NON_BOX_PRODUCT_TERMS = (
+    " starter set ",
+    " starter deck ",
+    " theme deck ",
+    " battle pack ",
+    " blaster box ",
+    " fat pack ",
+    " gift pack ",
+    " bundle ",
+    " booster lot ",
+    " lot of packs ",
+    " empty box ",
+    " box only ",
+    " retail cardboard ",
+    " walmart display ",
+    " box topper only ",
+    " wrapper ",
+    " resealed ",
+    " re sealed ",
+    " not factory sealed ",
+    " tournament pack ",
+    " tournament display ",
+    " theme booster ",
+    " set booster ",
+    " play booster ",
+)
+
+DAMAGED_SEAL_TERMS = (
+    " wrap damage ",
+    " wrapper damage ",
+    " seal weak ",
+    " weak seal ",
+    " seal torn ",
+    " torn seal ",
+    " shrink damage ",
+    " damaged wrap ",
+    " box damage ",
+    " damaged box ",
+    " crushed box ",
+    " dented box ",
+)
+
+
+def _has_booster_box_form(title_norm: str) -> bool:
+    return any(
+        phrase in title_norm
+        for phrase in (
+            " booster box ",
+            " booster boxes ",
+            " booster display ",
+            " booster displays ",
+            " display box ",
+        )
+    )
+
+
+def _token_coverage(product: base.CanonicalProduct, title_norm: str) -> float:
+    required = base._tokens(product.canonical_product_name)
+    if not required:
+        return 1.0
+    present = {token for token in required if f" {token} " in title_norm}
+    return len(present) / len(required)
+
+
+def _is_multi_box_case(title_norm: str) -> bool:
+    if " acrylic case " in title_norm or " protective case " in title_norm:
+        return False
+    return any(
+        phrase in title_norm
+        for phrase in (
+            " case of ",
+            " sealed case ",
+            " master case ",
+            " booster box case ",
+            " collector case ",
+            " case 6 ",
+            " 6 sealed booster boxes ",
+            " 6 booster boxes ",
+            " six sealed booster boxes ",
+            " six booster boxes ",
+        )
+    )
+
+
+def _is_multi_unit_lot(title_norm: str) -> bool:
+    patterns = (
+        r"\blot\s+of\s+(?:two|2|three|3|four|4|five|5|six|6)\b",
+        r"\b(?:two|2|three|3|four|4|five|5|six|6)\s+(?:sealed\s+)?(?:collector\s+)?booster\s+(?:boxes|displays)\b",
+        r"\b(?:x|qty)\s*(?:2|3|4|5|6)\b.*\bbooster\s+(?:box|display)",
+    )
+    return any(re.search(pattern, title_norm) for pattern in patterns)
+
+
+def _is_incomplete_pack_box_lot(title_norm: str) -> bool:
+    patterns = (
+        r"\blot\s+of\s+\d+\s+packs?\s+(?:(?:and|with)\s+)?(?:the\s+)?box\b",
+        r"\b\d+\s+packs?\s+(?:(?:and|with)\s+)?(?:the\s+)?box\b",
+        r"\bbox\s+(?:(?:and|with)\s+)?\d+\s+packs?\b",
+    )
+    return any(re.search(pattern, title_norm) for pattern in patterns)
+
+
+def _is_ambiguous_plural_box_listing(title_norm: str) -> bool:
+    # The pricing lane governs one complete retail box per listing.
+    # A plural form without an explicit single-unit qualifier does not
+    # establish that the observed price represents one box.
+    return (
+        " booster boxes " in title_norm
+        or " booster displays " in title_norm
+    )
+
+
+def _is_incomplete_product(title_norm: str) -> bool:
+    return any(
+        phrase in title_norm
+        for phrase in (
+            " partial booster box ",
+            " partial box ",
+            " incomplete booster box ",
+            " incomplete box ",
+            " packs missing ",
+            " missing packs ",
+        )
+    )
+
+
+def _is_deprecated_catalog_placeholder(title_norm: str) -> bool:
+    return any(
+        phrase in title_norm
+        for phrase in (
+            " deprecated ",
+            " catalog image ",
+            " placeholder ",
+            " stock listing only ",
+        )
+    )
+
+
+def _is_mixed_product_listing(
+    product: base.CanonicalProduct,
+    title_norm: str,
+    raw_title: str,
+) -> bool:
+    raw_lower = raw_title.lower()
+    has_connector = (
+        "+" in raw_title
+        or " plus " in raw_lower
+        or " & " in raw_title
+        or " and " in raw_lower
+    )
+    if not has_connector:
+        return False
+
+    # A title such as "Journey into Nyx & Origins Booster Boxes" names
+    # two products but contains the product-form phrase only once.  Detect the
+    # connector plus a plural box form instead of requiring two repetitions of
+    # "booster box".
+    if (
+        (" & " in raw_title or " and " in raw_lower)
+        and " booster boxes " in title_norm
+    ):
+        return True
+
+    if re.search(r"\bbooster\s+boxes?\b.*\bbooster\s+boxes?\b", title_norm):
+        return True
+
+    product_name_norm = base._norm(product.canonical_product_name)
+    known_other_products = (
+        " collector booster ",
+        " commander deck ",
+        " theme deck ",
+        " starter deck ",
+        " fat pack ",
+        " bundle ",
+    )
+    if not any(term in title_norm for term in known_other_products):
+        return False
+
+    if (
+        product.product_class == "COLLECTOR_BOOSTER_BOX"
+        and " collector booster " in product_name_norm
+        and not any(
+            term in title_norm
+            for term in known_other_products
+            if term != " collector booster "
+        )
+    ):
+        return False
+    return True
+
+
+def _has_non_english_marker(title_norm: str, raw_title: str) -> bool:
+    raw_upper = raw_title.upper()
+    shorthand_markers = ("*JP*", "[JP]", "(JP)", " JP ", " JPN ")
+    if any(marker in raw_upper for marker in shorthand_markers):
+        return True
+    return any(
+        phrase in title_norm
+        for phrase in (
+            " japanese ",
+            " german ",
+            " french ",
+            " italian ",
+            " spanish ",
+            " portuguese ",
+            " korean ",
+            " chinese ",
+            " russian ",
+        )
+    )
+
+
+def _is_ambiguous_display_case(title_norm: str) -> bool:
+    if " acrylic case " in title_norm or " protective case " in title_norm:
+        return False
+    return " display case " in title_norm
+
+
+def _is_single_pack_collector_product(title_norm: str) -> bool:
+    if " omega booster box " in title_norm or " omega box " in title_norm:
+        return True
+    return bool(
+        re.search(
+            r"\b(?:one|1)\s+(?:\d+\s*card\s+)?pack\b",
+            title_norm,
+        )
+    )
+
+
+def _has_conflicting_set_identity(
+    product: base.CanonicalProduct,
+    title_norm: str,
+) -> bool:
+    product_name = base._norm(product.canonical_product_name)
+    product_key = product_name.strip()
+
+    conflict_phrases: dict[str, tuple[str, ...]] = {
+        "commander legends collector booster display": (
+            " battle for baldur s gate ",
+        ),
+        "dominaria booster box": (
+            " dominaria remastered ",
+            " dominaria united ",
+        ),
+        "innistrad booster box": (
+            " innistrad remastered ",
+            " innistrad midnight hunt ",
+            " innistrad crimson vow ",
+        ),
+        "lorwyn booster box": (
+            " lorwyn eclipsed ",
+        ),
+        "modern horizons booster box": (
+            " modern horizons 2 ",
+            " modern horizons 3 ",
+        ),
+        "theros booster box": (
+            " theros beyond death ",
+        ),
+        "zendikar booster box": (
+            " zendikar rising ",
+        ),
+    }
+
+    return any(
+        phrase in title_norm
+        for phrase in conflict_phrases.get(product_key, ())
+    )
+
+
+SECRET_LAIR_ZODIAC_SIGNS = (
+    "aquarius",
+    "aries",
+    "cancer",
+    "capricorn",
+    "gemini",
+    "leo",
+    "libra",
+    "pisces",
+    "sagittarius",
+    "scorpio",
+    "taurus",
+    "virgo",
+)
+
+
+
+def _secret_lair_foil_subtype(value_norm: str) -> str | None:
+    if " double rainbow foil " in value_norm:
+        return "double_rainbow"
+    if " confetti foil " in value_norm:
+        return "confetti"
+    if " galaxy foil " in value_norm:
+        return "galaxy"
+    if " raised foil " in value_norm:
+        return "raised"
+    if " foil etched " in value_norm or " etched foil " in value_norm:
+        return "etched"
+    if " rainbow foil " in value_norm:
+        return "rainbow"
+    if " traditional foil " in value_norm:
+        return "traditional"
+    return None
+
+
+def _secret_lair_mixed_finish_or_choice(value_norm: str) -> bool:
+    choice_terms = (
+        " upick ",
+        " u pick ",
+        " you pick ",
+        " choice of ",
+        " choose foil ",
+        " choose non foil ",
+    )
+    if any(term in value_norm for term in choice_terms):
+        return True
+
+    has_nonfoil = " non foil " in value_norm or " nonfoil " in value_norm
+    without_nonfoil = value_norm.replace(" non foil ", " ").replace(" nonfoil ", " ")
+    has_positive_foil = " foil " in without_nonfoil
+    return has_nonfoil and has_positive_foil
+
+
+def _secret_lair_declares_single_finish(value_norm: str) -> bool:
+    return (
+        " non foil " in value_norm
+        or " nonfoil " in value_norm
+        or " foil " in value_norm
+    )
+
+
+
+def _secret_lair_explicit_identity_conflict(product_norm: str, title_norm: str) -> bool:
+    paired_identities = (
+        (" cats are better than dogs ", " dogs are better than cats "),
+        (" allied talismans ", " enemy talismans "),
+        (" extra life 2020 ", " extra life 2022 "),
+        (" kevin eastman colors ", " kevin eastman inks "),
+        (" li l er walkers ", " li l est walkers "),
+        (" venom unleashed colors ", " venom unleashed inks "),
+        (" heroic deeds ", " villainous plots "),
+        (" brain dead creatures ", " brain dead lands "),
+    )
+    for left, right in paired_identities:
+        if left in product_norm and right in title_norm:
+            return True
+        if right in product_norm and left in title_norm:
+            return True
+    return False
+
+
+def _secret_lair_variant_conflict(
+    product: base.CanonicalProduct,
+    title_norm: str,
+) -> bool:
+    product_norm = base._norm(product.canonical_product_name)
+
+    if _secret_lair_explicit_identity_conflict(product_norm, title_norm):
+        return True
+
+    # Furby drops share many generic tokens, so the named drop identity must agree.
+    furby_identities = (
+        " doo ay noo lah ",
+        " the gathering ",
+        " the oddbodies ",
+    )
+    product_furby = next(
+        (identity for identity in furby_identities if identity in product_norm),
+        None,
+    )
+    title_furby = next(
+        (identity for identity in furby_identities if identity in title_norm),
+        None,
+    )
+    if product_furby is not None and title_furby is not None and product_furby != title_furby:
+        return True
+
+    # The Last of Us Part I and Part II are distinct sealed products. Accept either
+    # Roman or Arabic numbering, but require the listing's explicit part to agree.
+    if " the last of us part " in product_norm:
+        product_last_part = re.search(r" the last of us part (i{1,2}|1|2) ", product_norm)
+        title_last_part = re.search(r" the last of us part (i{1,2}|1|2) ", title_norm)
+        if product_last_part and title_last_part:
+            normalize_part = {"i": "1", "ii": "2", "1": "1", "2": "2"}
+            if normalize_part[product_last_part.group(1)] != normalize_part[title_last_part.group(1)]:
+                return True
+
+    # Post Malone Backstage Pass and The Lands are separate drops.
+    if " post malone " in product_norm:
+        product_backstage = " backstage pass " in product_norm
+        product_lands = " the lands " in product_norm
+        title_backstage = " backstage pass " in title_norm
+        title_lands = " the lands " in title_norm
+        if (product_backstage and title_lands) or (product_lands and title_backstage):
+            return True
+
+
+    # Arcane and Arcane: Lands are separate sealed products.
+    product_arcane_lands = " secret lair x arcane lands " in product_norm
+    title_arcane_lands = " secret lair x arcane lands " in title_norm
+    product_arcane_base = " secret lair x arcane " in product_norm and not product_arcane_lands
+    title_arcane_base = " secret lair x arcane " in title_norm and not title_arcane_lands
+    if (product_arcane_base and title_arcane_lands) or (product_arcane_lands and title_arcane_base):
+        return True
+
+    # Death Is in the Eyes of the Beholder I and II must agree explicitly.
+    product_beholder = re.search(r" death is in the eyes of the beholder (i{1,2}) ", product_norm)
+    title_beholder = re.search(r" death is in the eyes of the beholder (i{1,2}) ", title_norm)
+    if product_beholder and title_beholder and product_beholder.group(1) != title_beholder.group(1):
+        return True
+
+    # Monty Python Holy Grail Vol. 1 and Vol. 2 must agree explicitly.
+    product_monty_volume = re.search(r" holy grail vol (1|2) ", product_norm)
+    title_monty_volume = re.search(r" holy grail vol (1|2) ", title_norm)
+    if product_monty_volume and title_monty_volume and product_monty_volume.group(1) != title_monty_volume.group(1):
+        return True
+
+    # A Twisted Metal promo cannot map to the generic Secret Lair promo Sol Ring.
+    product_twisted_metal = " twisted metal " in product_norm
+    title_twisted_metal = " twisted metal " in title_norm
+    product_promo_sol_ring = " promo " in product_norm and " sol ring " in product_norm
+    title_promo_sol_ring = " promo " in title_norm and " sol ring " in title_norm
+    if product_promo_sol_ring and title_promo_sol_ring and product_twisted_metal != title_twisted_metal:
+        return True
+
+    # Venom Unleashed Colors/Inks canonicals require the listing to identify the variant.
+    if " venom unleashed " in product_norm:
+        product_venom_colors = " venom unleashed colors " in product_norm
+        product_venom_inks = " venom unleashed inks " in product_norm
+        title_venom_colors = " venom unleashed colors " in title_norm
+        title_venom_inks = " venom unleashed inks " in title_norm
+        if (product_venom_colors or product_venom_inks) and not (title_venom_colors or title_venom_inks):
+            return True
+
+
+    # Showcase: Kaldheim Part 1 and Part 2 must agree explicitly.
+    if " showcase kaldheim " in product_norm:
+        product_kaldheim_part = re.search(r" showcase kaldheim part (1|2) ", product_norm)
+        title_kaldheim_part = re.search(r" showcase kaldheim part (1|2) ", title_norm)
+        if (
+            product_kaldheim_part
+            and title_kaldheim_part
+            and product_kaldheim_part.group(1) != title_kaldheim_part.group(1)
+        ):
+            return True
+
+    # Showcase: March of the Machine Vol. 1/2/3 must agree explicitly.
+    if " showcase march of the machine vol " in product_norm:
+        product_mom_volume = re.search(
+            r" showcase march of the machine vol (1|2|3) ",
+            product_norm,
+        )
+        title_mom_volume = re.search(
+            r" showcase march of the machine vol (1|2|3) ",
+            title_norm,
+        )
+        if (
+            product_mom_volume
+            and title_mom_volume
+            and product_mom_volume.group(1) != title_mom_volume.group(1)
+        ):
+            return True
+
+    # Read The Fine Print has distinct Foil Etched and Traditional Foil products.
+    if " showcase read the fine print " in product_norm:
+        product_read_etched = (
+            " foil etched " in product_norm
+            or " etched foil " in product_norm
+        )
+        product_read_traditional = " traditional foil " in product_norm
+        title_read_etched = (
+            " foil etched " in title_norm
+            or " etched foil " in title_norm
+        )
+        title_read_traditional = " traditional foil " in title_norm
+        if (product_read_etched and title_read_traditional) or (
+            product_read_traditional and title_read_etched
+        ):
+            return True
+
+    product_second_helpings = " just add milk second helpings " in product_norm
+    title_second_helpings = " just add milk second helpings " in title_norm
+    product_base_milk = " just add milk " in product_norm and not product_second_helpings
+    title_base_milk = " just add milk " in title_norm and not title_second_helpings
+    if (product_base_milk and title_second_helpings) or (product_second_helpings and title_base_milk):
+        return True
+
+
+
+    if " pixelsnowlands jpg " in product_norm:
+        product_is_etched = (
+            " foil etched " in product_norm
+            or " etched foil " in product_norm
+        )
+        product_is_traditional = " traditional foil " in product_norm
+        title_has_explicit_etched = (
+            " foil etched " in title_norm
+            or " etched foil " in title_norm
+        )
+        title_has_explicit_traditional = " traditional foil " in title_norm
+        title_has_generic_foil = " foil " in title_norm
+
+        if product_is_etched and title_has_generic_foil and not title_has_explicit_etched:
+            return True
+        if (
+            product_is_traditional
+            and title_has_generic_foil
+            and not title_has_explicit_traditional
+        ):
+            return True
+
+
+    if " death is in the eyes of the beholder " in product_norm:
+        product_is_one = (
+            " beholder i " in product_norm
+            or " beholder 1 " in product_norm
+        )
+        product_is_two = (
+            " beholder ii " in product_norm
+            or " beholder 2 " in product_norm
+        )
+        title_is_one = (
+            " beholder i " in title_norm
+            or " beholder 1 " in title_norm
+        )
+        title_is_two = (
+            " beholder ii " in title_norm
+            or " beholder 2 " in title_norm
+        )
+        if (product_is_one and title_is_two) or (product_is_two and title_is_one):
+            return True
+
+    product_foil_subtype = _secret_lair_foil_subtype(product_norm)
+    title_foil_subtype = _secret_lair_foil_subtype(title_norm)
+    if (
+        product_foil_subtype is not None
+        and title_foil_subtype is not None
+        and product_foil_subtype != title_foil_subtype
+    ):
+        return True
+
+    if (
+        _secret_lair_declares_single_finish(product_norm)
+        and _secret_lair_mixed_finish_or_choice(title_norm)
+    ):
+        return True
+
+    product_nonfoil = " non foil " in product_norm or " nonfoil " in product_norm
+    product_foil = (
+        " traditional foil " in product_norm
+        or (" foil " in product_norm and not product_nonfoil)
+    )
+    title_nonfoil = " non foil " in title_norm or " nonfoil " in title_norm
+    title_foil = (
+        " traditional foil " in title_norm
+        or (" foil " in title_norm and not title_nonfoil)
+    )
+    if product_nonfoil and title_foil:
+        return True
+    if product_foil and title_nonfoil:
+        return True
+
+    product_sign = next(
+        (sign for sign in SECRET_LAIR_ZODIAC_SIGNS if f" {sign} " in product_norm),
+        None,
+    )
+    if product_sign is not None:
+        listed_signs = {
+            sign
+            for sign in SECRET_LAIR_ZODIAC_SIGNS
+            if f" {sign} " in title_norm
+        }
+        if listed_signs and listed_signs != {product_sign}:
+            return True
+
+    if " book club bundle " in product_norm and " book club " not in title_norm:
+        return True
+
+    product_is_bundle = " bundle " in product_norm
+    title_is_bundle = " bundle " in title_norm
+    if product_is_bundle and not title_is_bundle:
+        return True
+    if not product_is_bundle and title_is_bundle:
+        return True
+
+    return False
+
+
+def _secret_lair_strong_identity(
+    product: base.CanonicalProduct,
+    title_norm: str,
+) -> bool:
+    product_norm = base._norm(product.canonical_product_name)
+    if " secret lair " not in title_norm or " sealed " not in title_norm:
+        return False
+    if _token_coverage(product, title_norm) < 0.70:
+        return False
+
+    product_sign = next(
+        (sign for sign in SECRET_LAIR_ZODIAC_SIGNS if f" {sign} " in product_norm),
+        None,
+    )
+    if product_sign is not None and f" {product_sign} " not in title_norm:
+        return False
+
+    if " book club bundle " in product_norm and " book club " not in title_norm:
+        return False
+
+    product_is_bundle = " bundle " in product_norm
+    title_is_bundle = " bundle " in title_norm
+    if product_is_bundle != title_is_bundle:
+        return False
+
+    product_nonfoil = " non foil " in product_norm
+    product_foil = (
+        " traditional foil " in product_norm
+        or (" foil " in product_norm and not product_nonfoil)
+    )
+    if product_nonfoil and not (
+        " non foil " in title_norm or " nonfoil " in title_norm
+    ):
+        return False
+    if product_foil and " foil " not in title_norm:
+        return False
+
+    return True
+
+
+def strict_match_listing(
+    product: base.CanonicalProduct,
+    item: Mapping[str, object],
+    run_id: str,
+    observed: str,
+) -> base.MatchResult:
+    result = ORIGINAL_MATCH_LISTING(product, item, run_id, observed)
+    title_norm = base._norm(result.title)
+    reasons = [value for value in result.exclusion_reasons.split("|") if value]
+    score = result.match_score
+    state = result.match_state
+
+    if product.product_class in {
+        "COLLECTOR_BOOSTER_BOX",
+        "PRE_COLLECTOR_BOOSTER_BOX",
+    }:
+        has_mtg_identity = any(term in title_norm for term in MTG_IDENTITY_TERMS)
+        unrelated_game = any(term in title_norm for term in UNRELATED_GAME_TERMS)
+        has_box_form = _has_booster_box_form(title_norm)
+        token_coverage = _token_coverage(product, title_norm)
+
+        if unrelated_game:
+            reasons.append("unrelated_game")
+        if not has_mtg_identity:
+            reasons.append("missing_mtg_identity")
+        if not has_box_form:
+            reasons.append("missing_booster_box_form")
+        if any(term in title_norm for term in NON_BOX_PRODUCT_TERMS):
+            reasons.append("excluded_product_form")
+        if not has_box_form and (" pack " in title_norm or " packs " in title_norm):
+            reasons.append("loose_packs")
+        if _is_multi_box_case(title_norm):
+            reasons.append("multi_box_case")
+        if _is_multi_unit_lot(title_norm):
+            reasons.append("multi_unit_lot")
+        if _is_incomplete_pack_box_lot(title_norm):
+            reasons.append("incomplete_pack_box_lot")
+        if _is_incomplete_product(title_norm):
+            reasons.append("incomplete_product")
+        if _is_ambiguous_plural_box_listing(title_norm):
+            reasons.append("ambiguous_multi_unit_listing")
+        if _is_deprecated_catalog_placeholder(title_norm):
+            reasons.append("deprecated_catalog_placeholder")
+        if _is_mixed_product_listing(product, title_norm, result.title):
+            reasons.append("mixed_product_listing")
+        if _has_non_english_marker(title_norm, result.title):
+            reasons.append("non_english")
+        if any(term in title_norm for term in DAMAGED_SEAL_TERMS):
+            reasons.append("damaged_or_uncertain_seal")
+        if (
+            product.product_class == "COLLECTOR_BOOSTER_BOX"
+            and _is_single_pack_collector_product(title_norm)
+        ):
+            reasons.append("single_pack_collector_product")
+        if _has_conflicting_set_identity(product, title_norm):
+            reasons.append("conflicting_set_identity")
+        if token_coverage < 0.75:
+            reasons.append("insufficient_product_identity")
+
+        hard_reasons = {
+            "unrelated_game",
+            "missing_mtg_identity",
+            "missing_booster_box_form",
+            "excluded_product_form",
+            "loose_packs",
+            "multi_box_case",
+            "multi_unit_lot",
+            "incomplete_pack_box_lot",
+            "incomplete_product",
+            "ambiguous_multi_unit_listing",
+            "deprecated_catalog_placeholder",
+            "mixed_product_listing",
+            "damaged_or_uncertain_seal",
+            "single_pack_collector_product",
+            "conflicting_set_identity",
+            "insufficient_product_identity",
+            "non_english",
+            "presale",
+        }
+        if hard_reasons.intersection(reasons):
+            score = min(score, 0.49)
+            state = "REJECTED"
+        elif _is_ambiguous_display_case(title_norm):
+            reasons.append("ambiguous_display_case")
+            score = min(score, 0.75)
+            state = "REVIEW"
+
+    elif product.product_class == "SEALED_SECRET_LAIR":
+        if _secret_lair_variant_conflict(product, title_norm):
+            reasons.append("secret_lair_variant_conflict")
+            score = min(score, 0.49)
+            state = "REJECTED"
+        elif _secret_lair_strong_identity(product, title_norm) and not reasons:
+            score = max(score, 0.82)
+            state = "ACCEPTED"
+
+    return replace(
+        result,
+        match_score=round(score, 4),
+        match_state=state,
+        exclusion_reasons="|".join(dict.fromkeys(reasons)),
+    )
+
+
+def run_coverage(
+    limit_per_product: int = 20,
+    max_products: int | None = None,
+    universe_override: Sequence[base.CanonicalProduct] | None = None,
+) -> dict[str, object]:
+    original_match = base.match_listing
+    original_universe = base.build_universe
+    selected_universe = (
+        list(universe_override)
+        if universe_override is not None
+        else build_complete_universe()
+    )
+    base.match_listing = strict_match_listing
+    base.build_universe = lambda: list(selected_universe)
+    try:
+        return base.run_coverage(limit_per_product, max_products)
+    finally:
+        base.match_listing = original_match
+        base.build_universe = original_universe

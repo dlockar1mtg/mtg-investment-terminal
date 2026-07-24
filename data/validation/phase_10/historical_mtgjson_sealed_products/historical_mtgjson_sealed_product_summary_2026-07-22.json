@@ -1,0 +1,33 @@
+{
+  "audit_status": "PASS",
+  "downloaded_set_files": 0,
+  "existing_cache_files": 138,
+  "failed_set_files": 0,
+  "final_eligibility_assigned": false,
+  "final_release_dates_assigned": 0,
+  "generated_at_utc": "2026-07-22T18:08:37Z",
+  "output_files": {
+    "audit": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\validation\\phase_10\\historical_mtgjson_sealed_products\\historical_mtgjson_sealed_product_audit_2026-07-22.csv",
+    "candidate_records": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\validation\\phase_10\\historical_mtgjson_sealed_products\\historical_mtgjson_sealed_product_candidates_2026-07-22.csv",
+    "download_errors": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\validation\\phase_10\\historical_mtgjson_sealed_products\\historical_mtgjson_set_download_errors_2026-07-22.csv",
+    "review_queue": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\validation\\phase_10\\historical_mtgjson_sealed_products\\historical_mtgjson_sealed_product_review_queue_2026-07-22.csv"
+  },
+  "product_level_release_candidates": 51,
+  "production_registry_changed": false,
+  "release_evidence_state_counts": {
+    "matched_product_set_date_only": 89,
+    "product_level_release_candidate": 51
+  },
+  "review_product_rows": 140,
+  "schema_version": "10.5R.1D.2.4D",
+  "scoring_allowed_rows": 0,
+  "sealed_match_state_counts": {
+    "matched": 139,
+    "review_required": 1
+  },
+  "sealed_product_review_rows": 1,
+  "successful_set_files": 138,
+  "targeted_set_files": 138,
+  "universal_database_changed": false,
+  "universal_investable_allowed_rows": 0
+}

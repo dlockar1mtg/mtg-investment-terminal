@@ -1,0 +1,45 @@
+{
+  "audit_generated_at": "2026-07-22T12:11:53.633880+00:00",
+  "audit_status": "DISCOVERY_COMPLETE_REVIEW_REQUIRED",
+  "candidate_data_file_count": 23,
+  "database_file_count": 1,
+  "database_object_count": 11,
+  "distinct_named_source_count": 13,
+  "external_source_reference_count": 306,
+  "file_extension_counts": {
+    "": 1,
+    ".csv": 19,
+    ".example": 1,
+    ".html": 6,
+    ".json": 2,
+    ".md": 134,
+    ".py": 374,
+    ".sqlite": 1,
+    ".txt": 1
+  },
+  "important_limitations": [
+    "Repository references do not prove that a source is currently active.",
+    "File presence does not prove that a dataset is complete or authoritative.",
+    "Large archives and binary files are inventoried but not fully inspected.",
+    "External product-universe completeness has not yet been tested.",
+    "No product has been added to or removed from the investment universe."
+  ],
+  "output_files": {
+    "candidate_data_source_inventory": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\validation\\phase_10\\source_coverage\\candidate_data_source_inventory.csv",
+    "database_table_inventory": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\validation\\phase_10\\source_coverage\\database_table_inventory.csv",
+    "external_source_reference_inventory": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\validation\\phase_10\\source_coverage\\external_source_reference_inventory.csv",
+    "preliminary_source_registry": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\validation\\phase_10\\source_coverage\\preliminary_source_registry.csv",
+    "repository_file_inventory": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\validation\\phase_10\\source_coverage\\repository_file_inventory.csv"
+  },
+  "provisional_source_role_counts": {
+    "other": 2,
+    "price_history": 1,
+    "product_registry": 3,
+    "secret_lair_source": 9,
+    "set_or_release_metadata": 3,
+    "structured_data_other": 4,
+    "supply_demand": 1
+  },
+  "repository_file_count": 539,
+  "repository_root": "C:\\Users\\DevonLockard\\mtg-investment-terminal"
+}

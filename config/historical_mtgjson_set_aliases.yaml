@@ -1,0 +1,104 @@
+schema_version: "10.5R.1D.2.4C.2"
+policy_name: historical_mtgjson_set_aliases
+
+description: >
+  Explicit mappings between governed historical sealed-product identities
+  and MTGJSON set identities. Exact aliases correct known naming differences.
+  Multi-set family routes remain unresolved until sealed-product records are
+  inspected. No final release dates or eligibility decisions are assigned.
+
+exact_aliases:
+  - canonical_product_id: "MTG-CANON-TCGPLAYER-27259"
+    canonical_product_name: "8th Edition - Booster Box"
+    mtgjson_set_code: "8ED"
+    mtgjson_set_name: "Eighth Edition"
+    alias_basis: "ordinal_name_equivalence"
+
+  - canonical_product_id: "MTG-CANON-TCGPLAYER-27260"
+    canonical_product_name: "9th Edition - Booster Box"
+    mtgjson_set_code: "9ED"
+    mtgjson_set_name: "Ninth Edition"
+    alias_basis: "ordinal_name_equivalence"
+
+  - canonical_product_id: "MTG-CANON-TCGPLAYER-27257"
+    canonical_product_name: "10th Edition - Booster Box"
+    mtgjson_set_code: "10E"
+    mtgjson_set_name: "Tenth Edition"
+    alias_basis: "ordinal_name_equivalence"
+
+  - canonical_product_id: "MTG-CANON-TCGPLAYER-32529"
+    canonical_product_name: "Magic 2010 (M10) - Booster Box"
+    mtgjson_set_code: "M10"
+    mtgjson_set_name: "Magic 2010"
+    alias_basis: "parenthetical_set_code_removed"
+
+  - canonical_product_id: "MTG-CANON-TCGPLAYER-35372"
+    canonical_product_name: "Magic 2011 (M11) - Booster Box"
+    mtgjson_set_code: "M11"
+    mtgjson_set_name: "Magic 2011"
+    alias_basis: "parenthetical_set_code_removed"
+
+  - canonical_product_id: "MTG-CANON-TCGPLAYER-46957"
+    canonical_product_name: "Magic 2012 (M12) - Booster Box"
+    mtgjson_set_code: "M12"
+    mtgjson_set_name: "Magic 2012"
+    alias_basis: "parenthetical_set_code_removed"
+
+  - canonical_product_id: "MTG-CANON-TCGPLAYER-59120"
+    canonical_product_name: "Magic 2013 (M13) - Booster Box"
+    mtgjson_set_code: "M13"
+    mtgjson_set_name: "Magic 2013"
+    alias_basis: "parenthetical_set_code_removed"
+
+  - canonical_product_id: "MTG-CANON-TCGPLAYER-69243"
+    canonical_product_name: "Magic 2014 (M14) - Booster Box"
+    mtgjson_set_code: "M14"
+    mtgjson_set_name: "Magic 2014"
+    alias_basis: "parenthetical_set_code_removed"
+
+  - canonical_product_id: "MTG-CANON-TCGPLAYER-90786"
+    canonical_product_name: "Magic 2015 (M15) - Booster Box"
+    mtgjson_set_code: "M15"
+    mtgjson_set_name: "Magic 2015"
+    alias_basis: "parenthetical_set_code_removed"
+
+set_family_reviews:
+  - canonical_product_id: "MTG-CANON-TCGPLAYER-208523"
+    canonical_product_name: >
+      Mystery Booster - Booster Box [Retail Exclusive]
+    candidate_set_codes:
+      - "MB1"
+    family_review_reason: >
+      Retail sealed product belongs to the Mystery Booster family, but its
+      product-level release date must be read from MTGJSON sealed products
+      before the set date is accepted.
+
+  - canonical_product_id: "MTG-CANON-TCGPLAYER-217533"
+    canonical_product_name: >
+      Mystery Booster - Booster Box [Convention Edition] (2019)
+    candidate_set_codes:
+      - "MB1"
+      - "CMB1"
+    family_review_reason: >
+      Convention Edition 2019 may be represented by the parent Mystery
+      Booster set or the 2019 playtest-card child set. Product-level sealed
+      records must determine the correct relationship.
+
+  - canonical_product_id: "MTG-CANON-TCGPLAYER-246935"
+    canonical_product_name: >
+      Mystery Booster - Booster Box [Convention Edition] (2021)
+    candidate_set_codes:
+      - "MB1"
+      - "CMB2"
+    family_review_reason: >
+      Convention Edition 2021 may be represented by the parent Mystery
+      Booster set or the 2021 playtest-card child set. Product-level sealed
+      records must determine the correct relationship.
+
+decision_controls:
+  exact_aliases_are_set_routes_only: true
+  set_family_reviews_remain_unresolved: true
+  final_release_dates_assigned: false
+  final_eligibility_assigned: false
+  scoring_allowed: false
+  universal_investable_allowed: false

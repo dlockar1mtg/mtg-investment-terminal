@@ -1,0 +1,278 @@
+from __future__ import annotations
+
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+RUNNER_PATH = ROOT / "scripts/run_ebay_matching_batch.py"
+TEST_PATH = ROOT / "tests/test_ebay_resume.py"
+
+RUNNER_CONTENT = '''from __future__ import annotations
+
+import argparse
+from datetime import datetime, timezone
+import json
+from pathlib import Path
+import shutil
+import sys
+
+ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from terminal2.market_sources import ebay_matching as base
+from terminal2.market_sources.ebay_matching import EbayBrowseClient
+from terminal2.market_sources.ebay_precision import run_coverage
+from terminal2.market_sources.ebay_resilience import (
+    estimate_batch_calls,
+    format_reset_local,
+    get_browse_quota,
+)
+from terminal2.market_sources.ebay_resume import build_resume_plan, select_pending_products
+from terminal2.market_sources.ebay_universe import build_complete_universe
+
+
+ALLOWED_CLASSES = {
+    "COLLECTOR_BOOSTER_BOX",
+    "PRE_COLLECTOR_BOOSTER_BOX",
+    "SEALED_SECRET_LAIR",
+}
+
+
+def _print_resume_plan(batch_key: str, plan) -> None:
+    print("EBAY BATCH RESUME PLAN")
+    print(f"  batch: {batch_key}")
+    print(f"  expected products: {len(plan.expected_product_ids)}")
+    print(f"  completed products: {len(plan.completed_product_ids)}")
+    print(f"  pending products: {len(plan.pending_product_ids)}")
+    print(f"  prior source errors: {len(plan.source_error_product_ids)}")
+    print(f"  coverage files inspected: {len(plan.coverage_files)}")
+    print(
+        "  estimated maximum resume calls: "
+        f"{estimate_batch_calls(len(plan.pending_product_ids))}"
+    )
+    if plan.pending_product_ids:
+        print("  pending product IDs:")
+        for product_id in plan.pending_product_ids:
+            print(f"    {product_id}")
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(
+        description="Run a resumable governed eBay matching batch."
+    )
+    parser.add_argument("--product-class", choices=sorted(ALLOWED_CLASSES), required=True)
+    parser.add_argument("--offset", type=int, default=0)
+    parser.add_argument("--batch-size", type=int, default=25)
+    parser.add_argument("--limit-per-product", type=int, default=20)
+    parser.add_argument("--force", action="store_true")
+    parser.add_argument("--skip-quota-check", action="store_true")
+    parser.add_argument("--quota-reserve", type=int, default=100)
+    parser.add_argument(
+        "--resume-plan",
+        action="store_true",
+        help="Inspect prior attempts and report which selected products remain unfinished.",
+    )
+    parser.add_argument(
+        "--resume",
+        action="store_true",
+        help="Run only products still pending according to prior coverage files.",
+    )
+    args = parser.parse_args()
+
+    if args.offset < 0:
+        raise SystemExit("--offset must be zero or greater")
+    if args.batch_size < 1:
+        raise SystemExit("--batch-size must be at least 1")
+    if args.quota_reserve < 0:
+        raise SystemExit("--quota-reserve must be zero or greater")
+    if args.resume and args.resume_plan:
+        raise SystemExit("Use either --resume or --resume-plan, not both")
+
+    full_universe = [
+        product
+        for product in build_complete_universe()
+        if product.product_class == args.product_class
+    ]
+    subset = full_universe[args.offset : args.offset + args.batch_size]
+    if not subset:
+        print("No products remain for this batch selection.")
+        return 0
+
+    end = args.offset + len(subset) - 1
+    batch_key = f"{args.product_class.lower()}_{args.offset:04d}_{end:04d}"
+    batch_root = base.OUTPUT_ROOT / "batches" / batch_key
+
+    plan = None
+    work_subset = list(subset)
+    if args.resume or args.resume_plan:
+        plan = build_resume_plan(
+            batch_root,
+            [product.canonical_product_id for product in subset],
+        )
+        if args.resume_plan:
+            _print_resume_plan(batch_key, plan)
+            return 0
+        if plan.is_complete:
+            print(f"BATCH RESUME NOT REQUIRED: {batch_key}")
+            print("All selected products already have non-source-error coverage.")
+            return 0
+        work_subset = select_pending_products(subset, plan.pending_product_ids)
+        print("EBAY LIVE RESUME SELECTION")
+        print(f"  batch: {batch_key}")
+        print(f"  original products: {len(subset)}")
+        print(f"  reusable completed products: {len(plan.completed_product_ids)}")
+        print(f"  products selected for resume: {len(work_subset)}")
+
+    if not args.skip_quota_check:
+        client = EbayBrowseClient()
+        quota = get_browse_quota(client)
+        estimated_calls = estimate_batch_calls(len(work_subset))
+        print("EBAY BROWSE QUOTA PREFLIGHT")
+        print(f"  limit: {quota.limit}")
+        print(f"  used: {quota.count}")
+        print(f"  remaining: {quota.remaining}")
+        print(f"  estimated maximum calls: {estimated_calls}")
+        print(f"  reserve: {args.quota_reserve}")
+        print(f"  reset UTC: {quota.reset or 'unknown'}")
+        print(f"  reset local: {format_reset_local(quota.reset)}")
+        if not quota.supports(estimated_calls, reserve_calls=args.quota_reserve):
+            raise SystemExit(
+                "INSUFFICIENT EBAY BROWSE QUOTA: "
+                f"remaining={quota.remaining}, required={estimated_calls}, "
+                f"reserve={args.quota_reserve}, reset={quota.reset or 'unknown'}"
+            )
+
+    attempt_key = datetime.now(timezone.utc).strftime("attempt_%Y%m%dT%H%M%SZ")
+    attempt_root = batch_root / "attempts" / attempt_key
+    existing = sorted(batch_root.glob("ebay_matching_summary_*.json"))
+    if existing and not args.force and not args.resume:
+        print(f"BATCH ALREADY COMPLETE: {batch_key}")
+        print(existing[-1])
+        return 0
+
+    original_output = base.OUTPUT_ROOT
+    base.OUTPUT_ROOT = attempt_root
+    try:
+        summary = run_coverage(
+            limit_per_product=args.limit_per_product,
+            max_products=None,
+            universe_override=work_subset,
+        )
+    finally:
+        base.OUTPUT_ROOT = original_output
+
+    processed = int(summary.get("products", -1))
+    source_errors = int(summary.get("coverage_states", {}).get("SOURCE_ERROR", 0))
+    aborted_early = bool(summary.get("aborted_early", False))
+    if processed != len(work_subset) or source_errors or aborted_early:
+        print()
+        print("EBAY MATCHING BATCH: INCOMPLETE")
+        print(f"Attempt preserved at: {attempt_root}")
+        print(
+            f"attempted={len(work_subset)} processed={processed} "
+            f"source_errors={source_errors} aborted_early={aborted_early}"
+        )
+        raise SystemExit(2)
+
+    if args.resume:
+        resume_manifest = {
+            "batch_key": batch_key,
+            "mode": "resume_attempt",
+            "original_batch_size": len(subset),
+            "reused_product_count": len(plan.completed_product_ids) if plan else 0,
+            "resumed_product_count": len(work_subset),
+            "resumed_product_ids": [
+                product.canonical_product_id for product in work_subset
+            ],
+            "attempt_root": str(attempt_root),
+            "summary": summary,
+            "promotion_state": "PENDING_CONSOLIDATION",
+        }
+        attempt_root.mkdir(parents=True, exist_ok=True)
+        (attempt_root / "resume_attempt_manifest.json").write_text(
+            json.dumps(resume_manifest, indent=2),
+            encoding="utf-8",
+        )
+        print()
+        print("EBAY RESUME ATTEMPT: COMPLETE")
+        print(f"Attempt preserved at: {attempt_root}")
+        print("Promotion state: PENDING_CONSOLIDATION")
+        print("The governed batch root was not overwritten.")
+        return 0
+
+    batch_root.mkdir(parents=True, exist_ok=True)
+    for path in attempt_root.iterdir():
+        if path.is_file():
+            shutil.copy2(path, batch_root / path.name)
+
+    manifest = {
+        "batch_key": batch_key,
+        "product_class": args.product_class,
+        "offset": args.offset,
+        "end_offset": end,
+        "batch_size": len(subset),
+        "class_universe_size": len(full_universe),
+        "product_ids": [product.canonical_product_id for product in subset],
+        "summary": summary,
+    }
+    batch_root.mkdir(parents=True, exist_ok=True)
+    (batch_root / "batch_manifest.json").write_text(
+        json.dumps(manifest, indent=2),
+        encoding="utf-8",
+    )
+
+    print()
+    print("EBAY MATCHING BATCH: COMPLETE")
+    print(json.dumps(manifest, indent=2))
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
+'''
+
+TEST_APPEND = '''
+
+
+def test_select_pending_products_preserves_universe_order():
+    class Product:
+        def __init__(self, product_id):
+            self.canonical_product_id = product_id
+
+    products = [Product("A"), Product("B"), Product("C")]
+    selected = select_pending_products(products, ["C", "B"])
+    assert [product.canonical_product_id for product in selected] == ["B", "C"]
+
+
+def test_select_pending_products_excludes_completed_products():
+    class Product:
+        def __init__(self, product_id):
+            self.canonical_product_id = product_id
+
+    products = [Product("A"), Product("B"), Product("C")]
+    selected = select_pending_products(products, ["B"])
+    assert [product.canonical_product_id for product in selected] == ["B"]
+'''
+
+
+def apply() -> None:
+    RUNNER_PATH.write_text(RUNNER_CONTENT, encoding="utf-8")
+
+    tests = TEST_PATH.read_text(encoding="utf-8")
+    if "test_select_pending_products_preserves_universe_order" not in tests:
+        if "select_pending_products" not in tests.splitlines()[3:12]:
+            tests = tests.replace(
+                "from terminal2.market_sources.ebay_resume import build_resume_plan",
+                "from terminal2.market_sources.ebay_resume import build_resume_plan, select_pending_products",
+                1,
+            )
+        tests = tests.rstrip() + TEST_APPEND + "\n"
+        TEST_PATH.write_text(tests, encoding="utf-8")
+
+    print("PHASE 10.6A3.2.1 EBAY LIVE RESUME SELECTION: APPLIED")
+    print(f"Updated: {RUNNER_PATH.relative_to(ROOT)}")
+    print(f"Updated: {TEST_PATH.relative_to(ROOT)}")
+
+
+if __name__ == "__main__":
+    apply()
