@@ -4,7 +4,6 @@ import csv
 import hashlib
 import json
 import shutil
-from collections import Counter
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -54,12 +53,8 @@ def as_bool(value: str) -> bool:
     return str(value).strip().upper() in {"TRUE", "YES", "1", "Y"}
 
 
-def first(row: dict[str, str], *names: str) -> str:
-    for name in names:
-        value = row.get(name, "").strip()
-        if value:
-            return value
-    return ""
+def value(row: dict[str, str], name: str) -> str:
+    return str(row.get(name, "") or "").strip()
 
 
 def main() -> int:
@@ -111,64 +106,64 @@ def main() -> int:
         asset_rows.append(
             {
                 "asset_id": product_id,
-                "asset_name": asset["canonical_product_name"],
+                "asset_name": value(asset, "canonical_product_name"),
                 "asset_class": "MTG",
-                "asset_subclass": asset["lane"],
-                "product_class": asset["product_class"],
-                "source_product_id": asset["source_product_id"],
-                "canonical_set_name": asset["canonical_set_name"],
-                "release_date": asset["release_date"],
-                "registry_status": asset["registry_status"],
-                "currency": asset["currency"],
+                "asset_subclass": value(asset, "lane"),
+                "product_class": value(asset, "product_class"),
+                "source_product_id": value(asset, "source_product_id"),
+                "canonical_set_name": value(asset, "canonical_set_name"),
+                "release_date": value(asset, "release_date"),
+                "registry_status": value(asset, "registry_status"),
+                "currency": value(asset, "currency") or "USD",
             }
         )
 
         forecast_rows.append(
             {
                 "asset_id": product_id,
-                "forecast_eligible": intelligence_row["forecast_eligible"],
-                "forecast_status": intelligence_row["forecast_status"],
-                "forecast_method": intelligence_row["forecast_method"],
-                "current_market_value_usd": intelligence_row["current_market_value_usd"],
-                "forecast_low_usd": intelligence_row["forecast_low_usd"],
-                "forecast_base_usd": intelligence_row["forecast_base_usd"],
-                "forecast_high_usd": intelligence_row["forecast_high_usd"],
-                "one_year_downside_usd": intelligence_row["one_year_downside_usd"],
-                "one_year_base_usd": intelligence_row["one_year_base_usd"],
-                "one_year_upside_usd": intelligence_row["one_year_upside_usd"],
-                "three_year_downside_usd": intelligence_row["three_year_downside_usd"],
-                "three_year_base_usd": intelligence_row["three_year_base_usd"],
-                "three_year_upside_usd": intelligence_row["three_year_upside_usd"],
-                "five_year_downside_usd": intelligence_row["five_year_downside_usd"],
-                "five_year_base_usd": intelligence_row["five_year_base_usd"],
-                "five_year_upside_usd": intelligence_row["five_year_upside_usd"],
-                "confidence": intelligence_row["confidence"],
-                "currency": intelligence_row["currency"],
+                "forecast_eligible": value(intelligence_row, "forecast_eligible"),
+                "forecast_status": value(intelligence_row, "forecast_status"),
+                "forecast_method": value(intelligence_row, "forecast_method"),
+                "current_market_value_usd": value(intelligence_row, "current_market_value_usd"),
+                "native_forecast_low_usd": value(intelligence_row, "native_forecast_low_usd"),
+                "native_forecast_base_usd": value(intelligence_row, "native_forecast_base_usd"),
+                "native_forecast_high_usd": value(intelligence_row, "native_forecast_high_usd"),
+                "one_year_downside_usd": value(intelligence_row, "one_year_downside_usd"),
+                "one_year_base_usd": value(intelligence_row, "one_year_base_usd"),
+                "one_year_upside_usd": value(intelligence_row, "one_year_upside_usd"),
+                "three_year_downside_usd": value(intelligence_row, "three_year_downside_usd"),
+                "three_year_base_usd": value(intelligence_row, "three_year_base_usd"),
+                "three_year_upside_usd": value(intelligence_row, "three_year_upside_usd"),
+                "five_year_downside_usd": value(intelligence_row, "five_year_downside_usd"),
+                "five_year_base_usd": value(intelligence_row, "five_year_base_usd"),
+                "five_year_upside_usd": value(intelligence_row, "five_year_upside_usd"),
+                "confidence": value(intelligence_row, "confidence"),
+                "currency": value(intelligence_row, "currency") or "USD",
             }
         )
 
         recommendation_rows.append(
             {
                 "asset_id": product_id,
-                "recommendation_eligible": intelligence_row["recommendation_eligible"],
-                "recommendation_status": intelligence_row["recommendation_status"],
-                "recommendation_action": intelligence_row["recommendation_action"],
-                "recommendation_rationale": intelligence_row["recommendation_rationale"],
-                "suppression_reason": intelligence_row["suppression_reason"],
-                "confidence": intelligence_row["confidence"],
-                "currency": intelligence_row["currency"],
+                "recommendation_eligible": value(intelligence_row, "recommendation_eligible"),
+                "recommendation_status": value(intelligence_row, "recommendation_status"),
+                "recommendation_action": value(intelligence_row, "recommendation_action"),
+                "recommendation_rationale": value(intelligence_row, "rationale"),
+                "suppression_reason": value(intelligence_row, "suppression_reason"),
+                "confidence": value(intelligence_row, "confidence"),
+                "currency": value(intelligence_row, "currency") or "USD",
             }
         )
 
         risk_rows.append(
             {
                 "asset_id": product_id,
-                "admission_tier": intelligence_row["admission_tier"],
-                "quality_disposition": intelligence_row["quality_disposition"],
-                "quality_flags": intelligence_row["quality_flags"],
-                "confidence": intelligence_row["confidence"],
-                "forecast_eligible": intelligence_row["forecast_eligible"],
-                "recommendation_eligible": intelligence_row["recommendation_eligible"],
+                "admission_tier": value(intelligence_row, "admission_tier"),
+                "quality_disposition": value(intelligence_row, "quality_disposition"),
+                "quality_flags": value(intelligence_row, "suppression_reason"),
+                "confidence": value(intelligence_row, "confidence"),
+                "forecast_eligible": value(intelligence_row, "forecast_eligible"),
+                "recommendation_eligible": value(intelligence_row, "recommendation_eligible"),
             }
         )
 
@@ -194,39 +189,27 @@ def main() -> int:
 
     public_portfolio_rows = [
         {
-            "asset_subclass": row["lane"],
-            "owned_positions": row["owned_positions"],
-            "cost_basis_usd": row["cost_basis_usd"],
-            "market_value_usd": row["market_value_usd"],
-            "unrealized_gain_loss_usd": row["unrealized_gain_loss_usd"],
+            "asset_subclass": value(row, "lane"),
+            "owned_positions": value(row, "owned_positions"),
+            "cost_basis_usd": value(row, "cost_basis_usd"),
+            "market_value_usd": value(row, "market_value_usd"),
+            "unrealized_gain_loss_usd": value(row, "unrealized_gain_loss_usd"),
             "currency": "USD",
         }
         for row in portfolio_summary
     ]
 
-    write_csv(
-        package_dir / "asset_master.csv",
-        list(asset_rows[0]) if asset_rows else [],
-        asset_rows,
-    )
-    write_csv(
-        package_dir / "forecasts.csv",
-        list(forecast_rows[0]) if forecast_rows else [],
-        forecast_rows,
-    )
+    write_csv(package_dir / "asset_master.csv", list(asset_rows[0]), asset_rows)
+    write_csv(package_dir / "forecasts.csv", list(forecast_rows[0]), forecast_rows)
     write_csv(
         package_dir / "recommendations.csv",
-        list(recommendation_rows[0]) if recommendation_rows else [],
+        list(recommendation_rows[0]),
         recommendation_rows,
     )
-    write_csv(
-        package_dir / "risk_metrics.csv",
-        list(risk_rows[0]) if risk_rows else [],
-        risk_rows,
-    )
+    write_csv(package_dir / "risk_metrics.csv", list(risk_rows[0]), risk_rows)
     write_csv(
         package_dir / "portfolio_summary.csv",
-        list(public_portfolio_rows[0]) if public_portfolio_rows else [],
+        list(public_portfolio_rows[0]),
         public_portfolio_rows,
     )
     write_csv(
