@@ -66,10 +66,19 @@ def test_export_excludes_private_position_detail() -> None:
     assert not (forbidden & headers)
 
 
-def test_package_summary_is_validated() -> None:
+def test_package_summary_matches_contract() -> None:
     summary = json.loads((PACKAGE / "package_summary.json").read_text(encoding="utf-8"))
-    assert summary["validation_status"] == "PASS"
-    assert summary["product_count"] == 1141
-    assert summary["portfolio_summary_only"] is True
-    assert summary["private_position_details_included"] is False
+    manifest = json.loads((PACKAGE / "export_manifest.json").read_text(encoding="utf-8"))
+
+    assert summary["status"] == "PASS"
+    assert summary["products"] == 1141
+    assert summary["source_closeout_status"] == "PRODUCTION_CLOSED"
+    assert summary["portfolio_summary_rows"] == 3
+    assert summary["privacy_boundary"]["position_level_holdings_exported"] is False
     assert summary["quota_calls"] == 0
+
+    assert manifest["products"] == 1141
+    assert manifest["source_closeout_status"] == "PRODUCTION_CLOSED"
+    assert manifest["portfolio_summary_rows"] == 3
+    assert manifest["privacy_boundary"]["position_level_holdings_exported"] is False
+    assert manifest["quota_calls"] == 0
