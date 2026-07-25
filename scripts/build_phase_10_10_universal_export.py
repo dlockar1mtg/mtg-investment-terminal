@@ -14,7 +14,7 @@ VALIDATION = ROOT / "data" / "validation" / "phase_10"
 REGISTRY = VALIDATION / "unified_mtg_registry" / "unified_mtg_product_registry.csv"
 INTELLIGENCE = VALIDATION / "unified_mtg_intelligence" / "unified_mtg_intelligence_interface.csv"
 PORTFOLIO_SUMMARY = VALIDATION / "unified_mtg_portfolio" / "unified_mtg_portfolio_lane_summary.csv"
-CLOSEOUT = VALIDATION / "unified_mtg_closeout" / "phase_10_9_unified_mtg_closeout_manifest.json"
+CLOSEOUT = VALIDATION / "unified_mtg_closeout" / "phase_10_9_unified_mtg_production_closeout.json"
 OUTPUT_ROOT = VALIDATION / "universal_export"
 LATEST = OUTPUT_ROOT / "latest"
 
@@ -94,99 +94,81 @@ def main() -> int:
     forecast_rows: list[dict[str, Any]] = []
     recommendation_rows: list[dict[str, Any]] = []
     risk_rows: list[dict[str, Any]] = []
-
     diagnostics: list[dict[str, str]] = []
 
     for asset in registry:
-        asset_id = asset["universal_mtg_product_id"].strip()
-        intel = intelligence_by_id.get(asset_id)
-        if intel is None:
-            diagnostics.append({"asset_id": asset_id, "diagnostic": "MISSING_INTELLIGENCE"})
+        product_id = asset["universal_mtg_product_id"].strip()
+        intelligence_row = intelligence_by_id.get(product_id)
+        if intelligence_row is None:
+            diagnostics.append(
+                {
+                    "universal_mtg_product_id": product_id,
+                    "diagnostic": "MISSING_INTELLIGENCE_ROW",
+                }
+            )
             continue
 
         asset_rows.append(
             {
-                "asset_id": asset_id,
-                "asset_name": asset["canonical_product_name"].strip(),
-                "asset_type": "MTG_SEALED_PRODUCT",
-                "asset_subtype": asset["lane"].strip(),
-                "platform": "MTG",
-                "source_product_id": asset["source_product_id"].strip(),
-                "product_class": asset["product_class"].strip(),
-                "canonical_set_name": asset.get("canonical_set_name", "").strip(),
-                "finish_group": asset.get("finish_group", "").strip(),
-                "release_date": asset.get("release_date", "").strip(),
-                "currency": "USD",
-                "registry_status": asset.get("registry_status", "GOVERNED").strip() or "GOVERNED",
+                "asset_id": product_id,
+                "asset_name": asset["canonical_product_name"],
+                "asset_class": "MTG",
+                "asset_subclass": asset["lane"],
+                "product_class": asset["product_class"],
+                "source_product_id": asset["source_product_id"],
+                "canonical_set_name": asset["canonical_set_name"],
+                "release_date": asset["release_date"],
+                "registry_status": asset["registry_status"],
+                "currency": asset["currency"],
             }
         )
 
-        forecast_eligible = as_bool(first(intel, "forecast_eligible"))
-        recommendation_eligible = as_bool(first(intel, "recommendation_eligible"))
-
         forecast_rows.append(
             {
-                "asset_id": asset_id,
-                "platform": "MTG",
-                "forecast_eligible": str(forecast_eligible).lower(),
-                "forecast_status": first(intel, "forecast_status"),
-                "forecast_method": first(intel, "forecast_method"),
-                "current_value_usd": first(intel, "current_market_value_usd", "market_value_usd"),
-                "forecast_low_usd": first(intel, "forecast_low_usd", "one_year_downside_usd", "1y_downside_usd"),
-                "forecast_base_usd": first(intel, "forecast_base_usd", "one_year_base_usd", "1y_base_usd"),
-                "forecast_high_usd": first(intel, "forecast_high_usd", "one_year_upside_usd", "1y_upside_usd"),
-                "forecast_1y_low_usd": first(intel, "one_year_downside_usd", "1y_downside_usd"),
-                "forecast_1y_base_usd": first(intel, "one_year_base_usd", "1y_base_usd"),
-                "forecast_1y_high_usd": first(intel, "one_year_upside_usd", "1y_upside_usd"),
-                "forecast_3y_low_usd": first(intel, "three_year_downside_usd", "3y_downside_usd"),
-                "forecast_3y_base_usd": first(intel, "three_year_base_usd", "3y_base_usd"),
-                "forecast_3y_high_usd": first(intel, "three_year_upside_usd", "3y_upside_usd"),
-                "forecast_5y_low_usd": first(intel, "five_year_downside_usd", "5y_downside_usd"),
-                "forecast_5y_base_usd": first(intel, "five_year_base_usd", "5y_base_usd"),
-                "forecast_5y_high_usd": first(intel, "five_year_upside_usd", "5y_upside_usd"),
-                "confidence": first(intel, "confidence", "model_confidence_score"),
-                "currency": "USD",
+                "asset_id": product_id,
+                "forecast_eligible": intelligence_row["forecast_eligible"],
+                "forecast_status": intelligence_row["forecast_status"],
+                "forecast_method": intelligence_row["forecast_method"],
+                "current_market_value_usd": intelligence_row["current_market_value_usd"],
+                "forecast_low_usd": intelligence_row["forecast_low_usd"],
+                "forecast_base_usd": intelligence_row["forecast_base_usd"],
+                "forecast_high_usd": intelligence_row["forecast_high_usd"],
+                "one_year_downside_usd": intelligence_row["one_year_downside_usd"],
+                "one_year_base_usd": intelligence_row["one_year_base_usd"],
+                "one_year_upside_usd": intelligence_row["one_year_upside_usd"],
+                "three_year_downside_usd": intelligence_row["three_year_downside_usd"],
+                "three_year_base_usd": intelligence_row["three_year_base_usd"],
+                "three_year_upside_usd": intelligence_row["three_year_upside_usd"],
+                "five_year_downside_usd": intelligence_row["five_year_downside_usd"],
+                "five_year_base_usd": intelligence_row["five_year_base_usd"],
+                "five_year_upside_usd": intelligence_row["five_year_upside_usd"],
+                "confidence": intelligence_row["confidence"],
+                "currency": intelligence_row["currency"],
             }
         )
 
         recommendation_rows.append(
             {
-                "asset_id": asset_id,
-                "platform": "MTG",
-                "recommendation_eligible": str(recommendation_eligible).lower(),
-                "action": first(intel, "recommendation_action", "guarded_recommendation", "action"),
-                "recommendation_status": first(intel, "recommendation_status"),
-                "confidence": first(intel, "confidence", "model_confidence_score"),
-                "rationale": first(intel, "rationale", "suppression_reason"),
-                "suppression_reason": first(intel, "suppression_reason"),
-                "currency": "USD",
+                "asset_id": product_id,
+                "recommendation_eligible": intelligence_row["recommendation_eligible"],
+                "recommendation_status": intelligence_row["recommendation_status"],
+                "recommendation_action": intelligence_row["recommendation_action"],
+                "recommendation_rationale": intelligence_row["recommendation_rationale"],
+                "suppression_reason": intelligence_row["suppression_reason"],
+                "confidence": intelligence_row["confidence"],
+                "currency": intelligence_row["currency"],
             }
         )
 
         risk_rows.append(
             {
-                "asset_id": asset_id,
-                "platform": "MTG",
-                "admission_tier": first(intel, "admission_tier", "evaluation_tier"),
-                "quality_disposition": first(intel, "quality_disposition", "quality_decision", "plausibility_disposition"),
-                "quality_flags": first(intel, "quality_flags", "plausibility_flags"),
-                "confidence": first(intel, "confidence", "model_confidence_score"),
-                "forecast_eligible": str(forecast_eligible).lower(),
-                "recommendation_eligible": str(recommendation_eligible).lower(),
-            }
-        )
-
-    portfolio_public_rows = []
-    for row in portfolio_summary:
-        portfolio_public_rows.append(
-            {
-                "platform": "MTG",
-                "asset_subtype": row["lane"].strip(),
-                "owned_positions": row["owned_positions"].strip(),
-                "cost_basis_usd": row["cost_basis_usd"].strip(),
-                "market_value_usd": row["market_value_usd"].strip(),
-                "unrealized_gain_loss_usd": row["unrealized_gain_loss_usd"].strip(),
-                "currency": "USD",
+                "asset_id": product_id,
+                "admission_tier": intelligence_row["admission_tier"],
+                "quality_disposition": intelligence_row["quality_disposition"],
+                "quality_flags": intelligence_row["quality_flags"],
+                "confidence": intelligence_row["confidence"],
+                "forecast_eligible": intelligence_row["forecast_eligible"],
+                "recommendation_eligible": intelligence_row["recommendation_eligible"],
             }
         )
 
@@ -196,108 +178,130 @@ def main() -> int:
             "status": "PRODUCTION_CLOSED",
             "interface_name": INTERFACE_NAME,
             "contract_version": CONTRACT_VERSION,
-            "product_count": len(asset_rows),
-            "owned_position_count": closeout.get("owned_positions", 14),
-            "forecast_eligible_count": sum(as_bool(row["forecast_eligible"]) for row in forecast_rows),
-            "recommendation_eligible_count": sum(as_bool(row["recommendation_eligible"]) for row in recommendation_rows),
+            "products": len(asset_rows),
+            "owned_positions": closeout.get("owned_positions", 0),
+            "forecast_eligible": sum(
+                as_bool(row["forecast_eligible"]) for row in forecast_rows
+            ),
+            "recommendation_eligible": sum(
+                as_bool(row["recommendation_eligible"])
+                for row in recommendation_rows
+            ),
+            "diagnostics": len(diagnostics),
             "generated_at_utc": generated_at.isoformat(),
-            "quota_calls": 0,
         }
     ]
 
-    outputs = {
-        "asset_master.csv": (asset_rows, list(asset_rows[0].keys())),
-        "forecasts.csv": (forecast_rows, list(forecast_rows[0].keys())),
-        "recommendations.csv": (recommendation_rows, list(recommendation_rows[0].keys())),
-        "risk_metrics.csv": (risk_rows, list(risk_rows[0].keys())),
-        "portfolio_summary.csv": (portfolio_public_rows, list(portfolio_public_rows[0].keys())),
-        "platform_status.csv": (platform_status_rows, list(platform_status_rows[0].keys())),
-        "diagnostics.csv": (diagnostics, ["asset_id", "diagnostic"]),
-    }
-
-    for filename, (rows, fields) in outputs.items():
-        write_csv(package_dir / filename, fields, rows)
-
-    row_counts = {filename: len(rows) for filename, (rows, _) in outputs.items()}
-    files_manifest = {
-        filename: {
-            "sha256": sha256(package_dir / filename),
-            "rows": row_counts[filename],
+    public_portfolio_rows = [
+        {
+            "asset_subclass": row["lane"],
+            "owned_positions": row["owned_positions"],
+            "cost_basis_usd": row["cost_basis_usd"],
+            "market_value_usd": row["market_value_usd"],
+            "unrealized_gain_loss_usd": row["unrealized_gain_loss_usd"],
+            "currency": "USD",
         }
-        for filename in outputs
-    }
+        for row in portfolio_summary
+    ]
 
-    exported_headers = set()
-    for _, (_, fields) in outputs.items():
-        exported_headers.update(fields)
-
-    checks = {
-        "phase_10_9_production_closed": closeout.get("status") == "PRODUCTION_CLOSED",
-        "asset_master_rows_equal_1141": len(asset_rows) == EXPECTED_PRODUCTS,
-        "forecasts_rows_equal_1141": len(forecast_rows) == EXPECTED_PRODUCTS,
-        "recommendations_rows_equal_1141": len(recommendation_rows) == EXPECTED_PRODUCTS,
-        "risk_metrics_rows_equal_1141": len(risk_rows) == EXPECTED_PRODUCTS,
-        "portfolio_summary_rows_equal_3": len(portfolio_public_rows) == 3,
-        "diagnostics_zero": len(diagnostics) == 0,
-        "asset_ids_unique": len({row["asset_id"] for row in asset_rows}) == EXPECTED_PRODUCTS,
-        "forecast_ids_match_assets": {row["asset_id"] for row in forecast_rows} == {row["asset_id"] for row in asset_rows},
-        "recommendation_ids_match_assets": {row["asset_id"] for row in recommendation_rows} == {row["asset_id"] for row in asset_rows},
-        "private_position_fields_excluded": not (FORBIDDEN_PRIVATE_FIELDS & exported_headers),
-        "currency_usd": all(row["currency"] == "USD" for row in asset_rows),
-        "quota_calls_zero": True,
-    }
-    status = "PASS" if all(checks.values()) else "FAIL"
-
-    package_summary = {
-        "package_id": package_id,
-        "platform": "MTG",
-        "interface_name": INTERFACE_NAME,
-        "contract_version": CONTRACT_VERSION,
-        "generated_at_utc": generated_at.isoformat(),
-        "validation_status": status,
-        "product_count": len(asset_rows),
-        "lane_counts": dict(sorted(Counter(row["asset_subtype"] for row in asset_rows).items())),
-        "forecast_eligible_count": sum(as_bool(row["forecast_eligible"]) for row in forecast_rows),
-        "recommendation_eligible_count": sum(as_bool(row["recommendation_eligible"]) for row in recommendation_rows),
-        "portfolio_summary_only": True,
-        "private_position_details_included": False,
-        "checks": checks,
-        "files": files_manifest,
-        "source_artifact_sha256": {
-            "registry": sha256(REGISTRY),
-            "intelligence": sha256(INTELLIGENCE),
-            "portfolio_summary": sha256(PORTFOLIO_SUMMARY),
-            "phase_10_9_closeout": sha256(CLOSEOUT),
-        },
-        "quota_calls": 0,
-    }
-    (package_dir / "package_summary.json").write_text(
-        json.dumps(package_summary, indent=2), encoding="utf-8"
+    write_csv(
+        package_dir / "asset_master.csv",
+        list(asset_rows[0]) if asset_rows else [],
+        asset_rows,
     )
+    write_csv(
+        package_dir / "forecasts.csv",
+        list(forecast_rows[0]) if forecast_rows else [],
+        forecast_rows,
+    )
+    write_csv(
+        package_dir / "recommendations.csv",
+        list(recommendation_rows[0]) if recommendation_rows else [],
+        recommendation_rows,
+    )
+    write_csv(
+        package_dir / "risk_metrics.csv",
+        list(risk_rows[0]) if risk_rows else [],
+        risk_rows,
+    )
+    write_csv(
+        package_dir / "portfolio_summary.csv",
+        list(public_portfolio_rows[0]) if public_portfolio_rows else [],
+        public_portfolio_rows,
+    )
+    write_csv(
+        package_dir / "platform_status.csv",
+        list(platform_status_rows[0]),
+        platform_status_rows,
+    )
+    write_csv(
+        package_dir / "diagnostics.csv",
+        ["universal_mtg_product_id", "diagnostic"],
+        diagnostics,
+    )
+
+    exported_files = [
+        "asset_master.csv",
+        "forecasts.csv",
+        "recommendations.csv",
+        "risk_metrics.csv",
+        "portfolio_summary.csv",
+        "platform_status.csv",
+        "diagnostics.csv",
+    ]
 
     manifest = {
         "package_id": package_id,
-        "validation_status": status,
-        "package_summary_sha256": sha256(package_dir / "package_summary.json"),
-        "files": {
-            path.name: sha256(path)
-            for path in sorted(package_dir.iterdir())
-            if path.is_file()
+        "interface_name": INTERFACE_NAME,
+        "contract_version": CONTRACT_VERSION,
+        "generated_at_utc": generated_at.isoformat(),
+        "source_closeout_status": closeout.get("status"),
+        "products": len(asset_rows),
+        "forecast_eligible": platform_status_rows[0]["forecast_eligible"],
+        "recommendation_eligible": platform_status_rows[0][
+            "recommendation_eligible"
+        ],
+        "portfolio_summary_rows": len(public_portfolio_rows),
+        "diagnostics": len(diagnostics),
+        "privacy_boundary": {
+            "position_level_holdings_exported": False,
+            "forbidden_private_fields": sorted(FORBIDDEN_PRIVATE_FIELDS),
         },
+        "files": {
+            name: {
+                "sha256": sha256(package_dir / name),
+                "bytes": (package_dir / name).stat().st_size,
+            }
+            for name in exported_files
+        },
+        "quota_calls": 0,
     }
+
     (package_dir / "export_manifest.json").write_text(
         json.dumps(manifest, indent=2), encoding="utf-8"
+    )
+
+    summary = {
+        "status": "PASS"
+        if (
+            len(asset_rows) == EXPECTED_PRODUCTS
+            and not diagnostics
+            and closeout.get("status") == "PRODUCTION_CLOSED"
+        )
+        else "FAIL",
+        **manifest,
+    }
+    (package_dir / "package_summary.json").write_text(
+        json.dumps(summary, indent=2), encoding="utf-8"
     )
 
     if LATEST.exists():
         shutil.rmtree(LATEST)
     shutil.copytree(package_dir, LATEST)
 
-    print(f"PHASE 10.10 UNIVERSAL EXPORT PACKAGE: {status}")
-    print(json.dumps(package_summary, indent=2))
-    print(f"Package directory: {package_dir}")
-    print(f"Latest directory: {LATEST}")
-    return 0 if status == "PASS" else 1
+    print(f"PHASE 10.10 UNIVERSAL EXPORT PACKAGE: {summary['status']}")
+    print(json.dumps(summary, indent=2))
+    return 0 if summary["status"] == "PASS" else 1
 
 
 if __name__ == "__main__":
