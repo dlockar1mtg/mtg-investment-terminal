@@ -3,12 +3,15 @@ from __future__ import annotations
 import csv
 import re
 import sqlite3
+import sys
 from pathlib import Path
 from typing import Iterable
 
-from terminal2.config import DB_FILE
-
 ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from terminal2.config import DB_FILE
 VALIDATION_ROOT = ROOT / "data/validation/phase_10/premium_universe_eligibility"
 CURRENT_SOURCE = VALIDATION_ROOT / "secret_lair_structural_candidates_2026-07-22.csv"
 DISCOVERY_OUTPUT = VALIDATION_ROOT / "secret_lair_full_catalog_discovery.csv"

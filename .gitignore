@@ -197,3 +197,12 @@ data/validation/phase_10/external_discovery/tcgcsv/tcgcsv_products_not_in_existi
 data/portfolio/
 data/validation/phase_10/ebay_matching/
 data/validation/phase_10/premium_universe_eligibility/
+
+# Generated Phase 10 operational certification outputs
+/data/validation/phase_10/collector_booster_boxes/
+/data/validation/phase_10/pre_collector_booster_boxes/
+/data/validation/phase_10/unified_mtg_closeout/
+/data/validation/phase_10/unified_mtg_intelligence/
+/data/validation/phase_10/unified_mtg_portfolio/
+/data/validation/phase_10/unified_mtg_registry/
+/data/validation/phase_10/universal_export/
