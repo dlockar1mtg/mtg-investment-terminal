@@ -59,22 +59,47 @@ def main() -> int:
         headers, rows = read_csv(path)
         all_headers.update(headers)
         checks[f"{filename}_rows"] = len(rows) == expected_rows
-        expected_sha = manifest.get("files", {}).get(filename)
+        file_record = manifest.get("files", {}).get(filename, {})
+        expected_sha = file_record.get("sha256") if isinstance(file_record, dict) else ""
         checks[f"{filename}_sha"] = expected_sha == sha256(path)
         if filename == "asset_master.csv":
             asset_ids = {row["asset_id"] for row in rows}
             checks["asset_ids_unique"] = len(asset_ids) == 1141
         elif filename in {"forecasts.csv", "recommendations.csv", "risk_metrics.csv"}:
-            checks[f"{filename}_ids_match_assets"] = {row["asset_id"] for row in rows} == asset_ids
+            checks[f"{filename}_ids_match_assets"] = {
+                row["asset_id"] for row in rows
+            } == asset_ids
 
-    checks["summary_status_pass"] = summary.get("validation_status") == "PASS"
-    checks["manifest_status_pass"] = manifest.get("validation_status") == "PASS"
-    checks["summary_product_count"] = summary.get("product_count") == 1141
-    checks["private_position_fields_excluded"] = not (FORBIDDEN_PRIVATE_FIELDS & all_headers)
-    checks["private_position_details_false"] = summary.get("private_position_details_included") is False
-    checks["portfolio_summary_only_true"] = summary.get("portfolio_summary_only") is True
-    checks["quota_calls_zero"] = summary.get("quota_calls") == 0
-    checks["package_summary_sha"] = manifest.get("package_summary_sha256") == sha256(summary_path)
+    privacy = summary.get("privacy_boundary", {})
+    manifest_privacy = manifest.get("privacy_boundary", {})
+
+    checks["summary_status_pass"] = summary.get("status") == "PASS"
+    checks["summary_product_count"] = summary.get("products") == 1141
+    checks["manifest_product_count"] = manifest.get("products") == 1141
+    checks["source_closeout_production_closed"] = (
+        summary.get("source_closeout_status") == "PRODUCTION_CLOSED"
+        and manifest.get("source_closeout_status") == "PRODUCTION_CLOSED"
+    )
+    checks["private_position_fields_excluded"] = not (
+        FORBIDDEN_PRIVATE_FIELDS & all_headers
+    )
+    checks["private_position_details_false"] = (
+        privacy.get("position_level_holdings_exported") is False
+        and manifest_privacy.get("position_level_holdings_exported") is False
+    )
+    checks["forbidden_private_fields_declared"] = set(
+        privacy.get("forbidden_private_fields", [])
+    ) == FORBIDDEN_PRIVATE_FIELDS
+    checks["portfolio_summary_only"] = (
+        summary.get("portfolio_summary_rows") == 3
+        and manifest.get("portfolio_summary_rows") == 3
+    )
+    checks["diagnostics_zero"] = (
+        summary.get("diagnostics") == 0 and manifest.get("diagnostics") == 0
+    )
+    checks["quota_calls_zero"] = (
+        summary.get("quota_calls") == 0 and manifest.get("quota_calls") == 0
+    )
 
     status = "CERTIFIED" if all(checks.values()) else "FAILED"
     report = {
