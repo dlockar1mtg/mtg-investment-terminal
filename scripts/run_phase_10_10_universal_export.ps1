@@ -6,7 +6,7 @@ Set-Location $RepoRoot
 $RegistryManifest = ".\data\validation\phase_10\unified_mtg_registry\unified_mtg_product_registry_manifest.json"
 $PortfolioManifest = ".\data\validation\phase_10\unified_mtg_portfolio\unified_mtg_portfolio_manifest.json"
 $IntelligenceManifest = ".\data\validation\phase_10\unified_mtg_intelligence\unified_mtg_intelligence_manifest.json"
-$CloseoutManifest = ".\data\validation\phase_10\unified_mtg_closeout\phase_10_9_unified_mtg_closeout_manifest.json"
+$CloseoutManifest = ".\data\validation\phase_10\unified_mtg_closeout\phase_10_9_unified_mtg_production_closeout.json"
 
 Write-Host "Checking Phase 10.9 certified export prerequisites..."
 
