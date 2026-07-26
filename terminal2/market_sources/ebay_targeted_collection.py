@@ -15,30 +15,65 @@ from terminal2.market_sources.ebay_matching import (
     MatchResult,
     OUTPUT_ROOT,
     _write_csv,
+    build_query,
     build_universe,
     match_listing,
 )
 
 
-def _target_ids(product_map: Path) -> list[str]:
+def _read_target_rows(product_map: Path) -> list[dict[str, str]]:
     with product_map.open("r", encoding="utf-8-sig", newline="") as handle:
-        rows = list(csv.DictReader(handle))
+        return list(csv.DictReader(handle))
+
+
+def _target_ids(product_map: Path) -> list[str]:
     return [
         str(row.get("tcgplayer_product_id") or "").strip()
-        for row in rows
+        for row in _read_target_rows(product_map)
         if str(row.get("tcgplayer_product_id") or "").strip()
     ]
 
 
-def select_target_products(product_map: Path, universe: Iterable[CanonicalProduct] | None = None) -> tuple[list[CanonicalProduct], list[str]]:
-    targets = _target_ids(product_map)
+def _product_from_map_row(row: dict[str, str]) -> CanonicalProduct | None:
+    product_id = str(row.get("tcgplayer_product_id") or "").strip()
+    name = str(row.get("source_product_name") or row.get("box_name") or "").strip()
+    if not product_id or not name:
+        return None
+    canonical_name = name.replace(" Display", " Collector Booster Display") if "Collector Booster" not in name and "Collector Booster" in str(row.get("box_name") or "") else name
+    if "Collector Booster" not in canonical_name:
+        canonical_name = str(row.get("box_name") or name).strip()
+    return CanonicalProduct(
+        canonical_product_id=f"TCGPLAYER-{product_id}",
+        canonical_product_name=canonical_name,
+        canonical_set_name=str(row.get("scryfall_set_code") or "").strip(),
+        product_class="COLLECTOR_BOOSTER_BOX",
+        tcgplayer_product_id=product_id,
+        release_date="",
+        ebay_query=build_query(canonical_name, "COLLECTOR_BOOSTER_BOX"),
+    )
+
+
+def select_target_products(
+    product_map: Path,
+    universe: Iterable[CanonicalProduct] | None = None,
+) -> tuple[list[CanonicalProduct], list[str]]:
+    rows = _read_target_rows(product_map)
     by_tcgplayer = {
         product.tcgplayer_product_id: product
         for product in (list(universe) if universe is not None else build_universe())
         if product.tcgplayer_product_id
     }
-    selected = [by_tcgplayer[target] for target in targets if target in by_tcgplayer]
-    missing = [target for target in targets if target not in by_tcgplayer]
+    selected: list[CanonicalProduct] = []
+    missing: list[str] = []
+    for row in rows:
+        target = str(row.get("tcgplayer_product_id") or "").strip()
+        if not target:
+            continue
+        product = by_tcgplayer.get(target) or _product_from_map_row(row)
+        if product is None:
+            missing.append(target)
+        else:
+            selected.append(product)
     return selected, missing
 
 
@@ -60,17 +95,11 @@ def run_targeted_coverage(product_map: Path, limit_per_product: int = 20) -> dic
             matches = []
             error = f"{type(exc).__name__}: {exc}"
             coverage_rows.append({
-                **asdict(product),
-                "queries_used": queries_used,
-                "results_found": 0,
-                "accepted_listing_count": 0,
-                "review_listing_count": 0,
-                "rejected_listing_count": 0,
-                "median_accepted_landed_price": "",
-                "lowest_accepted_landed_price": "",
-                "accepted_seller_count": 0,
-                "coverage_state": "SOURCE_ERROR",
-                "source_error": error,
+                **asdict(product), "queries_used": queries_used, "results_found": 0,
+                "accepted_listing_count": 0, "review_listing_count": 0,
+                "rejected_listing_count": 0, "median_accepted_landed_price": "",
+                "lowest_accepted_landed_price": "", "accepted_seller_count": 0,
+                "coverage_state": "SOURCE_ERROR", "source_error": error,
             })
             print(f"[{index}/{len(universe)}] {product.canonical_product_name}: SOURCE_ERROR")
             break
@@ -95,17 +124,12 @@ def run_targeted_coverage(product_map: Path, limit_per_product: int = 20) -> dic
         else:
             state = "NO_MATCHES"
         coverage_rows.append({
-            **asdict(product),
-            "queries_used": queries_used,
-            "results_found": len(matches),
-            "accepted_listing_count": len(accepted),
-            "review_listing_count": len(review),
+            **asdict(product), "queries_used": queries_used, "results_found": len(matches),
+            "accepted_listing_count": len(accepted), "review_listing_count": len(review),
             "rejected_listing_count": len(rejected),
             "median_accepted_landed_price": round(median(prices), 2) if prices else "",
             "lowest_accepted_landed_price": round(min(prices), 2) if prices else "",
-            "accepted_seller_count": len(sellers),
-            "coverage_state": state,
-            "source_error": error,
+            "accepted_seller_count": len(sellers), "coverage_state": state, "source_error": error,
         })
         print(
             f"[{index}/{len(universe)}] {product.canonical_product_name}: {state} "
