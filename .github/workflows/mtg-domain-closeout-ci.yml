@@ -1,0 +1,40 @@
+name: MTG Domain Closeout CI
+
+on:
+  pull_request:
+    paths:
+      - "terminal2/integration/**"
+      - "terminal2/portfolio/operations.py"
+      - "scripts/build_mtg_uip_export.py"
+      - "scripts/record_mtg_purchase.py"
+      - "tests/test_mtg_domain_closeout.py"
+      - ".github/workflows/mtg-domain-closeout-ci.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  certify-domain-closeout:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt "pytest>=8,<9"
+          python -m pip check
+      - name: Validate imports and tests
+        run: |
+          python -m compileall -q terminal2 scripts
+          python - <<'PY'
+          from terminal2.integration.uip_export import build_mtg_uip_export
+          from terminal2.portfolio.operations import record_purchase, update_carry_forward
+          print("MTG closeout imports passed")
+          PY
+          python -m pytest tests/test_mtg_domain_closeout.py -q
