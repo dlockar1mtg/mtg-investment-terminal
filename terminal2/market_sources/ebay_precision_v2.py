@@ -87,6 +87,55 @@ def _repair_retail_pack_count_false_rejection(
     )
 
 
+def _repair_missing_only_secret_lair_conflict(
+    product: base.CanonicalProduct,
+    result: base.MatchResult,
+    reasons: list[str],
+    identity_reasons: list[str],
+) -> tuple[str, float, list[str]]:
+    state = result.match_state
+    score = result.match_score
+    if product.product_class != "SEALED_SECRET_LAIR":
+        return state, score, reasons
+    if "secret_lair_variant_conflict" not in reasons:
+        return state, score, reasons
+
+    explicit_conflict = any(
+        reason.startswith("forbidden_phrase:")
+        for reason in identity_reasons
+    )
+    missing_qualifier = any(
+        reason.startswith("missing_required_phrase:")
+        for reason in identity_reasons
+    )
+    if explicit_conflict or not missing_qualifier:
+        return state, score, reasons
+
+    # The legacy strict matcher treats an omitted bundle/finish qualifier as a
+    # variant contradiction. Repair only when no independent hard-failure reason
+    # remains. Explicit sibling, finish, mixed-product, and form conflicts stay
+    # rejected.
+    uncertainty_reasons = {
+        "secret_lair_variant_conflict",
+        "insufficient_product_identity",
+        "insufficient_identity_token_coverage",
+    }
+    has_independent_hard_reason = any(
+        reason not in uncertainty_reasons
+        and not reason.startswith("missing_required_phrase:")
+        for reason in reasons
+    )
+    if has_independent_hard_reason:
+        return state, score, reasons
+
+    repaired = [reason for reason in reasons if reason != "secret_lair_variant_conflict"]
+    repaired.extend((
+        "missing_identity_qualifier_requires_review",
+        "legacy_variant_conflict_repaired_to_review",
+    ))
+    return "REVIEW", min(score if score > 0 else 0.75, 0.75), list(dict.fromkeys(repaired))
+
+
 def identity_match_listing(
     product: base.CanonicalProduct,
     item: Mapping[str, object],
@@ -115,14 +164,16 @@ def identity_match_listing(
             for reason in identity_reasons
         )
 
-        # An explicitly contradictory finish or product form is a hard failure.
-        # A missing qualifier is uncertainty: retain an existing rejection, but
-        # route an otherwise acceptable listing to manual review instead of
-        # claiming that the product is definitively wrong.
         if explicit_conflict:
             score = min(score, 0.49)
             state = "REJECTED"
         elif missing_qualifier:
+            state, score, reasons = _repair_missing_only_secret_lair_conflict(
+                product,
+                result,
+                reasons,
+                identity_reasons,
+            )
             reasons.append("missing_identity_qualifier_requires_review")
             if state == "ACCEPTED":
                 score = min(score, 0.75)
