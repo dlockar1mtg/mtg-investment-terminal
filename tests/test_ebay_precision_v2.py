@@ -78,3 +78,33 @@ def test_single_pack_remains_rejected() -> None:
     )
     assert result.match_state == "REJECTED"
     assert "single_pack_collector_product" in result.exclusion_reasons
+
+
+def test_missing_secret_lair_finish_routes_to_review() -> None:
+    result = classify(
+        "Artist Series: Example — Traditional Foil Edition",
+        "MTG Secret Lair Artist Series Example Sealed",
+        "SEALED_SECRET_LAIR",
+    )
+    assert result.match_state == "REVIEW"
+    assert "missing_required_phrase:traditional_foil" in result.exclusion_reasons
+    assert "missing_identity_qualifier_requires_review" in result.exclusion_reasons
+
+
+def test_explicit_opposite_secret_lair_finish_is_rejected() -> None:
+    result = classify(
+        "Artist Series: Example — Traditional Foil Edition",
+        "MTG Secret Lair Artist Series Example Nonfoil Sealed",
+        "SEALED_SECRET_LAIR",
+    )
+    assert result.match_state == "REJECTED"
+    assert "forbidden_phrase:non_foil" in result.exclusion_reasons
+
+
+def test_matching_secret_lair_finish_can_remain_accepted() -> None:
+    result = classify(
+        "Artist Series: Example — Traditional Foil Edition",
+        "MTG Secret Lair Artist Series Example Traditional Foil Sealed",
+        "SEALED_SECRET_LAIR",
+    )
+    assert result.match_state == "ACCEPTED"
