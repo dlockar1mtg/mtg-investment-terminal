@@ -32,6 +32,11 @@ GENERIC_IDENTITY_TERMS = {
     "booster", "box", "display", "collector", "draft", "set", "play",
 }
 
+REASON_PHRASE_ALIASES = {
+    "nonfoil": "non_foil",
+    "non foil": "non_foil",
+}
+
 
 @dataclass(frozen=True)
 class EbayProductIdentity:
@@ -50,6 +55,11 @@ def normalize(value: object) -> str:
 
 def _contains_any(value_norm: str, phrases: Iterable[str]) -> bool:
     return any(f" {phrase.strip()} " in value_norm for phrase in phrases)
+
+
+def _reason_phrase(phrase: str) -> str:
+    normalized = " ".join(phrase.split()).lower()
+    return REASON_PHRASE_ALIASES.get(normalized, normalized.replace(" ", "_"))
 
 
 def detect_finish(value: object) -> str:
@@ -147,10 +157,10 @@ def evaluate_title(identity: EbayProductIdentity, title: str) -> tuple[bool, lis
 
     for phrase in identity.required_phrases:
         if f" {phrase} " not in title_norm:
-            reasons.append(f"missing_required_phrase:{phrase.replace(' ', '_')}")
+            reasons.append(f"missing_required_phrase:{_reason_phrase(phrase)}")
     for phrase in identity.forbidden_phrases:
         if f" {phrase} " in title_norm:
-            reasons.append(f"forbidden_phrase:{phrase.replace(' ', '_')}")
+            reasons.append(f"forbidden_phrase:{_reason_phrase(phrase)}")
 
     present = [token for token in identity.required_tokens if f" {token} " in title_norm]
     coverage = len(present) / len(identity.required_tokens) if identity.required_tokens else 1.0
