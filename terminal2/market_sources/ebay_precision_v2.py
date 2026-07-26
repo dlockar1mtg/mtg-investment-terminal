@@ -13,6 +13,9 @@ from terminal2.market_sources.ebay_product_identity import evaluate_title, parse
 _RETAIL_PACK_COUNT = re.compile(
     r"\b(?:booster\s+(?:box|display)|display\s+box)\b.*\b(?:4|12|24|30|36)\s+packs?\b"
 )
+_EXPLICIT_PACK_PLUS_BOX_LOT = re.compile(
+    r"\b(?:lot\s+of\s+)?\d+\s+packs?\s+(?:plus|and|with)\s+(?:the\s+)?box\b"
+)
 _INCOMPLETE_MARKERS = (
     " lot of ",
     " partial ",
@@ -32,9 +35,25 @@ def _is_complete_retail_pack_count(product: base.CanonicalProduct, title: str) -
     if "BOOSTER" not in product.product_class.upper():
         return False
     title_norm = base._norm(title)
+    if _EXPLICIT_PACK_PLUS_BOX_LOT.search(title_norm):
+        return False
     if any(marker in title_norm for marker in _INCOMPLETE_MARKERS):
         return False
     return bool(_RETAIL_PACK_COUNT.search(title_norm))
+
+
+def _enforce_explicit_pack_plus_box_lot(result: base.MatchResult) -> base.MatchResult:
+    title_norm = base._norm(result.title)
+    if not _EXPLICIT_PACK_PLUS_BOX_LOT.search(title_norm):
+        return result
+    reasons = [value for value in result.exclusion_reasons.split("|") if value]
+    reasons.append("incomplete_pack_box_lot")
+    return replace(
+        result,
+        match_score=min(result.match_score, 0.49),
+        match_state="REJECTED",
+        exclusion_reasons="|".join(dict.fromkeys(reasons)),
+    )
 
 
 def _repair_retail_pack_count_false_rejection(
@@ -75,6 +94,7 @@ def identity_match_listing(
     observed: str,
 ) -> base.MatchResult:
     result = strict_match_listing(product, item, run_id, observed)
+    result = _enforce_explicit_pack_plus_box_lot(result)
     result = _repair_retail_pack_count_false_rejection(product, item, run_id, observed, result)
 
     identity = parse_product_identity(product.canonical_product_name, product.product_class)
