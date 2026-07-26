@@ -7,6 +7,13 @@ from collections import Counter
 from pathlib import Path
 
 
+INFORMATIONAL_REASON_PREFIXES = (
+    "identity_family:",
+    "identity_form:",
+    "identity_finish:",
+)
+
+
 def read_csv(path: Path) -> list[dict[str, str]]:
     with path.open("r", encoding="utf-8-sig", newline="") as handle:
         return list(csv.DictReader(handle))
@@ -18,6 +25,10 @@ def write_csv(path: Path, rows: list[dict[str, object]], fields: list[str]) -> N
         writer = csv.DictWriter(handle, fieldnames=fields, extrasaction="ignore")
         writer.writeheader()
         writer.writerows(rows)
+
+
+def _is_actionable_reason(reason: str) -> bool:
+    return not reason.startswith(INFORMATIONAL_REASON_PREFIXES)
 
 
 def run(replay_root: Path) -> dict[str, object]:
@@ -32,6 +43,7 @@ def run(replay_root: Path) -> dict[str, object]:
     ]
 
     reason_counts: Counter[str] = Counter()
+    informational_counts: Counter[str] = Counter()
     transition_counts: Counter[str] = Counter()
     class_counts: Counter[str] = Counter()
     pack_count_candidates: list[dict[str, object]] = []
@@ -41,7 +53,8 @@ def run(replay_root: Path) -> dict[str, object]:
         transition_counts[transition] += 1
         class_counts[row.get("product_class", "UNKNOWN")] += 1
         reasons = [value for value in row.get("exclusion_reasons", "").split("|") if value]
-        reason_counts.update(reasons)
+        reason_counts.update(reason for reason in reasons if _is_actionable_reason(reason))
+        informational_counts.update(reason for reason in reasons if not _is_actionable_reason(reason))
 
         title = row.get("title", "")
         if (
@@ -63,6 +76,10 @@ def run(replay_root: Path) -> dict[str, object]:
         {"reason": reason, "count": count}
         for reason, count in reason_counts.most_common()
     ]
+    informational_rows = [
+        {"reason": reason, "count": count}
+        for reason, count in informational_counts.most_common()
+    ]
     transition_rows = [
         {"transition": transition, "count": count}
         for transition, count in transition_counts.most_common()
@@ -73,6 +90,7 @@ def run(replay_root: Path) -> dict[str, object]:
     ]
 
     write_csv(replay_root / "ebay_downgrade_reason_counts.csv", reason_rows, ["reason", "count"])
+    write_csv(replay_root / "ebay_downgrade_informational_tags.csv", informational_rows, ["reason", "count"])
     write_csv(replay_root / "ebay_downgrade_transition_counts.csv", transition_rows, ["transition", "count"])
     write_csv(replay_root / "ebay_downgrade_product_class_counts.csv", class_rows, ["product_class", "count"])
     write_csv(
@@ -96,7 +114,8 @@ def run(replay_root: Path) -> dict[str, object]:
         "pack_count_candidate_count": len(pack_count_candidates),
         "transition_counts": dict(transition_counts),
         "product_class_counts": dict(class_counts),
-        "top_reasons": reason_rows[:25],
+        "top_actionable_reasons": reason_rows[:25],
+        "top_informational_tags": informational_rows[:25],
     }
     (replay_root / "ebay_offline_downgrade_audit_summary.json").write_text(
         json.dumps(summary, indent=2) + "\n",
