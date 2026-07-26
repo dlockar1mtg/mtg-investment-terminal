@@ -16,67 +16,76 @@ def _write(path: Path, rows: list[dict[str, object]]) -> None:
         writer.writerows(rows)
 
 
-def test_full_product_map_classifies_ready_and_incomplete_rows(tmp_path: Path) -> None:
-    model = tmp_path / "model.csv"
-    _write(model, [
+def test_governed_map_combines_boosters_and_secret_lairs(tmp_path: Path) -> None:
+    products = tmp_path / "investment_products.csv"
+    secret_lairs = tmp_path / "secret_lairs.csv"
+    review = tmp_path / "review.csv"
+    _write(products, [
         {
-            "box_name_master": "Ready Box",
-            "approved_product_name": "Ready Box Display",
-            "approved_tcgplayer_product_id": "123",
-            "tcgcsv_category_id_master": "1",
-            "tcgcsv_group_id_master": "99",
-            "approval_status": "approved",
-            "investment_product_id": "IP-1",
-            "investment_product_type": "Collector Booster Display",
-            "notes": "",
+            "investment_product_id": "IP-1", "box_name": "Collector Box",
+            "approved_product_name": "Collector Box", "approved_tcgplayer_product_id": "100",
+            "tcgcsv_category_id": "1", "tcgcsv_group_id": "10",
+            "investment_product_type": "Collector Booster Display", "approval_status": "approved", "notes": "",
         },
         {
-            "box_name_master": "Missing Group",
-            "approved_product_name": "Missing Group Display",
-            "approved_tcgplayer_product_id": "456",
-            "tcgcsv_category_id_master": "1",
-            "tcgcsv_group_id_master": "",
-            "approval_status": "approved",
-            "investment_product_id": "IP-2",
-            "investment_product_type": "Collector Booster Display",
-            "notes": "",
+            "investment_product_id": "IP-2", "box_name": "Ignored Bundle",
+            "approved_product_name": "Ignored Bundle", "approved_tcgplayer_product_id": "101",
+            "tcgcsv_category_id": "1", "tcgcsv_group_id": "11",
+            "investment_product_type": "Bundle", "approval_status": "approved", "notes": "",
+        },
+        {
+            "investment_product_id": "OLD-SL", "box_name": "Mapped Secret Lair",
+            "approved_product_name": "Mapped Secret Lair", "approved_tcgplayer_product_id": "200",
+            "tcgcsv_category_id": "3", "tcgcsv_group_id": "20",
+            "investment_product_type": "Secret Lair Drop", "approval_status": "approved", "notes": "",
         },
     ])
+    _write(secret_lairs, [
+        {"secret_lair_id": "SL-1", "product_name": "Mapped Secret Lair", "tcgplayer_product_id": "200", "notes": ""},
+        {"secret_lair_id": "SL-2", "product_name": "eBay Only Secret Lair", "tcgplayer_product_id": "201", "notes": ""},
+    ])
+    _write(review, [{"secret_lair_id": "SL-R", "product_name": "Review"}])
+
     output = tmp_path / "map.csv"
     summary = tmp_path / "summary.json"
-    payload = build_full_product_map(model, output, summary)
+    payload = build_full_product_map(products, secret_lairs, review, output, summary)
+
     assert payload["status"] == "PASS"
-    assert payload["ready_product_count"] == 1
-    assert payload["status_counts"]["MISSING_TCGCSV_GROUP"] == 1
+    assert payload["booster_display_count"] == 1
+    assert payload["secret_lair_count"] == 2
+    assert payload["total_marketplace_products"] == 3
+    assert payload["ebay_ready_count"] == 3
+    assert payload["tcgcsv_ready_count"] == 2
+    assert payload["ebay_only_count"] == 1
+    assert payload["review_excluded_count"] == 1
+
     rows = list(csv.DictReader(output.open(encoding="utf-8")))
-    assert rows[0]["mapping_status"] == "READY"
-    assert rows[1]["mapping_status"] == "MISSING_TCGCSV_GROUP"
-    assert json.loads(summary.read_text(encoding="utf-8"))["unique_product_count"] == 2
-
-
-def test_duplicate_product_identity_is_written_once(tmp_path: Path) -> None:
-    model = tmp_path / "model.csv"
-    row = {
-        "box_name_master": "Box",
-        "approved_product_name": "Box Display",
-        "approved_tcgplayer_product_id": "123",
-        "tcgcsv_category_id_master": "1",
-        "tcgcsv_group_id_master": "99",
-        "approval_status": "approved",
-        "investment_product_id": "IP-1",
-        "investment_product_type": "Collector Booster Display",
-        "notes": "",
+    assert {row["investment_product_type"] for row in rows} == {
+        "Collector Booster Display", "Secret Lair Sealed Product"
     }
-    _write(model, [row, dict(row)])
-    payload = build_full_product_map(model, tmp_path / "map.csv", tmp_path / "summary.json")
-    assert payload["unique_product_count"] == 1
-    assert payload["status_counts"]["DUPLICATE_IDENTITY"] == 1
+    ebay_only = next(row for row in rows if row["tcgplayer_product_id"] == "201")
+    assert ebay_only["mapping_status"] == "READY"
+    assert ebay_only["collection_lane"] == "EBAY_ONLY"
+    assert json.loads(summary.read_text(encoding="utf-8"))["total_marketplace_products"] == 3
+
+
+def test_duplicate_identity_across_sources_is_not_duplicated(tmp_path: Path) -> None:
+    products = tmp_path / "products.csv"
+    secret_lairs = tmp_path / "secret_lairs.csv"
+    _write(products, [{
+        "investment_product_id": "IP-1", "box_name": "Box", "approved_product_name": "Box",
+        "approved_tcgplayer_product_id": "123", "tcgcsv_category_id": "1", "tcgcsv_group_id": "99",
+        "approval_status": "approved", "investment_product_type": "Collector Booster Display", "notes": "",
+    }])
+    _write(secret_lairs, [{"secret_lair_id": "SL-1", "product_name": "Duplicate", "tcgplayer_product_id": "123", "notes": ""}])
+    payload = build_full_product_map(products, secret_lairs, None, tmp_path / "map.csv", tmp_path / "summary.json")
+    assert payload["total_marketplace_products"] == 1
 
 
 def test_batch_ranges_cover_entire_universe_without_overlap() -> None:
-    ranges = _batch_ranges(1001, 50)
-    assert len(ranges) == 21
+    ranges = _batch_ranges(1341, 50)
+    assert len(ranges) == 27
     assert ranges[0] == (0, 50)
-    assert ranges[-1] == (1000, 1001)
+    assert ranges[-1] == (1300, 1341)
     covered = [index for start, end in ranges for index in range(start, end)]
-    assert covered == list(range(1001))
+    assert covered == list(range(1341))
