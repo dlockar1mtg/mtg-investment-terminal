@@ -40,8 +40,8 @@ def _read(path: Path) -> list[dict[str, str]]:
         return list(csv.DictReader(handle))
 
 
-def build_full_product_map(model_input: Path, output: Path, summary_output: Path) -> dict[str, Any]:
-    rows = _read(model_input)
+def build_full_product_map(source_input: Path, output: Path, summary_output: Path) -> dict[str, Any]:
+    rows = _read(source_input)
     mapped: list[dict[str, str]] = []
     seen: set[str] = set()
     statuses: Counter[str] = Counter()
@@ -50,11 +50,11 @@ def build_full_product_map(model_input: Path, output: Path, summary_output: Path
         product_id = _first(row, "approved_tcgplayer_product_id", "tcgplayer_product_id")
         category_id = _first(row, "tcgcsv_category_id_master", "tcgcsv_category_id")
         group_id = _first(row, "tcgcsv_group_id_master", "tcgcsv_group_id")
-        name = _first(row, "box_name_master", "box_name", "official_product_name")
-        source_name = _first(row, "approved_product_name", "official_product_name", "source_product_name", "box_name")
-        approval = _clean(row.get("approval_status")).lower()
-        product_type = _clean(row.get("investment_product_type"))
-        investment_id = _clean(row.get("investment_product_id"))
+        name = _first(row, "box_name_master", "box_name", "canonical_product_name", "official_product_name", "approved_product_name")
+        source_name = _first(row, "approved_product_name", "canonical_product_name", "official_product_name", "source_product_name", "box_name")
+        approval = _first(row, "approval_status", "investment_approval_status").lower()
+        product_type = _first(row, "investment_product_type", "canonical_product_type", "candidate_product_type")
+        investment_id = _first(row, "investment_product_id", "existing_investment_product_id", "canonical_product_id")
 
         if not name:
             status = "MISSING_PRODUCT_NAME"
@@ -69,12 +69,12 @@ def build_full_product_map(model_input: Path, output: Path, summary_output: Path
         else:
             status = "READY"
 
-        statuses[status] += 1
         identity = product_id or investment_id or name.lower()
         if identity in seen:
             statuses["DUPLICATE_IDENTITY"] += 1
             continue
         seen.add(identity)
+        statuses[status] += 1
 
         mapped.append({
             "box_name": name,
@@ -83,9 +83,9 @@ def build_full_product_map(model_input: Path, output: Path, summary_output: Path
             "tcgcsv_group_id": group_id,
             "scryfall_set_code": "",
             "source_product_name": source_name,
-            "source_url": "product_master_model_input.csv",
+            "source_url": source_input.name,
             "verified": "yes" if status == "READY" else "no",
-            "notes": _clean(row.get("notes")),
+            "notes": _first(row, "notes", "existing_registry_notes", "identity_review_reason"),
             "mapping_status": status,
             "investment_product_id": investment_id,
             "investment_product_type": product_type,
@@ -98,14 +98,15 @@ def build_full_product_map(model_input: Path, output: Path, summary_output: Path
         writer.writeheader()
         writer.writerows(mapped)
 
+    ready_count = sum(1 for row in mapped if row["mapping_status"] == "READY")
     payload = {
         "status": "PASS" if mapped else "INCOMPLETE",
-        "source_model": str(model_input.resolve()),
+        "source_input": str(source_input.resolve()),
         "output": str(output.resolve()),
         "source_row_count": len(rows),
         "unique_product_count": len(mapped),
-        "ready_product_count": statuses.get("READY", 0),
-        "not_ready_product_count": len(mapped) - statuses.get("READY", 0),
+        "ready_product_count": ready_count,
+        "not_ready_product_count": len(mapped) - ready_count,
         "status_counts": dict(sorted(statuses.items())),
         "reason_codes": ["FULL_MARKETPLACE_PRODUCT_MAP_BUILT"] if mapped else ["NO_PRODUCTS_AVAILABLE"],
     }
@@ -116,11 +117,11 @@ def build_full_product_map(model_input: Path, output: Path, summary_output: Path
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Build a governed full-universe marketplace product map")
-    parser.add_argument("--model-input", type=Path, required=True)
+    parser.add_argument("--source-input", "--model-input", dest="source_input", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--summary-output", type=Path, required=True)
     args = parser.parse_args()
-    payload = build_full_product_map(args.model_input, args.output, args.summary_output)
+    payload = build_full_product_map(args.source_input, args.output, args.summary_output)
     print(json.dumps(payload, indent=2))
     return 0 if payload["status"] == "PASS" else 2
 
