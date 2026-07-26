@@ -38,11 +38,29 @@ def test_product_map_targets_exact_tcgplayer_ids_in_map_order(tmp_path: Path) ->
     assert missing == []
 
 
-def test_missing_target_is_reported_fail_closed(tmp_path: Path) -> None:
+def test_missing_universe_product_is_constructed_from_governed_map(tmp_path: Path) -> None:
+    product_map = tmp_path / "product_map.csv"
+    product_map.write_text(
+        "box_name,tcgplayer_product_id,tcgcsv_category_id,tcgcsv_group_id,scryfall_set_code,source_product_name\n"
+        "Final Fantasy Collector Booster Box,618893,1,24219,fin,Final Fantasy Collector Booster Display\n",
+        encoding="utf-8",
+    )
+
+    selected, missing = select_target_products(product_map, [_product("1", "Other")])
+
+    assert missing == []
+    assert len(selected) == 1
+    assert selected[0].tcgplayer_product_id == "618893"
+    assert selected[0].canonical_product_id == "TCGPLAYER-618893"
+    assert selected[0].canonical_product_name == "Final Fantasy Collector Booster Display"
+    assert selected[0].product_class == "COLLECTOR_BOOSTER_BOX"
+
+
+def test_invalid_map_target_without_name_is_reported(tmp_path: Path) -> None:
     product_map = tmp_path / "product_map.csv"
     product_map.write_text(
         "box_name,tcgplayer_product_id,tcgcsv_category_id,tcgcsv_group_id\n"
-        "Unknown,999999,1,1\n",
+        ",999999,1,1\n",
         encoding="utf-8",
     )
 
