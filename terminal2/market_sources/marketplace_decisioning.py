@@ -7,37 +7,30 @@ from pathlib import Path
 from statistics import median
 from typing import Any, Iterable
 
+POLICY_VERSION = "10.14.0"
+SIGNAL_PRIORITY = {"STRONG_BUY": 5, "BUY": 4, "WATCH": 3, "HOLD": 2, "AVOID": 1}
+POLICY = {
+    "STRONG_BUY": {"action": "ACCUMULATE_PRIORITY", "min_pct": 35.0, "max_pct": 50.0},
+    "BUY": {"action": "ACCUMULATE", "min_pct": 15.0, "max_pct": 30.0},
+    "WATCH": {"action": "WAIT_FOR_CONFIRMATION", "min_pct": 0.0, "max_pct": 0.0},
+    "HOLD": {"action": "MAINTAIN_ONLY", "min_pct": 0.0, "max_pct": 0.0},
+    "AVOID": {"action": "EXCLUDE_NEW_CAPITAL", "min_pct": 0.0, "max_pct": 0.0},
+}
+
 CONSOLIDATED_FIELDS = (
-    "tcgplayer_product_id",
-    "product_name",
-    "consolidated_price",
-    "source_count",
-    "source_names",
-    "minimum_source_price",
-    "maximum_source_price",
-    "cross_source_spread_pct",
-    "price_quality_state",
+    "tcgplayer_product_id", "product_name", "consolidated_price", "source_count",
+    "source_names", "minimum_source_price", "maximum_source_price",
+    "cross_source_spread_pct", "price_quality_state",
 )
 
 DECISION_FIELDS = (
-    "rank",
-    "tcgplayer_product_id",
-    "product_name",
-    "consolidated_market_price",
-    "forecast_anchor",
-    "forecast_anchor_type",
-    "expected_upside_pct",
-    "deal_score",
-    "signal",
-    "source_count",
-    "source_names",
-    "cross_source_spread_pct",
-    "data_quality_score",
-    "liquidity_score",
-    "reprint_risk",
-    "prob_loss",
-    "prob_double",
-    "decision_reason_codes",
+    "rank", "policy_version", "tcgplayer_product_id", "product_name",
+    "consolidated_market_price", "forecast_anchor", "forecast_anchor_type",
+    "expected_upside_pct", "deal_score", "base_signal", "signal",
+    "allocation_action", "suggested_new_capital_min_pct", "suggested_new_capital_max_pct",
+    "source_count", "source_names", "cross_source_spread_pct", "data_quality_score",
+    "liquidity_score", "reprint_risk", "prob_loss", "prob_double",
+    "policy_override_applied", "decision_reason_codes",
 )
 
 
@@ -63,9 +56,7 @@ def consolidate_certified_rows(rows: Iterable[dict[str, Any]]) -> list[dict[str,
     for row in rows:
         product_id = str(row.get("tcgplayer_product_id") or "").strip()
         price = _number(row.get("certified_price"))
-        if not product_id or not price or price <= 0:
-            continue
-        if not _truthy(row.get("eligible_for_decisioning")):
+        if not product_id or not price or price <= 0 or not _truthy(row.get("eligible_for_decisioning")):
             continue
         grouped[product_id].append(dict(row))
 
@@ -75,9 +66,11 @@ def consolidate_certified_rows(rows: Iterable[dict[str, Any]]) -> list[dict[str,
         prices = [price for price in prices if price > 0]
         if not prices:
             continue
-        sources = sorted({str(row.get("source_name") or "").strip().upper() for row in product_rows if str(row.get("source_name") or "").strip()})
-        low = min(prices)
-        high = max(prices)
+        sources = sorted({
+            str(row.get("source_name") or "").strip().upper()
+            for row in product_rows if str(row.get("source_name") or "").strip()
+        })
+        low, high = min(prices), max(prices)
         spread = ((high - low) / low * 100.0) if low > 0 else 0.0
         names = [str(row.get("product_name") or "").strip() for row in product_rows if str(row.get("product_name") or "").strip()]
         consolidated.append({
@@ -107,14 +100,69 @@ def _forecast_anchor(row: dict[str, Any]) -> tuple[float | None, str]:
     return None, ""
 
 
+def _base_signal(upside: float) -> str:
+    if upside >= 0.25:
+        return "STRONG_BUY"
+    if upside >= 0.15:
+        return "BUY"
+    if upside >= 0.05:
+        return "WATCH"
+    if upside >= -0.10:
+        return "HOLD"
+    return "AVOID"
+
+
+def _cap_signal(signal: str, maximum: str) -> str:
+    return signal if SIGNAL_PRIORITY[signal] <= SIGNAL_PRIORITY[maximum] else maximum
+
+
+def _policy_signal(
+    base_signal: str,
+    *,
+    source_count: int,
+    spread: float,
+    quality: float,
+    liquidity: float,
+    reprint_risk: float,
+    prob_loss: float | None,
+) -> tuple[str, list[str]]:
+    signal = base_signal
+    overrides: list[str] = []
+    if source_count < 2:
+        capped = _cap_signal(signal, "WATCH")
+        if capped != signal:
+            overrides.append("POLICY_SINGLE_SOURCE_CAP_WATCH")
+        signal = capped
+    if spread >= 25.0:
+        capped = _cap_signal(signal, "WATCH")
+        if capped != signal:
+            overrides.append("POLICY_CROSS_SOURCE_DIVERGENCE_CAP_WATCH")
+        signal = capped
+    if prob_loss is not None and prob_loss >= 0.35:
+        capped = _cap_signal(signal, "WATCH")
+        if capped != signal:
+            overrides.append("POLICY_LOSS_RISK_CAP_WATCH")
+        signal = capped
+    if reprint_risk >= 75.0:
+        capped = _cap_signal(signal, "WATCH")
+        if capped != signal:
+            overrides.append("POLICY_REPRINT_RISK_CAP_WATCH")
+        signal = capped
+    if quality < 50.0 or liquidity < 40.0:
+        capped = _cap_signal(signal, "HOLD")
+        if capped != signal:
+            overrides.append("POLICY_DATA_OR_LIQUIDITY_CAP_HOLD")
+        signal = capped
+    return signal, overrides
+
+
 def build_decisions(
     consolidated_rows: Iterable[dict[str, Any]],
     model_rows: Iterable[dict[str, Any]],
 ) -> tuple[list[dict[str, Any]], dict[str, Any]]:
     price_by_id = {
         str(row.get("tcgplayer_product_id") or "").strip(): dict(row)
-        for row in consolidated_rows
-        if str(row.get("tcgplayer_product_id") or "").strip()
+        for row in consolidated_rows if str(row.get("tcgplayer_product_id") or "").strip()
     }
     model_by_id: dict[str, dict[str, Any]] = {}
     for row in model_rows:
@@ -155,36 +203,37 @@ def build_decisions(
         spread_penalty = max(0.0, spread - 10.0) * 0.20
         loss_penalty = (prob_loss or 0.0) * 20.0
         score = (
-            upside * 70.0
-            + quality * 0.10
-            + liquidity * 0.10
-            - reprint_risk * 0.08
-            + source_bonus
-            - spread_penalty
-            - loss_penalty
+            upside * 70.0 + quality * 0.10 + liquidity * 0.10
+            - reprint_risk * 0.08 + source_bonus - spread_penalty - loss_penalty
         )
 
-        if upside >= 0.25:
-            signal = "STRONG_BUY"
-        elif upside >= 0.15:
-            signal = "BUY"
-        elif upside >= 0.05:
-            signal = "WATCH"
-        elif upside >= -0.10:
-            signal = "HOLD"
-        else:
-            signal = "AVOID"
-
-        reasons = [f"PRICE_{price_row.get('price_quality_state', 'CERTIFIED')}", f"ANCHOR_{anchor_type}"]
+        base_signal = _base_signal(upside)
+        signal, overrides = _policy_signal(
+            base_signal,
+            source_count=source_count,
+            spread=spread,
+            quality=quality,
+            liquidity=liquidity,
+            reprint_risk=reprint_risk,
+            prob_loss=prob_loss,
+        )
+        policy = POLICY[signal]
+        reasons = [
+            f"PRICE_{price_row.get('price_quality_state', 'CERTIFIED')}",
+            f"ANCHOR_{anchor_type}",
+            f"BASE_SIGNAL_{base_signal}",
+        ]
         if source_count >= 2:
             reasons.append("CROSS_SOURCE_CONFIRMED")
         if spread > 15:
             reasons.append("CROSS_SOURCE_SPREAD_ELEVATED")
         if prob_loss is not None and prob_loss >= 0.35:
             reasons.append("MONTE_CARLO_LOSS_RISK_ELEVATED")
+        reasons.extend(overrides)
 
         decisions.append({
             "rank": 0,
+            "policy_version": POLICY_VERSION,
             "tcgplayer_product_id": product_id,
             "product_name": model.get("box_name") or model.get("box_name_master") or price_row.get("product_name") or product_id,
             "consolidated_market_price": round(current, 2),
@@ -192,7 +241,11 @@ def build_decisions(
             "forecast_anchor_type": anchor_type,
             "expected_upside_pct": round(upside * 100.0, 2),
             "deal_score": round(score, 2),
+            "base_signal": base_signal,
             "signal": signal,
+            "allocation_action": policy["action"],
+            "suggested_new_capital_min_pct": policy["min_pct"],
+            "suggested_new_capital_max_pct": policy["max_pct"],
             "source_count": source_count,
             "source_names": price_row.get("source_names") or "",
             "cross_source_spread_pct": round(spread, 2),
@@ -201,24 +254,32 @@ def build_decisions(
             "reprint_risk": round(reprint_risk, 2),
             "prob_loss": "" if prob_loss is None else round(prob_loss, 4),
             "prob_double": "" if prob_double is None else round(prob_double, 4),
+            "policy_override_applied": bool(overrides),
             "decision_reason_codes": "|".join(reasons),
         })
 
-    decisions.sort(key=lambda row: (-float(row["deal_score"]), str(row["product_name"])))
+    decisions.sort(key=lambda row: (
+        -SIGNAL_PRIORITY[str(row["signal"])],
+        -float(row["deal_score"]),
+        str(row["product_name"]),
+    ))
     for index, row in enumerate(decisions, start=1):
         row["rank"] = index
 
+    signal_counts = {
+        signal: sum(row["signal"] == signal for row in decisions)
+        for signal in SIGNAL_PRIORITY if any(row["signal"] == signal for row in decisions)
+    }
     summary = {
         "status": "PASS" if decisions else "INCOMPLETE",
+        "policy_version": POLICY_VERSION,
         "certified_products": len(price_by_id),
         "decision_count": len(decisions),
         "unmatched_certified_product_ids": sorted(unmatched_prices),
         "missing_forecast_product_ids": sorted(missing_forecasts),
-        "signal_counts": {
-            signal: sum(row["signal"] == signal for row in decisions)
-            for signal in ("STRONG_BUY", "BUY", "WATCH", "HOLD", "AVOID")
-            if any(row["signal"] == signal for row in decisions)
-        },
+        "policy_override_count": sum(bool(row["policy_override_applied"]) for row in decisions),
+        "deployable_decision_count": sum(row["signal"] in {"STRONG_BUY", "BUY"} for row in decisions),
+        "signal_counts": signal_counts,
     }
     return decisions, summary
 
@@ -251,7 +312,7 @@ def write_outputs(
         "decision_rankings_output": str(decisions_output.resolve()),
         "certified_observations_input": str(certified_path.resolve()),
         "model_input": str(model_path.resolve()),
-        "reason_codes": ["CERTIFIED_MARKETPLACE_DECISIONING_COMPLETED"] if decisions else ["CERTIFIED_MARKETPLACE_DECISIONS_NOT_AVAILABLE"],
+        "reason_codes": ["CERTIFIED_MARKETPLACE_DECISION_POLICY_COMPLETED"] if decisions else ["CERTIFIED_MARKETPLACE_DECISIONS_NOT_AVAILABLE"],
     })
     summary_output.parent.mkdir(parents=True, exist_ok=True)
     summary_output.write_text(json.dumps(summary, indent=2) + "\n", encoding="utf-8")
