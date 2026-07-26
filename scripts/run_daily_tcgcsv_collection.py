@@ -1,11 +1,12 @@
 """Governed command-line wrapper for daily TCGCSV price collection.
 
-Dry-run mode validates inputs and emits evidence without making network calls.
-Live mode delegates to collectors.tcgcsv_collector.collect_tcgcsv_prices.
+Dry-run mode validates mapping completeness and emits evidence without making
+network calls. Live mode delegates to collectors.tcgcsv_collector.
 """
 from __future__ import annotations
 
 import argparse
+import csv
 import json
 import sys
 from pathlib import Path
@@ -13,6 +14,13 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
+
+REQUIRED_COLUMNS = (
+    "box_name",
+    "tcgplayer_product_id",
+    "tcgcsv_category_id",
+    "tcgcsv_group_id",
+)
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -26,6 +34,23 @@ def build_parser() -> argparse.ArgumentParser:
 def _publish(path: Path, payload: dict[str, object]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
+
+
+def _inspect_product_map(path: Path) -> tuple[int, int, list[str]]:
+    with path.open("r", encoding="utf-8-sig", newline="") as handle:
+        reader = csv.DictReader(handle)
+        columns = list(reader.fieldnames or [])
+        missing_columns = [name for name in REQUIRED_COLUMNS if name not in columns]
+        if missing_columns:
+            return 0, 0, missing_columns
+
+        total_rows = 0
+        complete_rows = 0
+        for row in reader:
+            total_rows += 1
+            if all(str(row.get(name) or "").strip() for name in REQUIRED_COLUMNS):
+                complete_rows += 1
+        return total_rows, complete_rows, []
 
 
 def main() -> int:
@@ -44,6 +69,29 @@ def main() -> int:
         _publish(args.summary_output, payload)
         print(json.dumps(payload, indent=2))
         return 1
+
+    total_rows, complete_rows, missing_columns = _inspect_product_map(product_map)
+    payload.update(
+        {
+            "product_map_rows": total_rows,
+            "complete_mapping_rows": complete_rows,
+            "missing_required_columns": missing_columns,
+        }
+    )
+
+    if missing_columns:
+        payload["status"] = "FAILED"
+        payload["reason_codes"] = ["TCGCSV_PRODUCT_MAP_SCHEMA_INVALID"]
+        _publish(args.summary_output, payload)
+        print(json.dumps(payload, indent=2))
+        return 1
+
+    if complete_rows == 0:
+        payload["status"] = "INCOMPLETE"
+        payload["reason_codes"] = ["TCGCSV_NO_COMPLETE_PRODUCT_MAPPINGS"]
+        _publish(args.summary_output, payload)
+        print(json.dumps(payload, indent=2))
+        return 2
 
     if args.dry_run:
         payload["reason_codes"] = ["TCGCSV_DRY_RUN_VALIDATED"]
