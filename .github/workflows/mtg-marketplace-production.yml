@@ -1,0 +1,96 @@
+name: MTG Marketplace Production
+
+on:
+  workflow_dispatch:
+    inputs:
+      live_execution:
+        description: "Run live eBay and TCGCSV collection"
+        required: true
+        default: false
+        type: boolean
+      ebay_limit:
+        description: "Maximum eBay listings per mapped product"
+        required: true
+        default: "10"
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: mtg-marketplace-production
+  cancel-in-progress: false
+
+jobs:
+  marketplace-production:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      MTG_LIVE_EXECUTION: ${{ inputs.live_execution }}
+      EBAY_CLIENT_ID: ${{ secrets.EBAY_CLIENT_ID }}
+      EBAY_CLIENT_SECRET: ${{ secrets.EBAY_CLIENT_SECRET }}
+      EBAY_MARKETPLACE_ID: EBAY_US
+
+    steps:
+      - name: Checkout MTG repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Validate live credentials
+        if: ${{ inputs.live_execution }}
+        shell: bash
+        run: |
+          test -n "$EBAY_CLIENT_ID" || { echo "EBAY_CLIENT_ID secret is missing"; exit 1; }
+          test -n "$EBAY_CLIENT_SECRET" || { echo "EBAY_CLIENT_SECRET secret is missing"; exit 1; }
+
+      - name: Run marketplace production tests
+        run: |
+          python -m pytest \
+            tests/test_daily_ebay_collection_entrypoint.py \
+            tests/test_daily_tcgcsv_collection_entrypoint.py \
+            tests/test_tcgcsv_group_id_reconciliation.py \
+            tests/test_mtg_marketplace_production.py \
+            tests/test_marketplace_quality_certification.py \
+            tests/test_ebay_targeted_collection.py \
+            -q
+
+      - name: Run unified MTG marketplace cycle
+        shell: bash
+        run: |
+          LIVE_FLAG=""
+          if [[ "${{ inputs.live_execution }}" == "true" ]]; then
+            LIVE_FLAG="--live"
+          fi
+          python scripts/run_mtg_marketplace_production.py \
+            $LIVE_FLAG \
+            --product-map data/reference/product_map.csv \
+            --model-input data/product_master/product_master_model_input.csv \
+            --ebay-limit "${{ inputs.ebay_limit }}" \
+            --output data/operations/mtg_marketplace/latest.json
+
+      - name: Certify marketplace observations
+        if: ${{ inputs.live_execution }}
+        run: |
+          python scripts/certify_mtg_marketplace_observations.py \
+            --input data/operations/mtg_marketplace/normalized_marketplace_observations.csv \
+            --output data/operations/mtg_marketplace/certified_marketplace_observations.csv \
+            --summary-output data/operations/mtg_marketplace/marketplace_quality_certification.json
+
+      - name: Upload production evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mtg-marketplace-production-${{ github.run_id }}
+          path: data/operations/
+          if-no-files-found: warn
+          retention-days: 30
