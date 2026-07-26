@@ -30,7 +30,7 @@ def test_cross_source_divergence_quarantines_ebay_observation() -> None:
             "source_name": "TCGCSV",
             "tcgplayer_product_id": "1",
             "market_price": "100",
-            "median_price": "100",
+            "median_price": "125",
             "confidence": "100",
         },
         {
@@ -51,7 +51,7 @@ def test_cross_source_divergence_quarantines_ebay_observation() -> None:
     assert summary["quarantined_observation_count"] == 1
 
 
-def test_tcgcsv_market_observation_is_certified() -> None:
+def test_tcgcsv_market_observation_is_certified_at_market_price() -> None:
     rows, summary = certify_rows([{
         "source_name": "TCGCSV",
         "tcgplayer_product_id": "1",
@@ -59,6 +59,7 @@ def test_tcgcsv_market_observation_is_certified() -> None:
         "median_price": "526.00",
         "confidence": "100",
     }])
+    assert rows[0]["certified_price"] == 432.65
     assert rows[0]["quality_state"] == "CERTIFIED"
     assert rows[0]["eligible_for_decisioning"] == "true"
     assert summary["status"] == "PASS"
