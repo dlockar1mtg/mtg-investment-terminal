@@ -17,12 +17,14 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from terminal2.market_sources.ebay_matching import run_coverage
+from terminal2.market_sources.ebay_targeted_collection import run_targeted_coverage
 
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Run governed daily eBay collection")
     parser.add_argument("--limit-per-product", type=int, default=20)
     parser.add_argument("--max-products", type=int)
+    parser.add_argument("--product-map", type=Path)
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--summary-output", type=Path)
     return parser
@@ -36,6 +38,8 @@ def main(argv: list[str] | None = None) -> int:
         parser.error("--limit-per-product must be between 1 and 200")
     if args.max_products is not None and args.max_products < 1:
         parser.error("--max-products must be positive")
+    if args.product_map is not None and not args.product_map.is_file():
+        parser.error("--product-map must reference an existing CSV file")
 
     if args.dry_run:
         summary = {
@@ -43,14 +47,22 @@ def main(argv: list[str] | None = None) -> int:
             "live_api_called": False,
             "limit_per_product": args.limit_per_product,
             "max_products": args.max_products,
+            "product_map": str(args.product_map.resolve()) if args.product_map else "",
+            "selection_mode": "PRODUCT_MAP_TARGETED" if args.product_map else "UNIVERSE_PREFIX",
         }
     else:
         progress = io.StringIO()
         with redirect_stdout(progress):
-            coverage = run_coverage(
-                limit_per_product=args.limit_per_product,
-                max_products=args.max_products,
-            )
+            if args.product_map:
+                coverage = run_targeted_coverage(
+                    product_map=args.product_map.resolve(),
+                    limit_per_product=args.limit_per_product,
+                )
+            else:
+                coverage = run_coverage(
+                    limit_per_product=args.limit_per_product,
+                    max_products=args.max_products,
+                )
         progress_lines = [line for line in progress.getvalue().splitlines() if line.strip()]
         summary = {
             "status": "PASS",
