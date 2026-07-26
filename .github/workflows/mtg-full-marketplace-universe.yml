@@ -1,0 +1,138 @@
+name: MTG Full Marketplace Universe
+
+on:
+  workflow_dispatch:
+    inputs:
+      live_execution:
+        description: "Run live eBay and TCGCSV collection"
+        required: true
+        default: false
+        type: boolean
+      batch_size:
+        description: "Products per batch"
+        required: true
+        default: "50"
+        type: string
+      start_batch:
+        description: "Zero-based batch index to start or resume from"
+        required: true
+        default: "0"
+        type: string
+      max_batches:
+        description: "Maximum batches this run; 0 means all remaining"
+        required: true
+        default: "1"
+        type: string
+      ebay_limit:
+        description: "Maximum eBay listings requested per product"
+        required: true
+        default: "10"
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: mtg-full-marketplace-universe
+  cancel-in-progress: false
+
+jobs:
+  full-universe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    env:
+      LIVE_EXECUTION: ${{ inputs.live_execution }}
+      MTG_LIVE_EXECUTION: ${{ inputs.live_execution }}
+      BATCH_SIZE: ${{ inputs.batch_size }}
+      START_BATCH: ${{ inputs.start_batch }}
+      MAX_BATCHES: ${{ inputs.max_batches }}
+      EBAY_LIMIT: ${{ inputs.ebay_limit }}
+      EBAY_CLIENT_ID: ${{ secrets.EBAY_CLIENT_ID }}
+      EBAY_CLIENT_SECRET: ${{ secrets.EBAY_CLIENT_SECRET }}
+      EBAY_MARKETPLACE_ID: EBAY_US
+
+    steps:
+      - name: Checkout MTG repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt "pytest>=8,<9"
+          python -m pip check
+
+      - name: Validate live credentials
+        if: ${{ inputs.live_execution == true }}
+        run: |
+          test -n "$EBAY_CLIENT_ID" || { echo "EBAY_CLIENT_ID secret is missing"; exit 1; }
+          test -n "$EBAY_CLIENT_SECRET" || { echo "EBAY_CLIENT_SECRET secret is missing"; exit 1; }
+
+      - name: Run full-universe certification tests
+        run: |
+          python -m pytest \
+            tests/test_full_marketplace_universe.py \
+            tests/test_mtg_marketplace_production.py \
+            tests/test_daily_ebay_collection_entrypoint.py \
+            tests/test_daily_tcgcsv_collection_entrypoint.py \
+            -q
+
+      - name: Build governed full product map
+        run: |
+          python scripts/build_full_marketplace_product_map.py \
+            --model-input data/product_master/product_master_model_input.csv \
+            --output data/operations/mtg_full_marketplace/full_product_map.csv \
+            --summary-output data/operations/mtg_full_marketplace/full_product_map_summary.json
+
+      - name: Run resumable full-universe batches
+        shell: bash
+        run: |
+          LIVE_FLAG=""
+          if [[ "$LIVE_EXECUTION" == "true" ]]; then
+            LIVE_FLAG="--live"
+          fi
+          python scripts/run_full_marketplace_universe.py \
+            $LIVE_FLAG \
+            --product-map data/operations/mtg_full_marketplace/full_product_map.csv \
+            --model-input data/product_master/product_master_model_input.csv \
+            --output-root data/operations/mtg_full_marketplace \
+            --batch-size "$BATCH_SIZE" \
+            --start-batch "$START_BATCH" \
+            --max-batches "$MAX_BATCHES" \
+            --ebay-limit "$EBAY_LIMIT"
+
+      - name: Summarize coverage
+        if: always()
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          for name in ("full_product_map_summary.json", "latest.json", "checkpoint.json"):
+              path = Path("data/operations/mtg_full_marketplace") / name
+              if path.is_file():
+                  payload = json.loads(path.read_text(encoding="utf-8"))
+                  print(f"\n=== {name} ===")
+                  for key in (
+                      "status", "source_row_count", "unique_product_count", "ready_product_count",
+                      "not_ready_product_count", "total_ready_products", "batch_size", "total_batches",
+                      "completed_batch_count", "next_batch", "normalized_observation_count", "failed_batches",
+                  ):
+                      if key in payload:
+                          print(f"{key}: {payload[key]}")
+          PY
+
+      - name: Upload full-universe evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mtg-full-marketplace-universe-${{ github.run_id }}
+          path: |
+            data/operations/mtg_full_marketplace/
+            data/validation/phase_10/ebay_matching/
+          if-no-files-found: error
+          retention-days: 30
