@@ -44,6 +44,7 @@ def test_live_mode_delegates_to_existing_coverage(monkeypatch, tmp_path: Path) -
             limit_per_product=limit_per_product,
             max_products=max_products,
         )
+        print("[1/2] Example product: LIMITED_MATCH_COVERAGE")
         return {"run_id": "EBAYTEST", "products": 2, "credentials_printed": False}
 
     monkeypatch.setattr(entrypoint, "run_coverage", fake_run_coverage)
@@ -64,3 +65,4 @@ def test_live_mode_delegates_to_existing_coverage(monkeypatch, tmp_path: Path) -
     assert payload["status"] == "PASS"
     assert payload["live_api_called"] is True
     assert payload["credentials_printed"] is False
+    assert payload["progress_log"] == ["[1/2] Example product: LIMITED_MATCH_COVERAGE"]
