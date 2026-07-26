@@ -28,6 +28,12 @@ DEFAULT_MAP = ROOT / "data" / "reference" / "product_map.csv"
 DEFAULT_MODEL = ROOT / "data" / "product_master" / "product_master_model_input.csv"
 DEFAULT_OUTPUT = ROOT / "data" / "operations" / "mtg_marketplace" / "latest.json"
 DEFAULT_RECONCILIATION_ROOT = ROOT / "data"
+EBAY_OUTPUT_ROOT = ROOT / "data" / "validation" / "phase_10" / "ebay_matching"
+NORMALIZED_FIELDS = (
+    "observed_at_utc", "source_name", "product_name", "tcgplayer_product_id",
+    "market_price", "low_price", "median_price", "listing_count", "seller_count",
+    "confidence", "source_status", "source_run_id",
+)
 
 
 def _run(command: list[str]) -> dict[str, Any]:
@@ -47,6 +53,13 @@ def _number(value: object) -> float | None:
         return float(text) if text else None
     except ValueError:
         return None
+
+
+def _read_csv(path: Path) -> list[dict[str, str]]:
+    if not path.is_file():
+        return []
+    with path.open("r", encoding="utf-8-sig", newline="") as handle:
+        return list(csv.DictReader(handle))
 
 
 def _deal_rankings(model_path: Path, limit: int = 25) -> list[dict[str, Any]]:
@@ -80,17 +93,10 @@ def _deal_rankings(model_path: Path, limit: int = 25) -> list[dict[str, Any]]:
     return rows[:limit]
 
 
-def _materialize_reconciled_map(
-    product_map: Path,
-    search_root: Path,
-    output_path: Path,
-) -> tuple[Path, dict[str, Any]]:
+def _materialize_reconciled_map(product_map: Path, search_root: Path, output_path: Path) -> tuple[Path, dict[str, Any]]:
     """Create a runtime map from unique local evidence without mutating reference data."""
     if not product_map.is_file() or not search_root.is_dir():
-        return product_map, {
-            "status": "NOT_RUN",
-            "reason_codes": ["TCGCSV_RECONCILIATION_INPUT_NOT_AVAILABLE"],
-        }
+        return product_map, {"status": "NOT_RUN", "reason_codes": ["TCGCSV_RECONCILIATION_INPUT_NOT_AVAILABLE"]}
 
     report = reconcile(product_map, search_root)
     if report.get("status") != "PASS":
@@ -132,6 +138,54 @@ def _materialize_reconciled_map(
     return output_path, report
 
 
+def _normalize_live_observations(tcgcsv_path: Path, ebay_summary: dict[str, Any], output_path: Path) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+    for row in _read_csv(tcgcsv_path):
+        rows.append({
+            "observed_at_utc": row.get("collected_at") or row.get("source_timestamp") or "",
+            "source_name": "TCGCSV",
+            "product_name": row.get("box_name") or "",
+            "tcgplayer_product_id": row.get("tcgplayer_product_id") or "",
+            "market_price": row.get("market_price") or "",
+            "low_price": row.get("low_price") or "",
+            "median_price": row.get("mid_price") or "",
+            "listing_count": "",
+            "seller_count": "",
+            "confidence": row.get("price_data_quality") or "",
+            "source_status": "OBSERVED",
+            "source_run_id": "",
+        })
+
+    observed = str(ebay_summary.get("observed_at_utc") or "")
+    date = observed[:10] if len(observed) >= 10 else datetime.now(timezone.utc).date().isoformat()
+    coverage_path = EBAY_OUTPUT_ROOT / f"ebay_product_coverage_{date}.csv"
+    for row in _read_csv(coverage_path):
+        accepted = int(_number(row.get("accepted_listing_count")) or 0)
+        state = row.get("coverage_state") or ""
+        confidence = 90 if state == "STRONG_MATCH_COVERAGE" else 70 if state == "LIMITED_MATCH_COVERAGE" else 40 if state == "AMBIGUOUS_RESULTS" else 0
+        rows.append({
+            "observed_at_utc": observed,
+            "source_name": "EBAY",
+            "product_name": row.get("canonical_product_name") or "",
+            "tcgplayer_product_id": row.get("tcgplayer_product_id") or "",
+            "market_price": row.get("median_accepted_landed_price") or "",
+            "low_price": row.get("lowest_accepted_landed_price") or "",
+            "median_price": row.get("median_accepted_landed_price") or "",
+            "listing_count": accepted,
+            "seller_count": row.get("accepted_seller_count") or "",
+            "confidence": confidence,
+            "source_status": state,
+            "source_run_id": ebay_summary.get("run_id") or "",
+        })
+
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    with output_path.open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=NORMALIZED_FIELDS, extrasaction="ignore")
+        writer.writeheader()
+        writer.writerows(rows)
+    return rows
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Run the unified MTG marketplace production cycle")
     parser.add_argument("--live", action="store_true")
@@ -159,6 +213,8 @@ def main() -> int:
         args.reconciliation_search_root.resolve(),
         output.parent / "runtime" / "tcgcsv_product_map.csv",
     )
+    tcgcsv_observations = lane_root / "tcgcsv_price_observations.csv"
+    normalized_output = output.parent / "normalized_marketplace_observations.csv"
 
     ebay_command = [
         sys.executable, str(EBAY_SCRIPT),
@@ -170,6 +226,7 @@ def main() -> int:
         sys.executable, str(TCGCSV_SCRIPT),
         "--product-map", str(runtime_map.resolve()),
         "--summary-output", str(lane_root / "tcgcsv.json"),
+        "--observations-output", str(tcgcsv_observations),
     ]
     if not live:
         ebay_command.append("--dry-run")
@@ -177,6 +234,7 @@ def main() -> int:
 
     ebay = _run(ebay_command)
     tcgcsv = _run(tcgcsv_command)
+    normalized = _normalize_live_observations(tcgcsv_observations, ebay, normalized_output) if live else []
     deals = _deal_rankings(args.model_input.resolve())
 
     lane_failures = [name for name, lane in (("EBAY", ebay), ("TCGCSV", tcgcsv)) if int(lane.get("exit_code", 1)) != 0]
@@ -187,12 +245,14 @@ def main() -> int:
         reasons.append("TCGCSV_RECONCILIATION_NOT_READY")
     if lane_failures:
         reasons.extend(f"{name}_LANE_NOT_READY" for name in lane_failures)
+    if live and not normalized:
+        reasons.append("NORMALIZED_MARKETPLACE_OBSERVATIONS_NOT_AVAILABLE")
     if not deals:
         reasons.append("DEAL_RANKINGS_NOT_AVAILABLE")
 
     if blocked_live:
         status = "SAFE_HOLD"
-    elif lane_failures:
+    elif lane_failures or (live and not normalized):
         status = "INCOMPLETE"
     else:
         status = "PASS" if live else "DRY_RUN_PASS"
@@ -208,6 +268,8 @@ def main() -> int:
         "runtime_product_map": str(runtime_map.resolve()),
         "reconciliation": reconciliation,
         "lanes": {"ebay": ebay, "tcgcsv": tcgcsv},
+        "normalized_observations_output": str(normalized_output.resolve()),
+        "normalized_observation_count": len(normalized),
         "deal_rankings": deals,
         "deal_ranking_count": len(deals),
         "reason_codes": reasons or ["MTG_MARKETPLACE_CYCLE_COMPLETED"],
