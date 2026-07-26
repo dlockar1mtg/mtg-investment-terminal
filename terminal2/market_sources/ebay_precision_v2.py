@@ -106,14 +106,26 @@ def identity_match_listing(
     state = result.match_state
 
     if not identity_ok:
-        hard_conflict = any(
+        explicit_conflict = any(
             reason.startswith("forbidden_phrase:")
-            or reason.startswith("missing_required_phrase:")
             for reason in identity_reasons
         )
-        if hard_conflict:
+        missing_qualifier = any(
+            reason.startswith("missing_required_phrase:")
+            for reason in identity_reasons
+        )
+
+        # An explicitly contradictory finish or product form is a hard failure.
+        # A missing qualifier is uncertainty: retain an existing rejection, but
+        # route an otherwise acceptable listing to manual review instead of
+        # claiming that the product is definitively wrong.
+        if explicit_conflict:
             score = min(score, 0.49)
             state = "REJECTED"
+        elif missing_qualifier and state == "ACCEPTED":
+            reasons.append("missing_identity_qualifier_requires_review")
+            score = min(score, 0.75)
+            state = "REVIEW"
         elif state == "ACCEPTED":
             score = min(score, 0.75)
             state = "REVIEW"
