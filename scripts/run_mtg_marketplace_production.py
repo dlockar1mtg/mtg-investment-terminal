@@ -1,0 +1,151 @@
+"""Unified MTG marketplace production orchestrator.
+
+Runs governed eBay and TCGCSV lanes, creates normalized operational evidence,
+and generates a lightweight deal ranking from the current model input. Live
+execution requires both --live and MTG_LIVE_EXECUTION=true.
+"""
+from __future__ import annotations
+
+import argparse
+import csv
+import json
+import os
+import subprocess
+import sys
+from datetime import datetime, timezone
+from pathlib import Path
+from typing import Any
+
+ROOT = Path(__file__).resolve().parents[1]
+EBAY_SCRIPT = ROOT / "scripts" / "run_daily_ebay_collection.py"
+TCGCSV_SCRIPT = ROOT / "scripts" / "run_daily_tcgcsv_collection.py"
+DEFAULT_MAP = ROOT / "data" / "reference" / "product_map.csv"
+DEFAULT_MODEL = ROOT / "data" / "product_master" / "product_master_model_input.csv"
+DEFAULT_OUTPUT = ROOT / "data" / "operations" / "mtg_marketplace" / "latest.json"
+
+
+def _run(command: list[str]) -> dict[str, Any]:
+    result = subprocess.run(command, cwd=ROOT, capture_output=True, text=True, check=False)
+    payload: dict[str, Any]
+    try:
+        payload = json.loads(result.stdout)
+    except json.JSONDecodeError:
+        payload = {"status": "FAILED", "stdout": result.stdout.strip(), "stderr": result.stderr.strip()}
+    payload["exit_code"] = result.returncode
+    return payload
+
+
+def _number(value: object) -> float | None:
+    try:
+        text = str(value or "").replace("$", "").replace(",", "").strip()
+        return float(text) if text else None
+    except ValueError:
+        return None
+
+
+def _deal_rankings(model_path: Path, limit: int = 25) -> list[dict[str, Any]]:
+    if not model_path.is_file():
+        return []
+    rows: list[dict[str, Any]] = []
+    with model_path.open("r", encoding="utf-8-sig", newline="") as handle:
+        for row in csv.DictReader(handle):
+            current = _number(row.get("current_price"))
+            fair = _number(row.get("fair_value_estimate"))
+            forecast = _number(row.get("mc_median")) or _number(row.get("mc_expected_value"))
+            quality = _number(row.get("data_quality_score")) or 0.0
+            liquidity = _number(row.get("liquidity_score")) or 0.0
+            risk = _number(row.get("reprint_risk")) or 0.0
+            if not current or current <= 0:
+                continue
+            anchor = fair or forecast
+            if not anchor or anchor <= 0:
+                continue
+            discount = (anchor - current) / current
+            score = discount * 70.0 + quality * 0.15 + liquidity * 0.15 - risk * 0.10
+            rows.append({
+                "box_name": row.get("box_name") or row.get("box_name_master") or "",
+                "current_price": round(current, 2),
+                "valuation_anchor": round(anchor, 2),
+                "discount_to_value_pct": round(discount * 100.0, 2),
+                "deal_score": round(score, 2),
+                "signal": "BUY" if discount >= 0.15 else "WATCH" if discount >= 0.05 else "HOLD",
+            })
+    rows.sort(key=lambda item: (-float(item["deal_score"]), str(item["box_name"])))
+    return rows[:limit]
+
+
+def build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(description="Run the unified MTG marketplace production cycle")
+    parser.add_argument("--live", action="store_true")
+    parser.add_argument("--product-map", type=Path, default=DEFAULT_MAP)
+    parser.add_argument("--model-input", type=Path, default=DEFAULT_MODEL)
+    parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
+    parser.add_argument("--max-ebay-products", type=int, default=3)
+    parser.add_argument("--ebay-limit", type=int, default=20)
+    return parser
+
+
+def main() -> int:
+    args = build_parser().parse_args()
+    live_env = os.getenv("MTG_LIVE_EXECUTION", "false").strip().lower() == "true"
+    live = bool(args.live and live_env)
+    blocked_live = bool(args.live and not live_env)
+    output = args.output.resolve()
+    output.parent.mkdir(parents=True, exist_ok=True)
+    lane_root = output.parent / "lanes"
+    lane_root.mkdir(parents=True, exist_ok=True)
+
+    ebay_command = [
+        sys.executable, str(EBAY_SCRIPT),
+        "--limit-per-product", str(args.ebay_limit),
+        "--max-products", str(args.max_ebay_products),
+        "--summary-output", str(lane_root / "ebay.json"),
+    ]
+    tcgcsv_command = [
+        sys.executable, str(TCGCSV_SCRIPT),
+        "--product-map", str(args.product_map.resolve()),
+        "--summary-output", str(lane_root / "tcgcsv.json"),
+    ]
+    if not live:
+        ebay_command.append("--dry-run")
+        tcgcsv_command.append("--dry-run")
+
+    ebay = _run(ebay_command)
+    tcgcsv = _run(tcgcsv_command)
+    deals = _deal_rankings(args.model_input.resolve())
+
+    lane_failures = [name for name, lane in (("EBAY", ebay), ("TCGCSV", tcgcsv)) if int(lane.get("exit_code", 1)) != 0]
+    reasons: list[str] = []
+    if blocked_live:
+        reasons.append("MTG_LIVE_EXECUTION_ENV_DISABLED")
+    if lane_failures:
+        reasons.extend(f"{name}_LANE_NOT_READY" for name in lane_failures)
+    if not deals:
+        reasons.append("DEAL_RANKINGS_NOT_AVAILABLE")
+
+    if blocked_live:
+        status = "SAFE_HOLD"
+    elif lane_failures:
+        status = "INCOMPLETE"
+    else:
+        status = "PASS" if live else "DRY_RUN_PASS"
+
+    payload = {
+        "status": status,
+        "mode": "LIVE" if live else "NON_LIVE",
+        "generated_at_utc": datetime.now(timezone.utc).isoformat(),
+        "live_execution_requested": bool(args.live),
+        "live_execution_enabled": live_env,
+        "live_api_called": bool(live),
+        "lanes": {"ebay": ebay, "tcgcsv": tcgcsv},
+        "deal_rankings": deals,
+        "deal_ranking_count": len(deals),
+        "reason_codes": reasons or ["MTG_MARKETPLACE_CYCLE_COMPLETED"],
+    }
+    output.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
+    print(json.dumps(payload, indent=2))
+    return 0 if status in {"PASS", "DRY_RUN_PASS"} else 2
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
