@@ -77,13 +77,17 @@ def _split_collection_maps(product_map: Path, runtime_root: Path) -> tuple[Path,
         rows = list(reader)
 
     ebay_rows = [row for row in rows if str(row.get("mapping_status") or "READY").upper() == "READY"]
+    # Keep all non-eBay-only rows in the TCGCSV source map, including rows whose
+    # group/category IDs can be recovered by reconciliation. Completeness is
+    # enforced by the TCGCSV lane after the reconciled runtime map is written.
     tcgcsv_rows = [
         row for row in ebay_rows
         if str(row.get("collection_lane") or "EBAY_AND_TCGCSV").upper() != "EBAY_ONLY"
-        and str(row.get("tcgcsv_category_id") or "").strip()
-        and str(row.get("tcgcsv_group_id") or "").strip()
     ]
-    ebay_only_rows = [row for row in ebay_rows if row not in tcgcsv_rows]
+    ebay_only_rows = [
+        row for row in ebay_rows
+        if str(row.get("collection_lane") or "EBAY_AND_TCGCSV").upper() == "EBAY_ONLY"
+    ]
 
     ebay_map = runtime_root / "ebay_product_map.csv"
     tcgcsv_map = runtime_root / "tcgcsv_product_map_source.csv"
