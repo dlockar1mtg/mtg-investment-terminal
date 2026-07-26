@@ -13,6 +13,11 @@ on:
         required: true
         default: "3"
         type: string
+      ebay_limit:
+        description: "Maximum eBay listings per product"
+        required: true
+        default: "10"
+        type: string
 
 permissions:
   contents: read
@@ -46,6 +51,13 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      - name: Validate live credentials
+        if: ${{ inputs.live_execution }}
+        shell: bash
+        run: |
+          test -n "$EBAY_CLIENT_ID" || { echo "EBAY_CLIENT_ID secret is missing"; exit 1; }
+          test -n "$EBAY_CLIENT_SECRET" || { echo "EBAY_CLIENT_SECRET secret is missing"; exit 1; }
+
       - name: Run marketplace production tests
         run: |
           python -m pytest \
@@ -53,15 +65,8 @@ jobs:
             tests/test_daily_tcgcsv_collection_entrypoint.py \
             tests/test_tcgcsv_group_id_reconciliation.py \
             tests/test_mtg_marketplace_production.py \
+            tests/test_marketplace_quality_certification.py \
             -q
-
-      - name: Reconcile TCGCSV group IDs
-        continue-on-error: true
-        run: |
-          python scripts/reconcile_tcgcsv_group_ids.py \
-            --product-map data/reference/product_map.csv \
-            --search-root data \
-            --output data/operations/tcgcsv/group_id_reconciliation.json
 
       - name: Run unified MTG marketplace cycle
         shell: bash
@@ -75,7 +80,16 @@ jobs:
             --product-map data/reference/product_map.csv \
             --model-input data/product_master/product_master_model_input.csv \
             --max-ebay-products "${{ inputs.max_ebay_products }}" \
+            --ebay-limit "${{ inputs.ebay_limit }}" \
             --output data/operations/mtg_marketplace/latest.json
+
+      - name: Certify marketplace observations
+        if: ${{ inputs.live_execution }}
+        run: |
+          python scripts/certify_mtg_marketplace_observations.py \
+            --input data/operations/mtg_marketplace/normalized_marketplace_observations.csv \
+            --output data/operations/mtg_marketplace/certified_marketplace_observations.csv \
+            --summary-output data/operations/mtg_marketplace/marketplace_quality_certification.json
 
       - name: Upload production evidence
         if: always()
