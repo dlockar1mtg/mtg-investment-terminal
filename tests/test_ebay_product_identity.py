@@ -48,6 +48,36 @@ def test_booster_display_rejects_single_pack() -> None:
     assert "forbidden_phrase:single_pack" in reasons
 
 
+def test_booster_display_allows_legitimate_retail_pack_count() -> None:
+    identity = parse_product_identity(
+        "Modern Horizons 3 Collector Booster Display",
+        "COLLECTOR_BOOSTER_BOX",
+    )
+    ok, reasons, coverage = evaluate_title(
+        identity,
+        "MTG Modern Horizons 3 Collector Booster Box 12 Packs English Factory Sealed",
+    )
+    assert ok is True
+    assert reasons == []
+    assert coverage == 1.0
+
+
+def test_numbered_product_identity_rejects_sibling_set() -> None:
+    identity = parse_product_identity(
+        "Modern Horizons 2 Collector Booster Display",
+        "COLLECTOR_BOOSTER_BOX",
+    )
+    assert "2" in identity.required_tokens
+
+    ok, reasons, coverage = evaluate_title(
+        identity,
+        "MTG Modern Horizons 3 Collector Booster Box Factory Sealed",
+    )
+    assert ok is False
+    assert coverage < 1.0
+    assert "insufficient_identity_token_coverage" in reasons
+
+
 def test_commander_deck_requires_deck_form() -> None:
     identity = parse_product_identity(
         "Commander Deck: Goblin Storm — Standard Edition",
