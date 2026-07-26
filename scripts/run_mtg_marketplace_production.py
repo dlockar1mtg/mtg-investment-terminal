@@ -1,7 +1,7 @@
 """Unified MTG marketplace production orchestrator.
 
-Runs governed eBay and TCGCSV lanes against the same product map, creates
-normalized operational evidence, and generates a lightweight deal ranking.
+Runs governed eBay and TCGCSV lanes against source-appropriate product maps,
+creates normalized operational evidence, and generates lightweight deal rankings.
 Live execution requires both --live and MTG_LIVE_EXECUTION=true.
 """
 from __future__ import annotations
@@ -59,6 +59,53 @@ def _read_csv(path: Path) -> list[dict[str, str]]:
         return []
     with path.open("r", encoding="utf-8-sig", newline="") as handle:
         return list(csv.DictReader(handle))
+
+
+def _write_csv(path: Path, rows: list[dict[str, str]], fieldnames: list[str]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=fieldnames, extrasaction="ignore")
+        writer.writeheader()
+        writer.writerows(rows)
+
+
+def _split_collection_maps(product_map: Path, runtime_root: Path) -> tuple[Path, Path, dict[str, Any]]:
+    """Materialize source-specific maps without mutating the governed input map."""
+    with product_map.open("r", encoding="utf-8-sig", newline="") as handle:
+        reader = csv.DictReader(handle)
+        fieldnames = list(reader.fieldnames or [])
+        rows = list(reader)
+
+    ebay_rows = [row for row in rows if str(row.get("mapping_status") or "READY").upper() == "READY"]
+    tcgcsv_rows = [
+        row for row in ebay_rows
+        if str(row.get("collection_lane") or "EBAY_AND_TCGCSV").upper() != "EBAY_ONLY"
+        and str(row.get("tcgcsv_category_id") or "").strip()
+        and str(row.get("tcgcsv_group_id") or "").strip()
+    ]
+    ebay_only_rows = [row for row in ebay_rows if row not in tcgcsv_rows]
+
+    ebay_map = runtime_root / "ebay_product_map.csv"
+    tcgcsv_map = runtime_root / "tcgcsv_product_map_source.csv"
+    _write_csv(ebay_map, ebay_rows, fieldnames)
+    _write_csv(tcgcsv_map, tcgcsv_rows, fieldnames)
+
+    routing = {
+        "status": "PASS" if ebay_rows else "INCOMPLETE",
+        "input_product_count": len(rows),
+        "ebay_product_count": len(ebay_rows),
+        "tcgcsv_product_count": len(tcgcsv_rows),
+        "ebay_only_product_count": len(ebay_only_rows),
+        "ebay_only_tcgplayer_product_ids": sorted(
+            str(row.get("tcgplayer_product_id") or "").strip()
+            for row in ebay_only_rows
+            if str(row.get("tcgplayer_product_id") or "").strip()
+        ),
+        "ebay_product_map": str(ebay_map.resolve()),
+        "tcgcsv_source_product_map": str(tcgcsv_map.resolve()),
+        "reason_codes": ["SOURCE_SPECIFIC_MARKETPLACE_MAPS_BUILT"] if ebay_rows else ["NO_EBAY_READY_PRODUCTS"],
+    }
+    return ebay_map, tcgcsv_map, routing
 
 
 def _deal_rankings(model_path: Path, limit: int = 25) -> list[dict[str, Any]]:
@@ -202,11 +249,13 @@ def main() -> int:
     output.parent.mkdir(parents=True, exist_ok=True)
     lane_root = output.parent / "lanes"
     lane_root.mkdir(parents=True, exist_ok=True)
+    runtime_root = output.parent / "runtime"
 
-    runtime_map, reconciliation = _materialize_reconciled_map(
-        args.product_map.resolve(),
+    ebay_map, tcgcsv_source_map, routing = _split_collection_maps(args.product_map.resolve(), runtime_root)
+    runtime_tcgcsv_map, reconciliation = _materialize_reconciled_map(
+        tcgcsv_source_map,
         args.reconciliation_search_root.resolve(),
-        output.parent / "runtime" / "tcgcsv_product_map.csv",
+        runtime_root / "tcgcsv_product_map.csv",
     )
     tcgcsv_observations = lane_root / "tcgcsv_price_observations.csv"
     normalized_output = output.parent / "normalized_marketplace_observations.csv"
@@ -217,7 +266,7 @@ def main() -> int:
         "--limit-per-product",
         str(args.ebay_limit),
         "--product-map",
-        str(runtime_map.resolve()),
+        str(ebay_map.resolve()),
         "--summary-output",
         str(lane_root / "ebay.json"),
     ]
@@ -225,7 +274,7 @@ def main() -> int:
         sys.executable,
         str(TCGCSV_SCRIPT),
         "--product-map",
-        str(runtime_map.resolve()),
+        str(runtime_tcgcsv_map.resolve()),
         "--summary-output",
         str(lane_root / "tcgcsv.json"),
         "--observations-output",
@@ -244,6 +293,8 @@ def main() -> int:
     reasons: list[str] = []
     if blocked_live:
         reasons.append("MTG_LIVE_EXECUTION_ENV_DISABLED")
+    if routing.get("status") != "PASS":
+        reasons.append("SOURCE_ROUTING_NOT_READY")
     if reconciliation.get("status") not in {"PASS", "NOT_RUN"}:
         reasons.append("TCGCSV_RECONCILIATION_NOT_READY")
     if ebay.get("missing_tcgplayer_product_ids"):
@@ -257,7 +308,7 @@ def main() -> int:
 
     if blocked_live:
         status = "SAFE_HOLD"
-    elif lane_failures or (live and not normalized):
+    elif routing.get("status") != "PASS" or lane_failures or (live and not normalized):
         status = "INCOMPLETE"
     else:
         status = "PASS" if live else "DRY_RUN_PASS"
@@ -270,7 +321,9 @@ def main() -> int:
         "live_execution_enabled": live_env,
         "live_api_called": bool(live),
         "reference_product_map": str(args.product_map.resolve()),
-        "runtime_product_map": str(runtime_map.resolve()),
+        "ebay_product_map": str(ebay_map.resolve()),
+        "runtime_product_map": str(runtime_tcgcsv_map.resolve()),
+        "source_routing": routing,
         "ebay_selection_mode": ebay.get("selection_mode", ""),
         "reconciliation": reconciliation,
         "lanes": {"ebay": ebay, "tcgcsv": tcgcsv},
