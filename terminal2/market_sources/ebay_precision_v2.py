@@ -122,10 +122,11 @@ def identity_match_listing(
         if explicit_conflict:
             score = min(score, 0.49)
             state = "REJECTED"
-        elif missing_qualifier and state == "ACCEPTED":
+        elif missing_qualifier:
             reasons.append("missing_identity_qualifier_requires_review")
-            score = min(score, 0.75)
-            state = "REVIEW"
+            if state == "ACCEPTED":
+                score = min(score, 0.75)
+                state = "REVIEW"
         elif state == "ACCEPTED":
             score = min(score, 0.75)
             state = "REVIEW"
