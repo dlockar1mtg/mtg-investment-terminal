@@ -1,11 +1,71 @@
 from __future__ import annotations
 
+import re
 from dataclasses import replace
 from typing import Mapping
 
 from terminal2.market_sources import ebay_matching as base
+from terminal2.market_sources import ebay_precision as precision
 from terminal2.market_sources.ebay_precision import strict_match_listing
 from terminal2.market_sources.ebay_product_identity import evaluate_title, parse_product_identity
+
+
+_RETAIL_PACK_COUNT = re.compile(
+    r"\b(?:booster\s+(?:box|display)|display\s+box)\b.*\b(?:4|12|24|30|36)\s+packs?\b"
+)
+_INCOMPLETE_MARKERS = (
+    " lot of ",
+    " partial ",
+    " incomplete ",
+    " packs missing ",
+    " missing packs ",
+    " single pack ",
+    " loose pack ",
+    " one 15 card pack ",
+    " 1 pack ",
+    " omega box ",
+    " omega booster box ",
+)
+
+
+def _is_complete_retail_pack_count(product: base.CanonicalProduct, title: str) -> bool:
+    if "BOOSTER" not in product.product_class.upper():
+        return False
+    title_norm = base._norm(title)
+    if any(marker in title_norm for marker in _INCOMPLETE_MARKERS):
+        return False
+    return bool(_RETAIL_PACK_COUNT.search(title_norm))
+
+
+def _repair_retail_pack_count_false_rejection(
+    product: base.CanonicalProduct,
+    item: Mapping[str, object],
+    run_id: str,
+    observed: str,
+    result: base.MatchResult,
+) -> base.MatchResult:
+    reasons = [value for value in result.exclusion_reasons.split("|") if value]
+    if "incomplete_pack_box_lot" not in reasons:
+        return result
+    if not _is_complete_retail_pack_count(product, result.title):
+        return result
+
+    repaired_reasons = [value for value in reasons if value != "incomplete_pack_box_lot"]
+    baseline = precision.ORIGINAL_MATCH_LISTING(product, item, run_id, observed)
+    baseline_reasons = [value for value in baseline.exclusion_reasons.split("|") if value]
+
+    # Restore the baseline classification only when the false incomplete-lot
+    # reason was the strict layer's sole additional hard rejection.
+    strict_only_reasons = [value for value in repaired_reasons if value not in baseline_reasons]
+    if strict_only_reasons:
+        return replace(result, exclusion_reasons="|".join(dict.fromkeys(repaired_reasons)))
+
+    return replace(
+        result,
+        match_score=baseline.match_score,
+        match_state=baseline.match_state,
+        exclusion_reasons="|".join(dict.fromkeys(baseline_reasons)),
+    )
 
 
 def identity_match_listing(
@@ -15,6 +75,8 @@ def identity_match_listing(
     observed: str,
 ) -> base.MatchResult:
     result = strict_match_listing(product, item, run_id, observed)
+    result = _repair_retail_pack_count_false_rejection(product, item, run_id, observed, result)
+
     identity = parse_product_identity(product.canonical_product_name, product.product_class)
     identity_ok, identity_reasons, coverage = evaluate_title(identity, result.title)
 
