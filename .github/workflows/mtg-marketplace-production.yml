@@ -14,8 +14,10 @@ on:
       - "tests/test_marketplace_quality_certification.py"
       - "tests/test_ebay_targeted_collection.py"
       - "tests/test_marketplace_decisioning.py"
+      - "tests/test_marketplace_purchase_planning.py"
       - "data/reference/product_map.csv"
       - "data/product_master/product_master_model_input.csv"
+      - "data/terminal2/portfolio_holdings.csv"
   workflow_dispatch:
     inputs:
       live_execution:
@@ -25,6 +27,16 @@ on:
         type: boolean
       ebay_limit:
         description: "Maximum eBay listings per mapped product"
+        required: true
+        default: "10"
+        type: string
+      monthly_mtg_capital:
+        description: "Monthly MTG capital available in USD"
+        required: true
+        default: "600"
+        type: string
+      cash_reserve_pct:
+        description: "Percent of monthly MTG capital held as cash reserve"
         required: true
         default: "10"
         type: string
@@ -44,6 +56,8 @@ jobs:
       LIVE_EXECUTION: ${{ github.event_name == 'workflow_dispatch' && inputs.live_execution == true }}
       MTG_LIVE_EXECUTION: ${{ github.event_name == 'workflow_dispatch' && inputs.live_execution == true }}
       EBAY_LIMIT: ${{ github.event_name == 'workflow_dispatch' && inputs.ebay_limit || '10' }}
+      MONTHLY_MTG_CAPITAL: ${{ github.event_name == 'workflow_dispatch' && inputs.monthly_mtg_capital || '600' }}
+      CASH_RESERVE_PCT: ${{ github.event_name == 'workflow_dispatch' && inputs.cash_reserve_pct || '10' }}
       EBAY_CLIENT_ID: ${{ secrets.EBAY_CLIENT_ID }}
       EBAY_CLIENT_SECRET: ${{ secrets.EBAY_CLIENT_SECRET }}
       EBAY_MARKETPLACE_ID: EBAY_US
@@ -80,12 +94,14 @@ jobs:
           test -f scripts/run_mtg_marketplace_production.py
           test -f scripts/certify_mtg_marketplace_observations.py
           test -f scripts/run_certified_marketplace_decisioning.py
+          test -f scripts/run_mtg_purchase_plan.py
           python -m compileall -q scripts terminal2
           python - <<'PY'
           from scripts.reconcile_tcgcsv_group_ids import reconcile
           from terminal2.market_sources.ebay_targeted_collection import select_target_products
           from terminal2.market_sources.marketplace_quality import certify_rows
           from terminal2.market_sources.marketplace_decisioning import build_decisions
+          from terminal2.market_sources.marketplace_purchase_planning import build_purchase_plan
           print("Marketplace module imports passed")
           PY
 
@@ -106,6 +122,7 @@ jobs:
             tests/test_marketplace_quality_certification.py \
             tests/test_ebay_targeted_collection.py \
             tests/test_marketplace_decisioning.py \
+            tests/test_marketplace_purchase_planning.py \
             -q
 
       - name: Run unified MTG marketplace cycle
@@ -128,7 +145,6 @@ jobs:
           import json
           import os
           from pathlib import Path
-
           path = Path("data/operations/mtg_marketplace/latest.json")
           if not path.is_file():
               raise SystemExit("Marketplace summary was not created")
@@ -136,10 +152,7 @@ jobs:
           live = os.getenv("LIVE_EXECUTION", "false").lower() == "true"
           expected = "PASS" if live else "DRY_RUN_PASS"
           if payload.get("status") != expected:
-              raise SystemExit(
-                  f"Unexpected marketplace status: {payload.get('status')} (expected {expected}); "
-                  f"reasons={payload.get('reason_codes')}"
-              )
+              raise SystemExit(f"Unexpected marketplace status: {payload.get('status')} expected={expected}; reasons={payload.get('reason_codes')}")
           if payload.get("deal_ranking_count", 0) < 1:
               raise SystemExit("No legacy deal rankings were produced")
           print(f"Marketplace cycle validated: {expected}")
@@ -159,15 +172,12 @@ jobs:
           python - <<'PY'
           import json
           from pathlib import Path
-
           path = Path("data/operations/mtg_marketplace/marketplace_quality_certification.json")
           if not path.is_file():
               raise SystemExit("Marketplace certification summary was not created")
           payload = json.loads(path.read_text(encoding="utf-8"))
-          if payload.get("status") != "PASS":
+          if payload.get("status") != "PASS" or payload.get("eligible_observation_count", 0) < 1:
               raise SystemExit(f"Marketplace certification failed: {payload}")
-          if payload.get("eligible_observation_count", 0) < 1:
-              raise SystemExit("No marketplace observations were eligible for decisioning")
           print("Marketplace certification validated")
           PY
 
@@ -188,7 +198,6 @@ jobs:
           import csv
           import json
           from pathlib import Path
-
           summary_path = Path("data/operations/mtg_marketplace/marketplace_decision_summary.json")
           decisions_path = Path("data/operations/mtg_marketplace/certified_marketplace_decisions.csv")
           prices_path = Path("data/operations/mtg_marketplace/consolidated_marketplace_prices.csv")
@@ -196,19 +205,57 @@ jobs:
               if not path.is_file():
                   raise SystemExit(f"Required decision artifact missing: {path}")
           payload = json.loads(summary_path.read_text(encoding="utf-8"))
-          if payload.get("status") != "PASS":
+          if payload.get("status") != "PASS" or payload.get("decision_count", 0) < 1:
               raise SystemExit(f"Certified marketplace decisioning failed: {payload}")
-          if payload.get("decision_count", 0) < 1:
-              raise SystemExit("No certified marketplace decisions were produced")
           if payload.get("unmatched_certified_product_ids"):
               raise SystemExit(f"Certified prices were not matched to the model: {payload['unmatched_certified_product_ids']}")
           with decisions_path.open("r", encoding="utf-8-sig", newline="") as handle:
               rows = list(csv.DictReader(handle))
-          if not rows:
-              raise SystemExit("Certified marketplace decision file is empty")
-          if any(not row.get("signal") for row in rows):
-              raise SystemExit("One or more certified decisions are missing a signal")
+          if not rows or any(not row.get("signal") for row in rows):
+              raise SystemExit("Certified marketplace decision file is empty or missing signals")
           print(f"Certified marketplace decisioning validated: {len(rows)} decisions")
+          PY
+
+      - name: Build monthly whole-box purchase plan
+        if: ${{ env.LIVE_EXECUTION == 'true' }}
+        run: |
+          python scripts/run_mtg_purchase_plan.py \
+            --decisions data/operations/mtg_marketplace/certified_marketplace_decisions.csv \
+            --model-input data/product_master/product_master_model_input.csv \
+            --holdings data/terminal2/portfolio_holdings.csv \
+            --monthly-capital "$MONTHLY_MTG_CAPITAL" \
+            --reserve-pct "$CASH_RESERVE_PCT" \
+            --plan-output data/operations/mtg_marketplace/monthly_purchase_plan.csv \
+            --projection-output data/operations/mtg_marketplace/projected_portfolio_after_purchase.csv \
+            --summary-output data/operations/mtg_marketplace/monthly_purchase_plan_summary.json
+
+      - name: Validate monthly purchase plan
+        if: ${{ env.LIVE_EXECUTION == 'true' }}
+        run: |
+          python - <<'PY'
+          import csv
+          import json
+          from pathlib import Path
+          summary_path = Path("data/operations/mtg_marketplace/monthly_purchase_plan_summary.json")
+          plan_path = Path("data/operations/mtg_marketplace/monthly_purchase_plan.csv")
+          projection_path = Path("data/operations/mtg_marketplace/projected_portfolio_after_purchase.csv")
+          for path in (summary_path, plan_path, projection_path):
+              if not path.is_file():
+                  raise SystemExit(f"Required purchase plan artifact missing: {path}")
+          payload = json.loads(summary_path.read_text(encoding="utf-8"))
+          if payload.get("status") not in {"PASS", "NO_ACTION"}:
+              raise SystemExit(f"Purchase planning failed: {payload}")
+          if not payload.get("reserve_preserved", False):
+              raise SystemExit("Purchase plan did not preserve the configured cash reserve")
+          if payload.get("planned_spend", 0) > payload.get("monthly_capital", 0):
+              raise SystemExit("Purchase plan exceeds monthly capital")
+          with plan_path.open("r", encoding="utf-8-sig", newline="") as handle:
+              rows = list(csv.DictReader(handle))
+          for row in rows:
+              units = float(row.get("recommended_units") or 0)
+              if units < 0 or not units.is_integer():
+                  raise SystemExit(f"Non-whole or negative unit recommendation: {row}")
+          print(f"Purchase plan validated: spend=${payload.get('planned_spend', 0):.2f}; carry-forward=${payload.get('carry_forward_capital', 0):.2f}")
           PY
 
       - name: Upload production evidence
