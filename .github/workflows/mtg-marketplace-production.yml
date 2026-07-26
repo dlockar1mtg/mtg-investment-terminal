@@ -1,6 +1,20 @@
 name: MTG Marketplace Production
 
 on:
+  pull_request:
+    paths:
+      - ".github/workflows/mtg-marketplace-production.yml"
+      - "requirements.txt"
+      - "scripts/**"
+      - "terminal2/market_sources/**"
+      - "tests/test_daily_ebay_collection_entrypoint.py"
+      - "tests/test_daily_tcgcsv_collection_entrypoint.py"
+      - "tests/test_tcgcsv_group_id_reconciliation.py"
+      - "tests/test_mtg_marketplace_production.py"
+      - "tests/test_marketplace_quality_certification.py"
+      - "tests/test_ebay_targeted_collection.py"
+      - "data/reference/product_map.csv"
+      - "data/product_master/product_master_model_input.csv"
   workflow_dispatch:
     inputs:
       live_execution:
@@ -18,7 +32,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: mtg-marketplace-production
+  group: mtg-marketplace-production-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
@@ -26,7 +40,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
-      MTG_LIVE_EXECUTION: ${{ inputs.live_execution }}
+      LIVE_EXECUTION: ${{ github.event_name == 'workflow_dispatch' && inputs.live_execution == true }}
+      MTG_LIVE_EXECUTION: ${{ github.event_name == 'workflow_dispatch' && inputs.live_execution == true }}
+      EBAY_LIMIT: ${{ github.event_name == 'workflow_dispatch' && inputs.ebay_limit || '10' }}
       EBAY_CLIENT_ID: ${{ secrets.EBAY_CLIENT_ID }}
       EBAY_CLIENT_SECRET: ${{ secrets.EBAY_CLIENT_SECRET }}
       EBAY_MARKETPLACE_ID: EBAY_US
@@ -41,14 +57,37 @@ jobs:
           python-version: "3.12"
           cache: pip
 
-      - name: Install dependencies
+      - name: Install and verify dependencies
         run: |
           python -m pip install --upgrade pip
-          python -m pip install -r requirements.txt
-          python -m pip install pytest
+          python -m pip install -r requirements.txt "pytest>=8,<9"
+          python -m pip check
+          python - <<'PY'
+          import numpy
+          import pandas
+          import pytest
+          import requests
+          print("Dependency imports passed")
+          print(f"pytest={pytest.__version__}")
+          PY
+
+      - name: Validate repository inputs and Linux imports
+        shell: bash
+        run: |
+          test -f data/reference/product_map.csv
+          test -f data/product_master/product_master_model_input.csv
+          test -f scripts/run_mtg_marketplace_production.py
+          test -f scripts/certify_mtg_marketplace_observations.py
+          python -m compileall -q scripts terminal2
+          python - <<'PY'
+          from scripts.reconcile_tcgcsv_group_ids import reconcile
+          from terminal2.market_sources.ebay_targeted_collection import select_target_products
+          from terminal2.market_sources.marketplace_quality import certify_rows
+          print("Marketplace module imports passed")
+          PY
 
       - name: Validate live credentials
-        if: ${{ inputs.live_execution }}
+        if: ${{ env.LIVE_EXECUTION == 'true' }}
         shell: bash
         run: |
           test -n "$EBAY_CLIENT_ID" || { echo "EBAY_CLIENT_ID secret is missing"; exit 1; }
@@ -69,29 +108,72 @@ jobs:
         shell: bash
         run: |
           LIVE_FLAG=""
-          if [[ "${{ inputs.live_execution }}" == "true" ]]; then
+          if [[ "$LIVE_EXECUTION" == "true" ]]; then
             LIVE_FLAG="--live"
           fi
           python scripts/run_mtg_marketplace_production.py \
             $LIVE_FLAG \
             --product-map data/reference/product_map.csv \
             --model-input data/product_master/product_master_model_input.csv \
-            --ebay-limit "${{ inputs.ebay_limit }}" \
+            --ebay-limit "$EBAY_LIMIT" \
             --output data/operations/mtg_marketplace/latest.json
 
+      - name: Validate marketplace cycle output
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          path = Path("data/operations/mtg_marketplace/latest.json")
+          if not path.is_file():
+              raise SystemExit("Marketplace summary was not created")
+          payload = json.loads(path.read_text(encoding="utf-8"))
+          live = os.getenv("LIVE_EXECUTION", "false").lower() == "true"
+          expected = "PASS" if live else "DRY_RUN_PASS"
+          if payload.get("status") != expected:
+              raise SystemExit(
+                  f"Unexpected marketplace status: {payload.get('status')} (expected {expected}); "
+                  f"reasons={payload.get('reason_codes')}"
+              )
+          if payload.get("deal_ranking_count", 0) < 1:
+              raise SystemExit("No deal rankings were produced")
+          print(f"Marketplace cycle validated: {expected}")
+          PY
+
       - name: Certify marketplace observations
-        if: ${{ inputs.live_execution }}
+        if: ${{ env.LIVE_EXECUTION == 'true' }}
         run: |
           python scripts/certify_mtg_marketplace_observations.py \
             --input data/operations/mtg_marketplace/normalized_marketplace_observations.csv \
             --output data/operations/mtg_marketplace/certified_marketplace_observations.csv \
             --summary-output data/operations/mtg_marketplace/marketplace_quality_certification.json
 
+      - name: Validate marketplace certification
+        if: ${{ env.LIVE_EXECUTION == 'true' }}
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          path = Path("data/operations/mtg_marketplace/marketplace_quality_certification.json")
+          if not path.is_file():
+              raise SystemExit("Marketplace certification summary was not created")
+          payload = json.loads(path.read_text(encoding="utf-8"))
+          if payload.get("status") != "PASS":
+              raise SystemExit(f"Marketplace certification failed: {payload}")
+          if payload.get("eligible_observation_count", 0) < 1:
+              raise SystemExit("No marketplace observations were eligible for decisioning")
+          print("Marketplace certification validated")
+          PY
+
       - name: Upload production evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: mtg-marketplace-production-${{ github.run_id }}
-          path: data/operations/
+          path: |
+            data/operations/
+            data/validation/phase_10/ebay_matching/
           if-no-files-found: warn
           retention-days: 30
