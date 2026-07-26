@@ -96,18 +96,27 @@ jobs:
           python - <<'PY'
           import json
           from pathlib import Path
+
           path = Path("data/operations/mtg_full_marketplace/full_product_map_summary.json")
           payload = json.loads(path.read_text(encoding="utf-8"))
+
+          # These certify approved production records, not raw type totals.
+          # The source registry has 348 booster-display-class rows, but only
+          # 234 satisfy approval_status=approved and enter live collection.
           expected = {
-              "booster_display_count": 348,
+              "booster_display_count": 234,
               "secret_lair_count": 993,
-              "total_marketplace_products": 1341,
-              "ebay_ready_count": 1341,
-              "tcgcsv_ready_count": 1330,
+              "total_marketplace_products": 1227,
+              "ebay_ready_count": 1227,
+              "tcgcsv_ready_count": 1216,
               "ebay_only_count": 11,
               "review_excluded_count": 15,
           }
-          errors = [f"{key}: expected {value}, got {payload.get(key)}" for key, value in expected.items() if payload.get(key) != value]
+          errors = [
+              f"{key}: expected {value}, got {payload.get(key)}"
+              for key, value in expected.items()
+              if payload.get(key) != value
+          ]
           if errors:
               raise SystemExit("Governed universe count mismatch:\n" + "\n".join(errors))
           print(json.dumps(payload, indent=2))
