@@ -6,6 +6,7 @@ from pathlib import Path
 
 from scripts.build_full_marketplace_product_map import build_full_product_map
 from scripts.run_full_marketplace_universe import _batch_ranges
+from scripts.run_mtg_marketplace_production import _split_collection_maps
 
 
 def _write(path: Path, rows: list[dict[str, object]]) -> None:
@@ -69,6 +70,33 @@ def test_governed_map_combines_boosters_and_secret_lairs(tmp_path: Path) -> None
     assert json.loads(summary.read_text(encoding="utf-8"))["total_marketplace_products"] == 3
 
 
+def test_source_routing_keeps_ebay_only_rows_out_of_tcgcsv(tmp_path: Path) -> None:
+    product_map = tmp_path / "full_product_map.csv"
+    _write(product_map, [
+        {
+            "box_name": "Mapped Product", "tcgplayer_product_id": "100",
+            "tcgcsv_category_id": "1", "tcgcsv_group_id": "10",
+            "mapping_status": "READY", "collection_lane": "EBAY_AND_TCGCSV",
+        },
+        {
+            "box_name": "eBay Only Product", "tcgplayer_product_id": "200",
+            "tcgcsv_category_id": "", "tcgcsv_group_id": "",
+            "mapping_status": "READY", "collection_lane": "EBAY_ONLY",
+        },
+    ])
+
+    ebay_map, tcgcsv_map, routing = _split_collection_maps(product_map, tmp_path / "runtime")
+    ebay_rows = list(csv.DictReader(ebay_map.open(encoding="utf-8")))
+    tcgcsv_rows = list(csv.DictReader(tcgcsv_map.open(encoding="utf-8")))
+
+    assert routing["status"] == "PASS"
+    assert routing["ebay_product_count"] == 2
+    assert routing["tcgcsv_product_count"] == 1
+    assert routing["ebay_only_product_count"] == 1
+    assert {row["tcgplayer_product_id"] for row in ebay_rows} == {"100", "200"}
+    assert [row["tcgplayer_product_id"] for row in tcgcsv_rows] == ["100"]
+
+
 def test_duplicate_identity_across_sources_is_not_duplicated(tmp_path: Path) -> None:
     products = tmp_path / "products.csv"
     secret_lairs = tmp_path / "secret_lairs.csv"
@@ -83,9 +111,9 @@ def test_duplicate_identity_across_sources_is_not_duplicated(tmp_path: Path) -> 
 
 
 def test_batch_ranges_cover_entire_universe_without_overlap() -> None:
-    ranges = _batch_ranges(1341, 50)
-    assert len(ranges) == 27
+    ranges = _batch_ranges(1227, 50)
+    assert len(ranges) == 25
     assert ranges[0] == (0, 50)
-    assert ranges[-1] == (1300, 1341)
+    assert ranges[-1] == (1200, 1227)
     covered = [index for start, end in ranges for index in range(start, end)]
-    assert covered == list(range(1341))
+    assert covered == list(range(1227))
