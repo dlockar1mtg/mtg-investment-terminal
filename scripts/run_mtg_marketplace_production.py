@@ -1,8 +1,8 @@
 """Unified MTG marketplace production orchestrator.
 
-Runs governed eBay and TCGCSV lanes, creates normalized operational evidence,
-and generates a lightweight deal ranking from the current model input. Live
-execution requires both --live and MTG_LIVE_EXECUTION=true.
+Runs governed eBay and TCGCSV lanes against the same product map, creates
+normalized operational evidence, and generates a lightweight deal ranking.
+Live execution requires both --live and MTG_LIVE_EXECUTION=true.
 """
 from __future__ import annotations
 
@@ -38,9 +38,8 @@ NORMALIZED_FIELDS = (
 
 def _run(command: list[str]) -> dict[str, Any]:
     result = subprocess.run(command, cwd=ROOT, capture_output=True, text=True, check=False)
-    payload: dict[str, Any]
     try:
-        payload = json.loads(result.stdout)
+        payload: dict[str, Any] = json.loads(result.stdout)
     except json.JSONDecodeError:
         payload = {"status": "FAILED", "stdout": result.stdout.strip(), "stderr": result.stderr.strip()}
     payload["exit_code"] = result.returncode
@@ -94,14 +93,11 @@ def _deal_rankings(model_path: Path, limit: int = 25) -> list[dict[str, Any]]:
 
 
 def _materialize_reconciled_map(product_map: Path, search_root: Path, output_path: Path) -> tuple[Path, dict[str, Any]]:
-    """Create a runtime map from unique local evidence without mutating reference data."""
     if not product_map.is_file() or not search_root.is_dir():
         return product_map, {"status": "NOT_RUN", "reason_codes": ["TCGCSV_RECONCILIATION_INPUT_NOT_AVAILABLE"]}
-
     report = reconcile(product_map, search_root)
     if report.get("status") != "PASS":
         return product_map, report
-
     resolutions = {
         str(item.get("tcgplayer_product_id", "")): item
         for item in report.get("results", [])
@@ -111,7 +107,6 @@ def _materialize_reconciled_map(product_map: Path, search_root: Path, output_pat
         reader = csv.DictReader(handle)
         fieldnames = list(reader.fieldnames or [])
         rows = list(reader)
-
     for row in rows:
         product_id = str(row.get("tcgplayer_product_id") or "").strip()
         resolution = resolutions.get(product_id)
@@ -125,13 +120,11 @@ def _materialize_reconciled_map(product_map: Path, search_root: Path, output_pat
         })
         if len(category_ids) == 1:
             row["tcgcsv_category_id"] = category_ids[0]
-
     output_path.parent.mkdir(parents=True, exist_ok=True)
     with output_path.open("w", encoding="utf-8", newline="") as handle:
         writer = csv.DictWriter(handle, fieldnames=fieldnames, extrasaction="ignore")
         writer.writeheader()
         writer.writerows(rows)
-
     report = dict(report)
     report["runtime_product_map"] = str(output_path.resolve())
     report["reference_product_map_modified"] = False
@@ -155,11 +148,14 @@ def _normalize_live_observations(tcgcsv_path: Path, ebay_summary: dict[str, Any]
             "source_status": "OBSERVED",
             "source_run_id": "",
         })
-
     observed = str(ebay_summary.get("observed_at_utc") or "")
     date = observed[:10] if len(observed) >= 10 else datetime.now(timezone.utc).date().isoformat()
     coverage_path = EBAY_OUTPUT_ROOT / f"ebay_product_coverage_{date}.csv"
+    requested_ids = {str(value) for value in ebay_summary.get("requested_tcgplayer_product_ids", [])}
     for row in _read_csv(coverage_path):
+        product_id = str(row.get("tcgplayer_product_id") or "")
+        if requested_ids and product_id not in requested_ids:
+            continue
         accepted = int(_number(row.get("accepted_listing_count")) or 0)
         state = row.get("coverage_state") or ""
         confidence = 90 if state == "STRONG_MATCH_COVERAGE" else 70 if state == "LIMITED_MATCH_COVERAGE" else 40 if state == "AMBIGUOUS_RESULTS" else 0
@@ -167,7 +163,7 @@ def _normalize_live_observations(tcgcsv_path: Path, ebay_summary: dict[str, Any]
             "observed_at_utc": observed,
             "source_name": "EBAY",
             "product_name": row.get("canonical_product_name") or "",
-            "tcgplayer_product_id": row.get("tcgplayer_product_id") or "",
+            "tcgplayer_product_id": product_id,
             "market_price": row.get("median_accepted_landed_price") or "",
             "low_price": row.get("lowest_accepted_landed_price") or "",
             "median_price": row.get("median_accepted_landed_price") or "",
@@ -177,7 +173,6 @@ def _normalize_live_observations(tcgcsv_path: Path, ebay_summary: dict[str, Any]
             "source_status": state,
             "source_run_id": ebay_summary.get("run_id") or "",
         })
-
     output_path.parent.mkdir(parents=True, exist_ok=True)
     with output_path.open("w", encoding="utf-8", newline="") as handle:
         writer = csv.DictWriter(handle, fieldnames=NORMALIZED_FIELDS, extrasaction="ignore")
@@ -193,7 +188,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--reconciliation-search-root", type=Path, default=DEFAULT_RECONCILIATION_ROOT)
     parser.add_argument("--model-input", type=Path, default=DEFAULT_MODEL)
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
-    parser.add_argument("--max-ebay-products", type=int, default=3)
+    parser.add_argument("--max-ebay-products", type=int, default=3, help="Retained for compatibility; product-map targeting controls live scope")
     parser.add_argument("--ebay-limit", type=int, default=20)
     return parser
 
@@ -217,16 +212,24 @@ def main() -> int:
     normalized_output = output.parent / "normalized_marketplace_observations.csv"
 
     ebay_command = [
-        sys.executable, str(EBAY_SCRIPT),
-        "--limit-per-product", str(args.ebay_limit),
-        "--max-products", str(args.max_ebay_products),
-        "--summary-output", str(lane_root / "ebay.json"),
+        sys.executable,
+        str(EBAY_SCRIPT),
+        "--limit-per-product",
+        str(args.ebay_limit),
+        "--product-map",
+        str(runtime_map.resolve()),
+        "--summary-output",
+        str(lane_root / "ebay.json"),
     ]
     tcgcsv_command = [
-        sys.executable, str(TCGCSV_SCRIPT),
-        "--product-map", str(runtime_map.resolve()),
-        "--summary-output", str(lane_root / "tcgcsv.json"),
-        "--observations-output", str(tcgcsv_observations),
+        sys.executable,
+        str(TCGCSV_SCRIPT),
+        "--product-map",
+        str(runtime_map.resolve()),
+        "--summary-output",
+        str(lane_root / "tcgcsv.json"),
+        "--observations-output",
+        str(tcgcsv_observations),
     ]
     if not live:
         ebay_command.append("--dry-run")
@@ -243,6 +246,8 @@ def main() -> int:
         reasons.append("MTG_LIVE_EXECUTION_ENV_DISABLED")
     if reconciliation.get("status") not in {"PASS", "NOT_RUN"}:
         reasons.append("TCGCSV_RECONCILIATION_NOT_READY")
+    if ebay.get("missing_tcgplayer_product_ids"):
+        reasons.append("EBAY_TARGET_PRODUCTS_MISSING_FROM_UNIVERSE")
     if lane_failures:
         reasons.extend(f"{name}_LANE_NOT_READY" for name in lane_failures)
     if live and not normalized:
@@ -266,6 +271,7 @@ def main() -> int:
         "live_api_called": bool(live),
         "reference_product_map": str(args.product_map.resolve()),
         "runtime_product_map": str(runtime_map.resolve()),
+        "ebay_selection_mode": ebay.get("selection_mode", ""),
         "reconciliation": reconciliation,
         "lanes": {"ebay": ebay, "tcgcsv": tcgcsv},
         "normalized_observations_output": str(normalized_output.resolve()),
