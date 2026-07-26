@@ -47,7 +47,13 @@ def certify_rows(rows: Iterable[dict[str, Any]]) -> tuple[list[dict[str, Any]], 
         confidence = _number(row.get("confidence")) or 0.0
         reasons: list[str] = []
 
-        certified_price = median or market
+        # TCGCSV's market price is the source's current transaction-oriented
+        # valuation and is preferred over its higher retail midpoint. eBay uses
+        # the median accepted landed listing price as its governed observation.
+        if source == "TCGCSV":
+            certified_price = market or median
+        else:
+            certified_price = median or market
         eligible = bool(certified_price and certified_price > 0)
 
         if not eligible:
