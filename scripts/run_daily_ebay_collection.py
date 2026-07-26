@@ -6,8 +6,10 @@ change matching rules, product identity, or credential handling.
 from __future__ import annotations
 
 import argparse
+import io
 import json
 import sys
+from contextlib import redirect_stdout
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -43,11 +45,19 @@ def main(argv: list[str] | None = None) -> int:
             "max_products": args.max_products,
         }
     else:
-        summary = run_coverage(
-            limit_per_product=args.limit_per_product,
-            max_products=args.max_products,
-        )
-        summary = {"status": "PASS", "live_api_called": True, **summary}
+        progress = io.StringIO()
+        with redirect_stdout(progress):
+            coverage = run_coverage(
+                limit_per_product=args.limit_per_product,
+                max_products=args.max_products,
+            )
+        progress_lines = [line for line in progress.getvalue().splitlines() if line.strip()]
+        summary = {
+            "status": "PASS",
+            "live_api_called": True,
+            **coverage,
+            "progress_log": progress_lines,
+        }
 
     rendered = json.dumps(summary, indent=2)
     if args.summary_output:
