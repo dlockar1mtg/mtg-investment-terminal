@@ -86,6 +86,7 @@ data/monte_carlo/
 data/analytics/
 data/dashboard/
 data/warehouse/
+data/operations/
 
 # Daily historical price snapshots
 data/history/*.csv
