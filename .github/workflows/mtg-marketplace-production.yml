@@ -13,6 +13,7 @@ on:
       - "tests/test_mtg_marketplace_production.py"
       - "tests/test_marketplace_quality_certification.py"
       - "tests/test_ebay_targeted_collection.py"
+      - "tests/test_marketplace_decisioning.py"
       - "data/reference/product_map.csv"
       - "data/product_master/product_master_model_input.csv"
   workflow_dispatch:
@@ -78,11 +79,13 @@ jobs:
           test -f data/product_master/product_master_model_input.csv
           test -f scripts/run_mtg_marketplace_production.py
           test -f scripts/certify_mtg_marketplace_observations.py
+          test -f scripts/run_certified_marketplace_decisioning.py
           python -m compileall -q scripts terminal2
           python - <<'PY'
           from scripts.reconcile_tcgcsv_group_ids import reconcile
           from terminal2.market_sources.ebay_targeted_collection import select_target_products
           from terminal2.market_sources.marketplace_quality import certify_rows
+          from terminal2.market_sources.marketplace_decisioning import build_decisions
           print("Marketplace module imports passed")
           PY
 
@@ -102,6 +105,7 @@ jobs:
             tests/test_mtg_marketplace_production.py \
             tests/test_marketplace_quality_certification.py \
             tests/test_ebay_targeted_collection.py \
+            tests/test_marketplace_decisioning.py \
             -q
 
       - name: Run unified MTG marketplace cycle
@@ -137,7 +141,7 @@ jobs:
                   f"reasons={payload.get('reason_codes')}"
               )
           if payload.get("deal_ranking_count", 0) < 1:
-              raise SystemExit("No deal rankings were produced")
+              raise SystemExit("No legacy deal rankings were produced")
           print(f"Marketplace cycle validated: {expected}")
           PY
 
@@ -165,6 +169,46 @@ jobs:
           if payload.get("eligible_observation_count", 0) < 1:
               raise SystemExit("No marketplace observations were eligible for decisioning")
           print("Marketplace certification validated")
+          PY
+
+      - name: Build certified marketplace decisions
+        if: ${{ env.LIVE_EXECUTION == 'true' }}
+        run: |
+          python scripts/run_certified_marketplace_decisioning.py \
+            --certified-observations data/operations/mtg_marketplace/certified_marketplace_observations.csv \
+            --model-input data/product_master/product_master_model_input.csv \
+            --consolidated-output data/operations/mtg_marketplace/consolidated_marketplace_prices.csv \
+            --decisions-output data/operations/mtg_marketplace/certified_marketplace_decisions.csv \
+            --summary-output data/operations/mtg_marketplace/marketplace_decision_summary.json
+
+      - name: Validate certified marketplace decisions
+        if: ${{ env.LIVE_EXECUTION == 'true' }}
+        run: |
+          python - <<'PY'
+          import csv
+          import json
+          from pathlib import Path
+
+          summary_path = Path("data/operations/mtg_marketplace/marketplace_decision_summary.json")
+          decisions_path = Path("data/operations/mtg_marketplace/certified_marketplace_decisions.csv")
+          prices_path = Path("data/operations/mtg_marketplace/consolidated_marketplace_prices.csv")
+          for path in (summary_path, decisions_path, prices_path):
+              if not path.is_file():
+                  raise SystemExit(f"Required decision artifact missing: {path}")
+          payload = json.loads(summary_path.read_text(encoding="utf-8"))
+          if payload.get("status") != "PASS":
+              raise SystemExit(f"Certified marketplace decisioning failed: {payload}")
+          if payload.get("decision_count", 0) < 1:
+              raise SystemExit("No certified marketplace decisions were produced")
+          if payload.get("unmatched_certified_product_ids"):
+              raise SystemExit(f"Certified prices were not matched to the model: {payload['unmatched_certified_product_ids']}")
+          with decisions_path.open("r", encoding="utf-8-sig", newline="") as handle:
+              rows = list(csv.DictReader(handle))
+          if not rows:
+              raise SystemExit("Certified marketplace decision file is empty")
+          if any(not row.get("signal") for row in rows):
+              raise SystemExit("One or more certified decisions are missing a signal")
+          print(f"Certified marketplace decisioning validated: {len(rows)} decisions")
           PY
 
       - name: Upload production evidence
