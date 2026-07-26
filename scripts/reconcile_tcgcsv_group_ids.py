@@ -30,8 +30,12 @@ def _first(row: dict[str, str], names: tuple[str, ...]) -> str:
     return ""
 
 
-def _eligible(path: Path) -> bool:
-    return path.is_file() and path.suffix.lower() == ".csv" and not any(part in SKIP_PARTS for part in path.parts)
+def _eligible(path: Path, relative: Path) -> bool:
+    return (
+        path.is_file()
+        and path.suffix.lower() == ".csv"
+        and not any(part in SKIP_PARTS for part in relative.parts)
+    )
 
 
 def reconcile(product_map: Path, search_root: Path) -> dict[str, object]:
@@ -56,7 +60,7 @@ def reconcile(product_map: Path, search_root: Path) -> dict[str, object]:
     rows_scanned = 0
     for path in search_root.rglob("*.csv"):
         relative = path.relative_to(search_root)
-        if not _eligible(relative) or path.resolve() == product_map.resolve():
+        if not _eligible(path, relative) or path.resolve() == product_map.resolve():
             continue
         files_scanned += 1
         try:
