@@ -21,7 +21,7 @@ on:
       max_batches:
         description: "Maximum batches this run; 0 means all remaining"
         required: true
-        default: "0"
+        default: "10"
         type: string
       ebay_limit:
         description: "Maximum eBay listings requested per product"
@@ -82,10 +82,10 @@ jobs:
             tests/test_daily_tcgcsv_collection_entrypoint.py \
             -q
 
-      - name: Build governed full product map
+      - name: Build governed approved product map
         run: |
           python scripts/build_full_marketplace_product_map.py \
-            --model-input data/product_master/product_master_model_input.csv \
+            --source-input data/product_master/investment_products.csv \
             --output data/operations/mtg_full_marketplace/full_product_map.csv \
             --summary-output data/operations/mtg_full_marketplace/full_product_map_summary.json
 
