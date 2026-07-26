@@ -82,12 +82,36 @@ jobs:
             tests/test_daily_tcgcsv_collection_entrypoint.py \
             -q
 
-      - name: Build governed approved product map
+      - name: Build governed sealed product map
         run: |
           python scripts/build_full_marketplace_product_map.py \
-            --source-input data/product_master/investment_products.csv \
+            --investment-products data/product_master/investment_products.csv \
+            --secret-lair-master data/validation/phase_10/premium_universe_eligibility/secret_lair_master_registry_ready_universe.csv \
+            --secret-lair-review data/validation/phase_10/premium_universe_eligibility/secret_lair_master_review_required_universe.csv \
             --output data/operations/mtg_full_marketplace/full_product_map.csv \
             --summary-output data/operations/mtg_full_marketplace/full_product_map_summary.json
+
+      - name: Certify governed universe counts
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          path = Path("data/operations/mtg_full_marketplace/full_product_map_summary.json")
+          payload = json.loads(path.read_text(encoding="utf-8"))
+          expected = {
+              "booster_display_count": 348,
+              "secret_lair_count": 993,
+              "total_marketplace_products": 1341,
+              "ebay_ready_count": 1341,
+              "tcgcsv_ready_count": 1330,
+              "ebay_only_count": 11,
+              "review_excluded_count": 15,
+          }
+          errors = [f"{key}: expected {value}, got {payload.get(key)}" for key, value in expected.items() if payload.get(key) != value]
+          if errors:
+              raise SystemExit("Governed universe count mismatch:\n" + "\n".join(errors))
+          print(json.dumps(payload, indent=2))
+          PY
 
       - name: Run resumable full-universe batches
         shell: bash
@@ -115,15 +139,8 @@ jobs:
           for name in ("full_product_map_summary.json", "latest.json", "checkpoint.json"):
               path = Path("data/operations/mtg_full_marketplace") / name
               if path.is_file():
-                  payload = json.loads(path.read_text(encoding="utf-8"))
                   print(f"\n=== {name} ===")
-                  for key in (
-                      "status", "source_row_count", "unique_product_count", "ready_product_count",
-                      "not_ready_product_count", "total_ready_products", "batch_size", "total_batches",
-                      "completed_batch_count", "next_batch", "normalized_observation_count", "failed_batches",
-                  ):
-                      if key in payload:
-                          print(f"{key}: {payload[key]}")
+                  print(json.dumps(json.loads(path.read_text(encoding="utf-8")), indent=2))
           PY
 
       - name: Upload full-universe evidence
