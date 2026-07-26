@@ -8,13 +8,8 @@ on:
         required: true
         default: false
         type: boolean
-      max_ebay_products:
-        description: "Maximum eBay products for controlled execution"
-        required: true
-        default: "3"
-        type: string
       ebay_limit:
-        description: "Maximum eBay listings per product"
+        description: "Maximum eBay listings per mapped product"
         required: true
         default: "10"
         type: string
@@ -66,6 +61,7 @@ jobs:
             tests/test_tcgcsv_group_id_reconciliation.py \
             tests/test_mtg_marketplace_production.py \
             tests/test_marketplace_quality_certification.py \
+            tests/test_ebay_targeted_collection.py \
             -q
 
       - name: Run unified MTG marketplace cycle
@@ -79,7 +75,6 @@ jobs:
             $LIVE_FLAG \
             --product-map data/reference/product_map.csv \
             --model-input data/product_master/product_master_model_input.csv \
-            --max-ebay-products "${{ inputs.max_ebay_products }}" \
             --ebay-limit "${{ inputs.ebay_limit }}" \
             --output data/operations/mtg_marketplace/latest.json
 
