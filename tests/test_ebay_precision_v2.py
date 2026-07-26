@@ -108,3 +108,35 @@ def test_matching_secret_lair_finish_can_remain_accepted() -> None:
         "SEALED_SECRET_LAIR",
     )
     assert result.match_state == "ACCEPTED"
+
+
+def test_missing_bundle_word_repairs_legacy_variant_conflict_to_review() -> None:
+    result = classify(
+        "Astrology Lands (Sagittarius) Bundle — Traditional Foil Edition",
+        "MTG Secret Lair Astrology Lands Sagittarius Traditional Foil Sealed",
+        "SEALED_SECRET_LAIR",
+    )
+    assert result.match_state == "REVIEW"
+    assert "secret_lair_variant_conflict" not in result.exclusion_reasons
+    assert "missing_required_phrase:bundle" in result.exclusion_reasons
+    assert "legacy_variant_conflict_repaired_to_review" in result.exclusion_reasons
+
+
+def test_explicit_wrong_finish_still_rejects_secret_lair_bundle() -> None:
+    result = classify(
+        "Astrology Lands (Sagittarius) Bundle — Traditional Foil Edition",
+        "MTG Secret Lair Astrology Lands Sagittarius Bundle Nonfoil Sealed",
+        "SEALED_SECRET_LAIR",
+    )
+    assert result.match_state == "REJECTED"
+    assert "forbidden_phrase:non_foil" in result.exclusion_reasons
+
+
+def test_individual_drop_does_not_match_bundle_target() -> None:
+    result = classify(
+        "Astrology Lands (Sagittarius) Bundle — Traditional Foil Edition",
+        "MTG Secret Lair Astrology Lands Sagittarius single drop Traditional Foil Sealed",
+        "SEALED_SECRET_LAIR",
+    )
+    assert result.match_state == "REJECTED"
+    assert "forbidden_phrase:single_drop" in result.exclusion_reasons
