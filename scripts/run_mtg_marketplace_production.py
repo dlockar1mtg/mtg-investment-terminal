@@ -17,11 +17,17 @@ from pathlib import Path
 from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from scripts.reconcile_tcgcsv_group_ids import reconcile
+
 EBAY_SCRIPT = ROOT / "scripts" / "run_daily_ebay_collection.py"
 TCGCSV_SCRIPT = ROOT / "scripts" / "run_daily_tcgcsv_collection.py"
 DEFAULT_MAP = ROOT / "data" / "reference" / "product_map.csv"
 DEFAULT_MODEL = ROOT / "data" / "product_master" / "product_master_model_input.csv"
 DEFAULT_OUTPUT = ROOT / "data" / "operations" / "mtg_marketplace" / "latest.json"
+DEFAULT_RECONCILIATION_ROOT = ROOT / "data"
 
 
 def _run(command: list[str]) -> dict[str, Any]:
@@ -74,10 +80,63 @@ def _deal_rankings(model_path: Path, limit: int = 25) -> list[dict[str, Any]]:
     return rows[:limit]
 
 
+def _materialize_reconciled_map(
+    product_map: Path,
+    search_root: Path,
+    output_path: Path,
+) -> tuple[Path, dict[str, Any]]:
+    """Create a runtime map from unique local evidence without mutating reference data."""
+    if not product_map.is_file() or not search_root.is_dir():
+        return product_map, {
+            "status": "NOT_RUN",
+            "reason_codes": ["TCGCSV_RECONCILIATION_INPUT_NOT_AVAILABLE"],
+        }
+
+    report = reconcile(product_map, search_root)
+    if report.get("status") != "PASS":
+        return product_map, report
+
+    resolutions = {
+        str(item.get("tcgplayer_product_id", "")): item
+        for item in report.get("results", [])
+        if item.get("selected_group_id")
+    }
+    with product_map.open("r", encoding="utf-8-sig", newline="") as handle:
+        reader = csv.DictReader(handle)
+        fieldnames = list(reader.fieldnames or [])
+        rows = list(reader)
+
+    for row in rows:
+        product_id = str(row.get("tcgplayer_product_id") or "").strip()
+        resolution = resolutions.get(product_id)
+        if not resolution:
+            continue
+        row["tcgcsv_group_id"] = str(resolution["selected_group_id"])
+        category_ids = sorted({
+            str(evidence.get("tcgcsv_category_id") or "").strip()
+            for evidence in resolution.get("evidence", [])
+            if str(evidence.get("tcgcsv_category_id") or "").strip()
+        })
+        if len(category_ids) == 1:
+            row["tcgcsv_category_id"] = category_ids[0]
+
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    with output_path.open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=fieldnames, extrasaction="ignore")
+        writer.writeheader()
+        writer.writerows(rows)
+
+    report = dict(report)
+    report["runtime_product_map"] = str(output_path.resolve())
+    report["reference_product_map_modified"] = False
+    return output_path, report
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Run the unified MTG marketplace production cycle")
     parser.add_argument("--live", action="store_true")
     parser.add_argument("--product-map", type=Path, default=DEFAULT_MAP)
+    parser.add_argument("--reconciliation-search-root", type=Path, default=DEFAULT_RECONCILIATION_ROOT)
     parser.add_argument("--model-input", type=Path, default=DEFAULT_MODEL)
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
     parser.add_argument("--max-ebay-products", type=int, default=3)
@@ -95,6 +154,12 @@ def main() -> int:
     lane_root = output.parent / "lanes"
     lane_root.mkdir(parents=True, exist_ok=True)
 
+    runtime_map, reconciliation = _materialize_reconciled_map(
+        args.product_map.resolve(),
+        args.reconciliation_search_root.resolve(),
+        output.parent / "runtime" / "tcgcsv_product_map.csv",
+    )
+
     ebay_command = [
         sys.executable, str(EBAY_SCRIPT),
         "--limit-per-product", str(args.ebay_limit),
@@ -103,7 +168,7 @@ def main() -> int:
     ]
     tcgcsv_command = [
         sys.executable, str(TCGCSV_SCRIPT),
-        "--product-map", str(args.product_map.resolve()),
+        "--product-map", str(runtime_map.resolve()),
         "--summary-output", str(lane_root / "tcgcsv.json"),
     ]
     if not live:
@@ -118,6 +183,8 @@ def main() -> int:
     reasons: list[str] = []
     if blocked_live:
         reasons.append("MTG_LIVE_EXECUTION_ENV_DISABLED")
+    if reconciliation.get("status") not in {"PASS", "NOT_RUN"}:
+        reasons.append("TCGCSV_RECONCILIATION_NOT_READY")
     if lane_failures:
         reasons.extend(f"{name}_LANE_NOT_READY" for name in lane_failures)
     if not deals:
@@ -137,6 +204,9 @@ def main() -> int:
         "live_execution_requested": bool(args.live),
         "live_execution_enabled": live_env,
         "live_api_called": bool(live),
+        "reference_product_map": str(args.product_map.resolve()),
+        "runtime_product_map": str(runtime_map.resolve()),
+        "reconciliation": reconciliation,
         "lanes": {"ebay": ebay, "tcgcsv": tcgcsv},
         "deal_rankings": deals,
         "deal_ranking_count": len(deals),
