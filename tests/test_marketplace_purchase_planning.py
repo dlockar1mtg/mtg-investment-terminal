@@ -97,7 +97,7 @@ def test_existing_holdings_concentration_can_block_an_additional_unit() -> None:
         PurchasePolicy(
             monthly_capital=600,
             reserve_pct=0,
-            max_projected_product_weight_pct=70,
+            max_projected_product_weight_pct=71,
             bootstrap_portfolio_value_threshold=0,
         ),
     )
@@ -105,8 +105,8 @@ def test_existing_holdings_concentration_can_block_an_additional_unit() -> None:
     by_id = {row["tcgplayer_product_id"]: row for row in plan}
     assert summary["status"] == "PASS"
     assert by_id["111"]["recommended_units"] == 0
-    assert by_id["222"]["recommended_units"] >= 1
-    assert max(row["projected_portfolio_weight_pct"] for row in projections) <= 70.0
+    assert by_id["222"]["recommended_units"] == 2
+    assert max(row["projected_portfolio_weight_pct"] for row in projections) <= 71.0
 
 
 def test_unknown_holding_product_id_fails_closed() -> None:
