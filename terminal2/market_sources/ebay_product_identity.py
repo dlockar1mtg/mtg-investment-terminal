@@ -32,9 +32,10 @@ GENERIC_IDENTITY_TERMS = {
     "booster", "box", "display", "collector", "draft", "set", "play",
 }
 
-REASON_PHRASE_ALIASES = {
+REASON_CODE_ALIASES = {
     "nonfoil": "non_foil",
     "non foil": "non_foil",
+    "foil etched": "etched_foil",
 }
 
 
@@ -57,9 +58,9 @@ def _contains_any(value_norm: str, phrases: Iterable[str]) -> bool:
     return any(f" {phrase.strip()} " in value_norm for phrase in phrases)
 
 
-def _reason_phrase(phrase: str) -> str:
-    normalized = " ".join(phrase.split()).lower()
-    return REASON_PHRASE_ALIASES.get(normalized, normalized.replace(" ", "_"))
+def _reason_code(phrase: str) -> str:
+    canonical = REASON_CODE_ALIASES.get(phrase.strip(), phrase.strip())
+    return canonical.replace(" ", "_")
 
 
 def detect_finish(value: object) -> str:
@@ -84,10 +85,15 @@ def detect_form(value: object, product_class: str = "") -> str:
 
 
 def _identity_tokens(value: object) -> tuple[str, ...]:
-    return tuple(sorted({
-        token for token in normalize(value).split()
-        if len(token) > 2 and token not in GENERIC_IDENTITY_TERMS
-    }))
+    tokens: set[str] = set()
+    for token in normalize(value).split():
+        if token in GENERIC_IDENTITY_TERMS:
+            continue
+        # Numbered products are distinct identities: Modern Horizons 2/3,
+        # Double Masters 2022, Extra Life 2020/2022, and similar families.
+        if token.isdigit() or len(token) > 2:
+            tokens.add(token)
+    return tuple(sorted(tokens))
 
 
 def _finish_requirements(finish: str) -> tuple[tuple[str, ...], tuple[str, ...]]:
@@ -157,10 +163,10 @@ def evaluate_title(identity: EbayProductIdentity, title: str) -> tuple[bool, lis
 
     for phrase in identity.required_phrases:
         if f" {phrase} " not in title_norm:
-            reasons.append(f"missing_required_phrase:{_reason_phrase(phrase)}")
+            reasons.append(f"missing_required_phrase:{_reason_code(phrase)}")
     for phrase in identity.forbidden_phrases:
         if f" {phrase} " in title_norm:
-            reasons.append(f"forbidden_phrase:{_reason_phrase(phrase)}")
+            reasons.append(f"forbidden_phrase:{_reason_code(phrase)}")
 
     present = [token for token in identity.required_tokens if f" {token} " in title_norm]
     coverage = len(present) / len(identity.required_tokens) if identity.required_tokens else 1.0
