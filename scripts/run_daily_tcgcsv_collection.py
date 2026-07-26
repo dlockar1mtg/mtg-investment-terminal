@@ -1,7 +1,8 @@
 """Governed command-line wrapper for daily TCGCSV price collection.
 
 Dry-run mode validates mapping completeness and emits evidence without making
-network calls. Live mode delegates to collectors.tcgcsv_collector.
+network calls. Live mode delegates to collectors.tcgcsv_collector and persists
+collected observations for downstream normalization.
 """
 from __future__ import annotations
 
@@ -27,6 +28,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Run governed daily TCGCSV collection")
     parser.add_argument("--product-map", type=Path, required=True)
     parser.add_argument("--summary-output", type=Path, default=Path("data/operations/tcgcsv/daily_collection.json"))
+    parser.add_argument("--observations-output", type=Path, default=Path("data/operations/tcgcsv/price_observations.csv"))
     parser.add_argument("--dry-run", action="store_true")
     return parser
 
@@ -56,11 +58,13 @@ def _inspect_product_map(path: Path) -> tuple[int, int, list[str]]:
 def main() -> int:
     args = build_parser().parse_args()
     product_map = args.product_map.resolve()
+    observations_output = args.observations_output.resolve()
     payload: dict[str, object] = {
         "status": "DRY_RUN" if args.dry_run else "STARTING",
         "live_api_called": False,
         "product_map": str(product_map),
         "product_map_available": product_map.is_file(),
+        "observations_output": str(observations_output),
     }
 
     if not product_map.is_file():
@@ -102,17 +106,20 @@ def main() -> int:
     from collectors.tcgcsv_collector import collect_tcgcsv_prices
 
     frame = collect_tcgcsv_prices(product_map)
+    observations_output.parent.mkdir(parents=True, exist_ok=True)
+    frame.to_csv(observations_output, index=False)
     payload.update(
         {
-            "status": "PASS",
+            "status": "PASS" if len(frame) else "INCOMPLETE",
             "live_api_called": True,
             "rows_collected": int(len(frame)),
-            "reason_codes": ["TCGCSV_COLLECTION_COMPLETED"],
+            "observations_written": observations_output.is_file(),
+            "reason_codes": ["TCGCSV_COLLECTION_COMPLETED"] if len(frame) else ["TCGCSV_COLLECTION_RETURNED_NO_ROWS"],
         }
     )
     _publish(args.summary_output, payload)
     print(json.dumps(payload, indent=2))
-    return 0
+    return 0 if len(frame) else 2
 
 
 if __name__ == "__main__":
