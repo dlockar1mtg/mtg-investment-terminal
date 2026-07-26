@@ -21,7 +21,7 @@ on:
       max_batches:
         description: "Maximum batches this run; 0 means all remaining"
         required: true
-        default: "1"
+        default: "0"
         type: string
       ebay_limit:
         description: "Maximum eBay listings requested per product"
