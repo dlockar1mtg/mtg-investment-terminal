@@ -76,17 +76,32 @@ def _split_collection_maps(product_map: Path, runtime_root: Path) -> tuple[Path,
         fieldnames = list(reader.fieldnames or [])
         rows = list(reader)
 
-    ebay_rows = [row for row in rows if str(row.get("mapping_status") or "READY").upper() == "READY"]
-    # Keep all non-eBay-only rows in the TCGCSV source map, including rows whose
-    # group/category IDs can be recovered by reconciliation. Completeness is
-    # enforced by the TCGCSV lane after the reconciled runtime map is written.
+    ready_rows = [
+        row
+        for row in rows
+        if str(row.get("mapping_status") or "READY").upper() == "READY"
+    ]
+    ebay_rows = [
+        row
+        for row in ready_rows
+        if str(
+            row.get("collection_lane") or "EBAY_AND_TCGCSV"
+        ).upper() != "TCGCSV_ONLY"
+    ]
+    # Keep both dual-lane and TCGCSV-only rows in the TCGCSV source map.
     tcgcsv_rows = [
-        row for row in ebay_rows
-        if str(row.get("collection_lane") or "EBAY_AND_TCGCSV").upper() != "EBAY_ONLY"
+        row
+        for row in ready_rows
+        if str(
+            row.get("collection_lane") or "EBAY_AND_TCGCSV"
+        ).upper() != "EBAY_ONLY"
     ]
     ebay_only_rows = [
-        row for row in ebay_rows
-        if str(row.get("collection_lane") or "EBAY_AND_TCGCSV").upper() == "EBAY_ONLY"
+        row
+        for row in ebay_rows
+        if str(
+            row.get("collection_lane") or "EBAY_AND_TCGCSV"
+        ).upper() == "EBAY_ONLY"
     ]
 
     ebay_map = runtime_root / "ebay_product_map.csv"
@@ -97,8 +112,15 @@ def _split_collection_maps(product_map: Path, runtime_root: Path) -> tuple[Path,
     routing = {
         "status": "PASS" if ebay_rows else "INCOMPLETE",
         "input_product_count": len(rows),
+        "ready_product_count": len(ready_rows),
         "ebay_product_count": len(ebay_rows),
         "tcgcsv_product_count": len(tcgcsv_rows),
+        "tcgcsv_only_product_count": sum(
+            str(
+                row.get("collection_lane") or ""
+            ).upper() == "TCGCSV_ONLY"
+            for row in tcgcsv_rows
+        ),
         "ebay_only_product_count": len(ebay_only_rows),
         "ebay_only_tcgplayer_product_ids": sorted(
             str(row.get("tcgplayer_product_id") or "").strip()

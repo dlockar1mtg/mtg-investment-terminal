@@ -26,6 +26,16 @@ on:
         required: true
         default: false
         type: boolean
+      ebay_batch_index:
+        description: "Optional zero-based eBay batch index; leave blank to rotate automatically"
+        required: false
+        default: ""
+        type: string
+      ebay_batch_size:
+        description: "Number of governed products in the eBay batch"
+        required: false
+        default: "25"
+        type: string
 
   schedule:
     - cron: "15 12 * * *"
@@ -46,6 +56,8 @@ jobs:
       LIVE_EXECUTION: ${{ github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.live_execution == true) }}
       MTG_LIVE_EXECUTION: ${{ github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.live_execution == true) }}
       EBAY_LIMIT: "200"
+      EBAY_BATCH_SIZE: ${{ github.event_name == 'workflow_dispatch' && inputs.ebay_batch_size || '25' }}
+      EBAY_BATCH_INDEX: ${{ github.event_name == 'workflow_dispatch' && inputs.ebay_batch_index || '' }}
       EBAY_CLIENT_ID: ${{ secrets.EBAY_CLIENT_ID }}
       EBAY_CLIENT_SECRET: ${{ secrets.EBAY_CLIENT_SECRET }}
       EBAY_MARKETPLACE_ID: EBAY_US
@@ -79,6 +91,8 @@ jobs:
         run: |
           test -f data/reference/product_map.csv
           test -f data/product_master/product_master_model_input.csv
+          test -f scripts/build_mtg_governed_marketplace_universe.py
+          test -f scripts/select_mtg_marketplace_batch.py
           test -f scripts/run_mtg_marketplace_production.py
           test -f scripts/certify_mtg_marketplace_observations.py
           test -f scripts/run_certified_marketplace_decisioning.py
@@ -112,7 +126,47 @@ jobs:
             tests/test_marketplace_decisioning.py \
             tests/test_mtg_hosted_uip_delivery.py \
             tests/test_mtg_live_uip_overlay.py \
+            tests/test_mtg_governed_marketplace_universe.py \
+            tests/test_mtg_marketplace_batch_selection.py \
             -q
+
+      - name: Build governed marketplace universe
+        run: |
+          python scripts/build_mtg_governed_marketplace_universe.py
+
+      - name: Select deterministic marketplace batch
+        shell: bash
+        run: |
+          EXTRA_BATCH_ARGS=""
+          if [[ -n "$EBAY_BATCH_INDEX" ]]; then
+            EXTRA_BATCH_ARGS="--batch-index $EBAY_BATCH_INDEX"
+          fi
+          python scripts/select_mtg_marketplace_batch.py             --universe data/operations/mtg_marketplace/governed_universe/governed_marketplace_product_map.csv             --output data/operations/mtg_marketplace/runtime/marketplace_batch_product_map.csv             --summary-output data/operations/mtg_marketplace/runtime/marketplace_batch_summary.json             --batch-size "$EBAY_BATCH_SIZE"             --run-number "${{ github.run_number }}"             $EXTRA_BATCH_ARGS
+
+      - name: Validate marketplace batch
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          path = Path(
+              "data/operations/mtg_marketplace/runtime/"
+              "marketplace_batch_summary.json"
+          )
+          payload = json.loads(path.read_text(encoding="utf-8"))
+          if payload.get("status") != "PASS":
+              raise SystemExit(f"Marketplace batch failed: {payload}")
+          if payload.get("universe_ready_products") != 1141:
+              raise SystemExit(
+                  "Governed universe did not contain 1,141 ready products"
+              )
+          if payload.get("ebay_batch_products", 0) < 1:
+              raise SystemExit("eBay batch is empty")
+          if payload.get("tcgcsv_full_refresh_products") != 168:
+              raise SystemExit(
+                  "TCGCSV refresh did not retain all 168 eligible products"
+              )
+          print(json.dumps(payload, indent=2))
+          PY
 
       - name: Run unified MTG marketplace source refresh
         shell: bash
@@ -123,7 +177,7 @@ jobs:
           fi
           python scripts/run_mtg_marketplace_production.py \
             $LIVE_FLAG \
-            --product-map data/reference/product_map.csv \
+            --product-map data/operations/mtg_marketplace/runtime/marketplace_batch_product_map.csv \
             --model-input data/product_master/product_master_model_input.csv \
             --ebay-limit "$EBAY_LIMIT" \
             --output data/operations/mtg_marketplace/latest.json
