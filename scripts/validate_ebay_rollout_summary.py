@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 
 
-REQUIRED_MATCHER = "precision-v2"
+REQUIRED_MATCHER = "precision-v3-universal"
 REQUIRED_SELECTION_MODE = "PRODUCT_MAP_TARGETED"
 
 
@@ -25,6 +25,10 @@ def validate_summary(
         errors.append(f"matcher_version must be {REQUIRED_MATCHER}")
     if summary.get("matcher_fail_closed") is not True:
         errors.append("matcher_fail_closed must be true")
+    if summary.get("universal_classification_policy") is not True:
+        errors.append("universal_classification_policy must be true")
+    if summary.get("universal_policy_mode") != "downgrade_only":
+        errors.append("universal_policy_mode must be downgrade_only")
     if summary.get("selection_mode") != REQUIRED_SELECTION_MODE:
         errors.append(f"selection_mode must be {REQUIRED_SELECTION_MODE}")
     if summary.get("products") != expected_products:
@@ -59,7 +63,7 @@ def validate_summary(
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        description="Fail-closed validation for bounded precision-v2 eBay rollout"
+        description="Fail-closed validation for bounded universal eBay rollout"
     )
     parser.add_argument("--summary", type=Path, required=True)
     parser.add_argument("--expected-products", type=int, required=True)
