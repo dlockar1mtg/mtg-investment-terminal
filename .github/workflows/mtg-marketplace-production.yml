@@ -14,32 +14,19 @@ on:
       - "tests/test_marketplace_quality_certification.py"
       - "tests/test_ebay_targeted_collection.py"
       - "tests/test_marketplace_decisioning.py"
-      - "tests/test_marketplace_purchase_planning.py"
+      - "tests/test_mtg_hosted_uip_delivery.py"
+      - "tests/test_mtg_live_uip_overlay.py"
       - "data/reference/product_map.csv"
       - "data/product_master/product_master_model_input.csv"
-      - "data/terminal2/portfolio_holdings.csv"
+
   workflow_dispatch:
     inputs:
       live_execution:
-        description: "Run live eBay and TCGCSV collection"
+        description: "Run live eBay and TCGCSV source refresh"
         required: true
         default: false
         type: boolean
-      ebay_limit:
-        description: "Maximum eBay listings per mapped product"
-        required: true
-        default: "10"
-        type: string
-      monthly_mtg_capital:
-        description: "Monthly MTG capital available in USD"
-        required: true
-        default: "600"
-        type: string
-      cash_reserve_pct:
-        description: "Percent of monthly MTG capital held as cash reserve"
-        required: true
-        default: "10"
-        type: string
+
   schedule:
     - cron: "15 12 * * *"
 
@@ -53,13 +40,12 @@ concurrency:
 jobs:
   marketplace-production:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 180
+
     env:
       LIVE_EXECUTION: ${{ github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.live_execution == true) }}
       MTG_LIVE_EXECUTION: ${{ github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.live_execution == true) }}
-      EBAY_LIMIT: ${{ github.event_name == 'workflow_dispatch' && inputs.ebay_limit || '10' }}
-      MONTHLY_MTG_CAPITAL: ${{ github.event_name == 'workflow_dispatch' && inputs.monthly_mtg_capital || '600' }}
-      CASH_RESERVE_PCT: ${{ github.event_name == 'workflow_dispatch' && inputs.cash_reserve_pct || '10' }}
+      EBAY_LIMIT: "200"
       EBAY_CLIENT_ID: ${{ secrets.EBAY_CLIENT_ID }}
       EBAY_CLIENT_SECRET: ${{ secrets.EBAY_CLIENT_SECRET }}
       EBAY_MARKETPLACE_ID: EBAY_US
@@ -96,15 +82,15 @@ jobs:
           test -f scripts/run_mtg_marketplace_production.py
           test -f scripts/certify_mtg_marketplace_observations.py
           test -f scripts/run_certified_marketplace_decisioning.py
-          test -f scripts/run_mtg_purchase_plan.py
+          test -f scripts/build_mtg_hosted_uip_delivery.py
+          test -f scripts/apply_mtg_live_uip_overlay.py
           python -m compileall -q scripts terminal2
           python - <<'PY'
           from scripts.reconcile_tcgcsv_group_ids import reconcile
           from terminal2.market_sources.ebay_targeted_collection import select_target_products
           from terminal2.market_sources.marketplace_quality import certify_rows
           from terminal2.market_sources.marketplace_decisioning import build_decisions
-          from terminal2.market_sources.marketplace_purchase_planning import build_purchase_plan
-          print("Marketplace module imports passed")
+          print("Marketplace source-production imports passed")
           PY
 
       - name: Validate live credentials
@@ -114,7 +100,7 @@ jobs:
           test -n "$EBAY_CLIENT_ID" || { echo "EBAY_CLIENT_ID secret is missing"; exit 1; }
           test -n "$EBAY_CLIENT_SECRET" || { echo "EBAY_CLIENT_SECRET secret is missing"; exit 1; }
 
-      - name: Run marketplace production tests
+      - name: Run marketplace source-production tests
         run: |
           python -m pytest \
             tests/test_daily_ebay_collection_entrypoint.py \
@@ -124,10 +110,11 @@ jobs:
             tests/test_marketplace_quality_certification.py \
             tests/test_ebay_targeted_collection.py \
             tests/test_marketplace_decisioning.py \
-            tests/test_marketplace_purchase_planning.py \
+            tests/test_mtg_hosted_uip_delivery.py \
+            tests/test_mtg_live_uip_overlay.py \
             -q
 
-      - name: Run unified MTG marketplace cycle
+      - name: Run unified MTG marketplace source refresh
         shell: bash
         run: |
           LIVE_FLAG=""
@@ -141,7 +128,7 @@ jobs:
             --ebay-limit "$EBAY_LIMIT" \
             --output data/operations/mtg_marketplace/latest.json
 
-      - name: Validate marketplace cycle output
+      - name: Validate marketplace source refresh
         run: |
           python - <<'PY'
           import json
@@ -154,10 +141,13 @@ jobs:
           live = os.getenv("LIVE_EXECUTION", "false").lower() == "true"
           expected = "PASS" if live else "DRY_RUN_PASS"
           if payload.get("status") != expected:
-              raise SystemExit(f"Unexpected marketplace status: {payload.get('status')} expected={expected}; reasons={payload.get('reason_codes')}")
+              raise SystemExit(
+                  f"Unexpected marketplace status: {payload.get('status')} "
+                  f"expected={expected}; reasons={payload.get('reason_codes')}"
+              )
           if payload.get("deal_ranking_count", 0) < 1:
               raise SystemExit("No legacy deal rankings were produced")
-          print(f"Marketplace cycle validated: {expected}")
+          print(f"Marketplace source refresh validated: {expected}")
           PY
 
       - name: Certify marketplace observations
@@ -210,7 +200,10 @@ jobs:
           if payload.get("status") != "PASS" or payload.get("decision_count", 0) < 1:
               raise SystemExit(f"Certified marketplace decisioning failed: {payload}")
           if payload.get("unmatched_certified_product_ids"):
-              raise SystemExit(f"Certified prices were not matched to the model: {payload['unmatched_certified_product_ids']}")
+              raise SystemExit(
+                  f"Certified prices were not matched to the model: "
+                  f"{payload['unmatched_certified_product_ids']}"
+              )
           with decisions_path.open("r", encoding="utf-8-sig", newline="") as handle:
               rows = list(csv.DictReader(handle))
           if not rows or any(not row.get("signal") for row in rows):
@@ -218,52 +211,11 @@ jobs:
           print(f"Certified marketplace decisioning validated: {len(rows)} decisions")
           PY
 
-      - name: Build monthly whole-box purchase plan
-        if: ${{ env.LIVE_EXECUTION == 'true' }}
-        run: |
-          python scripts/run_mtg_purchase_plan.py \
-            --decisions data/operations/mtg_marketplace/certified_marketplace_decisions.csv \
-            --model-input data/product_master/product_master_model_input.csv \
-            --holdings data/terminal2/portfolio_holdings.csv \
-            --monthly-capital "$MONTHLY_MTG_CAPITAL" \
-            --reserve-pct "$CASH_RESERVE_PCT" \
-            --plan-output data/operations/mtg_marketplace/monthly_purchase_plan.csv \
-            --projection-output data/operations/mtg_marketplace/projected_portfolio_after_purchase.csv \
-            --summary-output data/operations/mtg_marketplace/monthly_purchase_plan_summary.json
-
-      - name: Validate monthly purchase plan
-        if: ${{ env.LIVE_EXECUTION == 'true' }}
-        run: |
-          python - <<'PY'
-          import csv
-          import json
-          from pathlib import Path
-          summary_path = Path("data/operations/mtg_marketplace/monthly_purchase_plan_summary.json")
-          plan_path = Path("data/operations/mtg_marketplace/monthly_purchase_plan.csv")
-          projection_path = Path("data/operations/mtg_marketplace/projected_portfolio_after_purchase.csv")
-          for path in (summary_path, plan_path, projection_path):
-              if not path.is_file():
-                  raise SystemExit(f"Required purchase plan artifact missing: {path}")
-          payload = json.loads(summary_path.read_text(encoding="utf-8"))
-          if payload.get("status") not in {"PASS", "NO_ACTION"}:
-              raise SystemExit(f"Purchase planning failed: {payload}")
-          if not payload.get("reserve_preserved", False):
-              raise SystemExit("Purchase plan did not preserve the configured cash reserve")
-          if payload.get("planned_spend", 0) > payload.get("monthly_capital", 0):
-              raise SystemExit("Purchase plan exceeds monthly capital")
-          with plan_path.open("r", encoding="utf-8-sig", newline="") as handle:
-              rows = list(csv.DictReader(handle))
-          for row in rows:
-              units = float(row.get("recommended_units") or 0)
-              if units < 0 or not units.is_integer():
-                  raise SystemExit(f"Non-whole or negative unit recommendation: {row}")
-          print(f"Purchase plan validated: spend=${payload.get('planned_spend', 0):.2f}; carry-forward=${payload.get('carry_forward_capital', 0):.2f}")
-          PY
-
       - name: Build hosted MTG UIP delivery
         if: ${{ env.LIVE_EXECUTION == 'true' }}
         run: |
-          python scripts/build_mtg_hosted_uip_delivery.py             --output-root data/operations/mtg_uip_delivery
+          python scripts/build_mtg_hosted_uip_delivery.py \
+            --output-root data/operations/mtg_uip_delivery
 
       - name: Apply certified live marketplace overlay
         if: ${{ env.LIVE_EXECUTION == 'true' }}
@@ -285,17 +237,51 @@ jobs:
           import json
           from pathlib import Path
           payload = json.loads(
-              Path("data/operations/mtg_uip_delivery/latest/package_summary.json").read_text()
+              Path("data/operations/mtg_uip_delivery/latest/package_summary.json")
+              .read_text(encoding="utf-8")
           )
           overlay = payload.get("live_overlay", {})
           if overlay.get("status") != "PASS":
               raise SystemExit(f"MTG live overlay was not certified: {overlay}")
+          if overlay.get("products_with_any_live_overlay", 0) < 1:
+              raise SystemExit("MTG live overlay contains no live products")
           print(
               "MTG live overlay validated: "
               f"prices={overlay.get('products_with_live_prices', 0)}; "
               f"decisions={overlay.get('products_with_live_decisions', 0)}; "
               f"fallbacks={overlay.get('products_using_baseline_fallback', 0)}"
           )
+          PY
+
+      - name: Publish source-refresh handoff metadata
+        if: ${{ env.LIVE_EXECUTION == 'true' }}
+        run: |
+          python - <<'PY'
+          import json
+          from datetime import datetime, timezone
+          from pathlib import Path
+          output = Path(
+              "data/operations/mtg_marketplace/uip_source_refresh_handoff.json"
+          )
+          payload = {
+              "status": "PASS",
+              "domain": "mtg",
+              "generated_at_utc": datetime.now(timezone.utc).isoformat(),
+              "capital_policy": "UIP_RECOMMENDED",
+              "cash_reserve_policy": "UIP_RECOMMENDED",
+              "source_purchase_plan_generated": False,
+              "source_purchase_plan_reason": (
+                  "Purchase planning occurs after UIP cross-domain allocation."
+              ),
+              "ebay_collection_scope": {
+                  "mode": "BROAD_MAXIMUM_CURRENT_CLIENT",
+                  "maximum_unique_listings_per_product": 200,
+              },
+              "delivery_path": "data/operations/mtg_uip_delivery/latest",
+          }
+          output.parent.mkdir(parents=True, exist_ok=True)
+          output.write_text(json.dumps(payload, indent=2), encoding="utf-8")
+          print(json.dumps(payload, indent=2))
           PY
 
       - name: Upload production evidence
