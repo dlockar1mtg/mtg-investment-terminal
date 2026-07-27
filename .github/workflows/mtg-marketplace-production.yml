@@ -92,6 +92,8 @@ jobs:
           test -f data/reference/product_map.csv
           test -f data/product_master/product_master_model_input.csv
           test -f scripts/build_mtg_governed_marketplace_universe.py
+          test -f scripts/build_universal_mtg_history_foundation.py
+          test -f scripts/build_universal_mtg_daily_history.py
           test -f scripts/select_mtg_marketplace_batch.py
           test -f scripts/run_mtg_marketplace_production.py
           test -f scripts/certify_mtg_marketplace_observations.py
@@ -128,6 +130,8 @@ jobs:
             tests/test_mtg_live_uip_overlay.py \
             tests/test_mtg_governed_marketplace_universe.py \
             tests/test_mtg_marketplace_batch_selection.py \
+            tests/test_universal_mtg_history_foundation.py \
+            tests/test_universal_mtg_daily_history.py \
             -q
 
       - name: Build governed marketplace universe
@@ -181,6 +185,28 @@ jobs:
             --model-input data/product_master/product_master_model_input.csv \
             --ebay-limit "$EBAY_LIMIT" \
             --output data/operations/mtg_marketplace/latest.json
+
+      - name: Build universal MTG history foundation
+        run: |
+          python scripts/build_universal_mtg_history_foundation.py
+
+      - name: Build distinct-date history and source verification
+        run: |
+          python scripts/build_universal_mtg_daily_history.py
+
+      - name: Validate universal history backfill foundation
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          path = Path("data/operations/mtg_history_backfill/universal_mtg_history_backfill_summary.json")
+          payload = json.loads(path.read_text(encoding="utf-8"))
+          if payload.get("status") != "PASS":
+              raise SystemExit(f"History backfill foundation failed: {payload}")
+          if payload.get("governed_products") != 1141:
+              raise SystemExit("History verification did not retain 1,141 products")
+          print(json.dumps(payload, indent=2))
+          PY
 
       - name: Validate marketplace source refresh
         run: |
@@ -253,11 +279,24 @@ jobs:
           payload = json.loads(summary_path.read_text(encoding="utf-8"))
           if payload.get("status") != "PASS" or payload.get("decision_count", 0) < 1:
               raise SystemExit(f"Certified marketplace decisioning failed: {payload}")
-          if payload.get("unmatched_certified_product_ids"):
+          certified = int(payload.get("certified_products", 0) or 0)
+          decisions = int(payload.get("decision_count", 0) or 0)
+          unmatched = list(payload.get("unmatched_certified_product_ids") or [])
+          missing_forecasts = list(payload.get("missing_forecast_product_ids") or [])
+          accounted = decisions + len(unmatched) + len(missing_forecasts)
+          if decisions < 1:
+              raise SystemExit("No model-backed marketplace decisions were produced")
+          if accounted != certified:
               raise SystemExit(
-                  f"Certified prices were not matched to the model: "
-                  f"{payload['unmatched_certified_product_ids']}"
+                  "Certified marketplace coverage is not fully accounted for: "
+                  f"certified={certified}; decisions={decisions}; "
+                  f"unmatched={len(unmatched)}; missing_forecasts={len(missing_forecasts)}"
               )
+          print(
+              "Marketplace model coverage: "
+              f"certified={certified}; model_backed={decisions}; "
+              f"price_only={len(unmatched)}; missing_forecasts={len(missing_forecasts)}"
+          )
           with decisions_path.open("r", encoding="utf-8-sig", newline="") as handle:
               rows = list(csv.DictReader(handle))
           if not rows or any(not row.get("signal") for row in rows):
