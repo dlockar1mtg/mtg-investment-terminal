@@ -5,7 +5,7 @@ from pathlib import Path
 from terminal2.market_sources import ebay_matching
 from terminal2.market_sources import ebay_precision_production as production
 from terminal2.market_sources import ebay_targeted_collection
-from terminal2.market_sources.ebay_precision_v2 import identity_match_listing
+from terminal2.market_sources.ebay_precision_v3 import identity_match_listing
 
 
 def test_universe_adapter_activates_and_restores_precision_matcher(monkeypatch) -> None:
@@ -25,8 +25,10 @@ def test_universe_adapter_activates_and_restores_precision_matcher(monkeypatch) 
     assert observed["limit"] == 7
     assert observed["max_products"] == 2
     assert ebay_matching.match_listing is original
-    assert summary["matcher_version"] == "precision-v2"
+    assert summary["matcher_version"] == "precision-v3-universal"
     assert summary["matcher_fail_closed"] is True
+    assert summary["universal_classification_policy"] is True
+    assert summary["universal_policy_mode"] == "downgrade_only"
 
 
 def test_targeted_adapter_activates_and_restores_precision_matcher(monkeypatch, tmp_path: Path) -> None:
@@ -55,5 +57,6 @@ def test_targeted_adapter_activates_and_restores_precision_matcher(monkeypatch, 
     assert observed["product_map"] == product_map
     assert observed["limit"] == 5
     assert ebay_targeted_collection.match_listing is original
-    assert summary["matcher_version"] == "precision-v2"
+    assert summary["matcher_version"] == "precision-v3-universal"
     assert summary["matcher_fail_closed"] is True
+    assert summary["universal_classification_policy"] is True
