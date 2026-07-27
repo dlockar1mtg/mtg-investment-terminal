@@ -40,6 +40,8 @@ on:
         required: true
         default: "10"
         type: string
+  schedule:
+    - cron: "15 12 * * *"
 
 permissions:
   contents: read
@@ -53,8 +55,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
-      LIVE_EXECUTION: ${{ github.event_name == 'workflow_dispatch' && inputs.live_execution == true }}
-      MTG_LIVE_EXECUTION: ${{ github.event_name == 'workflow_dispatch' && inputs.live_execution == true }}
+      LIVE_EXECUTION: ${{ github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.live_execution == true) }}
+      MTG_LIVE_EXECUTION: ${{ github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.live_execution == true) }}
       EBAY_LIMIT: ${{ github.event_name == 'workflow_dispatch' && inputs.ebay_limit || '10' }}
       MONTHLY_MTG_CAPITAL: ${{ github.event_name == 'workflow_dispatch' && inputs.monthly_mtg_capital || '600' }}
       CASH_RESERVE_PCT: ${{ github.event_name == 'workflow_dispatch' && inputs.cash_reserve_pct || '10' }}
