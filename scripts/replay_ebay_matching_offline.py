@@ -20,6 +20,14 @@ from terminal2.market_sources.ebay_precision_v3 import identity_match_listing as
 STATE_RANK = {"REJECTED": 0, "REVIEW": 1, "ACCEPTED": 2}
 MIGRATION_MATCHER = "precision-v3-universal"
 BASELINE_MATCHER = "precision-v2"
+EXCLUDED_PATH_PARTS = {
+    "attempts",
+    "promotion_backups",
+    "reclassified",
+    "consolidated",
+    "ebay_full_universe_migration",
+    "ebay_offline_replay",
+}
 
 
 def read_csv(path: Path) -> list[dict[str, str]]:
@@ -89,6 +97,90 @@ def _transition(old: str, new: str) -> str:
     return f"{old}->{new}"
 
 
+def _is_excluded_evidence_path(path: Path) -> bool:
+    lowered_parts = {part.lower() for part in path.parts}
+    return bool(lowered_parts & EXCLUDED_PATH_PARTS)
+
+
+def discover_evidence_files(input_root: Path) -> tuple[list[Path], list[Path]]:
+    discovered = sorted(input_root.rglob("ebay_listing_match_results_*.csv"))
+    included = [path for path in discovered if not _is_excluded_evidence_path(path)]
+    excluded = [path for path in discovered if _is_excluded_evidence_path(path)]
+    return included, excluded
+
+
+def _parse_observed(value: object) -> datetime:
+    text = str(value or "").strip()
+    if not text:
+        return datetime.min.replace(tzinfo=timezone.utc)
+    try:
+        parsed = datetime.fromisoformat(text.replace("Z", "+00:00"))
+    except ValueError:
+        return datetime.min.replace(tzinfo=timezone.utc)
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=timezone.utc)
+    return parsed.astimezone(timezone.utc)
+
+
+def _evidence_key(row: dict[str, str]) -> tuple[str, str]:
+    product_id = str(row.get("canonical_product_id", "")).strip()
+    item_id = str(row.get("ebay_item_id", "")).strip()
+    if item_id:
+        return product_id, item_id
+    fallback = "|".join(
+        (
+            str(row.get("title", "")).strip().lower(),
+            str(row.get("item_url", "")).strip().lower(),
+            str(row.get("offline_source_file", "")).strip().lower(),
+            str(row.get("offline_source_row", "")).strip(),
+        )
+    )
+    return product_id, f"MISSING_ITEM_ID:{fallback}"
+
+
+def canonicalize_evidence_rows(
+    rows: list[dict[str, str]],
+) -> tuple[list[dict[str, str]], list[dict[str, str]], int]:
+    latest_by_key: dict[tuple[str, str], dict[str, str]] = {}
+    duplicate_rows: list[dict[str, str]] = []
+    missing_item_id_count = 0
+
+    for row in rows:
+        if not str(row.get("ebay_item_id", "")).strip():
+            missing_item_id_count += 1
+        key = _evidence_key(row)
+        current = latest_by_key.get(key)
+        if current is None:
+            latest_by_key[key] = row
+            continue
+
+        candidate_rank = (
+            _parse_observed(row.get("observed_at_utc")),
+            str(row.get("offline_source_file", "")),
+            int(str(row.get("offline_source_row", "0")) or "0"),
+        )
+        current_rank = (
+            _parse_observed(current.get("observed_at_utc")),
+            str(current.get("offline_source_file", "")),
+            int(str(current.get("offline_source_row", "0")) or "0"),
+        )
+        if candidate_rank >= current_rank:
+            duplicate_rows.append(current)
+            latest_by_key[key] = row
+        else:
+            duplicate_rows.append(row)
+
+    canonical_rows = sorted(
+        latest_by_key.values(),
+        key=lambda row: (
+            str(row.get("canonical_product_id", "")),
+            str(row.get("ebay_item_id", "")),
+            str(row.get("observed_at_utc", "")),
+        ),
+    )
+    return canonical_rows, duplicate_rows, missing_item_id_count
+
+
 def replay_row(row: dict[str, str]) -> dict[str, object]:
     saved_state = row.get("match_state", "")
     saved_score_text = str(row.get("match_score", ""))
@@ -124,10 +216,6 @@ def replay_row(row: dict[str, str]) -> dict[str, object]:
             "saved_to_migrated_transition": _transition(saved_state, migrated_state),
             "classification_changed": str(saved_state != migrated_state).lower(),
             "v2_v3_changed": str(v2.match_state != v3.match_state).lower(),
-            "evidence_changed": str(
-                saved_score_text != str(round(migrated_score, 4))
-                or row.get("exclusion_reasons", "") != updated.get("exclusion_reasons", "")
-            ).lower(),
             "migration_matcher_version": MIGRATION_MATCHER,
             "migration_policy_mode": "downgrade_only",
         }
@@ -149,20 +237,22 @@ def _reason_counts(rows: list[dict[str, object]], field: str) -> Counter[str]:
 
 
 def run(input_root: Path, output_root: Path) -> dict[str, object]:
-    listing_files = sorted(input_root.rglob("ebay_listing_match_results_*.csv"))
+    listing_files, excluded_files = discover_evidence_files(input_root)
     if not listing_files:
-        raise FileNotFoundError(f"No eBay listing evidence found under {input_root}")
+        raise FileNotFoundError(f"No canonical eBay listing evidence found under {input_root}")
 
-    source_rows: list[dict[str, str]] = []
+    raw_rows: list[dict[str, str]] = []
     for path in listing_files:
-        for row in read_csv(path):
+        for row_number, row in enumerate(read_csv(path), start=2):
             enriched = dict(row)
             enriched["offline_source_file"] = str(path.resolve())
-            source_rows.append(enriched)
+            enriched["offline_source_row"] = str(row_number)
+            raw_rows.append(enriched)
 
-    replayed = [replay_row(row) for row in source_rows]
+    canonical_rows, duplicate_rows, missing_item_id_count = canonicalize_evidence_rows(raw_rows)
+    replayed = [replay_row(row) for row in canonical_rows]
 
-    state_saved = Counter(row.get("match_state", "") for row in source_rows)
+    state_saved = Counter(row.get("match_state", "") for row in canonical_rows)
     state_v2 = Counter(str(row.get("precision_v2_match_state", "")) for row in replayed)
     state_v3 = Counter(str(row.get("precision_v3_match_state", "")) for row in replayed)
     state_migrated = Counter(str(row.get("match_state", "")) for row in replayed)
@@ -194,21 +284,18 @@ def run(input_root: Path, output_root: Path) -> dict[str, object]:
 
     fields = list(replayed[0])
     write_csv(output / "ebay_full_universe_migration.csv", replayed, fields)
-    write_csv(
-        output / "ebay_v2_v3_changed_listings.csv",
-        [row for row in replayed if row["v2_v3_changed"] == "true"],
-        fields,
-    )
-    write_csv(
-        output / "ebay_migrated_classification_changes.csv",
-        [row for row in replayed if row["classification_changed"] == "true"],
-        fields,
-    )
-    write_csv(
-        output / "ebay_migration_evidence_changes.csv",
-        [row for row in replayed if row["evidence_changed"] == "true"],
-        fields,
-    )
+    write_csv(output / "ebay_v2_v3_changed_listings.csv", [r for r in replayed if r["v2_v3_changed"] == "true"], fields)
+    write_csv(output / "ebay_migrated_classification_changes.csv", [r for r in replayed if r["classification_changed"] == "true"], fields)
+    write_csv(output / "ebay_migration_evidence_changes.csv", [r for r in replayed if r["evidence_changed"] == "true"], fields)
+
+    manifest_rows = [
+        {"source_file": str(path.resolve()), "status": "INCLUDED"} for path in listing_files
+    ] + [
+        {"source_file": str(path.resolve()), "status": "EXCLUDED_NONCANONICAL_PATH"} for path in excluded_files
+    ]
+    write_csv(output / "ebay_evidence_manifest.csv", manifest_rows, ["source_file", "status"])
+    duplicate_fields = list(duplicate_rows[0]) if duplicate_rows else ["canonical_product_id", "ebay_item_id"]
+    write_csv(output / "ebay_removed_duplicate_evidence.csv", duplicate_rows, duplicate_fields)
 
     product_rows = [
         {
@@ -220,21 +307,13 @@ def run(input_root: Path, output_root: Path) -> dict[str, object]:
         }
         for product_id, counts in sorted(by_product.items())
     ]
-    write_csv(
-        output / "ebay_migration_product_summary.csv",
-        product_rows,
-        ["canonical_product_id", "canonical_product_name", "accepted", "review", "rejected"],
-    )
+    write_csv(output / "ebay_migration_product_summary.csv", product_rows, ["canonical_product_id", "canonical_product_name", "accepted", "review", "rejected"])
 
     reason_rows = [
         {"reason_code": reason, "listing_count": count}
         for reason, count in _reason_counts(replayed, "precision_v3_exclusion_reasons").most_common()
     ]
-    write_csv(
-        output / "ebay_precision_v3_reason_summary.csv",
-        reason_rows,
-        ["reason_code", "listing_count"],
-    )
+    write_csv(output / "ebay_precision_v3_reason_summary.csv", reason_rows, ["reason_code", "listing_count"])
 
     classification_changed = sum(row["classification_changed"] == "true" for row in replayed)
     v2_v3_changed = sum(row["v2_v3_changed"] == "true" for row in replayed)
@@ -247,7 +326,15 @@ def run(input_root: Path, output_root: Path) -> dict[str, object]:
         "baseline_matcher_version": BASELINE_MATCHER,
         "migration_matcher_version": MIGRATION_MATCHER,
         "migration_policy_mode": "downgrade_only",
-        "source_file_count": len(listing_files),
+        "evidence_canonicalization": True,
+        "deduplication_key": ["canonical_product_id", "ebay_item_id"],
+        "discovered_source_file_count": len(listing_files) + len(excluded_files),
+        "included_source_file_count": len(listing_files),
+        "excluded_source_file_count": len(excluded_files),
+        "raw_listing_row_count": len(raw_rows),
+        "canonical_listing_row_count": row_count,
+        "duplicate_listing_row_count": len(duplicate_rows),
+        "missing_ebay_item_id_row_count": missing_item_id_count,
         "listing_row_count": row_count,
         "unique_product_count": len(by_product),
         "classification_changed_row_count": classification_changed,
@@ -268,24 +355,15 @@ def run(input_root: Path, output_root: Path) -> dict[str, object]:
         "v3_rejection_rate": round(state_v3.get("REJECTED", 0) / row_count, 6) if row_count else 0.0,
         "output_root": str(output.resolve()),
     }
-    (output / "ebay_full_universe_migration_summary.json").write_text(
-        json.dumps(summary, indent=2) + "\n",
-        encoding="utf-8",
-    )
+    (output / "ebay_full_universe_migration_summary.json").write_text(json.dumps(summary, indent=2) + "\n", encoding="utf-8")
     print(json.dumps(summary, indent=2))
     return summary
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(
-        description="Replay all saved eBay evidence through precision-v2 and precision-v3-universal"
-    )
+    parser = argparse.ArgumentParser(description="Replay canonical saved eBay evidence through precision-v2 and precision-v3-universal")
     parser.add_argument("--input-root", type=Path, required=True)
-    parser.add_argument(
-        "--output-root",
-        type=Path,
-        default=Path("data/operations/ebay_full_universe_migration"),
-    )
+    parser.add_argument("--output-root", type=Path, default=Path("data/operations/ebay_full_universe_migration"))
     args = parser.parse_args()
     summary = run(args.input_root.resolve(), args.output_root.resolve())
     return 0 if summary["status"] == "PASS" else 2
