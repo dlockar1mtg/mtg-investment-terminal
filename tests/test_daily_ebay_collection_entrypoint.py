@@ -37,11 +37,13 @@ def test_dry_run_never_calls_live_collector(monkeypatch, tmp_path: Path) -> None
     assert payload["live_api_called"] is False
     assert payload["limit_per_product"] == 15
     assert payload["max_products"] == 3
-    assert payload["matcher_version"] == "precision-v2"
+    assert payload["matcher_version"] == "precision-v3-universal"
     assert payload["matcher_fail_closed"] is True
+    assert payload["universal_classification_policy"] is True
+    assert payload["universal_policy_mode"] == "downgrade_only"
 
 
-def test_live_mode_delegates_to_precision_v2_coverage(monkeypatch, tmp_path: Path) -> None:
+def test_live_mode_delegates_to_universal_precision_coverage(monkeypatch, tmp_path: Path) -> None:
     received: dict[str, object] = {}
 
     def fake_run_coverage(*, limit_per_product: int, max_products: int | None) -> dict[str, object]:
@@ -54,8 +56,10 @@ def test_live_mode_delegates_to_precision_v2_coverage(monkeypatch, tmp_path: Pat
             "run_id": "EBAYTEST",
             "products": 2,
             "credentials_printed": False,
-            "matcher_version": "precision-v2",
+            "matcher_version": "precision-v3-universal",
             "matcher_fail_closed": True,
+            "universal_classification_policy": True,
+            "universal_policy_mode": "downgrade_only",
         }
 
     monkeypatch.setattr(entrypoint, "run_precision_coverage", fake_run_coverage)
@@ -76,8 +80,10 @@ def test_live_mode_delegates_to_precision_v2_coverage(monkeypatch, tmp_path: Pat
     assert payload["status"] == "PASS"
     assert payload["live_api_called"] is True
     assert payload["credentials_printed"] is False
-    assert payload["matcher_version"] == "precision-v2"
+    assert payload["matcher_version"] == "precision-v3-universal"
     assert payload["matcher_fail_closed"] is True
+    assert payload["universal_classification_policy"] is True
+    assert payload["universal_policy_mode"] == "downgrade_only"
     assert payload["progress_log"] == ["[1/2] Example product: LIMITED_MATCH_COVERAGE"]
 
 
