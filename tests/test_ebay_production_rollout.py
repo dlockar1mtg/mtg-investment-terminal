@@ -36,8 +36,10 @@ def valid_summary() -> dict[str, object]:
         "aborted_early": False,
         "listing_rows": 125,
         "credentials_printed": False,
-        "matcher_version": "precision-v2",
+        "matcher_version": "precision-v3-universal",
         "matcher_fail_closed": True,
+        "universal_classification_policy": True,
+        "universal_policy_mode": "downgrade_only",
         "progress_log": ["[1/25] Example: LIMITED_MATCH_COVERAGE"],
     }
 
@@ -80,8 +82,10 @@ def test_validator_accepts_certified_bounded_summary() -> None:
     ("field", "value", "message"),
     [
         ("status", "FAIL", "status must be PASS"),
-        ("matcher_version", "legacy", "matcher_version must be precision-v2"),
+        ("matcher_version", "legacy", "matcher_version must be precision-v3-universal"),
         ("matcher_fail_closed", False, "matcher_fail_closed must be true"),
+        ("universal_classification_policy", False, "universal_classification_policy must be true"),
+        ("universal_policy_mode", "upgrade_allowed", "universal_policy_mode must be downgrade_only"),
         ("aborted_early", True, "aborted_early must be false"),
         ("credentials_printed", True, "credentials_printed must be false"),
         ("listing_rows", 126, "listing_rows exceeds bounded maximum 125"),
