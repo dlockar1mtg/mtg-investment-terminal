@@ -243,13 +243,34 @@ jobs:
           overlay = payload.get("live_overlay", {})
           if overlay.get("status") != "PASS":
               raise SystemExit(f"MTG live overlay was not certified: {overlay}")
-          if overlay.get("products_with_any_live_overlay", 0) < 1:
-              raise SystemExit("MTG live overlay contains no live products")
+          live_prices = int(
+              overlay.get("products_with_live_prices", 0) or 0
+          )
+          live_decisions = int(
+              overlay.get("products_with_live_decisions", 0) or 0
+          )
+          fallback_products = int(
+              overlay.get(
+                  "products_using_baseline_fallback", 0
+              ) or 0
+          )
+
+          print(
+              "MTG live overlay payload: "
+              f"{json.dumps(overlay, sort_keys=True)}"
+          )
+
+          if max(live_prices, live_decisions) < 1:
+              raise SystemExit(
+                  "MTG live overlay contains neither "
+                  "live prices nor live decisions"
+              )
+
           print(
               "MTG live overlay validated: "
-              f"prices={overlay.get('products_with_live_prices', 0)}; "
-              f"decisions={overlay.get('products_with_live_decisions', 0)}; "
-              f"fallbacks={overlay.get('products_using_baseline_fallback', 0)}"
+              f"prices={live_prices}; "
+              f"decisions={live_decisions}; "
+              f"fallbacks={fallback_products}"
           )
           PY
 
