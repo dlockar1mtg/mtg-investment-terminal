@@ -29,6 +29,8 @@ _INCOMPLETE_MARKERS = (
     " omega box ",
     " omega booster box ",
 )
+_JAPANESE_MARKERS = re.compile(r"\b(?:japanese|jpn|jp\s+version)\b", re.I)
+_ENGLISH_MARKERS = re.compile(r"\benglish\b", re.I)
 
 
 def _is_complete_retail_pack_count(product: base.CanonicalProduct, title: str) -> bool:
@@ -56,6 +58,77 @@ def _enforce_explicit_pack_plus_box_lot(result: base.MatchResult) -> base.MatchR
     )
 
 
+def _strip_japanese_marker(value: str) -> str:
+    cleaned = _JAPANESE_MARKERS.sub(" ", value)
+    cleaned = re.sub(r"\(\s*\)", " ", cleaned)
+    return " ".join(cleaned.split())
+
+
+def _apply_governed_language_variant(
+    product: base.CanonicalProduct,
+    item: Mapping[str, object],
+    run_id: str,
+    observed: str,
+    result: base.MatchResult,
+) -> base.MatchResult:
+    product_is_japanese = bool(_JAPANESE_MARKERS.search(product.canonical_product_name))
+    if not product_is_japanese:
+        return result
+
+    title = str(item.get("title") or "")
+    title_is_japanese = bool(_JAPANESE_MARKERS.search(title))
+    title_is_english = bool(_ENGLISH_MARKERS.search(title))
+    reasons = [value for value in result.exclusion_reasons.split("|") if value]
+
+    if title_is_english and not title_is_japanese:
+        reasons.extend((
+            "language_variant_conflict",
+            "expected_language:japanese",
+            "observed_language:english",
+        ))
+        return replace(
+            result,
+            match_score=min(result.match_score, 0.49),
+            match_state="REJECTED",
+            exclusion_reasons="|".join(dict.fromkeys(reasons)),
+        )
+
+    if not title_is_japanese:
+        reasons.extend((
+            "missing_required_language:japanese",
+            "language_variant_requires_review",
+        ))
+        return replace(
+            result,
+            match_score=min(max(result.match_score, 0.62), 0.75),
+            match_state="REVIEW" if result.match_state != "REJECTED" else result.match_state,
+            exclusion_reasons="|".join(dict.fromkeys(reasons)),
+        )
+
+    normalized_product = replace(
+        product,
+        canonical_product_name=_strip_japanese_marker(product.canonical_product_name),
+    )
+    normalized_item = dict(item)
+    normalized_item["title"] = _strip_japanese_marker(title)
+    repaired = strict_match_listing(normalized_product, normalized_item, run_id, observed)
+    repaired_reasons = [
+        value
+        for value in repaired.exclusion_reasons.split("|")
+        if value and value != "non_english"
+    ]
+    repaired_reasons.extend((
+        "language_match:japanese",
+        "governed_language_variant",
+    ))
+    return replace(
+        repaired,
+        canonical_product_name=product.canonical_product_name,
+        title=title,
+        exclusion_reasons="|".join(dict.fromkeys(repaired_reasons)),
+    )
+
+
 def _repair_retail_pack_count_false_rejection(
     product: base.CanonicalProduct,
     item: Mapping[str, object],
@@ -73,8 +146,6 @@ def _repair_retail_pack_count_false_rejection(
     baseline = precision.ORIGINAL_MATCH_LISTING(product, item, run_id, observed)
     baseline_reasons = [value for value in baseline.exclusion_reasons.split("|") if value]
 
-    # Restore the baseline classification only when the false incomplete-lot
-    # reason was the strict layer's sole additional hard rejection.
     strict_only_reasons = [value for value in repaired_reasons if value not in baseline_reasons]
     if strict_only_reasons:
         return replace(result, exclusion_reasons="|".join(dict.fromkeys(repaired_reasons)))
@@ -111,10 +182,6 @@ def _repair_missing_only_secret_lair_conflict(
     if explicit_conflict or not missing_qualifier:
         return state, score, reasons
 
-    # The legacy strict matcher treats an omitted bundle/finish qualifier as a
-    # variant contradiction. Repair only when no independent hard-failure reason
-    # remains. Explicit sibling, finish, mixed-product, and form conflicts stay
-    # rejected.
     uncertainty_reasons = {
         "secret_lair_variant_conflict",
         "insufficient_product_identity",
@@ -143,6 +210,7 @@ def identity_match_listing(
     observed: str,
 ) -> base.MatchResult:
     result = strict_match_listing(product, item, run_id, observed)
+    result = _apply_governed_language_variant(product, item, run_id, observed, result)
     result = _enforce_explicit_pack_plus_box_lot(result)
     result = _repair_retail_pack_count_false_rejection(product, item, run_id, observed, result)
 
