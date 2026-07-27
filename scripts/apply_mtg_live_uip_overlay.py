@@ -4,6 +4,7 @@ import argparse
 import csv
 import hashlib
 import json
+import re
 import shutil
 from datetime import datetime, timezone
 from pathlib import Path
@@ -61,10 +62,36 @@ def identifiers(row: dict[str, str]) -> set[str]:
     found: set[str] = set()
     for field in ID_FIELDS:
         value = str(row.get(field, "") or "").strip()
-        if value:
-            found.add(value)
-            if value.startswith("MTG:"):
-                found.add(value.rsplit(":", 1)[-1])
+        if not value:
+            continue
+        found.add(value)
+        if value.startswith("MTG:"):
+            found.add(value.rsplit(":", 1)[-1])
+        trailing_numeric = re.search(r"(?:^|[-:])([0-9]+)$", value)
+        if trailing_numeric:
+            found.add(trailing_numeric.group(1))
+    return found
+
+
+def build_asset_aliases(
+    assets: list[dict[str, str]],
+) -> dict[str, set[str]]:
+    aliases: dict[str, set[str]] = {}
+    for asset in assets:
+        asset_id = str(asset.get("asset_id", "") or "").strip()
+        if asset_id:
+            aliases[asset_id] = identifiers(asset)
+    return aliases
+
+
+def row_identifiers(
+    row: dict[str, str],
+    asset_aliases: dict[str, set[str]],
+) -> set[str]:
+    found = identifiers(row)
+    asset_id = str(row.get("asset_id", "") or "").strip()
+    if asset_id:
+        found.update(asset_aliases.get(asset_id, set()))
     return found
 
 
@@ -126,10 +153,11 @@ def main() -> int:
     generated = datetime.now(timezone.utc).isoformat()
     live_price_count = 0
     live_decision_count = 0
-    live_ids: set[str] = set()
+    live_asset_ids: set[str] = set()
+    asset_aliases = build_asset_aliases(assets)
 
     for row in forecasts:
-        ids = identifiers(row)
+        ids = row_identifiers(row, asset_aliases)
         match = next((price_index[item] for item in ids if item in price_index), None)
         if match:
             price = first(match, PRICE_FIELDS)
@@ -139,14 +167,16 @@ def main() -> int:
                 row["market_observed_at_utc"] = first(match, OBSERVED_FIELDS) or generated
                 row["market_source"] = first(match, ("source", "marketplace", "source_system")) or "CERTIFIED_MARKETPLACE"
                 live_price_count += 1
-                live_ids.update(ids)
+                asset_id = str(row.get("asset_id", "") or "").strip()
+                if asset_id:
+                    live_asset_ids.add(asset_id)
                 continue
         row["market_data_status"] = "BASELINE_FALLBACK"
         row["market_observed_at_utc"] = ""
         row["market_source"] = "PHASE_10_CERTIFIED_BASELINE"
 
     for row in recommendations:
-        ids = identifiers(row)
+        ids = row_identifiers(row, asset_aliases)
         match = next((decision_index[item] for item in ids if item in decision_index), None)
         if match:
             signal = first(match, SIGNAL_FIELDS)
@@ -160,18 +190,22 @@ def main() -> int:
                 row["decision_observed_at_utc"] = first(match, OBSERVED_FIELDS) or generated
                 row["decision_source"] = "CERTIFIED_MARKETPLACE"
                 live_decision_count += 1
-                live_ids.update(ids)
+                asset_id = str(row.get("asset_id", "") or "").strip()
+                if asset_id:
+                    live_asset_ids.add(asset_id)
                 continue
         row["decision_observed_at_utc"] = ""
         row["decision_source"] = "PHASE_10_CERTIFIED_BASELINE"
 
     for row in risks:
+        asset_id = str(row.get("asset_id", "") or "").strip()
         row["market_data_status"] = (
-            "LIVE_CERTIFIED" if identifiers(row) & live_ids else "BASELINE_FALLBACK"
+            "LIVE_CERTIFIED" if asset_id in live_asset_ids else "BASELINE_FALLBACK"
         )
 
     for row in assets:
-        is_live = bool(identifiers(row) & live_ids)
+        asset_id = str(row.get("asset_id", "") or "").strip()
+        is_live = asset_id in live_asset_ids
         row["market_data_status"] = "LIVE_CERTIFIED" if is_live else "BASELINE_FALLBACK"
         row["last_market_refresh_at_utc"] = generated if is_live else ""
 
@@ -191,8 +225,11 @@ def main() -> int:
         "certified_decision_rows_available": len(decision_rows),
         "products_with_live_prices": live_price_count,
         "products_with_live_decisions": live_decision_count,
-        "products_with_any_live_overlay": len(live_ids),
-        "products_using_baseline_fallback": max(0, int(summary.get("products", 0)) - len(live_ids)),
+        "products_with_any_live_overlay": len(live_asset_ids),
+        "products_using_baseline_fallback": max(
+            0,
+            int(summary.get("products", 0)) - len(live_asset_ids),
+        ),
         "quality_status": quality.get("status", ""),
         "decision_status": decision_summary.get("status", ""),
         "price_source": str(prices_path),
@@ -221,6 +258,9 @@ def main() -> int:
     shutil.copytree(package, history)
 
     print(json.dumps(summary["live_overlay"], indent=2))
+    if not live_asset_ids:
+        print("MTG LIVE UIP OVERLAY: FAILED - NO JOINABLE LIVE PRODUCTS")
+        return 2
     print("MTG LIVE UIP OVERLAY: PASS")
     print(f"Historical snapshot: {history}")
     return 0

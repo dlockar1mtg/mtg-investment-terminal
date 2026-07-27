@@ -217,6 +217,11 @@ jobs:
           python scripts/build_mtg_hosted_uip_delivery.py \
             --output-root data/operations/mtg_uip_delivery
 
+      - name: Audit live-overlay join contract
+        if: ${{ env.LIVE_EXECUTION == 'true' }}
+        run: |
+          python scripts/audit_phase_11e_live_overlay_contract.py             --package data/operations/mtg_uip_delivery/latest             --market-root data/operations/mtg_marketplace             --output data/operations/mtg_marketplace/phase_11e_overlay_contract_audit.json
+
       - name: Apply certified live marketplace overlay
         if: ${{ env.LIVE_EXECUTION == 'true' }}
         run: |
