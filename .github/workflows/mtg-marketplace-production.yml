@@ -40,6 +40,8 @@ on:
         required: true
         default: "10"
         type: string
+  schedule:
+    - cron: "15 12 * * *"
 
 permissions:
   contents: read
@@ -53,8 +55,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
-      LIVE_EXECUTION: ${{ github.event_name == 'workflow_dispatch' && inputs.live_execution == true }}
-      MTG_LIVE_EXECUTION: ${{ github.event_name == 'workflow_dispatch' && inputs.live_execution == true }}
+      LIVE_EXECUTION: ${{ github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.live_execution == true) }}
+      MTG_LIVE_EXECUTION: ${{ github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.live_execution == true) }}
       EBAY_LIMIT: ${{ github.event_name == 'workflow_dispatch' && inputs.ebay_limit || '10' }}
       MONTHLY_MTG_CAPITAL: ${{ github.event_name == 'workflow_dispatch' && inputs.monthly_mtg_capital || '600' }}
       CASH_RESERVE_PCT: ${{ github.event_name == 'workflow_dispatch' && inputs.cash_reserve_pct || '10' }}
@@ -258,6 +260,44 @@ jobs:
           print(f"Purchase plan validated: spend=${payload.get('planned_spend', 0):.2f}; carry-forward=${payload.get('carry_forward_capital', 0):.2f}")
           PY
 
+      - name: Build hosted MTG UIP delivery
+        if: ${{ env.LIVE_EXECUTION == 'true' }}
+        run: |
+          python scripts/build_mtg_hosted_uip_delivery.py             --output-root data/operations/mtg_uip_delivery
+
+      - name: Apply certified live marketplace overlay
+        if: ${{ env.LIVE_EXECUTION == 'true' }}
+        run: |
+          python scripts/apply_mtg_live_uip_overlay.py \
+            --package data/operations/mtg_uip_delivery/latest \
+            --market-root data/operations/mtg_marketplace
+
+      - name: Validate hosted MTG UIP delivery
+        if: ${{ env.LIVE_EXECUTION == 'true' }}
+        run: |
+          python -m pytest \
+            tests/test_mtg_hosted_uip_delivery.py \
+            tests/test_mtg_live_uip_overlay.py \
+            -q
+          test -f data/operations/mtg_uip_delivery/latest/package_summary.json
+          test -f data/operations/mtg_uip_delivery/latest/portfolio_positions.csv
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          payload = json.loads(
+              Path("data/operations/mtg_uip_delivery/latest/package_summary.json").read_text()
+          )
+          overlay = payload.get("live_overlay", {})
+          if overlay.get("status") != "PASS":
+              raise SystemExit(f"MTG live overlay was not certified: {overlay}")
+          print(
+              "MTG live overlay validated: "
+              f"prices={overlay.get('products_with_live_prices', 0)}; "
+              f"decisions={overlay.get('products_with_live_decisions', 0)}; "
+              f"fallbacks={overlay.get('products_using_baseline_fallback', 0)}"
+          )
+          PY
+
       - name: Upload production evidence
         if: always()
         uses: actions/upload-artifact@v4
@@ -266,5 +306,6 @@ jobs:
           path: |
             data/operations/
             data/validation/phase_10/ebay_matching/
+            data/operations/mtg_uip_delivery/
           if-no-files-found: warn
           retention-days: 30
