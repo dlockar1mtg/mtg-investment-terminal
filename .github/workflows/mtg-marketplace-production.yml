@@ -260,6 +260,18 @@ jobs:
           print(f"Purchase plan validated: spend=${payload.get('planned_spend', 0):.2f}; carry-forward=${payload.get('carry_forward_capital', 0):.2f}")
           PY
 
+      - name: Build hosted MTG UIP delivery
+        if: ${{ env.LIVE_EXECUTION == 'true' }}
+        run: |
+          python scripts/build_mtg_hosted_uip_delivery.py             --output-root data/operations/mtg_uip_delivery
+
+      - name: Validate hosted MTG UIP delivery
+        if: ${{ env.LIVE_EXECUTION == 'true' }}
+        run: |
+          python -m pytest tests/test_mtg_hosted_uip_delivery.py -q
+          test -f data/operations/mtg_uip_delivery/latest/package_summary.json
+          test -f data/operations/mtg_uip_delivery/latest/portfolio_positions.csv
+
       - name: Upload production evidence
         if: always()
         uses: actions/upload-artifact@v4
@@ -268,5 +280,6 @@ jobs:
           path: |
             data/operations/
             data/validation/phase_10/ebay_matching/
+            data/operations/mtg_uip_delivery/
           if-no-files-found: warn
           retention-days: 30

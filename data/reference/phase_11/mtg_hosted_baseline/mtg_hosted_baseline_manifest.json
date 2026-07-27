@@ -1,0 +1,42 @@
+{
+  "status": "CERTIFIED",
+  "contract": "mtg-hosted-baseline-v1",
+  "generated_at_utc": "2026-07-27T14:24:49.557229Z",
+  "source_phase": "10.9.1B",
+  "files": {
+    "secret_lair_registry.csv": {
+      "source": "data/validation/phase_10/ebay_matching/production_refresh/full_model_evaluation/secret_lair_full_product_registry.csv",
+      "sha256": "05adf1f3fc101468432c74b552821d5344f164ed1e29009e16d0160ea572a628",
+      "size_bytes": 286522
+    },
+    "secret_lair_evaluation.csv": {
+      "source": "data/validation/phase_10/ebay_matching/production_refresh/full_model_evaluation/secret_lair_full_model_evaluation.csv",
+      "sha256": "e45192029c10a09c55f7d255a1064a3042604b88ac2e3f234194dd5ad3e70f32",
+      "size_bytes": 411321
+    },
+    "collector_registry.csv": {
+      "source": "data/validation/phase_10/collector_booster_boxes/governed_registry/collector_booster_box_governed_registry.csv",
+      "sha256": "7857ac7d6394e983430c4c7129f61236be73c25b41ff0ad4551131bd219cb0ed",
+      "size_bytes": 13969
+    },
+    "collector_evaluation.csv": {
+      "source": "data/validation/phase_10/collector_booster_boxes/full_evaluation/collector_booster_box_full_evaluation.csv",
+      "sha256": "03f6ad32aa5f7866ee763bdf2619ec467ea10fabd3eb34c79390eac6903d36ab",
+      "size_bytes": 8643
+    },
+    "pre_collector_registry.csv": {
+      "source": "data/validation/phase_10/pre_collector_booster_boxes/governed_registry/pre_collector_booster_box_governed_registry.csv",
+      "sha256": "1c3e88b1aaab04c7d4be779889f563f842d7c2c0d55d891eb4e69488efeb2e65",
+      "size_bytes": 20316
+    },
+    "pre_collector_evaluation.csv": {
+      "source": "data/validation/phase_10/pre_collector_booster_boxes/full_evaluation/pre_collector_booster_box_full_evaluation.csv",
+      "sha256": "b85f2fd9c925767d2d97d79d2f5c29fb8782ae90fe003109782e859068f522a5",
+      "size_bytes": 21469
+    }
+  },
+  "notes": [
+    "Secret Lair production_refresh copies were selected because duplicate matches were byte-identical.",
+    "These governed snapshots make the Phase 10.9 unified registry reproducible on clean GitHub-hosted runners."
+  ]
+}
