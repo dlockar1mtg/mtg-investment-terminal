@@ -1,8 +1,7 @@
 """Governed command-line entry point for daily eBay marketplace collection.
 
-The production entry point is fail-closed on the certified precision-v2 matcher.
-Dry runs make no network calls and still report the matcher that a live run would
-use.
+The production entry point is fail-closed on the certified universal precision matcher.
+Dry runs make no network calls and still report the matcher that a live run would use.
 """
 from __future__ import annotations
 
@@ -60,8 +59,10 @@ def main(argv: list[str] | None = None) -> int:
             "product_map": str(args.product_map.resolve()) if args.product_map else "",
             "selection_mode": "PRODUCT_MAP_TARGETED" if args.product_map else "UNIVERSE_PREFIX",
             "matcher_version": MATCHER_VERSION,
-            "matcher_entrypoint": "terminal2.market_sources.ebay_precision_v2.identity_match_listing",
+            "matcher_entrypoint": "terminal2.market_sources.ebay_precision_v3.identity_match_listing",
             "matcher_fail_closed": True,
+            "universal_classification_policy": True,
+            "universal_policy_mode": "downgrade_only",
         }
     else:
         progress = io.StringIO()
