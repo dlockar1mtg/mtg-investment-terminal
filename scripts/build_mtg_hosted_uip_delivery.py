@@ -75,6 +75,15 @@ def source_id(row: dict[str, str]) -> str:
     )
 
 
+def tcgplayer_id(row: dict[str, str]) -> str:
+    return first(
+        row,
+        "approved_tcgplayer_product_id",
+        "tcgplayer_product_id",
+        "tcgplayer_product_id_str",
+    )
+
+
 def universal_id(lane: str, source: str) -> str:
     if source.startswith("MTG:"):
         return source
@@ -146,6 +155,7 @@ def build(output_root: Path) -> dict[str, Any]:
                 continue
 
             uid = universal_id(lane, sid)
+            tcgid = tcgplayer_id(base) or tcgplayer_id(evaluation_row)
             name = first(
                 base,
                 "canonical_product_name",
@@ -198,6 +208,7 @@ def build(output_root: Path) -> dict[str, Any]:
                 "asset_class": "MTG",
                 "asset_subclass": lane,
                 "source_product_id": sid,
+                "tcgplayer_product_id": tcgid,
                 "product_class": first(base, "product_class", default=lane),
                 "canonical_set_name": first(base, "canonical_set_name", "set_name"),
                 "release_date": first(base, "release_date"),
@@ -207,6 +218,8 @@ def build(output_root: Path) -> dict[str, Any]:
 
             forecast_rows.append({
                 "asset_id": uid,
+                "source_product_id": sid,
+                "tcgplayer_product_id": tcgid,
                 "forecast_eligible": normalize_bool(
                     first(evaluation_row, "forecast_eligible", default=forecast_status)
                 ),
@@ -258,6 +271,8 @@ def build(output_root: Path) -> dict[str, Any]:
             eligible = recommendation_action not in {"", "NO_ACTION", "WATCH"}
             recommendation_rows.append({
                 "asset_id": uid,
+                "source_product_id": sid,
+                "tcgplayer_product_id": tcgid,
                 "recommendation_eligible": "YES" if eligible else "NO",
                 "recommendation_status": recommendation_status,
                 "recommendation_action": recommendation_action or "NO_ACTION",
@@ -273,6 +288,8 @@ def build(output_root: Path) -> dict[str, Any]:
 
             risk_rows.append({
                 "asset_id": uid,
+                "source_product_id": sid,
+                "tcgplayer_product_id": tcgid,
                 "admission_tier": admission,
                 "quality_disposition": first(
                     evaluation_row,
