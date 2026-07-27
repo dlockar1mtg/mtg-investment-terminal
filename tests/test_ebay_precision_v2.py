@@ -140,3 +140,44 @@ def test_individual_drop_does_not_match_bundle_target() -> None:
     )
     assert result.match_state == "REJECTED"
     assert "forbidden_phrase:single_drop" in result.exclusion_reasons
+
+
+def test_japanese_target_accepts_matching_japanese_collector_box() -> None:
+    result = classify(
+        "FINAL FANTASY - Collector Booster Display (Japanese)",
+        "Magic The Gathering FINAL FANTASY Japanese Collector Booster Box Factory Sealed",
+    )
+    assert result.match_state == "ACCEPTED"
+    assert "non_english" not in result.exclusion_reasons
+    assert "language_match:japanese" in result.exclusion_reasons
+    assert "governed_language_variant" in result.exclusion_reasons
+
+
+def test_japanese_target_rejects_explicit_english_collector_box() -> None:
+    result = classify(
+        "FINAL FANTASY - Collector Booster Display (Japanese)",
+        "MTG Final Fantasy Collector Booster Box English Sealed",
+    )
+    assert result.match_state == "REJECTED"
+    assert "language_variant_conflict" in result.exclusion_reasons
+    assert "expected_language:japanese" in result.exclusion_reasons
+    assert "observed_language:english" in result.exclusion_reasons
+
+
+def test_japanese_target_without_language_marker_routes_to_review() -> None:
+    result = classify(
+        "FINAL FANTASY - Collector Booster Display (Japanese)",
+        "MTG Final Fantasy Collector Booster Box Factory Sealed",
+    )
+    assert result.match_state == "REVIEW"
+    assert "missing_required_language:japanese" in result.exclusion_reasons
+    assert "language_variant_requires_review" in result.exclusion_reasons
+
+
+def test_japanese_value_booster_remains_rejected_for_wrong_form() -> None:
+    result = classify(
+        "FINAL FANTASY - Collector Booster Display (Japanese)",
+        "Magic The Gathering Final Fantasy Value Booster 10 Pack Sealed Box Japanese",
+    )
+    assert result.match_state == "REJECTED"
+    assert "loose_packs" in result.exclusion_reasons or "excluded_product_form" in result.exclusion_reasons
