@@ -1,7 +1,8 @@
 """Governed command-line entry point for daily eBay marketplace collection.
 
-This wrapper reuses the certified eBay matching implementation. It does not
-change matching rules, product identity, or credential handling.
+The production entry point is fail-closed on the certified precision-v2 matcher.
+Dry runs make no network calls and still report the matcher that a live run would
+use.
 """
 from __future__ import annotations
 
@@ -16,8 +17,11 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from terminal2.market_sources.ebay_matching import run_coverage
-from terminal2.market_sources.ebay_targeted_collection import run_targeted_coverage
+from terminal2.market_sources.ebay_precision_production import (
+    MATCHER_VERSION,
+    run_precision_coverage,
+    run_precision_targeted_coverage,
+)
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -27,6 +31,12 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--product-map", type=Path)
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--summary-output", type=Path)
+    parser.add_argument(
+        "--matcher-version",
+        choices=(MATCHER_VERSION,),
+        default=MATCHER_VERSION,
+        help="Certified matcher version. Legacy fallback is intentionally unavailable.",
+    )
     return parser
 
 
@@ -49,17 +59,20 @@ def main(argv: list[str] | None = None) -> int:
             "max_products": args.max_products,
             "product_map": str(args.product_map.resolve()) if args.product_map else "",
             "selection_mode": "PRODUCT_MAP_TARGETED" if args.product_map else "UNIVERSE_PREFIX",
+            "matcher_version": MATCHER_VERSION,
+            "matcher_entrypoint": "terminal2.market_sources.ebay_precision_v2.identity_match_listing",
+            "matcher_fail_closed": True,
         }
     else:
         progress = io.StringIO()
         with redirect_stdout(progress):
             if args.product_map:
-                coverage = run_targeted_coverage(
+                coverage = run_precision_targeted_coverage(
                     product_map=args.product_map.resolve(),
                     limit_per_product=args.limit_per_product,
                 )
             else:
-                coverage = run_coverage(
+                coverage = run_precision_coverage(
                     limit_per_product=args.limit_per_product,
                     max_products=args.max_products,
                 )
