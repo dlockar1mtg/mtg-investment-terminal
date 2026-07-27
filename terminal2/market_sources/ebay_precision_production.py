@@ -5,17 +5,19 @@ from typing import Any
 
 from terminal2.market_sources import ebay_matching
 from terminal2.market_sources import ebay_targeted_collection
-from terminal2.market_sources.ebay_precision_v2 import identity_match_listing
+from terminal2.market_sources.ebay_precision_v3 import identity_match_listing
 
-MATCHER_VERSION = "precision-v2"
+MATCHER_VERSION = "precision-v3-universal"
 
 
 def _with_classifier_metadata(summary: dict[str, Any]) -> dict[str, Any]:
     return {
         **summary,
         "matcher_version": MATCHER_VERSION,
-        "matcher_entrypoint": "terminal2.market_sources.ebay_precision_v2.identity_match_listing",
+        "matcher_entrypoint": "terminal2.market_sources.ebay_precision_v3.identity_match_listing",
         "matcher_fail_closed": True,
+        "universal_classification_policy": True,
+        "universal_policy_mode": "downgrade_only",
     }
 
 
@@ -23,7 +25,7 @@ def run_precision_coverage(
     limit_per_product: int = 20,
     max_products: int | None = None,
 ) -> dict[str, Any]:
-    """Run the normal universe collector with the certified precision-v2 matcher.
+    """Run the normal universe collector with the universal precision matcher.
 
     The legacy collection module resolves ``match_listing`` from its own module
     namespace. Patch that binding only for the duration of this single-process
@@ -47,7 +49,7 @@ def run_precision_targeted_coverage(
     product_map: Path,
     limit_per_product: int = 20,
 ) -> dict[str, Any]:
-    """Run targeted collection with the certified precision-v2 matcher."""
+    """Run targeted collection with the universal precision matcher."""
 
     original = ebay_targeted_collection.match_listing
     ebay_targeted_collection.match_listing = identity_match_listing
