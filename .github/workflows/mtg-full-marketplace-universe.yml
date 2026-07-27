@@ -28,6 +28,8 @@ on:
         required: true
         default: "10"
         type: string
+  schedule:
+    - cron: "30 11 * * 0"
 
 permissions:
   contents: read
@@ -41,12 +43,12 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 360
     env:
-      LIVE_EXECUTION: ${{ inputs.live_execution }}
-      MTG_LIVE_EXECUTION: ${{ inputs.live_execution }}
-      BATCH_SIZE: ${{ inputs.batch_size }}
-      START_BATCH: ${{ inputs.start_batch }}
-      MAX_BATCHES: ${{ inputs.max_batches }}
-      EBAY_LIMIT: ${{ inputs.ebay_limit }}
+      LIVE_EXECUTION: ${{ github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.live_execution == true) }}
+      MTG_LIVE_EXECUTION: ${{ github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.live_execution == true) }}
+      BATCH_SIZE: ${{ github.event_name == 'schedule' && '50' || inputs.batch_size }}
+      START_BATCH: ${{ github.event_name == 'schedule' && '0' || inputs.start_batch }}
+      MAX_BATCHES: ${{ github.event_name == 'schedule' && '0' || inputs.max_batches }}
+      EBAY_LIMIT: ${{ github.event_name == 'schedule' && '10' || inputs.ebay_limit }}
       EBAY_CLIENT_ID: ${{ secrets.EBAY_CLIENT_ID }}
       EBAY_CLIENT_SECRET: ${{ secrets.EBAY_CLIENT_SECRET }}
       EBAY_MARKETPLACE_ID: EBAY_US
@@ -68,7 +70,7 @@ jobs:
           python -m pip check
 
       - name: Validate live credentials
-        if: ${{ inputs.live_execution == true }}
+        if: ${{ env.LIVE_EXECUTION == 'true' }}
         run: |
           test -n "$EBAY_CLIENT_ID" || { echo "EBAY_CLIENT_ID secret is missing"; exit 1; }
           test -n "$EBAY_CLIENT_SECRET" || { echo "EBAY_CLIENT_SECRET secret is missing"; exit 1; }
