@@ -1,6 +1,6 @@
 {
   "status": "PASS",
-  "generated_at_utc": "2026-07-28T13:40:35.980551+00:00",
+  "generated_at_utc": "2026-07-28T13:44:55.582827+00:00",
   "certification_checks": {
     "focused_tests_passed": true,
     "activation_passed": true,
@@ -14,6 +14,6 @@
     "current_asking_not_sold_history": true,
     "current_asking_not_model_eligible": true
   },
-  "active_package_id": "mtg-governed-20260728T132331Z",
+  "active_package_id": "mtg-governed-20260728T134410Z",
   "next_action": "RUN_FULL_TERMINAL_CUTOVER"
 }

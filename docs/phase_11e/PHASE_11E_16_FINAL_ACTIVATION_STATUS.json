@@ -1,7 +1,7 @@
 {
   "status": "PASS",
-  "activated_at_utc": "2026-07-28T13:40:59.922026+00:00",
-  "package_id": "phase-11e-15-test",
+  "activated_at_utc": "2026-07-28T13:44:57.554380+00:00",
+  "package_id": "mtg-governed-20260728T134410Z",
   "source_package": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\operations\\mtg_terminal_delivery\\latest",
   "active_root": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\warehouse\\current\\governed_terminal",
   "used_fallback": false,
