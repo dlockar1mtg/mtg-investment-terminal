@@ -85,9 +85,20 @@ def classify_listing(query: HistoryQuery, listing: ReplayListing) -> ClassifiedL
         reasons.append("PROXY_OR_REPRODUCTION")
     if "damaged" in title or "water damage" in title:
         reasons.append("DAMAGED")
-    if query.product_class == "PRE_COLLECTOR_BOOSTER_BOX" and "booster box" not in title:
-        reasons.append("NOT_BOOSTER_BOX")
-    if "sealed" not in title:
+    if query.product_class in {
+        "PRE_COLLECTOR_BOOSTER_BOX",
+        "COLLECTOR_BOOSTER_BOX",
+    }:
+        magic_brand = (
+            "magic the gathering" in title
+            or "magic: the gathering" in title
+            or " mtg " in f" {title} "
+        )
+        if not magic_brand:
+            reasons.append("MTG_BRAND_SIGNAL_MISSING")
+        if "booster box" not in title and "booster display" not in title:
+            reasons.append("NOT_BOOSTER_BOX")
+    if "sealed" not in title and "factory sealed" not in title:
         reasons.append("SEALED_SIGNAL_MISSING")
 
     accepted = not reasons

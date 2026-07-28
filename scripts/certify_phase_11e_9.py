@@ -42,7 +42,7 @@ def fixture_payload(queries: list[HistoryQuery]) -> dict[str, list[dict[str, obj
         payload[query.canonical_product_id] = [
             {
                 "item_id": f"{index}-valid",
-                "title": f"{base} sealed booster box",
+                "title": f"Magic The Gathering {base} sealed booster box",
                 "price": 1000.0 + index,
                 "currency": "USD",
                 "condition": "New",
