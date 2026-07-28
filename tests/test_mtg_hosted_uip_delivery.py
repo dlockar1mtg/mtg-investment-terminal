@@ -24,8 +24,45 @@ def read_rows(path: Path):
         return list(csv.DictReader(handle))
 
 
+def write_historical_fixture(path: Path) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+
+    fields = [
+        "investment_product_id",
+        "historical_performance_eligible",
+        "historical_total_return_pct",
+        "historical_cagr_pct",
+    ]
+
+    with path.open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=fields)
+        writer.writeheader()
+
+        for index in range(973):
+            eligible = index < 782
+            writer.writerow(
+                {
+                    "investment_product_id": f"SL-TEST-{index:04d}",
+                    "historical_performance_eligible": (
+                        "YES" if eligible else "NO"
+                    ),
+                    "historical_total_return_pct": (
+                        "5.0" if eligible else ""
+                    ),
+                    "historical_cagr_pct": (
+                        "2.5" if eligible else ""
+                    ),
+                }
+            )
+
+
 def test_hosted_delivery_builds_complete_contract(tmp_path):
     module = load_module()
+
+    historical_source = tmp_path / "source" / "historical_performance.csv"
+    write_historical_fixture(historical_source)
+    module.HISTORICAL_PERFORMANCE_SOURCE = historical_source
+
     result = module.build(tmp_path)
     assert result["status"] == "PASS"
     assert result["products"] == 1141
@@ -38,20 +75,35 @@ def test_hosted_delivery_builds_complete_contract(tmp_path):
         "portfolio_positions.csv",
         "platform_status.csv",
         "diagnostics.csv",
+        "historical_performance.csv",
         "export_manifest.json",
         "package_summary.json",
     }
     assert required.issubset({path.name for path in latest.iterdir()})
     assert len(read_rows(latest / "asset_master.csv")) == 1141
+    assert len(read_rows(latest / "historical_performance.csv")) == 973
     assert read_rows(latest / "diagnostics.csv") == []
 
 
 def test_delivery_manifest_has_expected_lanes(tmp_path):
     module = load_module()
+
+    historical_source = tmp_path / "source" / "historical_performance.csv"
+    write_historical_fixture(historical_source)
+    module.HISTORICAL_PERFORMANCE_SOURCE = historical_source
+
     module.build(tmp_path)
-    manifest = json.loads((tmp_path / "latest" / "package_summary.json").read_text())
+    manifest = json.loads(
+        (tmp_path / "latest" / "package_summary.json").read_text()
+    )
     assert manifest["lane_counts"] == {
         "SECRET_LAIR": 973,
         "COLLECTOR_BOOSTER_BOX": 49,
         "PRE_COLLECTOR_BOOSTER_BOX": 119,
     }
+    assert manifest["historical_performance"] == {
+        "rows": 973,
+        "eligible": 782,
+        "suppressed": 191,
+    }
+    assert "historical_performance.csv" in manifest["files"]
