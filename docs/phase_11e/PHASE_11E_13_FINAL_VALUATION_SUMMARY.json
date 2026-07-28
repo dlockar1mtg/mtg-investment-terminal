@@ -1,0 +1,26 @@
+{
+  "status": "PASS",
+  "generated_at_utc": "2026-07-28T13:01:01.417138+00:00",
+  "as_of_date": "2026-07-28",
+  "governed_products": 1141,
+  "valuation_state_counts": {
+    "DIRECT_HISTORY_VALUATION": 989,
+    "VALUATION_UNAVAILABLE": 140,
+    "CURRENT_ASKING_REFERENCE_ONLY": 12
+  },
+  "selected_source_counts": {
+    "DIRECT_HISTORICAL_MARKET": 989,
+    "NO_DEFENSIBLE_PRICE": 140,
+    "CURRENT_ASKING_REFERENCE": 12
+  },
+  "dashboard_eligible_products": 1001,
+  "model_eligible_products": 989,
+  "valuation_unavailable_products": 140,
+  "certification_checks": {
+    "valuation_rows_equal_1141": true,
+    "canonical_product_ids_unique": true,
+    "asking_reference_never_model_eligible": true,
+    "unavailable_rows_have_no_price": true,
+    "all_priced_rows_usd": true
+  }
+}
