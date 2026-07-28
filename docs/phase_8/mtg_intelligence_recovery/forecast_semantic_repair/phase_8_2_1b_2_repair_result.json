@@ -1,0 +1,4782 @@
+{
+  "status": "APPLIED",
+  "generated_at_utc": "2026-07-28T20:23:28.518378+00:00",
+  "forecast_method": "NATIVE_MONTE_CARLO_RANGE",
+  "changes": [
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "rows": 1001,
+      "collector_rows_repaired": 48
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\forecasts.csv",
+      "rows": 955,
+      "collector_rows_repaired": 46
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\rankings.csv",
+      "rows": 130,
+      "collector_rows_repaired": 46
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\recommendations.csv",
+      "rows": 567,
+      "collector_rows_repaired": 36
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "rows": 1141,
+      "collector_rows_repaired": 48
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "rows": 1001,
+      "collector_rows_repaired": 48
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\forecasts.csv",
+      "rows": 955,
+      "collector_rows_repaired": 46
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\rankings.csv",
+      "rows": 130,
+      "collector_rows_repaired": 46
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\recommendations.csv",
+      "rows": 567,
+      "collector_rows_repaired": 36
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "rows": 1141,
+      "collector_rows_repaired": 48
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "rows": 1141,
+      "collector_rows_repaired": 48
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "rows": 1141,
+      "collector_rows_repaired": 48
+    }
+  ],
+  "missing_model_rows": [
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "TCGCSV-23019-515906"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-102715"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-110418"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-112706"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-114832"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-118393"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-120965"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-121527"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-125794"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-127069"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-127174"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-131456"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-141989"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-145235"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-149402"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-149404"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-157857"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-158423"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-166536"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-166550"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-173362"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-179444"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-180734"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-185676"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-185894"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-188210"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27257"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27258"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27259"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27260"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27261"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27263"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27264"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27267"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27268"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27269"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27270"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27271"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27272"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27273"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27274"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27275"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27276"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27277"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27278"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27279"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27280"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27281"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27282"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27283"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27284"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27285"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27286"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27287"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27288"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27289"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27290"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27291"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27292"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27293"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27294"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27295"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27296"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27297"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27298"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27299"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27300"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27301"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27302"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27303"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27304"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27305"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27306"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27307"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27308"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27309"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27310"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27311"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27312"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27314"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27315"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27316"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27317"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27318"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-28640"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-31841"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-32529"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-32789"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-34468"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-34678"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-35372"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-35749"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-39109"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-39410"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-46957"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-47791"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-57584"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-58058"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-59120"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-60117"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-67311"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-67751"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-68104"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-69243"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-70960"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-77321"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-77322"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-79290"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-82200"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-90786"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-91650"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-93516"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-94746"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-95052"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-96137"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-96147"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\forecasts.csv",
+      "source_product_id": "TCGCSV-23019-515906"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-102715"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-110418"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-118393"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-120965"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-121527"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-125794"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-127069"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-127174"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-131456"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-141989"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-145235"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-149402"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-149404"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-157857"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-158423"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-166536"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-166550"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-173362"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-179444"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-180734"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-185676"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-185894"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-188210"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27259"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27261"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27267"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27271"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27272"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27274"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27276"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27277"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27278"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27279"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27280"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27282"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27283"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27284"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27287"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27291"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27292"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27293"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27294"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27295"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27298"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27302"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27303"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27304"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27305"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27306"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27307"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27310"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27311"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27312"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27314"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27315"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27316"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27317"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27318"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-28640"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-31841"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-32789"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-34468"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-34678"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-35749"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-39109"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-46957"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-57584"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-58058"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-59120"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-60117"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-67311"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-67751"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-68104"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-69243"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-70960"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-77321"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-77322"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-79290"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-82200"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-93516"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-94746"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-95052"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-96147"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27271"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27277"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27279"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27315"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-77322"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27284"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27280"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-102715"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-39109"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-173362"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27292"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-35749"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-149402"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27305"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-96147"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-79290"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-58058"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-57584"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27307"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27317"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-93516"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-188210"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27267"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-127174"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-67311"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27293"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-110418"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-127069"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-28640"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-158423"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-131456"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27306"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-149404"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-34468"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-34678"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-121527"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-185676"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27304"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-180734"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27295"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-125794"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-166536"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-166550"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-118393"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27294"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-70960"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-185894"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-157857"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-67751"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-95052"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-59120"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-120965"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-77321"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-145235"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-94746"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-46957"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-179444"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27278"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-82200"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-60117"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-31841"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27311"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-141989"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27276"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27282"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27298"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27303"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27316"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27272"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27287"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27261"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-68104"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27312"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-69243"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27274"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27283"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27291"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27259"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27314"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27318"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\rankings.csv",
+      "source_product_id": "TCGCSV-23019-515906"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27310"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-32789"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27302"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-102715"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-110418"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-118393"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-120965"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-121527"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-125794"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-127069"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-127174"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-131456"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-141989"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-145235"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-149402"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-149404"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-157857"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-158423"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-166536"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-166550"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-173362"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-179444"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-180734"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-185676"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-185894"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-188210"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27259"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27261"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27267"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27271"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27276"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27277"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27280"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27282"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27283"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27284"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27291"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27292"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27293"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27302"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27304"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27305"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27310"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27311"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27314"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27317"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27318"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-28640"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-32789"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-34468"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-34678"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-35749"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-39109"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-57584"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-58058"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-60117"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-67311"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-67751"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-68104"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-70960"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-77321"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-77322"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-79290"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-82200"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-93516"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-94746"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-95052"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-96147"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "TCGCSV-23019-515906"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-102715"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-110418"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-112706"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-114832"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-118393"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-120965"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-121527"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-125794"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-127069"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-127174"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-131456"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-141989"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-145235"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-149402"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-149404"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-157857"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-158423"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-166536"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-166550"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-173362"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-179444"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-180734"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-185676"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-185894"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-188210"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27257"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27258"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27259"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27260"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27261"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27262"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27263"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27264"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27265"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27266"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27267"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27268"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27269"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27270"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27271"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27272"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27273"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27274"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27275"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27276"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27277"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27278"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27279"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27280"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27281"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27282"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27283"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27284"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27285"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27286"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27287"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27288"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27289"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27290"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27291"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27292"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27293"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27294"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27295"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27296"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27297"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27298"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27299"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27300"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27301"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27302"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27303"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27304"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27305"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27306"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27307"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27308"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27309"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27310"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27311"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27312"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27313"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27314"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27315"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27316"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27317"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27318"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-28640"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-31841"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-32529"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-32789"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-34468"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-34678"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-35372"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-35749"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-39109"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-39410"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-46957"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-47791"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-57584"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-58058"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-59120"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-60117"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-67311"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-67751"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-68104"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-69243"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-70960"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-77321"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-77322"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-79290"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-82200"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-90786"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-91650"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-93516"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-94746"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-95052"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-96137"
+    },
+    {
+      "path": "data\\warehouse\\current\\governed_terminal\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-96147"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "TCGCSV-23019-515906"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-102715"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-110418"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-112706"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-114832"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-118393"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-120965"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-121527"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-125794"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-127069"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-127174"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-131456"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-141989"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-145235"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-149402"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-149404"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-157857"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-158423"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-166536"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-166550"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-173362"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-179444"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-180734"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-185676"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-185894"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-188210"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27257"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27258"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27259"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27260"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27261"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27263"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27264"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27267"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27268"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27269"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27270"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27271"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27272"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27273"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27274"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27275"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27276"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27277"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27278"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27279"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27280"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27281"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27282"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27283"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27284"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27285"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27286"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27287"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27288"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27289"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27290"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27291"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27292"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27293"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27294"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27295"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27296"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27297"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27298"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27299"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27300"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27301"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27302"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27303"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27304"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27305"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27306"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27307"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27308"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27309"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27310"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27311"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27312"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27314"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27315"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27316"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27317"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27318"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-28640"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-31841"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-32529"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-32789"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-34468"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-34678"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-35372"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-35749"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-39109"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-39410"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-46957"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-47791"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-57584"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-58058"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-59120"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-60117"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-67311"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-67751"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-68104"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-69243"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-70960"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-77321"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-77322"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-79290"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-82200"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-90786"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-91650"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-93516"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-94746"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-95052"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-96137"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\dashboard.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-96147"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\forecasts.csv",
+      "source_product_id": "TCGCSV-23019-515906"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-102715"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-110418"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-118393"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-120965"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-121527"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-125794"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-127069"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-127174"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-131456"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-141989"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-145235"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-149402"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-149404"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-157857"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-158423"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-166536"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-166550"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-173362"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-179444"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-180734"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-185676"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-185894"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-188210"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27259"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27261"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27267"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27271"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27272"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27274"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27276"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27277"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27278"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27279"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27280"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27282"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27283"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27284"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27287"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27291"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27292"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27293"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27294"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27295"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27298"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27302"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27303"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27304"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27305"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27306"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27307"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27310"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27311"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27312"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27314"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27315"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27316"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27317"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27318"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-28640"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-31841"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-32789"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-34468"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-34678"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-35749"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-39109"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-46957"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-57584"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-58058"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-59120"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-60117"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-67311"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-67751"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-68104"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-69243"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-70960"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-77321"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-77322"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-79290"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-82200"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-93516"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-94746"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-95052"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-96147"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27271"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27277"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27279"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27315"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-77322"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27284"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27280"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-102715"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-39109"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-173362"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27292"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-35749"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-149402"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27305"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-96147"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-79290"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-58058"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-57584"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27307"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27317"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-93516"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-188210"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27267"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-127174"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-67311"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27293"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-110418"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-127069"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-28640"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-158423"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-131456"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27306"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-149404"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-34468"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-34678"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-121527"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-185676"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27304"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-180734"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27295"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-125794"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-166536"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-166550"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-118393"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27294"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-70960"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-185894"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-157857"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-67751"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-95052"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-59120"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-120965"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-77321"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-145235"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-94746"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-46957"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-179444"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27278"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-82200"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-60117"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-31841"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27311"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-141989"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27276"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27282"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27298"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27303"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27316"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27272"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27287"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27261"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-68104"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27312"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-69243"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27274"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27283"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27291"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27259"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27314"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27318"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\rankings.csv",
+      "source_product_id": "TCGCSV-23019-515906"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27310"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-32789"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\rankings.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27302"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-102715"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-110418"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-118393"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-120965"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-121527"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-125794"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-127069"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-127174"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-131456"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-141989"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-145235"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-149402"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-149404"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-157857"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-158423"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-166536"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-166550"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-173362"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-179444"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-180734"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-185676"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-185894"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-188210"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27259"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27261"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27267"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27271"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27276"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27277"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27280"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27282"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27283"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27284"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27291"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27292"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27293"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27302"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27304"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27305"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27310"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27311"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27314"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27317"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27318"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-28640"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-32789"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-34468"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-34678"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-35749"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-39109"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-57584"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-58058"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-60117"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-67311"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-67751"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-68104"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-70960"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-77321"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-77322"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-79290"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-82200"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-93516"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-94746"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-95052"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-96147"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "TCGCSV-23019-515906"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-102715"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-110418"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-112706"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-114832"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-118393"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-120965"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-121527"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-125794"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-127069"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-127174"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-131456"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-141989"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-145235"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-149402"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-149404"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-157857"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-158423"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-166536"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-166550"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-173362"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-179444"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-180734"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-185676"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-185894"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-188210"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27257"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27258"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27259"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27260"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27261"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27262"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27263"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27264"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27265"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27266"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27267"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27268"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27269"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27270"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27271"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27272"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27273"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27274"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27275"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27276"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27277"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27278"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27279"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27280"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27281"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27282"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27283"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27284"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27285"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27286"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27287"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27288"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27289"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27290"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27291"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27292"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27293"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27294"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27295"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27296"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27297"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27298"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27299"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27300"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27301"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27302"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27303"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27304"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27305"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27306"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27307"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27308"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27309"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27310"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27311"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27312"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27313"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27314"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27315"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27316"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27317"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27318"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-28640"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-31841"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-32529"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-32789"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-34468"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-34678"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-35372"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-35749"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-39109"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-39410"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-46957"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-47791"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-57584"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-58058"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-59120"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-60117"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-67311"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-67751"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-68104"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-69243"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-70960"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-77321"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-77322"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-79290"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-82200"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-90786"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-91650"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-93516"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-94746"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-95052"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-96137"
+    },
+    {
+      "path": "data\\operations\\mtg_terminal_delivery\\latest\\universal_mtg_consumption_interface.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-96147"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "TCGCSV-23019-515906"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27262"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27266"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27313"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27265"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27263"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27303"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27286"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27309"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27276"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27279"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27283"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27269"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27282"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27261"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27290"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27317"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27278"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27298"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27318"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27308"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27307"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27275"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27299"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27312"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27316"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27315"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27270"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27300"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27314"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27289"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27293"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27301"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27284"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27297"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27258"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27264"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27294"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27311"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27285"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27295"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27287"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27305"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27259"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27291"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27272"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27277"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27268"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-79290"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27267"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27304"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27260"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27302"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27281"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27273"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27271"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27310"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27296"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27280"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27257"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27288"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27292"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27306"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27274"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-28640"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-93516"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-31841"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-32529"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-32789"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-34468"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-34678"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-35372"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-35749"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-39109"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-39410"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-46957"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-47791"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-57584"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-58058"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-59120"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-60117"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-67311"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-67751"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-68104"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-69243"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-70960"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-77321"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-77322"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-82200"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-90786"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-91650"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-94746"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-96137"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-95052"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-96147"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-102715"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-110418"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-114832"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-118393"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-120965"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-112706"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-121527"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-125794"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-127069"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-127174"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-131456"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-141989"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-145235"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-149402"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-149404"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-157857"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-158423"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-166536"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-166550"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-173362"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-179444"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-180734"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-185676"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-185894"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\forecasts.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-188210"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "TCGCSV-23019-515906"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27262"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27266"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27313"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27265"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27263"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27303"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27286"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27309"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27276"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27279"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27283"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27269"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27282"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27261"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27290"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27317"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27278"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27298"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27318"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27308"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27307"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27275"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27299"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27312"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27316"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27315"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27270"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27300"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27314"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27289"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27293"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27301"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27284"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27297"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27258"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27264"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27294"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27311"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27285"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27295"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27287"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27305"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27259"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27291"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27272"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27277"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27268"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-79290"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27267"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27304"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27260"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27302"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27281"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27273"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27271"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27310"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27296"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27280"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27257"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27288"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27292"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27306"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-27274"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-28640"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-93516"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-31841"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-32529"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-32789"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-34468"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-34678"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-35372"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-35749"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-39109"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-39410"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-46957"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-47791"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-57584"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-58058"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-59120"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-60117"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-67311"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-67751"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-68104"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-69243"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-70960"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-77321"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-77322"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-82200"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-90786"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-91650"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-94746"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-96137"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-95052"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-96147"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-102715"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-110418"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-114832"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-118393"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-120965"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-112706"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-121527"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-125794"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-127069"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-127174"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-131456"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-141989"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-145235"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-149402"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-149404"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-157857"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-158423"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-166536"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-166550"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-173362"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-179444"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-180734"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-185676"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-185894"
+    },
+    {
+      "path": "data\\operations\\mtg_uip_delivery\\latest\\recommendations.csv",
+      "source_product_id": "MTG-CANON-TCGPLAYER-188210"
+    }
+  ],
+  "backup_root": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\operations\\phase_8_2_1b_2_backups\\20260728T202328Z"
+}

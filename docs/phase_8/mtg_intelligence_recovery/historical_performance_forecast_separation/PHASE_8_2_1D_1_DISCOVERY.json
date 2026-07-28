@@ -1,0 +1,27 @@
+{
+  "status": "PASS",
+  "phase": "8.2.1D.1",
+  "generated_at_utc": "2026-07-28T22:09:35.949380+00:00",
+  "purpose": "Locate and classify historical performance sources before building a separate Secret Lair return analytics layer.",
+  "governance": {
+    "historical_performance_is_not_forecast": true,
+    "historical_cagr_must_use_observed_start_and_end_dates": true,
+    "forward_horizons_remain_suppressed_until_certified": true,
+    "historical_analytics_do_not_enable_recommendations": true
+  },
+  "counts": {
+    "text_files_scanned": 3380,
+    "source_matches": 1966,
+    "candidate_csv_datasets": 637,
+    "historical_dataset_candidates": 383,
+    "secret_lair_historical_candidates": 153,
+    "python_symbols": 2690
+  },
+  "checks": {
+    "current_secret_lair_contract_present": true,
+    "current_horizon_values_suppressed": true,
+    "return_analytics_components_found": true,
+    "historical_candidates_found": true,
+    "secret_lair_historical_candidates_found": true
+  }
+}

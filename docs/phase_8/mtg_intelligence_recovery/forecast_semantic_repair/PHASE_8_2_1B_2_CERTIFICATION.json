@@ -1,0 +1,27 @@
+{
+  "status": "CERTIFIED",
+  "generated_at_utc": "2026-07-28T21:39:40.305448+00:00",
+  "target_product": "TCGCSV-22876-489207",
+  "expected": {
+    "current_market_value_usd": 227.18,
+    "native_forecast_low_usd": 261.31,
+    "native_forecast_base_usd": 340.58,
+    "native_forecast_high_usd": 444.19
+  },
+  "checks": {
+    "model_values_present": true,
+    "governed_current_matches_model": true,
+    "terminal_current_matches_model": true,
+    "uip_current_matches_model": true,
+    "uip_native_low_matches_model": true,
+    "uip_native_base_matches_model": true,
+    "uip_native_high_matches_model": true,
+    "governed_method_native": true,
+    "terminal_method_native": true,
+    "uip_method_native": true,
+    "bad_825_removed": true,
+    "bad_891_removed": true,
+    "horizon_fields_suppressed": true,
+    "native_interval_ordered": true
+  }
+}

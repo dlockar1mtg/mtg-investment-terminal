@@ -1,0 +1,25 @@
+{
+  "status": "CERTIFIED",
+  "phase": "8.2.1C.2",
+  "generated_at_utc": "2026-07-28T21:56:03.574239+00:00",
+  "checks": {
+    "source_forecast_rows_equal_973": true,
+    "source_recommendation_rows_equal_973": true,
+    "unified_rows_equal_973": true,
+    "uip_forecast_rows_equal_973": true,
+    "uip_recommendation_rows_equal_973": true,
+    "source_method_explicit": true,
+    "unified_method_explicit": true,
+    "uip_method_explicit": true,
+    "source_horizons_suppressed": true,
+    "unified_horizons_suppressed": true,
+    "uip_horizons_suppressed": true,
+    "source_forecast_eligibility_fail_closed": true,
+    "unified_forecast_eligibility_fail_closed": true,
+    "uip_forecast_eligibility_fail_closed": true,
+    "source_recommendations_fail_closed": true,
+    "unified_recommendations_fail_closed": true,
+    "uip_recommendations_fail_closed": true,
+    "native_ranges_ordered": true
+  }
+}

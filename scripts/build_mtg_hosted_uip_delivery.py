@@ -11,6 +11,14 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 BASELINE = ROOT / "data" / "reference" / "phase_11" / "mtg_hosted_baseline"
+UNIFIED_INTERFACE = (
+    ROOT
+    / "data"
+    / "validation"
+    / "phase_10"
+    / "unified_mtg_intelligence"
+    / "unified_mtg_intelligence_interface.csv"
+)
 DEFAULT_OUTPUT = ROOT / "data" / "operations" / "mtg_uip_delivery"
 
 FILES = {
@@ -120,13 +128,43 @@ def build(output_root: Path) -> dict[str, Any]:
 
     lane_counts: dict[str, int] = {}
 
-    for key, (registry_path, evaluation_path) in FILES.items():
+    unified_rows = read_csv(UNIFIED_INTERFACE)
+
+    if len(unified_rows) != 1141:
+        raise RuntimeError(
+            "Unified intelligence interface must contain 1,141 rows; "
+            f"found {len(unified_rows)}"
+        )
+
+    unified_ids = {
+        first(row, "universal_mtg_product_id")
+        for row in unified_rows
+        if first(row, "universal_mtg_product_id")
+    }
+
+    if len(unified_ids) != len(unified_rows):
+        raise RuntimeError(
+            "Unified intelligence interface contains duplicate or "
+            "missing universal product IDs."
+        )
+
+    for key, (registry_path, _legacy_evaluation_path) in FILES.items():
         lane = LANE_NAMES[key]
         registry = read_csv(registry_path)
-        evaluation = read_csv(evaluation_path)
+
+        evaluation = [
+            row
+            for row in unified_rows
+            if first(row, "lane") == lane
+        ]
+
         lane_counts[lane] = len(registry)
 
-        evaluation_by_id = {source_id(row): row for row in evaluation if source_id(row)}
+        evaluation_by_id = {
+            source_id(row): row
+            for row in evaluation
+            if source_id(row)
+        }
 
         if len(registry) != EXPECTED_COUNTS[key]:
             diagnostics.append({
@@ -165,11 +203,11 @@ def build(output_root: Path) -> dict[str, Any]:
             )
             current_value = first(
                 evaluation_row,
-                "evaluated_market_value_usd",
                 "current_market_value_usd",
                 "current_unit_value_usd",
                 "market_value_usd",
                 "current_price",
+                "evaluated_market_value_usd",
                 default=first(base, "current_market_value_usd"),
             )
             confidence = first(
@@ -216,6 +254,10 @@ def build(output_root: Path) -> dict[str, Any]:
                 "currency": first(base, "currency", default="USD"),
             })
 
+            horizon_certified = normalize_bool(
+                first(evaluation_row, "horizon_model_certified", default="NO")
+            ) == "YES"
+
             forecast_rows.append({
                 "asset_id": uid,
                 "source_product_id": sid,
@@ -237,38 +279,29 @@ def build(output_root: Path) -> dict[str, Any]:
                 "native_forecast_high_usd": first(
                     evaluation_row, "forecast_high_usd", "native_forecast_high_usd"
                 ),
-                "one_year_downside_usd": first(
-                    evaluation_row, "1y_downside_usd", "one_year_downside_usd"
-                ),
-                "one_year_base_usd": first(
-                    evaluation_row, "1y_base_usd", "one_year_base_usd"
-                ),
-                "one_year_upside_usd": first(
-                    evaluation_row, "1y_upside_usd", "one_year_upside_usd"
-                ),
-                "three_year_downside_usd": first(
-                    evaluation_row, "3y_downside_usd", "three_year_downside_usd"
-                ),
-                "three_year_base_usd": first(
-                    evaluation_row, "3y_base_usd", "three_year_base_usd"
-                ),
-                "three_year_upside_usd": first(
-                    evaluation_row, "3y_upside_usd", "three_year_upside_usd"
-                ),
-                "five_year_downside_usd": first(
-                    evaluation_row, "5y_downside_usd", "five_year_downside_usd"
-                ),
-                "five_year_base_usd": first(
-                    evaluation_row, "5y_base_usd", "five_year_base_usd"
-                ),
-                "five_year_upside_usd": first(
-                    evaluation_row, "5y_upside_usd", "five_year_upside_usd"
-                ),
+                "one_year_downside_usd": first(evaluation_row, "1y_downside_usd", "one_year_downside_usd") if horizon_certified else "",
+                "one_year_base_usd": first(evaluation_row, "1y_base_usd", "one_year_base_usd") if horizon_certified else "",
+                "one_year_upside_usd": first(evaluation_row, "1y_upside_usd", "one_year_upside_usd") if horizon_certified else "",
+                "three_year_downside_usd": first(evaluation_row, "3y_downside_usd", "three_year_downside_usd") if horizon_certified else "",
+                "three_year_base_usd": first(evaluation_row, "3y_base_usd", "three_year_base_usd") if horizon_certified else "",
+                "three_year_upside_usd": first(evaluation_row, "3y_upside_usd", "three_year_upside_usd") if horizon_certified else "",
+                "five_year_downside_usd": first(evaluation_row, "5y_downside_usd", "five_year_downside_usd") if horizon_certified else "",
+                "five_year_base_usd": first(evaluation_row, "5y_base_usd", "five_year_base_usd") if horizon_certified else "",
+                "five_year_upside_usd": first(evaluation_row, "5y_upside_usd", "five_year_upside_usd") if horizon_certified else "",
                 "confidence": confidence,
                 "currency": "USD",
             })
 
-            eligible = recommendation_action not in {"", "NO_ACTION", "WATCH"}
+            eligible = (
+                normalize_bool(
+                    first(
+                        evaluation_row,
+                        "recommendation_eligible",
+                        default="NO",
+                    )
+                )
+                == "YES"
+            )
             recommendation_rows.append({
                 "asset_id": uid,
                 "source_product_id": sid,
@@ -323,6 +356,63 @@ def build(output_root: Path) -> dict[str, Any]:
         "source_system",
     ]
     position_rows: list[dict[str, str]] = []
+
+    secret_rows = [
+        row
+        for row in forecast_rows
+        if row["asset_id"].startswith("MTG:SECRET_LAIR:")
+    ]
+    if len(secret_rows) != 973:
+        raise RuntimeError(f"Expected 973 hosted Secret Lair rows; found {len(secret_rows)}")
+    if any(row["forecast_eligible"] != "NO" for row in secret_rows):
+        raise RuntimeError("Secret Lair horizon forecasts must remain fail-closed.")
+    if any(any(row[field] for field in ("one_year_base_usd", "three_year_base_usd", "five_year_base_usd")) for row in secret_rows):
+        raise RuntimeError("Hosted Secret Lair output contains uncertified horizon values.")
+    if any(row["forecast_method"] != "NATIVE_VALUATION_RANGE" for row in secret_rows):
+        raise RuntimeError("Hosted Secret Lair valuation method is not explicit.")
+
+    aftermath_rows = [
+        row
+        for row in forecast_rows
+        if row["source_product_id"] == "TCGCSV-22876-489207"
+    ]
+
+    if len(aftermath_rows) != 1:
+        raise RuntimeError(
+            "Expected exactly one hosted Aftermath forecast row."
+        )
+
+    aftermath = aftermath_rows[0]
+
+    if aftermath["current_market_value_usd"] != "227.18":
+        raise RuntimeError(
+            "Hosted Aftermath current value regressed: "
+            f"{aftermath['current_market_value_usd']}"
+        )
+
+    if aftermath["forecast_method"] != "NATIVE_MONTE_CARLO_RANGE":
+        raise RuntimeError(
+            "Hosted Aftermath forecast method regressed: "
+            f"{aftermath['forecast_method']}"
+        )
+
+    if aftermath["native_forecast_base_usd"] != "340.58":
+        raise RuntimeError(
+            "Hosted Aftermath native forecast base regressed: "
+            f"{aftermath['native_forecast_base_usd']}"
+        )
+
+    if any(
+        aftermath[field]
+        for field in (
+            "one_year_base_usd",
+            "three_year_base_usd",
+            "five_year_base_usd",
+        )
+    ):
+        raise RuntimeError(
+            "Hosted Aftermath contains uncertified horizon values."
+        )
 
     platform_rows = [{
         "platform": "MTG",

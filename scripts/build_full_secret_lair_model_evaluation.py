@@ -155,8 +155,8 @@ def build(ledger_path: Path, output_root: Path) -> dict[str, object]:
             method = "OBSERVED_GOVERNED_MEDIAN"
             confidence = min(100.0, max(0.0, original_confidence))
             model_weight = 1.0
-            forecast_status = "FULL_FORECAST"
-            recommendation_status = "ELIGIBLE" if confidence >= 60 else "WATCH_ONLY"
+            forecast_status = "VALUATION_RANGE_READY"
+            recommendation_status = "AWAITING_HORIZON_FORECAST_CERTIFICATION"
             uncertainty = max(0.15, 1.0 - confidence / 100.0)
         elif decision == "REVIEW_REQUIRED":
             tier = "PROVISIONAL_MODEL"
@@ -164,8 +164,8 @@ def build(ledger_path: Path, output_root: Path) -> dict[str, object]:
             method = "PROVISIONAL_OBSERVED_MIDPOINT" if anchor else "COMPARABLE_FALLBACK"
             confidence = min(55.0, max(20.0, original_confidence))
             model_weight = round(0.25 + 0.5 * confidence / 100.0, 4)
-            forecast_status = "WIDE_INTERVAL_FORECAST"
-            recommendation_status = "WATCH_ONLY"
+            forecast_status = "WIDE_VALUATION_RANGE"
+            recommendation_status = "AWAITING_HORIZON_FORECAST_CERTIFICATION"
             uncertainty = max(0.45, 1.15 - confidence / 100.0)
         else:
             tier = "STRUCTURAL_ONLY"
@@ -173,8 +173,8 @@ def build(ledger_path: Path, output_root: Path) -> dict[str, object]:
             method = "COMPARABLE_GROUP_MEDIAN"
             confidence = min(30.0, max(10.0, original_confidence if original_confidence > 0 else 15.0))
             model_weight = round(0.05 + 0.2 * confidence / 100.0, 4)
-            forecast_status = "STRUCTURAL_RANGE_ONLY"
-            recommendation_status = "DATA_NEEDED"
+            forecast_status = "STRUCTURAL_VALUATION_RANGE"
+            recommendation_status = "AWAITING_HORIZON_FORECAST_CERTIFICATION"
             uncertainty = 0.75
 
         value = round(float(value), 2)
@@ -183,7 +183,13 @@ def build(ledger_path: Path, output_root: Path) -> dict[str, object]:
         if high is None or high <= 0:
             high = value * (1 + uncertainty)
         low = round(max(0.01, float(low)), 2)
-        high = round(max(low, float(high)), 2)
+        high = round(max(0.01, float(high)), 2)
+
+        # The selected current/base value is authoritative. Source interval
+        # endpoints may be stale, asymmetric, or derived from a different
+        # observation subset, so normalize the interval around the base.
+        low = round(min(low, value), 2)
+        high = round(max(high, value, low), 2)
 
         evidence_score = min(100.0, observations * 8.0 + sellers * 6.0)
         evaluated.append({
@@ -222,12 +228,29 @@ def build(ledger_path: Path, output_root: Path) -> dict[str, object]:
         tier_bonus = {"FULL_MODEL": 15.0, "PROVISIONAL_MODEL": 5.0, "STRUCTURAL_ONLY": 0.0}[str(row["evaluation_tier"])]
         score = min(100.0, value_rank * 0.35 + confidence * 0.35 + evidence * 0.15 + tier_bonus)
         row["model_evaluation_score"] = round(score, 2)
-        if row["recommendation_status"] == "ELIGIBLE":
-            row["guarded_recommendation"] = "REVIEW_FOR_BUY" if score >= 70 else "HOLD_OR_WATCH"
-        elif row["recommendation_status"] == "WATCH_ONLY":
-            row["guarded_recommendation"] = "WATCH"
-        else:
-            row["guarded_recommendation"] = "DATA_NEEDED"
+        row["guarded_recommendation"] = (
+            "HOLD_REVIEW"
+            if float(row["evaluated_market_value_usd"]) > 0
+            else "NO_ACTION"
+        )
+        row["recommendation_eligible"] = "NO"
+        row["horizon_model_certified"] = "NO"
+        row["forecast_eligible"] = "NO"
+        row["valuation_range_method"] = row["valuation_method"]
+        row["forecast_method"] = "NATIVE_VALUATION_RANGE"
+        row["one_year_downside_usd"] = ""
+        row["one_year_base_usd"] = ""
+        row["one_year_upside_usd"] = ""
+        row["three_year_downside_usd"] = ""
+        row["three_year_base_usd"] = ""
+        row["three_year_upside_usd"] = ""
+        row["five_year_downside_usd"] = ""
+        row["five_year_base_usd"] = ""
+        row["five_year_upside_usd"] = ""
+        row["current_market_value_usd"] = row["evaluated_market_value_usd"]
+        row["native_valuation_low_usd"] = row["forecast_low_usd"]
+        row["native_valuation_base_usd"] = row["forecast_base_usd"]
+        row["native_valuation_high_usd"] = row["forecast_high_usd"]
 
     tier_counts = defaultdict(int)
     for row in evaluated:
@@ -240,14 +263,23 @@ def build(ledger_path: Path, output_root: Path) -> dict[str, object]:
         "guarded_recommendation", "quality_flags", "suppression_reason", "currency",
     ]
     forecast_columns = [
-        "investment_product_id", "canonical_product_name", "evaluation_tier", "forecast_low_usd",
-        "forecast_base_usd", "forecast_high_usd", "model_confidence_score", "model_weight",
-        "forecast_status", "valuation_method", "currency",
+        "investment_product_id", "canonical_product_name", "evaluation_tier",
+        "current_market_value_usd",
+        "native_valuation_low_usd", "native_valuation_base_usd", "native_valuation_high_usd",
+        "forecast_low_usd", "forecast_base_usd", "forecast_high_usd",
+        "forecast_method", "forecast_status", "forecast_eligible",
+        "horizon_model_certified",
+        "one_year_downside_usd", "one_year_base_usd", "one_year_upside_usd",
+        "three_year_downside_usd", "three_year_base_usd", "three_year_upside_usd",
+        "five_year_downside_usd", "five_year_base_usd", "five_year_upside_usd",
+        "model_confidence_score", "model_weight",
+        "valuation_range_method", "currency",
     ]
     recommendation_columns = [
         "investment_product_id", "canonical_product_name", "evaluation_tier", "model_evaluation_score",
-        "guarded_recommendation", "recommendation_status", "model_confidence_score", "model_weight",
-        "evaluated_market_value_usd", "currency",
+        "guarded_recommendation", "recommendation_status", "recommendation_eligible",
+        "model_confidence_score", "model_weight",
+        "current_market_value_usd", "currency",
     ]
 
     output_root.mkdir(parents=True, exist_ok=True)
@@ -273,9 +305,22 @@ def build(ledger_path: Path, output_root: Path) -> dict[str, object]:
         "provisional_model_count_equal_380": tier_counts["PROVISIONAL_MODEL"] == EXPECTED_PROVISIONAL,
         "structural_only_count_equal_379": tier_counts["STRUCTURAL_ONLY"] == EXPECTED_STRUCTURAL,
         "all_products_have_evaluated_value": all(float(row["evaluated_market_value_usd"]) > 0 for row in evaluated),
-        "all_products_have_forecast_range": all(float(row["forecast_low_usd"]) > 0 and float(row["forecast_high_usd"]) >= float(row["forecast_low_usd"]) for row in evaluated),
-        "all_products_have_guarded_recommendation": all(str(row["guarded_recommendation"]).strip() for row in evaluated),
-        "only_full_model_can_be_buy_review": all(row["evaluation_tier"] == "FULL_MODEL" for row in evaluated if row["guarded_recommendation"] == "REVIEW_FOR_BUY"),
+        "all_products_have_native_valuation_range": all(
+            float(row["native_valuation_low_usd"]) > 0
+            and float(row["native_valuation_high_usd"]) >= float(row["native_valuation_low_usd"])
+            for row in evaluated
+        ),
+        "all_horizon_fields_suppressed": all(
+            not any(str(row[field]).strip() for field in (
+                "one_year_downside_usd", "one_year_base_usd", "one_year_upside_usd",
+                "three_year_downside_usd", "three_year_base_usd", "three_year_upside_usd",
+                "five_year_downside_usd", "five_year_base_usd", "five_year_upside_usd",
+            ))
+            for row in evaluated
+        ),
+        "forecast_eligibility_fail_closed": all(row["forecast_eligible"] == "NO" for row in evaluated),
+        "recommendations_fail_closed": all(row["recommendation_eligible"] == "NO" for row in evaluated),
+        "valuation_range_method_explicit": all(row["forecast_method"] == "NATIVE_VALUATION_RANGE" for row in evaluated),
         "quota_calls_zero": True,
     }
     status = "CERTIFIED" if all(checks.values()) else "FAILED"
@@ -288,6 +333,10 @@ def build(ledger_path: Path, output_root: Path) -> dict[str, object]:
         "full_model_products": tier_counts["FULL_MODEL"],
         "provisional_model_products": tier_counts["PROVISIONAL_MODEL"],
         "structural_only_products": tier_counts["STRUCTURAL_ONLY"],
+        "valuation_range_rows": len(evaluated),
+        "certified_horizon_forecast_rows": 0,
+        "forecast_eligible_rows": 0,
+        "recommendation_eligible_rows": 0,
         "forecast_rows": len(evaluated),
         "recommendation_rows": len(evaluated),
         "quota_calls": 0,
@@ -308,7 +357,7 @@ def build(ledger_path: Path, output_root: Path) -> dict[str, object]:
         "- API quota calls: 0", "", "## Certification Checks", "",
     ]
     lines.extend(f"- {name}: {'PASS' if passed else 'FAIL'}" for name, passed in checks.items())
-    lines += ["", "## Governance", "", "All 973 products are evaluated. Only FULL_MODEL products may receive a buy-review recommendation. Provisional and structural products remain confidence-limited and explicitly guarded."]
+    lines += ["", "## Governance", "", "All 973 products retain current-value and native valuation ranges. No row is treated as a certified horizon forecast, and all directional recommendations remain ineligible until an independently certified horizon model exists."]
     paths["certification"].write_text("\n".join(lines) + "\n", encoding="utf-8")
     print("SECRET LAIR FULL MODEL EVALUATION: COMPLETE")
     print(json.dumps(result, indent=2))

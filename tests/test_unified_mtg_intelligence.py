@@ -45,9 +45,12 @@ def test_certified_lane_forecast_and_recommendation_counts() -> None:
     _, _, manifest = MODULE.build()
 
     assert manifest["numeric_forecast_counts"]["SECRET_LAIR"] == 973
-    assert manifest["numeric_forecast_counts"]["COLLECTOR_BOOSTER_BOX"] == 47
+    assert manifest["numeric_forecast_counts"]["COLLECTOR_BOOSTER_BOX"] == 48
     assert manifest["numeric_forecast_counts"]["PRE_COLLECTOR_BOOSTER_BOX"] == 83
-    assert manifest["recommendation_eligible_counts"]["COLLECTOR_BOOSTER_BOX"] == 36
+    assert manifest["recommendation_eligible_counts"].get(
+        "COLLECTOR_BOOSTER_BOX",
+        0,
+    ) == 0
     assert manifest["recommendation_eligible_counts"]["PRE_COLLECTOR_BOOSTER_BOX"] == 65
 
 

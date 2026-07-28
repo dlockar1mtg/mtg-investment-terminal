@@ -1,0 +1,23 @@
+{
+  "status": "CERTIFIED",
+  "phase": "8.2.1D.2",
+  "checks": {
+    "source_rows_equal_973": true,
+    "universal_rows_equal_973": true,
+    "uip_rows_equal_973": true,
+    "source_ids_unique": true,
+    "delivery_ids_match": true,
+    "historical_returns_require_eligibility": true,
+    "forecast_horizons_remain_blank": true,
+    "forecast_eligibility_fail_closed": true,
+    "recommendations_fail_closed": true,
+    "separate_historical_contract": true
+  },
+  "counts": {
+    "source_rows": 973,
+    "universal_rows": 973,
+    "uip_rows": 973,
+    "historical_ready": 782,
+    "historical_suppressed": 191
+  }
+}

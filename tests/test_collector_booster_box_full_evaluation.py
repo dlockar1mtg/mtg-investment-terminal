@@ -49,8 +49,12 @@ def test_full_evaluation_certifies(tmp_path: Path) -> None:
     manifest = build_evaluation(ledger, tmp_path / "out")
     assert manifest["status"] == "CERTIFIED"
     assert manifest["products"] == 49
-    assert manifest["numeric_forecast_products"] == 47
-    assert manifest["recommendation_eligible_products"] == 36
+    # Synthetic IDs do not join to production Monte Carlo models.
+    assert manifest["native_range_products"] == 0
+    assert manifest["observed_value_only_products"] == 47
+    assert manifest["suppressed_products"] == 2
+    assert manifest["certified_horizon_products"] == 0
+    assert manifest["recommendation_eligible_products"] == 0
 
 
 def test_structural_rows_are_suppressed(tmp_path: Path) -> None:

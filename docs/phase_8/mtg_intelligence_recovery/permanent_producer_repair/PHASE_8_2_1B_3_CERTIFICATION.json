@@ -1,0 +1,14 @@
+{
+  "status": "CERTIFIED",
+  "generated_at_utc": "2026-07-28T21:39:40.112298+00:00",
+  "checks": {
+    "producer_no_tier_scenario_constant": true,
+    "producer_native_method_present": true,
+    "producer_observed_only_method_present": true,
+    "producer_horizons_fail_closed": true,
+    "unified_native_fields_mapped": true,
+    "unified_horizons_require_certification": true,
+    "hosted_current_value_precedence_fixed": true,
+    "hosted_horizons_require_certification": true
+  }
+}
