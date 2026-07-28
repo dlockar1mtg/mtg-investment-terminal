@@ -3,9 +3,9 @@ import hashlib
 import json
 from pathlib import Path
 
-from terminal2.delivery.governed_loader import (
+from terminal2.delivery.uip_handoff import (
     REQUIRED_ARTIFACTS,
-    activate_delivery,
+    build_uip_handoff,
 )
 
 
@@ -23,13 +23,16 @@ def write_csv(path: Path, rows: int) -> None:
             })
 
 
-def digest(path: Path) -> str:
+def sha(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def package(root: Path, package_id: str) -> Path:
-    latest = root / "latest"
-    latest.mkdir(parents=True)
+def build_package(root: Path) -> None:
+    delivery = root / "data/operations/mtg_terminal_delivery"
+    package_id = "mtg-governed-test"
+    package = delivery / "packages" / package_id
+    package.mkdir(parents=True)
+
     counts = {
         "universal_mtg_consumption_interface.csv": 1141,
         "dashboard.csv": 1001,
@@ -40,34 +43,41 @@ def package(root: Path, package_id: str) -> Path:
         "market_provenance.csv": 1141,
     }
     for name, rows in counts.items():
-        write_csv(latest / name, rows)
-    (latest / "consumption_summary.json").write_text("{}")
-    (latest / "valuation_summary.json").write_text("{}")
+        write_csv(package / name, rows)
+    (package / "consumption_summary.json").write_text("{}")
+    (package / "valuation_summary.json").write_text("{}")
+
     artifacts = [
-        {"filename": name, "sha256": digest(latest / name)}
+        {"filename": name, "sha256": sha(package / name)}
         for name in REQUIRED_ARTIFACTS
     ]
-    (latest / "delivery_manifest.json").write_text(json.dumps({
+    (package / "delivery_manifest.json").write_text(json.dumps({
         "status": "PASS",
         "package_id": package_id,
         "interface_name": "mtg-governed-terminal-delivery",
         "interface_version": "1.0",
         "governed_product_count": 1141,
+        "currency": "USD",
         "current_asking_is_sold_history": False,
         "current_asking_model_eligible": False,
         "artifacts": artifacts,
     }))
-    return latest
+    (delivery / "latest_package.json").write_text(json.dumps({
+        "package_id": package_id,
+    }))
 
 
-def test_activation_copies_valid_package(tmp_path: Path):
-    delivery = tmp_path / "delivery"
-    package(delivery, "test-package")
-    result = activate_delivery(
-        delivery,
-        tmp_path / "active",
-        tmp_path / "state",
+def test_builds_manual_uip_handoff(tmp_path: Path):
+    build_package(tmp_path)
+    payload = build_uip_handoff(
+        tmp_path,
+        tmp_path / "data/operations/mtg_terminal_delivery",
+        tmp_path / "data/operations/mtg_uip_handoff",
     )
-    assert result.package_id == "test-package"
-    assert result.interface_rows == 1141
-    assert result.used_fallback is False
+    assert payload["status"] == "READY_FOR_UIP_IMPORT"
+    assert payload["package_id"] == "mtg-governed-test"
+    assert payload["row_counts"][
+        "universal_mtg_consumption_interface.csv"
+    ] == 1141
+    assert payload["current_asking_is_sold_history"] is False
+    assert payload["current_asking_model_eligible"] is False

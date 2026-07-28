@@ -1,0 +1,22 @@
+{
+  "status": "PASS",
+  "generated_at_utc": "2026-07-28T13:56:35.811085+00:00",
+  "certification_checks": {
+    "focused_tests_passed": true,
+    "handoff_build_passed": true,
+    "handoff_status_ready": true,
+    "handoff_contract_v1": true,
+    "package_id_present": true,
+    "interface_rows_equal_1141": true,
+    "current_asking_not_sold_history": true,
+    "current_asking_not_model_eligible": true,
+    "local_activation_removed_from_terminal_runner": true,
+    "local_activation_files_retired": true,
+    "uip_owns_dashboard": true,
+    "uip_owns_refresh_scheduling": true
+  },
+  "package_id": "mtg-governed-20260728T135615Z",
+  "manual_production_command": "python scripts/run_phase_11e_17_manual_uip_handoff.py",
+  "next_repository": "C:\\Users\\DevonLockard\\InvestmentPlatform",
+  "next_action": "BUILD_UIP_MANUAL_MTG_IMPORT"
+}

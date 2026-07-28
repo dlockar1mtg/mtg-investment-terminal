@@ -1,3 +1,5 @@
+> **Superseded:** Phase 11E.17 retires MTG-local dashboard activation and assigns dashboard and refresh ownership to the Universal Investment Platform.
+
 # Phase 11E.16 — Terminal Activation and Governed Dashboard Cutover
 
 This milestone activates the Phase 11E.15 production package as the canonical
