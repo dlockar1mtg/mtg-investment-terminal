@@ -1,0 +1,29 @@
+{
+  "status": "PASS",
+  "generated_at_utc": "2026-07-28T12:44:46.248345+00:00",
+  "attempt_root": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\operations\\mtg_universal_history_production\\current_market\\attempts\\attempt_20260728T124329Z",
+  "routed_products": 152,
+  "processed_products": 152,
+  "current_market_state_counts": {
+    "NO_RESULTS": 137,
+    "NO_ACCEPTED_LISTINGS": 2,
+    "MATCHED": 13
+  },
+  "accepted_listings": 73,
+  "history_ledger_rebuild": {
+    "returncode": 0,
+    "stdout_tail": "{\n  \"status\": \"PASS\",\n  \"generated_at_utc\": \"2026-07-28T12:44:46.152276+00:00\",\n  \"governed_products\": 1141,\n  \"foundation_raw_rows\": 20150,\n  \"archive_raw_rows\": 21837,\n  \"raw_ledger_rows\": 41987,\n  \"daily_source_rows\": 23009,\n  \"daily_consolidated_rows\": 22960,\n  \"products_with_direct_history\": 989,\n  \"products_with_30_plus_dates\": 483,\n  \"products_with_no_direct_history\": 152,\n  \"history_status_counts\": {\n    \"HISTORY_1_DATE\": 41,\n    \"HISTORY_2_TO_29_DATES\": 465,\n    \"HISTORY_30_PLUS_DATES\": 483,\n    \"NO_DIRECT_HISTORY\": 152\n  },\n  \"history_completion_route_counts\": {\n    \"ARCHIVE_HISTORY_NOT_AVAILABLE\": 50,\n    \"DIRECT_HISTORY_AVAILABLE\": 989,\n    \"EBAY_ACCUMULATION_REQUIRED\": 102\n  },\n  \"daily_source_counts\": {\n    \"EBAY\": 1075,\n    \"REPOSITORY_HISTORY\": 49,\n    \"TCGCSV\": 48,\n    \"TCGCSV_ARCHIVE\": 21837\n  },\n  \"certification_checks\": {\n    \"verification_rows_equal_1141\": true,\n    \"verification_product_ids_unique\": true,\n    \"raw_ledger_keys_unique\": true,\n    \"daily_source_keys_unique\": true,\n    \"consolidated_product_dates_unique\": true,\n    \"model_values_excluded_from_daily_history\": true,\n    \"archive_rows_present\": true\n  }\n}\n",
+    "stderr_tail": ""
+  },
+  "universal_coverage": {
+    "governed_products": 1141,
+    "coverage_counts": {
+      "DIRECT_HISTORY_AVAILABLE": 989,
+      "HISTORY_UNAVAILABLE": 139,
+      "CURRENT_MARKET_ONLY": 13
+    },
+    "unresolved": 139
+  },
+  "live_execution_performed": true,
+  "promotion_state": "CURRENT_MARKET_SNAPSHOT_CERTIFIED_NOT_SOLD_HISTORY"
+}
