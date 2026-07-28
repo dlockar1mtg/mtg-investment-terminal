@@ -1,0 +1,15 @@
+{
+  "status": "PASS",
+  "generated_at_utc": "2026-07-28T12:54:28.286650+00:00",
+  "source_attempt": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\operations\\mtg_universal_history_production\\current_market\\attempts\\attempt_20260728T124329Z",
+  "accepted_input_listings": 73,
+  "quality_state_counts": {
+    "AUTO_APPROVED": 62,
+    "REJECTED_IDENTITY": 3,
+    "REVIEW_REQUIRED": 8
+  },
+  "auto_approved_products": 12,
+  "manual_review_listings": 11,
+  "persistent_snapshot_rows": 12,
+  "current_market_is_sold_history": false
+}
