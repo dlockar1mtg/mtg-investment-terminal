@@ -210,3 +210,4 @@ data/validation/phase_10/premium_universe_eligibility/
 
 # Phase 8 generated historical-performance certification output
 /data/validation/phase_8/secret_lair_historical_performance/
+/data/validation/phase_8/secret_lair_history_recovery/
