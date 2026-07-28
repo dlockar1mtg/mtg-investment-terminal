@@ -24,7 +24,7 @@ def test_valid_sealed_box_is_accepted():
         query(),
         ReplayListing(
             item_id="1",
-            title="Alpha Edition sealed booster box",
+            title="Magic The Gathering Alpha Edition sealed booster box",
             price=1000.0,
             currency="USD",
             condition="New",
@@ -64,7 +64,7 @@ def test_offline_replay_sets_matched_state():
     collector = OfflineReplayCollector({
         "P1": [{
             "item_id": "1",
-            "title": "Alpha Edition sealed booster box",
+            "title": "Magic The Gathering Alpha Edition sealed booster box",
             "price": 1000.0,
             "currency": "USD",
             "condition": "New",
