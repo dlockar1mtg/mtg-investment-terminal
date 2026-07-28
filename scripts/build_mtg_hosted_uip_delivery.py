@@ -21,6 +21,15 @@ UNIFIED_INTERFACE = (
 )
 DEFAULT_OUTPUT = ROOT / "data" / "operations" / "mtg_uip_delivery"
 
+HISTORICAL_PERFORMANCE_SOURCE = (
+    ROOT
+    / "data"
+    / "validation"
+    / "phase_8"
+    / "secret_lair_historical_performance"
+    / "secret_lair_historical_performance.csv"
+)
+
 FILES = {
     "secret_lair": (
         BASELINE / "secret_lair_registry.csv",
@@ -114,6 +123,47 @@ def normalize_bool(value: str) -> str:
 
 def build(output_root: Path) -> dict[str, Any]:
     generated = datetime.now(timezone.utc)
+
+    historical_rows = read_csv(HISTORICAL_PERFORMANCE_SOURCE)
+
+    if len(historical_rows) != 973:
+        raise RuntimeError(
+            "Historical performance must contain 973 Secret Lair rows; "
+            f"found {len(historical_rows)}"
+        )
+
+    historical_ids = [
+        first(row, "investment_product_id")
+        for row in historical_rows
+    ]
+
+    if (
+        any(not product_id for product_id in historical_ids)
+        or len(set(historical_ids)) != 973
+    ):
+        raise RuntimeError(
+            "Historical performance contains missing or duplicate "
+            "investment product IDs."
+        )
+
+    historical_ready = sum(
+        normalize_bool(
+            first(
+                row,
+                "historical_performance_eligible",
+                default="NO",
+            )
+        )
+        == "YES"
+        for row in historical_rows
+    )
+
+    if historical_ready != 782:
+        raise RuntimeError(
+            "Historical performance must contain 782 eligible products; "
+            f"found {historical_ready}"
+        )
+
     package_id = generated.strftime("mtg-hosted-%Y%m%dT%H%M%SZ")
     package = output_root / package_id
     if package.exists():
@@ -438,6 +488,11 @@ def build(output_root: Path) -> dict[str, Any]:
         ["lane", "source_product_id", "diagnostic"],
     )
 
+    shutil.copy2(
+        HISTORICAL_PERFORMANCE_SOURCE,
+        package / "historical_performance.csv",
+    )
+
     exported = [
         "asset_master.csv",
         "forecasts.csv",
@@ -446,6 +501,7 @@ def build(output_root: Path) -> dict[str, Any]:
         "portfolio_positions.csv",
         "platform_status.csv",
         "diagnostics.csv",
+        "historical_performance.csv",
     ]
 
     manifest = {
@@ -457,6 +513,11 @@ def build(output_root: Path) -> dict[str, Any]:
         "lane_counts": lane_counts,
         "portfolio_positions": len(position_rows),
         "diagnostics": len(diagnostics),
+        "historical_performance": {
+            "rows": len(historical_rows),
+            "eligible": historical_ready,
+            "suppressed": len(historical_rows) - historical_ready,
+        },
         "files": {
             name: {
                 "sha256": sha256(package / name),
