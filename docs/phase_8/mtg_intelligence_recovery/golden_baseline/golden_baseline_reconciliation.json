@@ -1,0 +1,43 @@
+{
+  "generated_at_utc": "2026-07-28T20:03:58.811101+00:00",
+  "repository_root": "C:\\Users\\DevonLockard\\mtg-investment-terminal",
+  "baseline_html": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\baselines\\phase_8_2_1b\\mtg_research_terminal_golden.html",
+  "baseline_html_sha256": "991d4ba52ac4250d99d93ba7e41918fadb11b57b6d14ed69d6a2b3dd008db7f0",
+  "baseline_booster_count": 234,
+  "baseline_secret_lair_count": 899,
+  "baseline_total_count": 1133,
+  "candidate_csv_source_count": 148,
+  "current_candidate_row_count": 263876,
+  "matched_row_count": 81608,
+  "unmatched_baseline_count": 822,
+  "product_status_counts": {
+    "FAIL": 1133
+  },
+  "semantic_alert_count": 0,
+  "semantic_alert_counts": {},
+  "duplicate_identity_count": 13882,
+  "aftermath_product_summary": [
+    {
+      "baseline_id": "TCGCSV-22876-489207",
+      "baseline_name": "March of the Machine: The Aftermath Collector Booster Display",
+      "baseline_universe": "booster",
+      "matched_source_count": 388,
+      "field_pass_count": 16,
+      "field_review_count": 12,
+      "field_fail_count": 287,
+      "overall_status": "FAIL",
+      "primary_issue": "One or more fields failed parity."
+    }
+  ],
+  "outputs": {
+    "baseline_products": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\docs\\phase_8\\mtg_intelligence_recovery\\golden_baseline\\golden_baseline_products.csv",
+    "source_inventory": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\docs\\phase_8\\mtg_intelligence_recovery\\golden_baseline\\current_source_inventory.csv",
+    "matches": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\docs\\phase_8\\mtg_intelligence_recovery\\golden_baseline\\golden_to_current_matches.csv",
+    "field_reconciliation": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\docs\\phase_8\\mtg_intelligence_recovery\\golden_baseline\\golden_field_reconciliation.csv",
+    "product_summary": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\docs\\phase_8\\mtg_intelligence_recovery\\golden_baseline\\golden_product_summary.csv",
+    "unmatched_baseline": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\docs\\phase_8\\mtg_intelligence_recovery\\golden_baseline\\unmatched_golden_products.csv",
+    "duplicate_identities": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\docs\\phase_8\\mtg_intelligence_recovery\\golden_baseline\\duplicate_current_identities.csv",
+    "semantic_alerts": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\docs\\phase_8\\mtg_intelligence_recovery\\golden_baseline\\forecast_semantic_alerts.csv",
+    "report": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\docs\\phase_8\\mtg_intelligence_recovery\\golden_baseline\\PHASE_8_2_1B_GOLDEN_BASELINE_RECONCILIATION.md"
+  }
+}
