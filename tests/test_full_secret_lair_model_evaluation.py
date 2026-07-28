@@ -71,11 +71,15 @@ def test_every_product_has_value_forecast_and_recommendation(tmp_path: Path):
     assert all(row["guarded_recommendation"] for row in rows)
 
 
-def test_only_full_model_can_receive_buy_review(tmp_path: Path):
+def test_recommendations_and_horizons_fail_closed(tmp_path: Path):
     ledger = tmp_path / "ledger.csv"; write_ledger(ledger)
     result = build(ledger, tmp_path / "out")
-    rows = list(csv.DictReader(Path(result["outputs"]["recommendation_inputs"]).open(encoding="utf-8")))
-    assert all(row["evaluation_tier"] == "FULL_MODEL" for row in rows if row["guarded_recommendation"] == "REVIEW_FOR_BUY")
+    recommendation_rows = list(csv.DictReader(Path(result["outputs"]["recommendation_inputs"]).open(encoding="utf-8")))
+    forecast_rows = list(csv.DictReader(Path(result["outputs"]["forecast_inputs"]).open(encoding="utf-8")))
+    assert all(row["recommendation_eligible"] == "NO" for row in recommendation_rows)
+    assert all(row["forecast_eligible"] == "NO" for row in forecast_rows)
+    assert all(row["horizon_model_certified"] == "NO" for row in forecast_rows)
+    assert all(not row["one_year_base_usd"] and not row["three_year_base_usd"] and not row["five_year_base_usd"] for row in forecast_rows)
 
 
 def test_store_loads_and_groups_all_products(tmp_path: Path):

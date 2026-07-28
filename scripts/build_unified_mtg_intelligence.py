@@ -151,19 +151,37 @@ def build() -> tuple[list[dict[str, str]], list[dict[str, str]], dict[str, objec
             if not all((evaluation, forecast, recommendation)):
                 diagnostics.append({"lane": lane, "source_product_id": source_id, "diagnostic": "MISSING_SECRET_LAIR_INTELLIGENCE_SOURCE"})
                 continue
+
+            horizon_certified = normalize_bool(
+                forecast.get("horizon_model_certified")
+            ) == "YES"
+
             row.update(
                 {
-                    "forecast_method": clean(forecast.get("valuation_method")) or "SECRET_LAIR_NATIVE_GUARDED",
-                    "native_forecast_low_usd": clean(forecast.get("forecast_low_usd")),
-                    "native_forecast_base_usd": clean(forecast.get("forecast_base_usd")),
-                    "native_forecast_high_usd": clean(forecast.get("forecast_high_usd")),
+                    "current_market_value_usd": clean(forecast.get("current_market_value_usd")) or clean(evaluation.get("current_market_value_usd")) or clean(evaluation.get("evaluated_market_value_usd")),
+                    "forecast_method": clean(forecast.get("forecast_method")) or "NATIVE_VALUATION_RANGE",
+                    "forecast_status": clean(forecast.get("forecast_status")) or clean(evaluation.get("forecast_status")),
+                    "forecast_eligible": normalize_bool(forecast.get("forecast_eligible")) if horizon_certified else "NO",
+                    "native_forecast_low_usd": clean(forecast.get("native_valuation_low_usd")) or clean(forecast.get("forecast_low_usd")),
+                    "native_forecast_base_usd": clean(forecast.get("native_valuation_base_usd")) or clean(forecast.get("forecast_base_usd")),
+                    "native_forecast_high_usd": clean(forecast.get("native_valuation_high_usd")) or clean(forecast.get("forecast_high_usd")),
+                    "one_year_downside_usd": clean(forecast.get("one_year_downside_usd")) if horizon_certified else "",
+                    "one_year_base_usd": clean(forecast.get("one_year_base_usd")) if horizon_certified else "",
+                    "one_year_upside_usd": clean(forecast.get("one_year_upside_usd")) if horizon_certified else "",
+                    "three_year_downside_usd": clean(forecast.get("three_year_downside_usd")) if horizon_certified else "",
+                    "three_year_base_usd": clean(forecast.get("three_year_base_usd")) if horizon_certified else "",
+                    "three_year_upside_usd": clean(forecast.get("three_year_upside_usd")) if horizon_certified else "",
+                    "five_year_downside_usd": clean(forecast.get("five_year_downside_usd")) if horizon_certified else "",
+                    "five_year_base_usd": clean(forecast.get("five_year_base_usd")) if horizon_certified else "",
+                    "five_year_upside_usd": clean(forecast.get("five_year_upside_usd")) if horizon_certified else "",
                     "recommendation_action": clean(recommendation.get("guarded_recommendation")),
+                    "recommendation_status": clean(recommendation.get("recommendation_status")),
+                    "recommendation_eligible": normalize_bool(recommendation.get("recommendation_eligible")) if horizon_certified else "NO",
                     "confidence": clean(recommendation.get("model_confidence_score")) or clean(evaluation.get("model_confidence_score")),
+                    "rationale": "Native current-value range retained; forward recommendation withheld until a horizon model is independently certified.",
                     "suppression_reason": clean(evaluation.get("suppression_reason")),
                 }
             )
-            row["forecast_eligible"] = "YES" if is_number(row["native_forecast_base_usd"]) else "NO"
-            row["recommendation_eligible"] = secret_recommendation_eligible(row["recommendation_status"], row["recommendation_action"])
 
         elif lane == "COLLECTOR_BOOSTER_BOX":
             evaluation = collector_eval.get(source_id)
@@ -267,7 +285,16 @@ def build() -> tuple[list[dict[str, str]], list[dict[str, str]], dict[str, objec
         ),
         "pre_numeric_forecasts_equal_83": numeric_forecast_counts["PRE_COLLECTOR_BOOSTER_BOX"] == 83,
         "pre_recommendation_eligible_equal_65": recommendation_counts["PRE_COLLECTOR_BOOSTER_BOX"] == 65,
-        "secret_native_forecasts_equal_973": numeric_forecast_counts["SECRET_LAIR"] == 973,
+        "secret_native_valuation_ranges_equal_973": numeric_forecast_counts["SECRET_LAIR"] == 973,
+        "secret_forecast_eligibility_fail_closed": forecast_counts["SECRET_LAIR"] == 0,
+        "secret_recommendations_fail_closed": recommendation_counts["SECRET_LAIR"] == 0,
+        "secret_horizon_values_zero": all(
+            not any(is_number(r[field]) for field in (
+                "one_year_base_usd", "three_year_base_usd", "five_year_base_usd"
+            ))
+            for r in rows
+            if r["lane"] == "SECRET_LAIR"
+        ),
         "private_holdings_fields_absent": all(field not in r for r in rows for field in ("quantity", "acquisition_date", "total_cost_basis_usd", "notes")),
         "quota_calls_zero": True,
     }

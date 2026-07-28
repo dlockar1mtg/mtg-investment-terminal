@@ -357,6 +357,20 @@ def build(output_root: Path) -> dict[str, Any]:
     ]
     position_rows: list[dict[str, str]] = []
 
+    secret_rows = [
+        row
+        for row in forecast_rows
+        if row["asset_id"].startswith("MTG:SECRET_LAIR:")
+    ]
+    if len(secret_rows) != 973:
+        raise RuntimeError(f"Expected 973 hosted Secret Lair rows; found {len(secret_rows)}")
+    if any(row["forecast_eligible"] != "NO" for row in secret_rows):
+        raise RuntimeError("Secret Lair horizon forecasts must remain fail-closed.")
+    if any(any(row[field] for field in ("one_year_base_usd", "three_year_base_usd", "five_year_base_usd")) for row in secret_rows):
+        raise RuntimeError("Hosted Secret Lair output contains uncertified horizon values.")
+    if any(row["forecast_method"] != "NATIVE_VALUATION_RANGE" for row in secret_rows):
+        raise RuntimeError("Hosted Secret Lair valuation method is not explicit.")
+
     aftermath_rows = [
         row
         for row in forecast_rows
