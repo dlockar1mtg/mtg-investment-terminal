@@ -167,3 +167,30 @@ def test_build_preserves_forecast_boundary(tmp_path: Path, monkeypatch) -> None:
         "INSUFFICIENT_HISTORY",
         "NO_HISTORY",
     }
+
+def test_zero_return_is_valid_historical_performance() -> None:
+    module = load_module()
+
+    result = module.historical_metrics(
+        [
+            {
+                "date": module.date(2025, 1, 1),
+                "value": 100.0,
+                "sources": ["source-a"],
+                "raw_observations": 1,
+            },
+            {
+                "date": module.date(2026, 1, 1),
+                "value": 100.0,
+                "sources": ["source-a"],
+                "raw_observations": 1,
+            },
+        ]
+    )
+
+    assert result["status"] == "HISTORICAL_PERFORMANCE_READY"
+    assert result["eligible"] == "YES"
+    assert result["total_return_pct"] == 0.0
+    assert result["cagr_pct"] == 0.0
+    assert module.clean(result["total_return_pct"]) == "0.0"
+    assert module.clean(result["cagr_pct"]) == "0.0"

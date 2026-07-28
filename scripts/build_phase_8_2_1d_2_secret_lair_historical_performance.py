@@ -95,7 +95,12 @@ OUTPUT_FIELDS = [
 
 
 def clean(value: Any) -> str:
-    return str(value or "").strip()
+    # Preserve legitimate numeric zero values. Using ``value or ""`` turns
+    # 0 and 0.0 into an empty string and incorrectly marks zero returns as
+    # missing during in-memory certification.
+    if value is None:
+        return ""
+    return str(value).strip()
 
 
 def number(value: Any) -> float | None:
