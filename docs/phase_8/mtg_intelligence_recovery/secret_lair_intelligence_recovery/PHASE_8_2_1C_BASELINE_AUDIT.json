@@ -1,0 +1,23 @@
+{
+  "status": "REVIEW",
+  "generated_at_utc": "2026-07-28T21:45:06.376990+00:00",
+  "phase": "8.2.1C",
+  "purpose": "Secret Lair intelligence semantic and coverage baseline",
+  "checks": {
+    "core_datasets_present": false,
+    "unified_secret_lair_rows_present": true,
+    "uip_secret_lair_rows_present": true,
+    "source_code_present": true,
+    "tests_present": true,
+    "identity_coverage_nonzero": true
+  },
+  "counts": {
+    "datasets": 7,
+    "unique_ids_across_layers": 973,
+    "semantic_rows": 1946,
+    "rows_with_native_ranges": 1946,
+    "rows_with_any_horizon_field": 0,
+    "rows_with_suspicious_forecast_method": 0
+  },
+  "important_rule": "Historical or realized CAGR/return fields must not be mapped into forward forecast fields without an independently certified horizon model."
+}
