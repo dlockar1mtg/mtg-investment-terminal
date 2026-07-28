@@ -174,17 +174,22 @@ def build() -> tuple[list[dict[str, str]], list[dict[str, str]], dict[str, objec
                 continue
             row.update(
                 {
+                    "current_market_value_usd": clean(forecast.get("current_market_value_usd")) or clean(evaluation.get("current_market_value_usd")),
                     "forecast_method": clean(forecast.get("forecast_method")),
+                    "forecast_status": clean(forecast.get("forecast_status")) or clean(evaluation.get("forecast_status")),
                     "forecast_eligible": normalize_bool(forecast.get("forecast_eligible")),
-                    "one_year_downside_usd": clean(forecast.get("1y_downside_usd")),
-                    "one_year_base_usd": clean(forecast.get("1y_base_usd")),
-                    "one_year_upside_usd": clean(forecast.get("1y_upside_usd")),
-                    "three_year_downside_usd": clean(forecast.get("3y_downside_usd")),
-                    "three_year_base_usd": clean(forecast.get("3y_base_usd")),
-                    "three_year_upside_usd": clean(forecast.get("3y_upside_usd")),
-                    "five_year_downside_usd": clean(forecast.get("5y_downside_usd")),
-                    "five_year_base_usd": clean(forecast.get("5y_base_usd")),
-                    "five_year_upside_usd": clean(forecast.get("5y_upside_usd")),
+                    "native_forecast_low_usd": clean(forecast.get("native_forecast_low_usd")),
+                    "native_forecast_base_usd": clean(forecast.get("native_forecast_base_usd")),
+                    "native_forecast_high_usd": clean(forecast.get("native_forecast_high_usd")),
+                    "one_year_downside_usd": clean(forecast.get("1y_downside_usd")) if normalize_bool(forecast.get("horizon_model_certified")) == "YES" else "",
+                    "one_year_base_usd": clean(forecast.get("1y_base_usd")) if normalize_bool(forecast.get("horizon_model_certified")) == "YES" else "",
+                    "one_year_upside_usd": clean(forecast.get("1y_upside_usd")) if normalize_bool(forecast.get("horizon_model_certified")) == "YES" else "",
+                    "three_year_downside_usd": clean(forecast.get("3y_downside_usd")) if normalize_bool(forecast.get("horizon_model_certified")) == "YES" else "",
+                    "three_year_base_usd": clean(forecast.get("3y_base_usd")) if normalize_bool(forecast.get("horizon_model_certified")) == "YES" else "",
+                    "three_year_upside_usd": clean(forecast.get("3y_upside_usd")) if normalize_bool(forecast.get("horizon_model_certified")) == "YES" else "",
+                    "five_year_downside_usd": clean(forecast.get("5y_downside_usd")) if normalize_bool(forecast.get("horizon_model_certified")) == "YES" else "",
+                    "five_year_base_usd": clean(forecast.get("5y_base_usd")) if normalize_bool(forecast.get("horizon_model_certified")) == "YES" else "",
+                    "five_year_upside_usd": clean(forecast.get("5y_upside_usd")) if normalize_bool(forecast.get("horizon_model_certified")) == "YES" else "",
                     "recommendation_action": clean(recommendation.get("action")),
                     "recommendation_eligible": normalize_bool(recommendation.get("recommendation_eligible")),
                     "confidence": clean(recommendation.get("confidence")) or clean(evaluation.get("confidence")),
@@ -251,8 +256,15 @@ def build() -> tuple[list[dict[str, str]], list[dict[str, str]], dict[str, objec
         "currency_usd_all_rows": all(r["currency"] == "USD" for r in rows),
         "forecast_eligibility_populated": all(r["forecast_eligible"] in {"YES", "NO"} for r in rows),
         "recommendation_eligibility_populated": all(r["recommendation_eligible"] in {"YES", "NO"} for r in rows),
-        "collector_numeric_forecasts_equal_47": numeric_forecast_counts["COLLECTOR_BOOSTER_BOX"] == 47,
-        "collector_recommendation_eligible_equal_36": recommendation_counts["COLLECTOR_BOOSTER_BOX"] == 36,
+        "collector_native_ranges_present": numeric_forecast_counts["COLLECTOR_BOOSTER_BOX"] > 0,
+        "collector_recommendations_fail_closed": recommendation_counts["COLLECTOR_BOOSTER_BOX"] == 0,
+        "collector_false_horizon_values_zero": all(
+            not any(is_number(r[field]) for field in (
+                "one_year_base_usd", "three_year_base_usd", "five_year_base_usd"
+            ))
+            for r in rows
+            if r["lane"] == "COLLECTOR_BOOSTER_BOX"
+        ),
         "pre_numeric_forecasts_equal_83": numeric_forecast_counts["PRE_COLLECTOR_BOOSTER_BOX"] == 83,
         "pre_recommendation_eligible_equal_65": recommendation_counts["PRE_COLLECTOR_BOOSTER_BOX"] == 65,
         "secret_native_forecasts_equal_973": numeric_forecast_counts["SECRET_LAIR"] == 973,
