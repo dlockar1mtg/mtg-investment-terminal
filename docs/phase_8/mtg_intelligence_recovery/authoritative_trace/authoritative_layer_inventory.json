@@ -1,0 +1,12 @@
+{
+  "repository_root": "C:\\Users\\DevonLockard\\mtg-investment-terminal",
+  "authoritative_file_count": 31,
+  "aftermath_trace_row_count": 17,
+  "secret_lair_source_count": 21,
+  "layers": {
+    "GOVERNED_WAREHOUSE": 15,
+    "TERMINAL_DELIVERY": 7,
+    "UIP_DELIVERY": 7,
+    "PRODUCT_MASTER": 2
+  }
+}
