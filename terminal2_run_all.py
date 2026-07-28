@@ -1,3 +1,4 @@
+from pathlib import Path
 from terminal2.db.schema import init_db
 from terminal2.db.loaders import sync_product_master
 from terminal2.features.price_features import compute_price_features
@@ -14,6 +15,7 @@ from terminal2.intelligence import publish_core_investment_intelligence
 from terminal2.calibration import publish_model_calibration
 from terminal2.semantic import publish_semantic_layer
 from terminal2.return_analytics import publish_universal_return_analytics
+from terminal2.delivery.governed_loader import activate_delivery
 from terminal2.secret_lair import (
     publish_secret_lair_acquisition,
     publish_secret_lair_backfill,
@@ -226,6 +228,20 @@ def main():
     print(f"Proposed registry assets: {population['registry_assets']}")
     print(f"Scoring-ready assets: {population['scoring_ready_assets']}")
     print(f"Apply ready: {population['apply_ready']}")
+
+    activation = activate_delivery(
+        Path("data/operations/mtg_terminal_delivery"),
+        Path("data/warehouse/current/governed_terminal"),
+        Path("data/operations/mtg_terminal_activation"),
+    )
+    print("\nGoverned terminal activation:")
+    print(f"Package: {activation.package_id}")
+    print(f"Interface rows: {activation.interface_rows}")
+    print(f"Dashboard rows: {activation.dashboard_rows}")
+    print(f"Forecast rows: {activation.forecast_rows}")
+    print(f"Recommendation rows: {activation.recommendation_rows}")
+    print(f"Ranking rows: {activation.ranking_rows}")
+    print(f"Fallback used: {activation.used_fallback}")
 
 if __name__ == "__main__":
     main()
