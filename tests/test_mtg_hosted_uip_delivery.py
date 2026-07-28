@@ -24,6 +24,87 @@ def read_rows(path: Path):
         return list(csv.DictReader(handle))
 
 
+def write_unified_fixture(module, path: Path) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+
+    rows = []
+
+    for key, (_registry_path, evaluation_path) in module.FILES.items():
+        lane = module.LANE_NAMES[key]
+
+        for original in read_rows(evaluation_path):
+            row = dict(original)
+            source = module.source_id(row)
+
+            assert source
+
+            row["lane"] = lane
+            row["universal_mtg_product_id"] = module.universal_id(
+                lane,
+                source,
+            )
+
+            if lane == "SECRET_LAIR":
+                row["forecast_method"] = "NATIVE_VALUATION_RANGE"
+                row["valuation_method"] = "NATIVE_VALUATION_RANGE"
+                row["forecast_eligible"] = "NO"
+                row["forecast_status"] = "HISTORICAL_ONLY"
+                row["horizon_model_certified"] = "NO"
+                row["1y_downside_usd"] = ""
+                row["1y_base_usd"] = ""
+                row["1y_upside_usd"] = ""
+                row["3y_downside_usd"] = ""
+                row["3y_base_usd"] = ""
+                row["3y_upside_usd"] = ""
+                row["5y_downside_usd"] = ""
+                row["5y_base_usd"] = ""
+                row["5y_upside_usd"] = ""
+
+            if source == "TCGCSV-22876-489207":
+                row["current_market_value_usd"] = "227.18"
+                row["current_unit_value_usd"] = "227.18"
+                row["market_value_usd"] = "227.18"
+                row["current_price"] = "227.18"
+                row["evaluated_market_value_usd"] = "227.18"
+                row["forecast_method"] = "NATIVE_MONTE_CARLO_RANGE"
+                row["valuation_method"] = "NATIVE_MONTE_CARLO_RANGE"
+                row["forecast_base_usd"] = "340.58"
+                row["native_forecast_base_usd"] = "340.58"
+                row["horizon_model_certified"] = "NO"
+                row["1y_base_usd"] = ""
+                row["3y_base_usd"] = ""
+                row["5y_base_usd"] = ""
+
+            rows.append(row)
+
+    assert len(rows) == 1141
+
+    universal_ids = {
+        row["universal_mtg_product_id"]
+        for row in rows
+    }
+
+    assert len(universal_ids) == 1141
+
+    fields = []
+    seen = set()
+
+    for row in rows:
+        for field in row:
+            if field not in seen:
+                seen.add(field)
+                fields.append(field)
+
+    with path.open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.DictWriter(
+            handle,
+            fieldnames=fields,
+            extrasaction="ignore",
+        )
+        writer.writeheader()
+        writer.writerows(rows)
+
+
 def write_historical_fixture(path: Path) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
 
@@ -63,6 +144,10 @@ def test_hosted_delivery_builds_complete_contract(tmp_path):
     write_historical_fixture(historical_source)
     module.HISTORICAL_PERFORMANCE_SOURCE = historical_source
 
+    unified_source = tmp_path / "source" / "unified_mtg_intelligence_interface.csv"
+    write_unified_fixture(module, unified_source)
+    module.UNIFIED_INTERFACE = unified_source
+
     result = module.build(tmp_path)
     assert result["status"] == "PASS"
     assert result["products"] == 1141
@@ -91,6 +176,10 @@ def test_delivery_manifest_has_expected_lanes(tmp_path):
     historical_source = tmp_path / "source" / "historical_performance.csv"
     write_historical_fixture(historical_source)
     module.HISTORICAL_PERFORMANCE_SOURCE = historical_source
+
+    unified_source = tmp_path / "source" / "unified_mtg_intelligence_interface.csv"
+    write_unified_fixture(module, unified_source)
+    module.UNIFIED_INTERFACE = unified_source
 
     module.build(tmp_path)
     manifest = json.loads(
