@@ -1,0 +1,37 @@
+{
+  "status": "PASS",
+  "generated_at_utc": "2026-07-28T13:18:39.255569+00:00",
+  "governed_products": 1141,
+  "legacy_intelligence_rows": 1141,
+  "legacy_matches": 1141,
+  "dashboard_rows": 1001,
+  "governed_forecast_rows": 955,
+  "governed_recommendation_rows": 567,
+  "guarded_rank_rows": 130,
+  "excluded_rows": 186,
+  "valuation_state_counts": {
+    "DIRECT_HISTORY_VALUATION": 989,
+    "VALUATION_UNAVAILABLE": 140,
+    "CURRENT_ASKING_REFERENCE_ONLY": 12
+  },
+  "forecast_consumption_state_counts": {
+    "ELIGIBLE": 955,
+    "SUPPRESSED_LEGACY_FORECAST_INELIGIBLE": 34,
+    "SUPPRESSED_NO_DEFENSIBLE_PRICE": 140,
+    "REFERENCE_ONLY_NOT_MODEL_ELIGIBLE": 12
+  },
+  "recommendation_consumption_state_counts": {
+    "ELIGIBLE": 567,
+    "SUPPRESSED_RECOMMENDATION_INELIGIBLE": 422,
+    "SUPPRESSED_NO_DEFENSIBLE_PRICE": 140,
+    "WATCH_ONLY_CURRENT_ASKING_REFERENCE": 12
+  },
+  "certification_checks": {
+    "interface_rows_equal_1141": true,
+    "canonical_product_ids_unique": true,
+    "asking_references_never_forecast_eligible": true,
+    "asking_references_never_recommendation_eligible": true,
+    "unavailable_products_never_ranked": true,
+    "forecast_rows_have_direct_history": true
+  }
+}
