@@ -1,0 +1,118 @@
+{
+  "status": "READY_FOR_UIP_IMPORT",
+  "handoff_contract": "mtg-to-uip-manual-production-v1",
+  "handoff_version": "1.0",
+  "generated_at_utc": "2026-07-28T13:56:53.718394+00:00",
+  "source_platform": "mtg",
+  "source_repository": "mtg-investment-terminal",
+  "source_repository_root": "C:\\Users\\DevonLockard\\mtg-investment-terminal",
+  "manual_production_command": "python scripts/run_phase_11e_17_manual_uip_handoff.py",
+  "package_id": "mtg-governed-20260728T135615Z",
+  "package_relative_path": "data/operations/mtg_terminal_delivery/packages/mtg-governed-20260728T135615Z",
+  "delivery_manifest_relative_path": "data/operations/mtg_terminal_delivery/packages/mtg-governed-20260728T135615Z/delivery_manifest.json",
+  "interface_name": "mtg-governed-terminal-delivery",
+  "interface_version": "1.0",
+  "currency": "USD",
+  "governed_product_count": 1141,
+  "current_asking_is_sold_history": false,
+  "current_asking_model_eligible": false,
+  "row_counts": {
+    "universal_mtg_consumption_interface.csv": 1141,
+    "dashboard.csv": 1001,
+    "forecasts.csv": 955,
+    "recommendations.csv": 567,
+    "rankings.csv": 130,
+    "exclusions.csv": 186,
+    "market_provenance.csv": 1141
+  },
+  "artifacts": [
+    {
+      "filename": "universal_mtg_consumption_interface.csv",
+      "relative_path": "universal_mtg_consumption_interface.csv",
+      "size_bytes": 511753,
+      "sha256": "2fe86e886236c16d13d087728d8ea32e9a49346dbb13ae2caf367f0f3e372e4b",
+      "row_count": 1141
+    },
+    {
+      "filename": "dashboard.csv",
+      "relative_path": "dashboard.csv",
+      "size_bytes": 448331,
+      "sha256": "3e82334dd6758b60c231ea85aa655ad283ae048678f7eff10974ef1336c533d0",
+      "row_count": 1001
+    },
+    {
+      "filename": "forecasts.csv",
+      "relative_path": "forecasts.csv",
+      "size_bytes": 426005,
+      "sha256": "f0586a0edeaddef1e93a60aee523b5d946815407089e494a732f593001325001",
+      "row_count": 955
+    },
+    {
+      "filename": "recommendations.csv",
+      "relative_path": "recommendations.csv",
+      "size_bytes": 234136,
+      "sha256": "9cedc2ba7063262302cb4e3268a91b26633cb43e764e379969add6ab5033e2e7",
+      "row_count": 567
+    },
+    {
+      "filename": "rankings.csv",
+      "relative_path": "rankings.csv",
+      "size_bytes": 62031,
+      "sha256": "e76af616914991f9ba69f185f8dd782453cd84dd5be8f98400a58f1ed3182642",
+      "row_count": 130
+    },
+    {
+      "filename": "exclusions.csv",
+      "relative_path": "exclusions.csv",
+      "size_bytes": 86579,
+      "sha256": "bfa691aca27c0d2a1c89dad940b8a55bb897aac82e36e3ddc5a0d01503e35d1d",
+      "row_count": 186
+    },
+    {
+      "filename": "market_provenance.csv",
+      "relative_path": "market_provenance.csv",
+      "size_bytes": 161315,
+      "sha256": "2bb9daa30a92adc51a27672e527fe9c7442487f59e60fa264b45a7f7031f1846",
+      "row_count": 1141
+    },
+    {
+      "filename": "consumption_summary.json",
+      "relative_path": "consumption_summary.json",
+      "size_bytes": 1242,
+      "sha256": "508dc1a34dac4ce689148d212b833642a1fcb713431c649086db1f4d29dbfcb1"
+    },
+    {
+      "filename": "valuation_summary.json",
+      "relative_path": "valuation_summary.json",
+      "size_bytes": 806,
+      "sha256": "6240e2ac0b62b49ff8f616b486cc106705f7584b3888004505c91d54e155672c"
+    }
+  ],
+  "quality_checks": {
+    "manifest_status_pass": true,
+    "interface_name_supported": true,
+    "interface_version_supported": true,
+    "governed_product_count_1141": true,
+    "current_asking_not_sold_history": true,
+    "current_asking_not_model_eligible": true
+  },
+  "ownership": {
+    "mtg_repository": [
+      "source collection",
+      "MTG-specific governance",
+      "valuation",
+      "forecast and recommendation production",
+      "versioned package publication",
+      "UIP handoff publication"
+    ],
+    "universal_investment_platform": [
+      "refresh scheduling",
+      "package invocation or discovery",
+      "package import",
+      "last-known-good import state",
+      "cross-asset intelligence",
+      "semantic layer",
+      "dashboard publication and refresh"
+    ]
+  }
+}
