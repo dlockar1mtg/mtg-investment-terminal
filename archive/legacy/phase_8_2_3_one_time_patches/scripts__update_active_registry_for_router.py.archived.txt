@@ -1,0 +1,52 @@
+import json
+from pathlib import Path
+
+
+path = Path(
+    "config/mtg/standards/"
+    "mtg_active_code_registry_v1.json"
+)
+
+payload = json.loads(
+    path.read_text(
+        encoding="utf-8-sig"
+    )
+)
+
+script = (
+    "scripts/"
+    "route_collector_forecast_methods.py"
+)
+
+test = (
+    "tests/"
+    "test_collector_forecast_method_router.py"
+)
+
+if script not in payload["authoritative_scripts"]:
+    payload["authoritative_scripts"].append(
+        script
+    )
+
+if test not in payload["authoritative_tests"]:
+    payload["authoritative_tests"].append(
+        test
+    )
+
+payload["authoritative_scripts"] = sorted(
+    payload["authoritative_scripts"]
+)
+
+payload["authoritative_tests"] = sorted(
+    payload["authoritative_tests"]
+)
+
+path.write_text(
+    json.dumps(
+        payload,
+        indent=2,
+    ),
+    encoding="utf-8",
+)
+
+print("Active-code registry updated.")
