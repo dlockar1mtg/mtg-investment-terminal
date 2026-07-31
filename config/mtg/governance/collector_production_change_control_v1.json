@@ -1,0 +1,69 @@
+{
+  "policy_name": "Collector Production Certification and Change Control",
+  "policy_version": "1.0.0",
+  "policy_status": "OWNER_CONTROLLED",
+  "owner": {
+    "name": "Devon Lockard",
+    "github_login": "dlockar1",
+    "explicit_approval_required": true
+  },
+  "certification_dimensions": [
+    "STRUCTURAL_TESTING",
+    "DYNAMIC_UNIVERSE_RECONCILIATION",
+    "PRICE_AND_HISTORY_SEMANTICS",
+    "EVIDENCE_LINEAGE",
+    "FORECAST_OUTPUT_COMPLETENESS",
+    "ECONOMIC_PLAUSIBILITY",
+    "HUMAN_OUTPUT_ACCEPTANCE",
+    "UIP_RECONCILIATION",
+    "LEGACY_PRESERVATION",
+    "PIPELINE_DOCUMENTATION"
+  ],
+  "tests_are_sufficient_for_certification": false,
+  "owner_acceptance_required": true,
+  "material_change_categories": [
+    "FORECAST_METHOD",
+    "FORMULA",
+    "WEIGHT",
+    "THRESHOLD",
+    "CAP_OR_FLOOR",
+    "SOURCE_HIERARCHY",
+    "PRICE_SEMANTICS",
+    "FRESHNESS_RULE",
+    "PRODUCT_UNIVERSE_RULE",
+    "IDENTITY_RULE",
+    "LANE_OR_CONFIGURATION_RULE",
+    "SUPPLY_DEMAND_LIQUIDITY_METHOD",
+    "REPRINT_OR_LIFECYCLE_METHOD",
+    "CONFIDENCE_OR_UNCERTAINTY_METHOD",
+    "FORECAST_AUTHORIZATION",
+    "PURCHASE_AUTHORIZATION",
+    "MTG_OR_UIP_SCHEMA",
+    "ADAPTER_OR_MANIFEST",
+    "PRODUCTION_ENTRY_POINT",
+    "ARCHIVE_OR_REMOVAL",
+    "GOVERNING_STANDARD"
+  ],
+  "required_change_evidence": [
+    "PROPOSED_CHANGE_RECORD",
+    "BEFORE_AFTER_OUTPUT_COMPARISON",
+    "TEST_RESULTS",
+    "SEMANTIC_DIAGNOSTICS",
+    "ECONOMIC_DIAGNOSTICS",
+    "INTEGRATION_RECONCILIATION",
+    "LEGACY_PRESERVATION_RECORD",
+    "OWNER_APPROVAL_RECORD"
+  ],
+  "legacy_policy": {
+    "silent_deletion_allowed": false,
+    "archive_or_index_required": true,
+    "recovery_location_required": true,
+    "replacement_and_reason_required": true
+  },
+  "approval_rules": {
+    "passing_tests_imply_approval": false,
+    "automated_commit_implies_approval": false,
+    "merge_implies_certification": false,
+    "explicit_versioned_owner_record_required": true
+  }
+}
