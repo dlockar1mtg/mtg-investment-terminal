@@ -1,0 +1,33 @@
+{
+  "specification_name": "Collector Candidate Forecast Diagnostics",
+  "specification_version": "1.0.0",
+  "status": "CANDIDATE_INACTIVE",
+  "owner": "Devon Lockard",
+  "inputs": {
+    "dual_track_root": "data/operations/collector_dual_track_evaluation/candidate_v1_0_0",
+    "numeric_specification": "config/mtg/governance/collector_numeric_specification_candidate_v1.json",
+    "product_master": "data/product_master/product_master_model_input.csv",
+    "comparable_search_roots": [
+      "data/operations",
+      "data/validation"
+    ]
+  },
+  "output_directory": "data/operations/collector_candidate_forecast_diagnostics/candidate_v1_0_0",
+  "rules": {
+    "collector_only_scope_required": true,
+    "future_release_products_must_be_excluded_from_current_investment_ranking": true,
+    "retrospective_history_may_support_diagnostics_but_not_claim_historical_decision_availability": true,
+    "missing_components_must_be_visible": true,
+    "route_must_come_from_prospective_snapshot": true,
+    "candidate_model_version_must_be_preserved": true,
+    "hard_caps_prohibited": true,
+    "automatic_model_update_allowed": false,
+    "future_information_prohibited": true
+  },
+  "authorizations": {
+    "candidate_projection_authorized": false,
+    "production_projection_authorized": false,
+    "purchase_recommendation_authorized": false,
+    "automatic_parameter_activation_authorized": false
+  }
+}
