@@ -1,47 +1,49 @@
-{
-  "registry_name": "MTG Authoritative Active Code Registry",
-  "registry_version": "1.0.0",
-  "status": "ACTIVE_BASELINE",
-  "rules": {
-    "unlisted_scripts_are_not_automatically_authoritative": true,
-    "archived_files_must_not_be_imported_or_executed": true,
-    "one_time_patch_scripts_must_not_remain_active": true,
-    "backup_source_files_must_not_remain_in_active_packages": true,
-    "production_entry_points_require_tests_or_semantic_gates": true
-  },
-  "authoritative_scripts": [
-    "scripts/archive_obsolete_mtg_one_time_scripts.py",
-    "scripts/audit_collector_display_universe.py",
-    "scripts/build_calibrated_historical_shortlist.py",
-    "scripts/build_canonical_governed_history.py",
-    "scripts/build_collector_identity_adjudication_dossier.py",
-    "scripts/build_tier_1_forward_scenarios.py",
-    "scripts/build_universal_tiered_mtg_analysis.py",
-    "scripts/build_weekend_historical_purchase_screen.py",
-    "scripts/certify_collector_booster_history.py",
-    "scripts/generate_mtg_standards_foundation.py",
-    "scripts/route_collector_forecast_methods.py",
-    "scripts/run_collector_booster_auto_admission.py",
-    "scripts/run_collector_history_semantic_gate.py"
-  ],
-  "authoritative_models": [
-    "models/investment_features.py"
-  ],
-  "authoritative_tests": [
-    "tests/external_discovery/test_canonical_product_registry.py",
-    "tests/external_discovery/test_canonical_registry_governance.py",
-    "tests/test_collector_booster_auto_admission.py",
-    "tests/test_collector_booster_history_certification.py",
-    "tests/test_collector_forecast_method_router.py",
-    "tests/test_dynamic_product_registry_governance.py",
-    "tests/test_mtg_standards_contract.py"
-  ],
-  "approved_archive_patterns": [
-    "scripts/patch_*.py",
-    "scripts/fix_*_test*.py",
-    "scripts/*_before_*.py",
-    "scripts/*_backup.py",
-    "models/*_before_*.py",
-    "tests/**/*_before_*.py"
-  ]
+﻿{
+    "registry_name":  "MTG Authoritative Active Code Registry",
+    "registry_version":  "1.0.0",
+    "status":  "ACTIVE_BASELINE",
+    "rules":  {
+                  "unlisted_scripts_are_not_automatically_authoritative":  true,
+                  "archived_files_must_not_be_imported_or_executed":  true,
+                  "one_time_patch_scripts_must_not_remain_active":  true,
+                  "backup_source_files_must_not_remain_in_active_packages":  true,
+                  "production_entry_points_require_tests_or_semantic_gates":  true
+              },
+    "authoritative_scripts":  [
+                                  "scripts/archive_obsolete_mtg_one_time_scripts.py",
+                                  "scripts/audit_collector_display_universe.py",
+                                  "scripts/audit_collector_evidence_readiness.py",
+                                  "scripts/build_calibrated_historical_shortlist.py",
+                                  "scripts/build_canonical_governed_history.py",
+                                  "scripts/build_collector_identity_adjudication_dossier.py",
+                                  "scripts/build_tier_1_forward_scenarios.py",
+                                  "scripts/build_universal_tiered_mtg_analysis.py",
+                                  "scripts/build_weekend_historical_purchase_screen.py",
+                                  "scripts/certify_collector_booster_history.py",
+                                  "scripts/generate_mtg_standards_foundation.py",
+                                  "scripts/route_collector_forecast_methods.py",
+                                  "scripts/run_collector_booster_auto_admission.py",
+                                  "scripts/run_collector_history_semantic_gate.py"
+                              ],
+    "authoritative_models":  [
+                                 "models/investment_features.py"
+                             ],
+    "authoritative_tests":  [
+                                "tests/external_discovery/test_canonical_product_registry.py",
+                                "tests/external_discovery/test_canonical_registry_governance.py",
+                                "tests/test_collector_booster_auto_admission.py",
+                                "tests/test_collector_booster_history_certification.py",
+                                "tests/test_collector_evidence_contract.py",
+                                "tests/test_collector_forecast_method_router.py",
+                                "tests/test_dynamic_product_registry_governance.py",
+                                "tests/test_mtg_standards_contract.py"
+                            ],
+    "approved_archive_patterns":  [
+                                      "scripts/patch_*.py",
+                                      "scripts/fix_*_test*.py",
+                                      "scripts/*_before_*.py",
+                                      "scripts/*_backup.py",
+                                      "models/*_before_*.py",
+                                      "tests/**/*_before_*.py"
+                                  ]
 }
