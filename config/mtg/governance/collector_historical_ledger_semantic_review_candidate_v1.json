@@ -1,0 +1,39 @@
+{
+  "artifact_name": "Collector Historical Ledger Semantic Review Candidate",
+  "artifact_version": "1.0.0",
+  "status": "CANDIDATE_INACTIVE",
+  "scope": "collector_booster",
+  "primary_ledger": "data/operations/mtg_universal_history_ledger/universal_mtg_historical_observation_ledger.csv",
+  "supporting_ledger": "data/operations/mtg_history_foundation/universal_mtg_price_history.csv",
+  "governed_registry": "data/validation/phase_10/collector_booster_boxes/governed_registry/collector_booster_box_governed_registry.csv",
+  "required_reviews": {
+    "collector_identity_coverage": true,
+    "observation_date_validity": true,
+    "observed_at_utc_validity": true,
+    "price_field_semantics": true,
+    "source_lineage": true,
+    "duplicate_fingerprint_review": true,
+    "primary_supporting_overlap_review": true,
+    "live_vs_backfilled_classification": true,
+    "knowledge_availability_review": true,
+    "release_boundary_review": true,
+    "outlier_and_nonpositive_price_review": true,
+    "currency_review": true
+  },
+  "knowledge_availability_policy": {
+    "observation_date_is_not_automatically_knowledge_available_date": true,
+    "observed_at_utc_may_be_used_as_knowledge_available_proxy_only_when_semantically_validated": true,
+    "retrospective_backfills_must_be_visible": true,
+    "retrospective_backfills_may_be_used_for_outcome_measurement": true,
+    "retrospective_backfills_may_not_be_used_as_historical_decision_inputs_without_owner_approved_policy": true,
+    "future_information_prohibited": true
+  },
+  "candidate_output_directory": "data/operations/collector_historical_ledger_semantic_review/candidate_v1_0_0",
+  "authorizations": {
+    "primary_ledger_authorized": false,
+    "historical_snapshot_builder_authorized": false,
+    "projection_authorized": false,
+    "purchase_recommendation_authorized": false
+  },
+  "owner_approval_status": "NOT_REQUESTED"
+}
