@@ -66,6 +66,10 @@ OUTPUT_FIELDS = [
     "purchase_analysis_allowed",
     "purchase_recommendation_authorized",
     "forecast_method",
+    "base_forecast_method",
+    "override_applied",
+    "override_reason_code",
+    "override_version",
     "forecast_method_version",
     "method_reason",
     "comparable_group_required",
@@ -73,6 +77,16 @@ OUTPUT_FIELDS = [
     "standard_name",
     "standard_version",
 ]
+
+
+DEFAULT_OVERRIDE = (
+    ROOT
+    / "data"
+    / "governance"
+    / "mtg"
+    / "collector_comparables"
+    / "collector_japanese_edition_hybrid_override_v1.json"
+)
 
 
 def clean(value: object) -> str:
@@ -520,6 +534,7 @@ def run(
     model_path: Path,
     history_certification_path: Path,
     policy_path: Path,
+    override_path: Path,
     output_root: Path,
 ) -> dict[str, Any]:
     policy = json.loads(
@@ -527,6 +542,58 @@ def run(
             encoding="utf-8-sig"
         )
     )
+
+    override: dict[str, Any] | None = None
+
+    if override_path.exists():
+        override = json.loads(
+            override_path.read_text(
+                encoding="utf-8-sig"
+            )
+        )
+
+        required_override_fields = {
+            "investment_product_id",
+            "previous_method",
+            "approved_method",
+            "reason_code",
+            "override_version",
+            "projection_authorized",
+            "purchase_recommendation_authorized",
+        }
+
+        missing_override_fields = (
+            required_override_fields
+            - set(override)
+        )
+
+        if missing_override_fields:
+            raise RuntimeError(
+                "Override missing required fields: "
+                + ", ".join(
+                    sorted(
+                        missing_override_fields
+                    )
+                )
+            )
+
+        if bool(
+            override[
+                "projection_authorized"
+            ]
+        ):
+            raise RuntimeError(
+                "Override cannot authorize projections."
+            )
+
+        if bool(
+            override[
+                "purchase_recommendation_authorized"
+            ]
+        ):
+            raise RuntimeError(
+                "Override cannot authorize purchases."
+            )
 
     registry_rows = read_csv(
         registry_path
@@ -595,6 +662,148 @@ def run(
                 ],
                 policy=policy,
             )
+        )
+
+    override_applied_count = 0
+
+    for row in routed_rows:
+        row[
+            "base_forecast_method"
+        ] = clean(
+            row.get(
+                "forecast_method"
+            )
+        )
+
+        row[
+            "override_applied"
+        ] = False
+
+        row[
+            "override_reason_code"
+        ] = ""
+
+        row[
+            "override_version"
+        ] = ""
+
+        if (
+            override is None
+            or clean(
+                row.get(
+                    "investment_product_id"
+                )
+            )
+            != clean(
+                override.get(
+                    "investment_product_id"
+                )
+            )
+        ):
+            continue
+
+        expected_previous_method = clean(
+            override.get(
+                "previous_method"
+            )
+        )
+
+        if (
+            row[
+                "base_forecast_method"
+            ]
+            != expected_previous_method
+        ):
+            raise RuntimeError(
+                "Override previous method mismatch "
+                f"for "
+                f"{row['investment_product_id']}: "
+                f"expected "
+                f"{expected_previous_method}, "
+                f"found "
+                f"{row['base_forecast_method']}."
+            )
+
+        approved_method = clean(
+            override.get(
+                "approved_method"
+            )
+        )
+
+        if not approved_method:
+            raise RuntimeError(
+                "Override approved method is blank."
+            )
+
+        row[
+            "forecast_method"
+        ] = approved_method
+
+        row[
+            "override_applied"
+        ] = True
+
+        row[
+            "override_reason_code"
+        ] = clean(
+            override.get(
+                "reason_code"
+            )
+        )
+
+        row[
+            "override_version"
+        ] = clean(
+            override.get(
+                "override_version"
+            )
+        )
+
+        row[
+            "comparable_group_required"
+        ] = approved_method in {
+            "COMPARABLE_PRODUCT_ADJUSTED",
+            "FUNDAMENTAL_COMPARABLE_HYBRID",
+        }
+
+        row[
+            "method_reason"
+        ] = (
+            clean(
+                row.get(
+                    "method_reason"
+                )
+            )
+            + " Governed override applied: "
+            + row[
+                "override_reason_code"
+            ]
+            + "."
+        )
+
+        row[
+            "limitations"
+        ] = (
+            clean(
+                row.get(
+                    "limitations"
+                )
+            )
+            + " Hybrid method requires wider "
+            + "uncertainty due to insufficient "
+            + "exact semantic comparables."
+        )
+
+        override_applied_count += 1
+
+    if (
+        override is not None
+        and override_applied_count != 1
+    ):
+        raise RuntimeError(
+            "Expected exactly one governed override "
+            f"application, found "
+            f"{override_applied_count}."
         )
 
     output_root.mkdir(
@@ -693,6 +902,9 @@ def run(
         "routed_product_count": len(
             routed_rows
         ),
+        "override_applied_count": (
+            override_applied_count
+        ),
         "method_counts": dict(
             sorted(method_counts.items())
         ),
@@ -732,6 +944,20 @@ def run(
             ),
             "policy_sha256": sha256(
                 policy_path
+            ),
+            "override_path": (
+                str(
+                    override_path.resolve()
+                )
+                if override_path.exists()
+                else ""
+            ),
+            "override_sha256": (
+                sha256(
+                    override_path
+                )
+                if override_path.exists()
+                else ""
             ),
         },
         "outputs": {
@@ -797,6 +1023,13 @@ def parse_args() -> argparse.Namespace:
     )
 
     parser.add_argument(
+        "--override",
+        type=Path,
+        default=DEFAULT_OVERRIDE,
+    )
+
+
+    parser.add_argument(
         "--output-root",
         type=Path,
         default=DEFAULT_OUTPUT_ROOT,
@@ -815,6 +1048,7 @@ def main() -> None:
             args.history_certification
         ),
         policy_path=args.policy,
+        override_path=args.override,
         output_root=args.output_root,
     )
 

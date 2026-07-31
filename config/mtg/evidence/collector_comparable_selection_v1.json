@@ -1,30 +1,49 @@
 {
-  "policy_name": "collector_comparable_selection",
-  "policy_version": "1.0.0",
-  "lane": "COLLECTOR_BOOSTER",
-  "minimum_comparables": 3,
-  "maximum_comparables": 7,
-  "minimum_similarity_score": 55.0,
-  "minimum_peer_history_statuses": [
-    "CERTIFIED",
-    "CERTIFIED_LIMITED"
-  ],
-  "weights": {
-    "product_configuration": 0.15,
-    "release_era": 0.15,
-    "lifecycle_stage": 0.10,
-    "price_band": 0.15,
-    "supply_profile": 0.15,
-    "liquidity_class": 0.15,
-    "demand_profile": 0.15
-  },
-  "rules": {
-    "target_must_be_comparable_evidence_ready": true,
-    "peer_must_be_comparable_evidence_ready": true,
-    "target_cannot_compare_to_itself": true,
-    "peer_direct_history_must_be_certified": true,
-    "missing_dimension_scores_zero": true,
-    "no_projection_generated_by_selection_engine": true,
-    "purchase_recommendation_authorized": false
-  }
+    "policy_name":  "collector_comparable_selection",
+    "policy_version":  "1.2.0",
+    "lane":  "COLLECTOR_BOOSTER",
+    "minimum_comparables":  3,
+    "maximum_comparables":  7,
+    "minimum_similarity_score":  55.0,
+    "minimum_dimension_coverage":  0.70,
+    "minimum_peer_history_statuses":  [
+                                          "CERTIFIED",
+                                          "CERTIFIED_LIMITED"
+                                      ],
+    "weights":  {
+                    "product_configuration":  0.1,
+                    "product_family":  0.15,
+                    "franchise_class":  0.1,
+                    "edition_class":  0.05,
+                    "release_era":  0.1,
+                    "lifecycle_stage":  0.1,
+                    "price_band":  0.1,
+                    "supply_profile":  0.1,
+                    "liquidity_class":  0.1,
+                    "demand_profile":  0.1
+                },
+    "numeric_similarity":  {
+                               "demand_profile":  {
+                                                      "target_field":  "demand_score",
+                                                      "peer_field":  "demand_score",
+                                                      "method":  "ABSOLUTE_DISTANCE",
+                                                      "scale_maximum":  100.0
+                                                  }
+                           },
+    "peer_quality_weights":  {
+                                 "CERTIFIED":  1.0,
+                                 "CERTIFIED_LIMITED":  0.85
+                             },
+    "rules":  {
+                  "target_must_be_comparable_evidence_ready":  true,
+                  "peer_must_be_comparable_evidence_ready":  true,
+                  "target_cannot_compare_to_itself":  true,
+                  "peer_direct_history_must_be_certified":  true,
+                  "missing_dimension_scores_zero":  true,
+                  "weak_peers_must_not_be_forced":  true,
+                  "insufficient_comparables_must_be_explicit":  true,
+                  "no_projection_generated_by_selection_engine":  true,
+                  "purchase_recommendation_authorized":  false
+              },
+    "semantic_policy_path":  "config/mtg/evidence/collector_comparable_semantic_policy_v1.json"
 }

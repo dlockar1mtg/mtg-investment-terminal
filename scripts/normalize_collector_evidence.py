@@ -74,6 +74,9 @@ OUTPUT_FIELDS = [
     "release_date_method",
     "release_date_confidence_class",
     "product_configuration",
+    "product_family_class",
+    "edition_class",
+    "semantic_classification_method",
     "forecast_method",
     "current_price",
     "supply_score",
@@ -458,6 +461,44 @@ def lifecycle_stage(
     return "MATURE"
 
 
+def classify_name_by_rules(
+    product_name: str,
+    rules: list[dict[str, Any]],
+) -> str:
+    normalized_name = clean(
+        product_name
+    ).upper()
+
+    default_class = "UNKNOWN"
+
+    for rule in rules:
+        rule_class = clean(
+            rule.get("class")
+        )
+
+        patterns = [
+            clean(pattern).upper()
+            for pattern in rule.get(
+                "patterns",
+                []
+            )
+            if clean(pattern)
+        ]
+
+        if not patterns:
+            if rule_class:
+                default_class = rule_class
+            continue
+
+        if any(
+            pattern in normalized_name
+            for pattern in patterns
+        ):
+            return rule_class
+
+    return default_class
+
+
 def first_value(
     rows: list[dict[str, str]],
     names: list[str],
@@ -521,6 +562,34 @@ def main() -> None:
 
     policy = json.loads(
         args.policy.read_text(
+            encoding="utf-8-sig"
+        )
+    )
+
+    metadata_policy_path = (
+        ROOT
+        / "config"
+        / "mtg"
+        / "evidence"
+        / "collector_comparable_metadata_v1.json"
+    )
+
+    metadata_policy = json.loads(
+        metadata_policy_path.read_text(
+            encoding="utf-8-sig"
+        )
+    )
+
+    semantic_policy_path = (
+        ROOT
+        / "config"
+        / "mtg"
+        / "evidence"
+        / "collector_comparable_semantic_policy_v1.json"
+    )
+
+    semantic_policy = json.loads(
+        semantic_policy_path.read_text(
             encoding="utf-8-sig"
         )
     )
@@ -703,6 +772,10 @@ def main() -> None:
             ]["liquidity_classes"],
         )
 
+        product_name = clean(
+            route.get("product_name")
+        )
+
         comparable_dimensions = {
             "release_era_class": release_era(
                 release_year,
@@ -718,9 +791,30 @@ def main() -> None:
             ),
             "supply_profile_class": supply_class,
             "liquidity_class": liquidity_class,
-            "reprint_exposure_class": "UNKNOWN",
-            "franchise_class": "UNKNOWN",
-            "premium_contents_class": "UNKNOWN",
+            "reprint_exposure_class": (
+                classify_name_by_rules(
+                    product_name,
+                    metadata_policy[
+                        "reprint_exposure_rules"
+                    ],
+                )
+            ),
+            "franchise_class": (
+                classify_name_by_rules(
+                    product_name,
+                    metadata_policy[
+                        "franchise_rules"
+                    ],
+                )
+            ),
+            "premium_contents_class": (
+                classify_name_by_rules(
+                    product_name,
+                    metadata_policy[
+                        "premium_content_rules"
+                    ],
+                )
+            ),
         }
 
         comparable_dimension_count = sum(
@@ -806,6 +900,21 @@ def main() -> None:
             "Direct listing and transaction counts are not yet governed.",
         ]
 
+
+        product_family_class = classify_name_by_rules(
+            product_name,
+            semantic_policy[
+                "product_family_rules"
+            ],
+        )
+
+        edition_class = classify_name_by_rules(
+            product_name,
+            semantic_policy[
+                "edition_rules"
+            ],
+        )
+
         normalized_rows.append({
             "investment_product_id": identity,
             "product_name": clean(
@@ -821,6 +930,11 @@ def main() -> None:
                 release_date_confidence_class
             ),
             "product_configuration": product_configuration,
+            "product_family_class": product_family_class,
+            "edition_class": edition_class,
+            "semantic_classification_method": (
+                "GOVERNED_PRODUCT_NAME_RULES"
+            ),
             "forecast_method": clean(
                 route.get("forecast_method")
             ),

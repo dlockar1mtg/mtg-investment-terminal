@@ -1,0 +1,121 @@
+{
+  "policy_name": "collector_comparable_metadata",
+  "policy_version": "1.0.0",
+  "lane": "COLLECTOR_BOOSTER",
+  "franchise_rules": [
+    {
+      "class": "UNIVERSES_BEYOND",
+      "patterns": [
+        "UNIVERSES BEYOND",
+        "LORD OF THE RINGS",
+        "DOCTOR WHO",
+        "FALLOUT",
+        "ASSASSIN'S CREED",
+        "FINAL FANTASY",
+        "SPIDER-MAN",
+        "MARVEL",
+        "AVATAR",
+        "TEENAGE MUTANT NINJA TURTLES",
+        "THE HOBBIT",
+        "STAR TREK"
+      ]
+    },
+    {
+      "class": "PREMIUM_MASTERS_OR_HORIZONS",
+      "patterns": [
+        "MASTERS",
+        "MODERN HORIZONS",
+        "COMMANDER LEGENDS"
+      ]
+    },
+    {
+      "class": "REMASTERED",
+      "patterns": [
+        "REMASTERED"
+      ]
+    },
+    {
+      "class": "STANDARD_OR_CORE_MAGIC",
+      "patterns": []
+    }
+  ],
+  "premium_content_rules": [
+    {
+      "class": "PREMIUM_SPECIAL_EDITION",
+      "patterns": [
+        "SPECIAL EDITION"
+      ]
+    },
+    {
+      "class": "PREMIUM_MASTERS",
+      "patterns": [
+        "MASTERS",
+        "MODERN HORIZONS"
+      ]
+    },
+    {
+      "class": "PREMIUM_LICENSED_IP",
+      "patterns": [
+        "UNIVERSES BEYOND",
+        "LORD OF THE RINGS",
+        "DOCTOR WHO",
+        "FALLOUT",
+        "ASSASSIN'S CREED",
+        "FINAL FANTASY",
+        "SPIDER-MAN",
+        "MARVEL",
+        "AVATAR",
+        "TEENAGE MUTANT NINJA TURTLES",
+        "THE HOBBIT",
+        "STAR TREK"
+      ]
+    },
+    {
+      "class": "STANDARD_COLLECTOR_TREATMENTS",
+      "patterns": []
+    }
+  ],
+  "reprint_exposure_rules": [
+    {
+      "class": "ELEVATED",
+      "patterns": [
+        "REMASTERED",
+        "CORE SET"
+      ]
+    },
+    {
+      "class": "MODERATE",
+      "patterns": [
+        "MASTERS",
+        "HORIZONS",
+        "COMMANDER LEGENDS"
+      ]
+    },
+    {
+      "class": "LOWER_LICENSED_PRODUCT",
+      "patterns": [
+        "UNIVERSES BEYOND",
+        "LORD OF THE RINGS",
+        "DOCTOR WHO",
+        "FALLOUT",
+        "ASSASSIN'S CREED",
+        "FINAL FANTASY",
+        "SPIDER-MAN",
+        "MARVEL",
+        "AVATAR",
+        "TEENAGE MUTANT NINJA TURTLES",
+        "THE HOBBIT",
+        "STAR TREK"
+      ]
+    },
+    {
+      "class": "UNKNOWN",
+      "patterns": []
+    }
+  ],
+  "rules": {
+    "name_derivations_are_governed_proxies": true,
+    "manual_override_requires_documented_source": true,
+    "purchase_recommendation_authorized": false
+  }
+}

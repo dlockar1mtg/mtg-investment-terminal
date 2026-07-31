@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from scripts.normalize_collector_evidence import (
+    classify_name_by_rules,
     confidence_class,
     derive_release_date,
     group_confidence,
@@ -157,3 +158,43 @@ def test_zero_months_is_valid() -> None:
 
     assert release_date == "2026-07-31"
     assert method.startswith("DERIVED_")
+
+def test_name_rule_classifier_matches_pattern() -> None:
+    rules = [
+        {
+            "class": "UNIVERSES_BEYOND",
+            "patterns": [
+                "STAR TREK",
+                "FINAL FANTASY",
+            ],
+        },
+        {
+            "class": "STANDARD_MAGIC",
+            "patterns": [],
+        },
+    ]
+
+    assert classify_name_by_rules(
+        "Star Trek Collector Booster Display",
+        rules,
+    ) == "UNIVERSES_BEYOND"
+
+
+def test_name_rule_classifier_uses_default() -> None:
+    rules = [
+        {
+            "class": "UNIVERSES_BEYOND",
+            "patterns": [
+                "STAR TREK",
+            ],
+        },
+        {
+            "class": "STANDARD_MAGIC",
+            "patterns": [],
+        },
+    ]
+
+    assert classify_name_by_rules(
+        "Bloomburrow Collector Booster Display",
+        rules,
+    ) == "STANDARD_MAGIC"

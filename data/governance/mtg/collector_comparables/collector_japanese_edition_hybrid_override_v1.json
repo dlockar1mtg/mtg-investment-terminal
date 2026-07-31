@@ -1,0 +1,16 @@
+{
+  "override_name": "collector_japanese_edition_hybrid_route",
+  "override_version": "1.0.0",
+  "investment_product_id": "TCGCSV-24219-628315",
+  "product_name": "FINAL FANTASY - Collector Booster Display (Japanese)",
+  "previous_method": "COMPARABLE_PRODUCT_ADJUSTED",
+  "approved_method": "FUNDAMENTAL_COMPARABLE_HYBRID",
+  "reason_code": "INSUFFICIENT_EXACT_SEMANTIC_COMPARABLES",
+  "reason": "Only one certified same-set or Japanese-edition comparable is available. Broader unrelated products are not semantically defensible.",
+  "primary_comparable_product_id": "TCGCSV-24219-618893",
+  "minimum_exact_comparables_available": 1,
+  "projection_authorized": false,
+  "purchase_recommendation_authorized": false,
+  "requires_wider_uncertainty": true,
+  "requires_hybrid_fundamental_adjustment": true
+}

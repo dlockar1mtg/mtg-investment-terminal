@@ -285,3 +285,127 @@ def test_unknown_status_fails_closed() -> None:
         result["forecast_output_allowed"]
         is False
     )
+
+def test_router_applies_japanese_hybrid_override(
+    tmp_path,
+) -> None:
+    import csv
+    import json
+    import subprocess
+    import sys
+    from pathlib import Path
+
+    root = Path(__file__).resolve().parents[1]
+
+    script = (
+        root
+        / "scripts"
+        / "route_collector_forecast_methods.py"
+    )
+
+    override_path = (
+        root
+        / "data"
+        / "governance"
+        / "mtg"
+        / "collector_comparables"
+        / "collector_japanese_edition_hybrid_override_v1.json"
+    )
+
+    result = subprocess.run(
+        [
+            sys.executable,
+            str(script),
+            "--override",
+            str(override_path),
+            "--output-root",
+            str(tmp_path),
+        ],
+        cwd=root,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    assert result.returncode == 0, (
+        result.stdout + result.stderr
+    )
+
+    routes_path = (
+        tmp_path
+        / "collector_forecast_method_routes.csv"
+    )
+
+    with routes_path.open(
+        "r",
+        encoding="utf-8-sig",
+        newline="",
+    ) as handle:
+        rows = list(
+            csv.DictReader(handle)
+        )
+
+    override_rows = [
+        row
+        for row in rows
+        if row["override_applied"] == "True"
+    ]
+
+    assert len(override_rows) == 1
+
+    override_row = override_rows[0]
+
+    assert (
+        override_row["investment_product_id"]
+        == "TCGCSV-24219-628315"
+    )
+
+    assert (
+        override_row["base_forecast_method"]
+        == "COMPARABLE_PRODUCT_ADJUSTED"
+    )
+
+    assert (
+        override_row["forecast_method"]
+        == "FUNDAMENTAL_COMPARABLE_HYBRID"
+    )
+
+    assert (
+        override_row["override_reason_code"]
+        == "INSUFFICIENT_EXACT_SEMANTIC_COMPARABLES"
+    )
+
+    assert (
+        override_row[
+            "purchase_recommendation_authorized"
+        ]
+        == "False"
+    )
+
+    manifest_path = (
+        tmp_path
+        / "collector_forecast_method_router_manifest.json"
+    )
+
+    manifest = json.loads(
+        manifest_path.read_text(
+            encoding="utf-8-sig"
+        )
+    )
+
+    assert manifest["status"] == "PASS"
+    assert manifest["override_applied_count"] == 1
+
+    assert manifest["method_counts"] == {
+        "COMPARABLE_PRODUCT_ADJUSTED": 24,
+        "DIRECT_HISTORY_CALIBRATED": 19,
+        "DIRECT_HISTORY_LIMITED": 7,
+        "FUNDAMENTAL_COMPARABLE_HYBRID": 1,
+    }
+
+    assert (
+        manifest[
+            "purchase_recommendations_authorized"
+        ]
+        is False
+    )
