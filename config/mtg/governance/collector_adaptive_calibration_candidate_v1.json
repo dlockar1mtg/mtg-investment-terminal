@@ -1,0 +1,103 @@
+{
+  "artifact_name": "Collector Adaptive Calibration Candidate",
+  "artifact_version": "1.0.0",
+  "status": "PROPOSED_INACTIVE",
+  "owner": "Devon Lockard",
+  "purpose": "Permit governed backtesting and parameter recommendations while preventing automatic production updates without owner approval.",
+  "active_model_auto_update_allowed": false,
+  "recommendation_generation_allowed": true,
+  "owner_approval_required_for_activation": true,
+  "recertification_required_after_material_change": true,
+  "projection_authorized": false,
+  "purchase_recommendation_authorized": false,
+  "optimization_objective": {
+    "primary": "maximize_out_of_sample_risk_adjusted_return",
+    "secondary": [
+      "reduce_large_downside_error",
+      "improve_calibration_by_method_route",
+      "preserve_early_opportunity_detection",
+      "avoid_parameter_instability",
+      "maintain_explainability"
+    ],
+    "candidate_metrics": [
+      "net_return_after_costs",
+      "downside_capture",
+      "maximum_drawdown",
+      "forecast_interval_coverage",
+      "median_absolute_percentage_error",
+      "directional_accuracy",
+      "ranking_hit_rate",
+      "turnover_penalty",
+      "parameter_change_penalty"
+    ],
+    "exact_metric_weights": null,
+    "metric_weight_status": "TO_BE_PROPOSED_FROM_BACKTEST_DIAGNOSTICS"
+  },
+  "backtest_design": {
+    "required": true,
+    "walk_forward_required": true,
+    "time_order_must_be_preserved": true,
+    "future_information_prohibited": true,
+    "route_specific_evaluation_required": true,
+    "release_age_cohorts_required": true,
+    "transaction_costs_required": true,
+    "liquidity_effects_required": true,
+    "holdout_period_required": true,
+    "minimum_sample_thresholds": null,
+    "threshold_status": "TO_BE_DERIVED_AND_OWNER_APPROVED"
+  },
+  "candidate_parameters": [
+    "direct_history_window_weights",
+    "limited_history_weight",
+    "comparable_weight",
+    "fundamental_weight",
+    "similarity_weight_transform",
+    "peer_quality_weight",
+    "supply_adjustment_scale",
+    "demand_adjustment_scale",
+    "liquidity_adjustment_scale",
+    "reprint_adjustment_scale",
+    "combined_adjustment_bound",
+    "confidence_component_weights",
+    "confidence_class_thresholds",
+    "scenario_width_components",
+    "freshness_review_thresholds",
+    "extreme_forecast_review_thresholds",
+    "purchase_analysis_thresholds"
+  ],
+  "recommendation_contract": {
+    "required_outputs": [
+      "current_active_value",
+      "recommended_candidate_value",
+      "absolute_change",
+      "relative_change",
+      "in_sample_metrics",
+      "out_of_sample_metrics",
+      "risk_adjusted_metric_change",
+      "downside_metric_change",
+      "subgroup_results",
+      "stability_results",
+      "limitations",
+      "reason_for_recommendation",
+      "owner_approval_status"
+    ],
+    "default_owner_approval_status": "NOT_REQUESTED",
+    "automatic_activation": false
+  },
+  "change_controls": {
+    "single_parameter_change_limit": null,
+    "multi_parameter_change_limit": null,
+    "minimum_improvement_required": null,
+    "maximum_allowed_downside_degradation": null,
+    "stability_period_required": null,
+    "all_numeric_controls_status": "UNSET_PENDING_BACKTEST_AND_OWNER_APPROVAL"
+  },
+  "operating_cycle": {
+    "daily_data_refresh_intended": true,
+    "daily_model_refit_required": false,
+    "recommended_calibration_frequency": "PERIODIC_OR_WHEN_SUFFICIENT_NEW_OUTCOMES_MATURE",
+    "exact_frequency": null,
+    "frequency_status": "TO_BE_DERIVED_AND_OWNER_APPROVED"
+  },
+  "governing_note": "The model may evaluate and recommend parameter changes, but no recommendation may alter the active production specification without explicit owner approval and required recertification."
+}
