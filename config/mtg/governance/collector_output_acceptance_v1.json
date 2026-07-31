@@ -1,0 +1,80 @@
+{
+  "contract_name": "Collector Numeric and Output Acceptance",
+  "contract_version": "1.0.0",
+  "status": "IMPLEMENTATION_BASELINE",
+  "owner": "Devon Lockard",
+  "tests_are_sufficient": false,
+  "owner_approval_required": true,
+  "authorization_defaults": {
+    "projection_authorized": false,
+    "purchase_recommendation_authorized": false,
+    "owner_approval_status": "NOT_REQUESTED"
+  },
+  "required_reviews": [
+    "STRUCTURAL_RECONCILIATION",
+    "CURRENT_PRICE_QUALITY",
+    "HISTORICAL_PRICE_QUALITY",
+    "EVIDENCE_LINEAGE",
+    "SIGNAL_DIRECTION",
+    "COMPARABLE_CONTRIBUTION",
+    "FORECAST_REASONABLENESS",
+    "EXTREME_VALUE_REVIEW",
+    "RANKING_STABILITY",
+    "PURCHASE_ANALYSIS",
+    "MTG_UIP_RECONCILIATION",
+    "OWNER_OUTPUT_ACCEPTANCE"
+  ],
+  "hard_fail_rules": [
+    "DUPLICATE_PRODUCT_IDENTITY",
+    "UNEXPLAINED_PRODUCT_LOSS",
+    "INVALID_SEALED_CONFIGURATION",
+    "MISSING_EXECUTABLE_CURRENT_PRICE",
+    "FUTURE_PRICE_USED_AS_OBSERVED_HISTORY",
+    "SCENARIO_ORDER_VIOLATION",
+    "FORECAST_IDENTITY_OUTSIDE_ASSET_UNIVERSE",
+    "UIP_IDENTITY_LOSS",
+    "PURCHASE_AUTHORIZED_WITHOUT_OWNER_APPROVAL"
+  ],
+  "manual_review_rules": [
+    "LOW_HISTORY_CONFIDENCE",
+    "LOW_SIGNAL_CONFIDENCE",
+    "WIDE_FORECAST_INTERVAL",
+    "EXTREME_IMPLIED_CAGR",
+    "SINGLE_COMPARABLE_DOMINANCE",
+    "STALE_PRICE",
+    "CROSS_SOURCE_PRICE_DISAGREEMENT",
+    "UNRELEASED_OR_NEAR_RELEASE_PRODUCT",
+    "HIGH_PROBABILITY_OF_LOSS",
+    "UNSTABLE_RANKING"
+  ],
+  "required_output_files": [
+    "collector_current_price_review.csv",
+    "collector_historical_quality_review.csv",
+    "collector_evidence_lineage_review.csv",
+    "collector_signal_direction_review.csv",
+    "collector_comparable_contribution_review.csv",
+    "collector_forecast_results.csv",
+    "collector_forecast_reasonableness_review.csv",
+    "collector_extreme_value_review.csv",
+    "collector_purchase_analysis.csv",
+    "collector_deferred_products.csv",
+    "collector_uip_reconciliation.csv",
+    "collector_owner_acceptance_summary.md"
+  ],
+  "owner_acceptance_record": {
+    "required_fields": [
+      "owner_name",
+      "decision",
+      "approved_commit_sha",
+      "approved_pipeline_version",
+      "reviewed_output_hashes",
+      "review_date_utc",
+      "limitations_acknowledged"
+    ],
+    "allowed_decisions": [
+      "APPROVED",
+      "REJECTED",
+      "APPROVED_WITH_LIMITATIONS"
+    ]
+  }
+}
