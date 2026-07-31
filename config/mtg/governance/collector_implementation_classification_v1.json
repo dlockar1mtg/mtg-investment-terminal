@@ -1,0 +1,58 @@
+{
+  "classification_name": "Collector implementation classification",
+  "classification_version": "1.0.0",
+  "methodology_changed": false,
+  "projection_authorized": false,
+  "purchase_recommendation_authorized": false,
+  "owner_approval_status": "NOT_REQUESTED",
+  "classifications": [
+    {
+      "path": "scripts/route_collector_forecast_methods.py",
+      "classification": "ACTIVE_STANDARD_AUTHORIZED",
+      "reason": "Implements the approved Collector method routes and fail-closed routing required by the MTG forecasting standard and Collector method specification."
+    },
+    {
+      "path": "scripts/normalize_collector_evidence.py",
+      "classification": "ACTIVE_STANDARD_AUTHORIZED",
+      "reason": "Normalizes the standard-required supply, demand, liquidity, provenance, confidence, and limitation disclosures using governed policy files."
+    },
+    {
+      "path": "scripts/select_collector_comparables.py",
+      "classification": "ACTIVE_STANDARD_AUTHORIZED",
+      "reason": "Implements the standard-required comparable factors and disclosure using governed comparable policy. It does not generate projections."
+    },
+    {
+      "path": "data/governance/mtg/collector_comparables/collector_japanese_edition_hybrid_override_v1.json",
+      "classification": "ACTIVE_OWNER_APPROVED",
+      "reason": "Explicitly approved hybrid route for the Japanese FINAL FANTASY Collector display."
+    },
+    {
+      "path": "scripts/build_tier_1_forward_scenarios.py",
+      "classification": "SUPERSEDED_REFERENCE",
+      "reason": "Dated cross-lane scenario analysis with embedded anchors, caps, floors, thresholds, and weights that are not established as the authoritative Collector production methodology. Outputs identify themselves as scenario projections rather than certified forecasts."
+    },
+    {
+      "path": "scripts/build_collector_booster_box_full_evaluation.py",
+      "classification": "HISTORICAL_REFERENCE",
+      "reason": "Earlier Collector evaluation entry point retained for recovery and conceptual reference; not established by the current standards-based routing chain as the authoritative production forecast engine."
+    },
+    {
+      "path": "scripts/build_mtg_hosted_uip_delivery.py",
+      "classification": "CONFLICTING_IMPLEMENTATION",
+      "reason": "Current delivery code contains hard-coded package counts and product-specific forecast assertions. It must not be treated as the authoritative dynamic Collector delivery path until reconciled without changing forecasting methodology."
+    }
+  ],
+  "owner_approval_required_behaviors": [
+    {
+      "source": "scripts/build_tier_1_forward_scenarios.py",
+      "behavior": "Embedded forecast anchors, caps, floors, confidence thresholds, uncertainty thresholds, price-age thresholds, factor weights, risk penalties, and purchase-priority threshold",
+      "status": "INACTIVE_PENDING_OWNER_APPROVAL_OR_STANDARD_AUTHORITY"
+    },
+    {
+      "source": "scripts/build_mtg_hosted_uip_delivery.py",
+      "behavior": "Hard-coded product totals and product-specific expected forecast values",
+      "status": "INACTIVE_AS_PRODUCTION_CONTRACT"
+    }
+  ],
+  "preservation_rule": "No classified historical, superseded, or conflicting implementation may be deleted without explicit owner approval."
+}
