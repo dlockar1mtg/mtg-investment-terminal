@@ -1,0 +1,90 @@
+{
+  "contract_name": "MTG Certified Pipeline Repository Hygiene",
+  "contract_version": "1.0.0",
+  "status": "ACTIVE_GOVERNANCE_REQUIREMENT",
+  "owner": "Devon Lockard",
+  "scope": [
+    "COLLECTOR_BOOSTER",
+    "PRE_COLLECTOR_BOOSTER",
+    "SECRET_LAIR",
+    "MTG_TO_UIP_INTERFACE"
+  ],
+  "governing_rule": "No lane or UIP connection is finally certified until active files are allowlisted, superseded files are archived or approved for deletion, prohibited paths are blocked from production discovery, and permanent system documentation is complete.",
+  "certification_sequence": [
+    "CERTIFY_FUNCTIONAL_PIPELINE",
+    "FREEZE_CERTIFIED_VERSION",
+    "GENERATE_ACTIVE_FILE_ALLOWLIST",
+    "GENERATE_ARCHIVE_AND_DELETION_CANDIDATE_MANIFEST",
+    "OWNER_REVIEW_DISPOSITION",
+    "EXECUTE_ARCHIVE_FIRST",
+    "DELETE_ONLY_EXPLICITLY_APPROVED_ITEMS",
+    "VERIFY_PRODUCTION_DISCOVERY_USES_ALLOWLIST_ONLY",
+    "GENERATE_PERMANENT_CONTROL_INDEX",
+    "RUN_POST_CLEANUP_RECERTIFICATION"
+  ],
+  "disposition_classes": {
+    "ACTIVE_CERTIFIED": "Required by the certified production or backtest pipeline and permitted for active discovery.",
+    "ACTIVE_SUPPORTING": "Required supporting data, standards, tests, governance, or documentation and permitted only for its declared role.",
+    "ARCHIVE_READ_ONLY": "Historically unique, evidentiary, superseded, legacy, comparison, prior-model, or recovery material retained outside active discovery.",
+    "DELETE_CANDIDATE": "Verified duplicate, transient generated artifact, empty template output, or reproducible cache with no unique lineage value.",
+    "PROTECTED_NEVER_DELETE": "Owner approval records, standards, certification results, source evidence, historical observations, backtest snapshots, model versions, manifests, and audit lineage.",
+    "OWNER_REVIEW_REQUIRED": "Disposition cannot be safely inferred and requires explicit owner decision."
+  },
+  "deletion_controls": {
+    "archive_first_default": true,
+    "automatic_deletion_allowed": false,
+    "owner_approval_required": true,
+    "git_history_is_not_sufficient_preservation_by_itself": true,
+    "required_before_deletion": [
+      "content_hash_recorded",
+      "path_recorded",
+      "reason_recorded",
+      "replacement_or_reproducibility_recorded",
+      "dependency_scan_passed",
+      "owner_approval_recorded"
+    ]
+  },
+  "active_discovery_controls": {
+    "allowlist_required": true,
+    "recursive_repository_guessing_prohibited_after_certification": true,
+    "backup_and_archive_paths_prohibited": true,
+    "repair_input_paths_prohibited": true,
+    "superseded_model_paths_prohibited": true,
+    "current_only_outputs_prohibited_as_historical_inputs": true,
+    "production_scripts_must_fail_closed_on_unlisted_inputs": true
+  },
+  "archive_requirements": {
+    "read_only_archive_root": "archive/mtg_certified_pipeline_retirement",
+    "lane_partition_required": true,
+    "certification_version_partition_required": true,
+    "manifest_required": true,
+    "content_hash_required": true,
+    "original_path_required": true,
+    "disposition_reason_required": true,
+    "replacement_path_required_when_applicable": true,
+    "restore_instructions_required": true
+  },
+  "permanent_documentation_requirements": [
+    "system_control_index",
+    "certified_active_file_allowlist",
+    "authoritative_pipeline_map",
+    "data_source_and_lineage_map",
+    "model_and_parameter_version_map",
+    "owner_approval_register",
+    "archive_manifest",
+    "deletion_manifest",
+    "prohibited_path_register",
+    "daily_operations_runbook",
+    "backtest_and_recalibration_runbook",
+    "UIP_interface_contract",
+    "certification_and_change_control_history"
+  ],
+  "assistant_review_rule": "Before future MTG implementation or diagnosis, review the permanent system control index and referenced authoritative manifests before repository-wide inspection.",
+  "current_state": {
+    "cleanup_execution_authorized": false,
+    "collector_cleanup_certified": false,
+    "pre_collector_cleanup_certified": false,
+    "secret_lair_cleanup_certified": false,
+    "uip_connection_cleanup_certified": false
+  }
+}
