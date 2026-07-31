@@ -1,0 +1,79 @@
+{
+  "artifact_name": "Collector Historical Source Adjudication Candidate",
+  "artifact_version": "1.0.0",
+  "status": "CANDIDATE_REVIEW_REQUIRED",
+  "scope": "collector_booster_box",
+  "historical_snapshot_builder_authorized": false,
+  "projection_authorized": false,
+  "purchase_recommendation_authorized": false,
+  "governing_rule": "Only explicitly adjudicated Collector sources may enter historical snapshot construction. Repository-wide discovery results are candidates, not authority.",
+  "selection_rules": {
+    "require_collector_scope": true,
+    "require_product_identity": true,
+    "require_observation_or_effective_date_for_as_of_use": true,
+    "future_information_prohibited": true,
+    "exclude_current_only_outputs_from_historical_role": true,
+    "exclude_forecast_recommendation_and_dashboard_outputs": true,
+    "exclude_backups_repair_inputs_and_duplicate_packages": true,
+    "exclude_other_mtg_lanes": true,
+    "prefer_governed_consolidated_ledgers_over_raw_or_duplicate_sources": true,
+    "retain_rejected_sources_with_reason": true
+  },
+  "candidate_authoritative_sources": [
+    {
+      "source_id": "COL-HSRC-001",
+      "role": "PRICE_HISTORY",
+      "path": "data/operations/mtg_universal_history_ledger/universal_mtg_historical_observation_ledger.csv",
+      "adjudication_status": "CANDIDATE_PENDING_SCHEMA_AND_COLLECTOR_COVERAGE_REVIEW",
+      "reason": "Large consolidated observation ledger with product identity and historical observations."
+    },
+    {
+      "source_id": "COL-HSRC-002",
+      "role": "PRICE_HISTORY_SUPPORTING",
+      "path": "data/operations/mtg_history_foundation/universal_mtg_price_history.csv",
+      "adjudication_status": "CANDIDATE_PENDING_DUPLICATION_AND_LINEAGE_REVIEW",
+      "reason": "Potential supporting price history; must not duplicate the selected primary ledger."
+    },
+    {
+      "source_id": "COL-HSRC-003",
+      "role": "IDENTITY_AND_RELEASE_BOUNDARY",
+      "path": "data/validation/phase_10/collector_booster_boxes/governed_registry/collector_booster_box_governed_registry.csv",
+      "adjudication_status": "CANDIDATE_PENDING_SCHEMA_REVIEW",
+      "reason": "Collector-specific governed registry; present-day governance must be bounded by release and effective-date evidence before historical use."
+    },
+    {
+      "source_id": "COL-HSRC-004",
+      "role": "IDENTITY_RELEASE_SUPPORTING",
+      "path": "data/validation/phase_10/historical_final_release_dates/historical_final_governed_release_dates_2026-07-22.csv",
+      "adjudication_status": "CANDIDATE_PENDING_LINEAGE_REVIEW",
+      "reason": "Historical release-date evidence may bound product availability by decision date."
+    },
+    {
+      "source_id": "COL-HSRC-005",
+      "role": "CURRENT_EVIDENCE_ONLY",
+      "path": "data/product_master/product_master_model_input.csv",
+      "adjudication_status": "NOT_AUTHORIZED_FOR_HISTORICAL_AS_OF_USE_WITHOUT_EFFECTIVE_DATES",
+      "reason": "Contains Collector evidence fields but lacks demonstrated historical effective dating."
+    },
+    {
+      "source_id": "COL-HSRC-006",
+      "role": "CURRENT_ROUTING_REFERENCE_ONLY",
+      "path": "data/operations/collector_production_completion/baseline_v3_0_0/collector_product_reconciliation.csv",
+      "adjudication_status": "NOT_AUTHORIZED_AS_HISTORICAL_ROUTE",
+      "reason": "Current reconciliation output cannot substitute for route reconstruction at past decision dates."
+    },
+    {
+      "source_id": "COL-HSRC-007",
+      "role": "CURRENT_COMPARABLE_REFERENCE_ONLY",
+      "path": "data/operations/collector_comparable_selection/selected_collector_comparables.csv",
+      "adjudication_status": "PATH_DISCOVERY_REQUIRED_AND_NOT_AUTHORIZED_AS_HISTORICAL_COMPARABLES",
+      "reason": "Historical comparables must be recomputed from products and evidence available at each decision date."
+    }
+  ],
+  "required_outputs": [
+    "collector_historical_source_adjudication.csv",
+    "collector_historical_source_rejection_log.csv",
+    "collector_historical_role_coverage.json",
+    "collector_historical_source_adjudication_summary.json"
+  ]
+}
