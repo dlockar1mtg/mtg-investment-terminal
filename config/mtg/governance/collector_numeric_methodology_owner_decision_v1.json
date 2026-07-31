@@ -1,0 +1,118 @@
+{
+  "decision_package_name": "Collector Numeric Methodology Owner Decision",
+  "decision_package_version": "1.0.0",
+  "status": "PROPOSED_INACTIVE",
+  "owner": "Devon Lockard",
+  "methodology_activated": false,
+  "projection_authorized": false,
+  "purchase_recommendation_authorized": false,
+  "governing_rule": "No proposed option becomes active until the owner records explicit approval in a subsequent versioned approval artifact.",
+  "decision_groups": [
+    {
+      "decision_id": "COL-DEC-001",
+      "title": "Direct-history calibrated method",
+      "requirements": ["COL-NUM-007"],
+      "standard_boundary": "The standard authorizes the route and required outputs but does not define the equation.",
+      "prior_reference": "scripts/build_tier_1_forward_scenarios.py contains a dated cross-lane scenario method and is not authoritative.",
+      "options": [
+        {"option_id": "A", "label": "Robust historical CAGR blend", "description": "Use multiple governed historical return windows with recency and data-quality weighting, then convert the approved annual rate to 1/3/5-year scenarios."},
+        {"option_id": "B", "label": "Trend plus mean-reversion blend", "description": "Combine recent momentum with long-run return and drawdown-to-history relationships."},
+        {"option_id": "C", "label": "Owner-defined alternative", "description": "Use a different explicitly approved equation."}
+      ],
+      "recommended_option": "A",
+      "recommendation_reason": "It is interpretable, backtestable, and directly tied to governed historical evidence without inheriting unsupported legacy anchors.",
+      "owner_selection": null,
+      "owner_notes": null
+    },
+    {
+      "decision_id": "COL-DEC-002",
+      "title": "Direct-history limited method",
+      "requirements": ["COL-NUM-008"],
+      "standard_boundary": "The standard requires reduced confidence and wider uncertainty but does not define the numeric method.",
+      "options": [
+        {"option_id": "A", "label": "History-comparable blend", "description": "Use limited direct history only as a minority input and rely primarily on approved comparables."},
+        {"option_id": "B", "label": "Comparable-only until mature", "description": "Do not use limited direct history numerically until the product qualifies for calibrated history."},
+        {"option_id": "C", "label": "Owner-defined alternative", "description": "Use a different explicitly approved treatment."}
+      ],
+      "recommended_option": "A",
+      "recommendation_reason": "It preserves real product evidence while preventing a short series from dominating the result.",
+      "owner_selection": null,
+      "owner_notes": null
+    },
+    {
+      "decision_id": "COL-DEC-003",
+      "title": "Comparable-product adjusted method",
+      "requirements": ["COL-NUM-009", "COL-NUM-011"],
+      "standard_boundary": "Comparables and disclosures are required, but aggregation and weighting equations are undefined.",
+      "options": [
+        {"option_id": "A", "label": "Similarity-weighted peer returns", "description": "Weight peer forward return profiles by governed comparable similarity and peer history quality."},
+        {"option_id": "B", "label": "Median peer return", "description": "Use the median of selected peer return profiles with no score weighting."},
+        {"option_id": "C", "label": "Owner-defined alternative", "description": "Use a different explicitly approved aggregation method."}
+      ],
+      "recommended_option": "A",
+      "recommendation_reason": "It uses the already-governed comparable scores and preserves explainability through explicit peer contributions.",
+      "owner_selection": null,
+      "owner_notes": null
+    },
+    {
+      "decision_id": "COL-DEC-004",
+      "title": "Fundamental-comparable hybrid method",
+      "requirements": ["COL-NUM-010", "COL-NUM-011"],
+      "standard_boundary": "The Japanese FINAL FANTASY hybrid route is approved, but its numerical comparable and fundamental weights are undefined.",
+      "options": [
+        {"option_id": "A", "label": "Comparable-majority hybrid", "description": "Use the approved same-set comparable as the primary input and a minority fundamental adjustment."},
+        {"option_id": "B", "label": "Equal-weight hybrid", "description": "Use equal comparable and fundamental contributions."},
+        {"option_id": "C", "label": "Owner-defined alternative", "description": "Use different explicitly approved weights."}
+      ],
+      "recommended_option": "A",
+      "recommendation_reason": "The approved override identifies a primary comparable, so the comparable should remain the dominant evidence source.",
+      "owner_selection": null,
+      "owner_notes": null
+    },
+    {
+      "decision_id": "COL-DEC-005",
+      "title": "Scenarios, confidence, and uncertainty",
+      "requirements": ["COL-NUM-012", "COL-NUM-013"],
+      "standard_boundary": "The standard requires downside/base/upside, confidence, and uncertainty disclosures but does not define formulas or classes.",
+      "options": [
+        {"option_id": "A", "label": "Evidence-derived intervals", "description": "Build scenario width from historical dispersion, peer dispersion, evidence quality, and method limitations; derive confidence from evidence completeness and agreement."},
+        {"option_id": "B", "label": "Fixed scenario bands", "description": "Use owner-approved fixed percentage bands by method class."},
+        {"option_id": "C", "label": "Owner-defined alternative", "description": "Use another explicitly approved framework."}
+      ],
+      "recommended_option": "A",
+      "recommendation_reason": "It satisfies the standard principle that confidence and uncertainty reflect the evidence actually used.",
+      "owner_selection": null,
+      "owner_notes": null
+    },
+    {
+      "decision_id": "COL-DEC-006",
+      "title": "Supply, demand, liquidity, and reprint adjustments",
+      "requirements": ["COL-NUM-014"],
+      "standard_boundary": "These factors are required evidence, but their forecast adjustment equations are undefined.",
+      "options": [
+        {"option_id": "A", "label": "Bounded transparent adjustment", "description": "Convert governed factor deviations from neutral into a disclosed bounded adjustment applied after the core method estimate."},
+        {"option_id": "B", "label": "Evidence-only disclosure", "description": "Use these factors for confidence and limitations only, not to alter forecast values."},
+        {"option_id": "C", "label": "Owner-defined alternative", "description": "Use another explicitly approved adjustment design."}
+      ],
+      "recommended_option": "A",
+      "recommendation_reason": "It makes the required factors economically meaningful while keeping their effect visible and constrained.",
+      "owner_selection": null,
+      "owner_notes": null
+    },
+    {
+      "decision_id": "COL-DEC-007",
+      "title": "Caps, freshness thresholds, and purchase analysis",
+      "requirements": ["COL-NUM-015", "COL-NUM-016", "COL-NUM-017"],
+      "standard_boundary": "The standard requires fail-closed current price and separate purchase authorization, but numeric limits and purchase equations are undefined.",
+      "options": [
+        {"option_id": "A", "label": "Data-derived review gates", "description": "Use diagnostics and backtesting to propose numerical thresholds; keep all recommendations unauthorized until those thresholds are separately approved."},
+        {"option_id": "B", "label": "No numeric gates yet", "description": "Generate forecasts with disclosures only and defer purchase analysis entirely."},
+        {"option_id": "C", "label": "Owner-defined thresholds", "description": "Use explicit owner-specified limits and purchase rules."}
+      ],
+      "recommended_option": "A",
+      "recommendation_reason": "It allows evidence-based threshold design without silently inheriting legacy values or prematurely authorizing purchases.",
+      "owner_selection": null,
+      "owner_notes": null
+    }
+  ]
+}
