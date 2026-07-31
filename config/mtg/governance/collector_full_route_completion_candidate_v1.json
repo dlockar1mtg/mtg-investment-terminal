@@ -1,0 +1,29 @@
+{
+  "specification_name": "Collector Full-Route Completion Candidate",
+  "specification_version": "1.0.0",
+  "status": "CANDIDATE_INACTIVE",
+  "owner": "Devon Lockard",
+  "inputs": {
+    "repair_root": "data/operations/collector_comparable_repair_and_outcome_review/candidate_v1_0_0",
+    "dual_track_root": "data/operations/collector_dual_track_evaluation/candidate_v1_0_0",
+    "numeric_specification": "config/mtg/governance/collector_numeric_specification_candidate_v1.json",
+    "japanese_override": "data/governance/mtg/collector_comparables/collector_japanese_edition_hybrid_override_v1.json"
+  },
+  "output_directory": "data/operations/collector_full_route_completion/candidate_v1_0_0",
+  "candidate_rules": {
+    "limited_history_component": "annualized_return_from_governed_retrospective_product_history",
+    "limited_comparable_candidate": "reverse_existing_explicit_pair_scores_when_direct_target_edges_absent",
+    "reverse_pair_use_status": "CANDIDATE_DIAGNOSTIC_REQUIRES_OWNER_APPROVAL",
+    "japanese_hybrid_comparable": "owner_approved_primary_comparable_override",
+    "retrospective_inputs_status": "RETROSPECTIVE_DIAGNOSTIC_ONLY",
+    "no_new_numeric_weights": true,
+    "hard_caps_enabled": false,
+    "extreme_values_clipped": false
+  },
+  "authorization": {
+    "candidate_projection_authorized": false,
+    "production_projection_authorized": false,
+    "purchase_recommendation_authorized": false,
+    "automatic_model_update_allowed": false
+  }
+}
