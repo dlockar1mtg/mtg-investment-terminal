@@ -1,0 +1,80 @@
+{
+  "artifact_name": "Collector Control Traceability",
+  "artifact_version": "1.0.0",
+  "governing_rule": "A control may be active only when it is directly authorized by the MTG standards or explicitly approved by the owner.",
+  "owner": "Devon Lockard",
+  "controls": [
+    {
+      "control_id": "COL-CTL-001",
+      "control_name": "Explicit method or deferral for every governed product",
+      "authority_status": "MTG_STANDARD",
+      "authority_reference": "docs/standards/mtg/MTG_FORECASTING_STANDARD.md core requirement 1",
+      "implementation_status": "ACTIVE"
+    },
+    {
+      "control_id": "COL-CTL-002",
+      "control_name": "Supported Collector forecast routes",
+      "authority_status": "MTG_STANDARD",
+      "authority_reference": "docs/standards/mtg/lanes/COLLECTOR_BOOSTER_METHOD_SPECIFICATION.md",
+      "implementation_status": "ACTIVE"
+    },
+    {
+      "control_id": "COL-CTL-003",
+      "control_name": "Identity and executable current-price failures remain fail-closed",
+      "authority_status": "MTG_STANDARD",
+      "authority_reference": "docs/standards/mtg/MTG_FORECASTING_STANDARD.md core requirement 5",
+      "implementation_status": "ACTIVE"
+    },
+    {
+      "control_id": "COL-CTL-004",
+      "control_name": "Required one-, three-, and five-year horizons",
+      "authority_status": "MTG_STANDARD",
+      "authority_reference": "docs/standards/mtg/MTG_FORECASTING_STANDARD.md core requirement 7",
+      "implementation_status": "ACTIVE"
+    },
+    {
+      "control_id": "COL-CTL-005",
+      "control_name": "Required downside, base, and upside scenarios",
+      "authority_status": "MTG_STANDARD",
+      "authority_reference": "docs/standards/mtg/MTG_FORECASTING_STANDARD.md core requirement 8",
+      "implementation_status": "ACTIVE"
+    },
+    {
+      "control_id": "COL-CTL-006",
+      "control_name": "Forecast generation separated from purchase authorization",
+      "authority_status": "MTG_STANDARD",
+      "authority_reference": "docs/standards/mtg/MTG_FORECASTING_STANDARD.md core requirement 9",
+      "implementation_status": "ACTIVE"
+    },
+    {
+      "control_id": "COL-CTL-007",
+      "control_name": "Comparable selection factors and required disclosure",
+      "authority_status": "MTG_STANDARD",
+      "authority_reference": "docs/standards/mtg/lanes/COLLECTOR_BOOSTER_METHOD_SPECIFICATION.md comparable requirements",
+      "implementation_status": "ACTIVE"
+    },
+    {
+      "control_id": "COL-CTL-008",
+      "control_name": "Japanese FINAL FANTASY governed hybrid override",
+      "authority_status": "OWNER_APPROVED",
+      "authority_reference": "data/governance/mtg/collector_comparables/collector_japanese_edition_hybrid_override_v1.json",
+      "implementation_status": "ACTIVE"
+    },
+    {
+      "control_id": "COL-CTL-009",
+      "control_name": "Tests do not replace production semantic certification",
+      "authority_status": "MTG_STANDARD",
+      "authority_reference": "docs/standards/mtg/MTG_FORECASTING_STANDARD.md core requirement 10",
+      "implementation_status": "ACTIVE"
+    },
+    {
+      "control_id": "COL-CTL-010",
+      "control_name": "Dynamic product totals rather than permanent count requirements",
+      "authority_status": "OWNER_APPROVED",
+      "authority_reference": "Owner direction in Phase 8.2.8 project record",
+      "implementation_status": "ACTIVE"
+    }
+  ],
+  "proposed_controls": [],
+  "activation_rule": "Any proposed control must remain inactive until Devon Lockard provides explicit approval and the approval is recorded in a versioned governance artifact."
+}
