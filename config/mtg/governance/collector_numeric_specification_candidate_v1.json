@@ -1,0 +1,152 @@
+{
+  "specification_name": "Collector Numeric Methodology Candidate",
+  "specification_version": "1.0.0",
+  "status": "CANDIDATE_INACTIVE",
+  "owner": "Devon Lockard",
+  "conceptual_approval_source": "config/mtg/governance/collector_numeric_methodology_owner_approval_v1.json",
+  "exact_numeric_specification_approved": false,
+  "methodology_activated": false,
+  "projection_authorized": false,
+  "purchase_recommendation_authorized": false,
+  "governing_rules": [
+    "Candidate values exist for backtesting and review only.",
+    "No candidate value may enter production before separate owner approval.",
+    "Lack of mature direct history is not a universal forecast eligibility gate.",
+    "New and limited-history products remain eligible through approved comparable and hybrid routes.",
+    "Daily current-price refresh is the intended operating state.",
+    "No hard forecast caps are authorized.",
+    "Extreme forecasts remain visible and are routed to diagnostic review.",
+    "Purchase recommendation thresholds remain unset and unauthorized."
+  ],
+  "methods": {
+    "DIRECT_HISTORY_CALIBRATED": {
+      "candidate_equation": "weighted_geometric_annual_return",
+      "candidate_return_windows_days": [90, 180, 365],
+      "candidate_window_weights": {
+        "90": 0.20,
+        "180": 0.30,
+        "365": 0.50
+      },
+      "missing_window_behavior": "renormalize_available_approved_windows",
+      "history_weight": 1.0,
+      "comparable_weight": 0.0,
+      "fundamental_weight": 0.0,
+      "approval_status": "CANDIDATE_NOT_OWNER_APPROVED"
+    },
+    "DIRECT_HISTORY_LIMITED": {
+      "candidate_equation": "minority_history_majority_comparable_blend",
+      "history_weight": 0.25,
+      "comparable_weight": 0.75,
+      "fundamental_weight": 0.0,
+      "history_component": "available_governed_product_return",
+      "comparable_component": "similarity_weighted_peer_return",
+      "approval_status": "CANDIDATE_NOT_OWNER_APPROVED"
+    },
+    "COMPARABLE_PRODUCT_ADJUSTED": {
+      "candidate_equation": "normalized_similarity_weighted_peer_return",
+      "peer_weight_numerator": "adjusted_similarity_score",
+      "peer_weight_denominator": "sum_adjusted_similarity_score_for_selected_peers",
+      "peer_contributions_disclosed": true,
+      "history_weight": 0.0,
+      "comparable_weight": 1.0,
+      "fundamental_weight": 0.0,
+      "approval_status": "CANDIDATE_NOT_OWNER_APPROVED"
+    },
+    "FUNDAMENTAL_COMPARABLE_HYBRID": {
+      "candidate_equation": "comparable_majority_plus_fundamental_adjustment",
+      "history_weight": 0.0,
+      "comparable_weight": 0.75,
+      "fundamental_weight": 0.25,
+      "primary_comparable_required": true,
+      "approval_status": "CANDIDATE_NOT_OWNER_APPROVED"
+    }
+  },
+  "market_factor_adjustment": {
+    "candidate_equation": "sum_of_centered_factor_adjustments",
+    "neutral_score": 50.0,
+    "factor_coefficients_annual_rate_points_per_10_score_points": {
+      "supply": 0.50,
+      "demand": 0.75,
+      "liquidity": 0.40,
+      "reprint_risk": -0.60
+    },
+    "candidate_total_adjustment_lower_bound_annual_rate_points": -4.0,
+    "candidate_total_adjustment_upper_bound_annual_rate_points": 4.0,
+    "factor_contributions_disclosed": true,
+    "approval_status": "CANDIDATE_NOT_OWNER_APPROVED"
+  },
+  "scenario_construction": {
+    "candidate_base": "core_annual_rate_plus_bounded_market_factor_adjustment",
+    "candidate_uncertainty_components": [
+      "historical_return_dispersion",
+      "selected_peer_return_dispersion",
+      "evidence_incompleteness",
+      "evidence_disagreement",
+      "method_limitation_penalty"
+    ],
+    "candidate_downside": "base_annual_rate_minus_evidence_derived_uncertainty_width",
+    "candidate_upside": "base_annual_rate_plus_evidence_derived_uncertainty_width",
+    "horizons_years": [1, 3, 5],
+    "compounding": "annual_geometric",
+    "hard_caps_enabled": false,
+    "extreme_values_clipped": false,
+    "approval_status": "CANDIDATE_NOT_OWNER_APPROVED"
+  },
+  "confidence": {
+    "candidate_equation": "weighted_evidence_confidence",
+    "candidate_components": {
+      "evidence_completeness": 0.30,
+      "evidence_agreement": 0.25,
+      "history_or_peer_quality": 0.25,
+      "method_specific_support": 0.20
+    },
+    "candidate_classes": {
+      "HIGH": {"minimum_score": 75.0},
+      "MODERATE": {"minimum_score": 55.0},
+      "LOW": {"minimum_score": 0.0}
+    },
+    "approval_status": "CANDIDATE_NOT_OWNER_APPROVED"
+  },
+  "freshness": {
+    "intended_refresh_frequency": "DAILY",
+    "diagnostic_equation": "calendar_days_between_current_price_date_and_run_date",
+    "warning_threshold_days": null,
+    "fail_closed_threshold_days": null,
+    "threshold_authority": "TO_BE_DERIVED_FROM_REFRESH_RELIABILITY_AND_PRICE_MOVEMENT_DIAGNOSTICS",
+    "daily_refresh_failure_must_be_visible": true,
+    "approval_status": "DIAGNOSTIC_DEVELOPMENT_APPROVED_THRESHOLDS_UNSET"
+  },
+  "extreme_forecast_review": {
+    "hard_caps_enabled": false,
+    "clipping_enabled": false,
+    "candidate_diagnostics": [
+      "implied_annual_rate_percentile",
+      "forecast_to_current_price_multiple",
+      "peer_concentration",
+      "scenario_width_percentile",
+      "identity_or_configuration_anomaly",
+      "short_history_extrapolation_risk"
+    ],
+    "review_thresholds": null,
+    "threshold_authority": "TO_BE_DERIVED_FROM_BACKTEST_AND_CROSS_PRODUCT_DISTRIBUTIONS",
+    "approval_status": "DIAGNOSTIC_DEVELOPMENT_APPROVED_THRESHOLDS_UNSET"
+  },
+  "purchase_analysis": {
+    "candidate_outputs": [
+      "gross_expected_return",
+      "estimated_transaction_costs",
+      "estimated_storage_and_execution_costs",
+      "net_expected_return",
+      "downside_return",
+      "liquidity_adjusted_return",
+      "confidence_adjusted_return",
+      "margin_of_safety",
+      "maximum_reasonable_price",
+      "buy_below_price"
+    ],
+    "recommendation_labels_enabled": false,
+    "decision_thresholds": null,
+    "purchase_recommendation_authorized": false,
+    "approval_status": "CALCULATION_DEVELOPMENT_APPROVED_THRESHOLDS_UNSET"
+  }
+}
