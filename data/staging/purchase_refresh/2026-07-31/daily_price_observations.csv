@@ -1,0 +1,52 @@
+observation_date,investment_product_id,tcgplayer_product_id,box_name,set_name,current_price,low_price,price_source,price_data_quality
+2026-07-31,TCGCSV-17670-449559,449559,Dominaria Remastered Collector Booster Display,Dominaria Remastered,529.07,539.01,tcgcsv,95
+2026-07-31,TCGCSV-17684-451880,451880,Phyrexia: All Will Be One Collector Booster Display,Phyrexia: All Will Be One,951.79,1229.45,tcgcsv,95
+2026-07-31,TCGCSV-22875-475584,475584,March of the Machine Collector Booster Display,March of the Machine,783.34,1009.0,tcgcsv,95
+2026-07-31,TCGCSV-22876-489207,489207,March of the Machine: The Aftermath Collector Booster Display,March of the Machine: The Aftermath,246.06,299.95,tcgcsv,95
+2026-07-31,TCGCSV-23019-484912,484912,Universes Beyond: The Lord of the Rings: Tales of Middle-earth Collector Booster Display,Universes Beyond: The Lord of the Rings: Tales of Middle-earth,2030.03,1999.0,tcgcsv,95
+2026-07-31,TCGCSV-23019-515906,515906,The Lord of the Rings: Tales of Middle-earth - Special Edition Collector Booster Display,Universes Beyond: The Lord of the Rings: Tales of Middle-earth,5729.4,6799.97,tcgcsv,95
+2026-07-31,TCGCSV-23020-484929,484929,Commander Masters Collector Booster Display,Commander Masters,506.55,477.39,tcgcsv,95
+2026-07-31,TCGCSV-23163-496041,496041,Wilds of Eldraine Collector Booster Display,Wilds of Eldraine,905.95,898.99,tcgcsv,95
+2026-07-31,TCGCSV-23165-496076,496076,Universes Beyond: Doctor Who Collector Booster Display,Universes Beyond: Doctor Who,638.08,882.0,tcgcsv,95
+2026-07-31,TCGCSV-23312-516614,516614,The Lost Caverns of Ixalan Collector Booster Display,The Lost Caverns of Ixalan,1002.68,1185.0,tcgcsv,95
+2026-07-31,TCGCSV-23319-517708,517708,Ravnica Remastered Collector Booster Display,Ravnica Remastered,974.18,1344.98,tcgcsv,95
+2026-07-31,TCGCSV-23337-523185,523185,Universes Beyond: Fallout Collector Booster Display,Universes Beyond: Fallout,1760.06,1956.89,tcgcsv,95
+2026-07-31,TCGCSV-23361-529968,529968,Murders at Karlov Manor Collector Booster Display,Murders at Karlov Manor,377.98,382.84,tcgcsv,95
+2026-07-31,TCGCSV-23439-541090,541090,Outlaws of Thunder Junction Collector Booster Display,Outlaws of Thunder Junction,429.6,453.0,tcgcsv,95
+2026-07-31,TCGCSV-23444-541179,541179,Modern Horizons 3 Collector Booster Display,Modern Horizons 3,807.28,834.88,tcgcsv,95
+2026-07-31,TCGCSV-23446-541225,541225,Universes Beyond: Assassin's Creed Collector Booster Display,Universes Beyond: Assassin's Creed,530.81,599.99,tcgcsv,95
+2026-07-31,TCGCSV-23447-541238,541238,Bloomburrow Collector Booster Display,Bloomburrow,1069.11,1199.0,tcgcsv,95
+2026-07-31,TCGCSV-23550-557244,557244,Duskmourn: House of Horror Collector Booster Display,Duskmourn: House of Horror,688.02,741.95,tcgcsv,95
+2026-07-31,TCGCSV-23556-562122,562122,Foundations Collector Booster Display,Foundations,804.27,939.95,tcgcsv,95
+2026-07-31,TCGCSV-23848-594681,594681,Innistrad Remastered Collector Booster Display,Innistrad Remastered,448.71,498.98,tcgcsv,95
+2026-07-31,TCGCSV-23874-604253,604253,Aetherdrift Collector Booster Display,Aetherdrift,301.18,323.3,tcgcsv,95
+2026-07-31,TCGCSV-24219-618893,618893,FINAL FANTASY Collector Booster Display,FINAL FANTASY,1780.25,1738.99,tcgcsv,95
+2026-07-31,TCGCSV-24219-628315,628315,FINAL FANTASY - Collector Booster Display (Japanese),FINAL FANTASY,698.3,764.95,tcgcsv,95
+2026-07-31,TCGCSV-24232-619649,619649,Tarkir: Dragonstorm Collector Booster Display,Tarkir: Dragonstorm,487.56,476.57,tcgcsv,95
+2026-07-31,TCGCSV-24233-619672,619672,Edge of Eternities Collector Booster Display,Edge of Eternities,713.24,708.34,tcgcsv,95
+2026-07-31,TCGCSV-24245-621110,621110,Marvel's Spider-Man Collector Booster Display,Marvel's Spider-Man,394.25,397.99,tcgcsv,95
+2026-07-31,TCGCSV-24421-648650,648650,Avatar: The Last Airbender Collector Booster Display,Avatar: The Last Airbender,481.77,464.99,tcgcsv,95
+2026-07-31,TCGCSV-24463-656322,656322,Lorwyn Eclipsed Collector Booster Display,Lorwyn Eclipsed,429.51,419.0,tcgcsv,95
+2026-07-31,TCGCSV-24495-657852,657852,Teenage Mutant Ninja Turtles Collector Booster Display,Teenage Mutant Ninja Turtles,436.91,442.0,tcgcsv,95
+2026-07-31,TCGCSV-24553-675606,675606,Marvel Super Heroes Collector Booster Display,Marvel Super Heroes,451.91,445.0,tcgcsv,95
+2026-07-31,TCGCSV-24601-675558,675558,Secrets of Strixhaven Collector Booster Display,Secrets of Strixhaven,486.08,479.99,tcgcsv,95
+2026-07-31,TCGCSV-24683-692963,692963,The Hobbit Collector Booster Display,The Hobbit,782.66,766.93,tcgcsv,95
+2026-07-31,TCGCSV-24684-692983,692983,Reality Fracture Collector Booster Display,Reality Fracture,475.68,475.06,tcgcsv,95
+2026-07-31,TCGCSV-24766-706142,706142,Star Trek Collector Booster Display,Star Trek,701.58,695.86,tcgcsv,95
+2026-07-31,TCGCSV-2603-208279,208279,Ikoria: Lair of Behemoths Collector Booster Display,Ikoria: Lair of Behemoths,623.98,693.33,tcgcsv,95
+2026-07-31,TCGCSV-2648-220423,220423,Zendikar Rising Collector Booster Display,Zendikar Rising,431.07,479.99,tcgcsv,95
+2026-07-31,TCGCSV-2653-214818,214818,Core Set 2021 Collector Booster Display,Core Set 2021,457.08,649.0,tcgcsv,95
+2026-07-31,TCGCSV-2708-221323,221323,Commander Legends Collector Booster Display,Commander Legends,722.61,793.0,tcgcsv,95
+2026-07-31,TCGCSV-2750-228249,228249,Kaldheim Collector Booster Display,Kaldheim,332.89,340.0,tcgcsv,95
+2026-07-31,TCGCSV-2773-233232,233232,Strixhaven: School of Mages Collector Booster Display,Strixhaven: School of Mages,629.6,629.01,tcgcsv,95
+2026-07-31,TCGCSV-2809-236348,236348,Modern Horizons 2 Collector Booster Display,Modern Horizons 2,590.32,639.99,tcgcsv,95
+2026-07-31,TCGCSV-2823-238745,238745,Adventures in the Forgotten Realms Collector Booster Display,Adventures in the Forgotten Realms,377.61,399.96,tcgcsv,95
+2026-07-31,TCGCSV-2862-246457,246457,Innistrad: Crimson Vow Collector Booster Display,Innistrad: Crimson Vow,286.57,305.0,tcgcsv,95
+2026-07-31,TCGCSV-2864-244384,244384,Innistrad: Midnight Hunt Collector Booster Display,Innistrad: Midnight Hunt,252.9,249.99,tcgcsv,95
+2026-07-31,TCGCSV-2958-275406,275406,Unfinity Collector Booster Display,Unfinity,360.28,394.99,tcgcsv,95
+2026-07-31,TCGCSV-2965-257563,257563,Kamigawa: Neon Dynasty Collector Booster Display,Kamigawa: Neon Dynasty,528.41,598.97,tcgcsv,95
+2026-07-31,TCGCSV-3026-264767,264767,Streets of New Capenna Collector Booster Display,Streets of New Capenna,274.96,298.98,tcgcsv,95
+2026-07-31,TCGCSV-3047-267023,267023,Commander Legends: Battle for Baldur's Gate Collector Booster Display,Commander Legends: Battle for Baldur's Gate,596.38,580.0,tcgcsv,95
+2026-07-31,TCGCSV-3070-271509,271509,Double Masters 2022 Collector Booster Display,Double Masters 2022,437.78,479.99,tcgcsv,95
+2026-07-31,TCGCSV-3102-275412,275412,Dominaria United Collector Booster Display,Dominaria United,349.95,360.0,tcgcsv,95
+2026-07-31,TCGCSV-3157-282224,282224,The Brothers' War Collector Booster Display,The Brothers' War,742.23,865.75,tcgcsv,95

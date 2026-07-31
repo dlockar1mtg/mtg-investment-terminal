@@ -1,0 +1,16 @@
+﻿ M data/product_master/investment_products.csv
+ M data/product_master/product_master_model_input.csv
+ M models/investment_features.py
+?? -File
+?? artifacts/
+?? data/baselines/
+?? data/staging/purchase_refresh/
+?? models/investment_features_before_universal_history_bridge.py
+?? scripts/build_calibrated_historical_shortlist.py
+?? scripts/build_canonical_governed_history.py
+?? scripts/build_tier_1_forward_scenarios.py
+?? scripts/build_tier_1_forward_scenarios_v1_backup.py
+?? scripts/build_universal_tiered_mtg_analysis.py
+?? scripts/build_weekend_historical_purchase_screen.py
+?? scripts/build_weekend_historical_purchase_screen_before_ledger_fix.py
+?? scripts/build_weekend_historical_purchase_screen_before_trusted_source_filter.py

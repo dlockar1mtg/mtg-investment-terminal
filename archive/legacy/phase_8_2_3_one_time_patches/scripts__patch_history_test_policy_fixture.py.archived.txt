@@ -1,0 +1,70 @@
+from pathlib import Path
+
+
+path = Path(
+    "tests/test_collector_booster_history_certification.py"
+)
+
+text = path.read_text(encoding="utf-8")
+
+old = '''        "quality_thresholds": {
+            "maximum_current_vs_history_discontinuity_pct": 50.0,
+            "maximum_single_period_increase_pct": 100.0,
+            "maximum_single_period_decrease_pct": -50.0,
+            "maximum_annualized_volatility": 1.0,
+            "minimum_positive_price": 1.0,
+            "maximum_duplicate_date_rows": 0,
+        },
+    }
+'''
+
+new = '''        "quality_thresholds": {
+            "maximum_current_vs_history_discontinuity_pct": 50.0,
+            "maximum_single_period_increase_pct": 100.0,
+            "maximum_single_period_decrease_pct": -50.0,
+            "maximum_annualized_volatility": 1.0,
+            "minimum_positive_price": 1.0,
+            "maximum_duplicate_date_rows": 0,
+        },
+        "product_universe": {
+            "required_product_type": (
+                "Collector Booster Display"
+            ),
+            "required_name_terms": [
+                "collector booster",
+                "display",
+            ],
+            "excluded_name_terms": [
+                "master case",
+                "box case",
+                "display case",
+                "collector booster case",
+                "booster case",
+                "case of",
+                "mastercase",
+                "booster pack",
+                "single pack",
+                "sample pack",
+                "collector sample",
+                "bundle",
+            ],
+            "require_model_input_reconciliation": True,
+            "allow_filtered_registry_ids_missing_from_model": False,
+            "allow_model_ids_missing_from_filtered_registry": False,
+        },
+    }
+'''
+
+count = text.count(old)
+
+if count != 1:
+    raise RuntimeError(
+        f"Expected one write_policy block, found {count}"
+    )
+
+path.write_text(
+    text.replace(old, new),
+    encoding="utf-8",
+)
+
+print("Updated history test policy fixture.")

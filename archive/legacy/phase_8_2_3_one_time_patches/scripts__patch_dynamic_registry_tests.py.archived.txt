@@ -1,0 +1,41 @@
+from pathlib import Path
+
+
+targets = [
+    Path(
+        "tests/external_discovery/"
+        "test_canonical_product_registry.py"
+    ),
+    Path(
+        "tests/external_discovery/"
+        "test_canonical_registry_governance.py"
+    ),
+]
+
+old = "    assert len(production) == 4675\n"
+
+replacement = (
+    "    assert len(production) >= 4675\n"
+    "\n"
+    "    assert production[\n"
+    "        \"investment_product_id\"\n"
+    "    ].astype(str).str.strip().is_unique\n"
+)
+
+for path in targets:
+    text = path.read_text(encoding="utf-8")
+
+    count = text.count(old)
+
+    if count != 1:
+        raise RuntimeError(
+            f"{path}: expected exactly one fixed-count "
+            f"assertion, found {count}"
+        )
+
+    path.write_text(
+        text.replace(old, replacement),
+        encoding="utf-8",
+    )
+
+    print(f"Updated: {path}")

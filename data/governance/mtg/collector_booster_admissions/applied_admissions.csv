@@ -1,0 +1,2 @@
+"investment_product_id","approved_tcgplayer_product_id","tcgcsv_group_id","set_name","box_name","admission_status","identity_status","admission_policy_version","approval_method","applied_at_utc","source_manifest","active"
+"TCGCSV-24766-706142","706142","24766","Star Trek","Star Trek Collector Booster Display","AUTO_ADMITTED","VERIFIED","1.0.0","governed_auto_admission_v1","2026-07-31T18:23:45.379292+00:00","data/operations/collector_booster_admission/2026-07-31-star-trek/admission_manifest.json","true"

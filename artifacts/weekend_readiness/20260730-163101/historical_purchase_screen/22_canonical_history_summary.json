@@ -1,0 +1,20 @@
+{
+  "generated_at": "2026-07-30T16:53:49.189013",
+  "registry_products": 1141,
+  "registry_aliases": 2499,
+  "alias_conflicts": 0,
+  "ledger_input_rows": 41987,
+  "unmatched_ledger_rows": 0,
+  "excluded_current_listing_rows": 0,
+  "invalid_ledger_rows": 0,
+  "canonical_daily_rows": 22960,
+  "canonical_products_with_history": 1112,
+  "registry_products_without_history": 29,
+  "repeated_multi_date_price_paths": 0,
+  "history_date_distribution": {
+    "2_TO_29": 489,
+    "30_PLUS": 501,
+    "ONE_DATE": 122
+  },
+  "canonical_history_file": "artifacts\\weekend_readiness\\20260730-163101\\historical_purchase_screen\\16_canonical_governed_daily_history.csv"
+}

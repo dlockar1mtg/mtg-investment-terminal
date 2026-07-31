@@ -1,0 +1,123 @@
+from pathlib import Path
+
+
+path = Path(
+    "scripts/certify_collector_booster_history.py"
+)
+
+text = path.read_text(encoding="utf-8")
+
+old = '''    collector_registry = [
+        row
+        for row in registry
+        if clean(row.get("investment_product_type"))
+        == "Collector Booster Display"
+    ]
+'''
+
+new = '''    universe = policy["product_universe"]
+
+    required_type = clean(
+        universe["required_product_type"]
+    )
+
+    required_terms = [
+        clean(value).lower()
+        for value in universe["required_name_terms"]
+    ]
+
+    excluded_terms = [
+        clean(value).lower()
+        for value in universe["excluded_name_terms"]
+    ]
+
+    collector_registry = []
+
+    for row in registry:
+        if (
+            clean(row.get("investment_product_type"))
+            != required_type
+        ):
+            continue
+
+        combined_name = clean(
+            f"{row.get('box_name', '')} "
+            f"{row.get('approved_product_name', '')}"
+        ).lower()
+
+        if not all(
+            term in combined_name
+            for term in required_terms
+        ):
+            continue
+
+        if any(
+            term in combined_name
+            for term in excluded_terms
+        ):
+            continue
+
+        collector_registry.append(row)
+'''
+
+if text.count(old) != 1:
+    raise RuntimeError(
+        "Could not locate original collector_registry block."
+    )
+
+text = text.replace(old, new)
+
+anchor = '''    registry_ids = {
+        clean(row.get("investment_product_id"))
+        for row in collector_registry
+        if clean(row.get("investment_product_id"))
+    }
+'''
+
+insertion = anchor + '''
+    model_ids = {
+        clean(row.get("investment_product_id"))
+        for row in model
+        if clean(row.get("investment_product_id"))
+    }
+
+    model_ids_missing_from_registry = sorted(
+        model_ids - registry_ids
+    )
+
+    registry_ids_missing_from_model = sorted(
+        registry_ids - model_ids
+    )
+
+    if (
+        universe[
+            "require_model_input_reconciliation"
+        ]
+        and (
+            model_ids_missing_from_registry
+            or registry_ids_missing_from_model
+        )
+    ):
+        raise RuntimeError(
+            "Collector display universe does not reconcile "
+            "to model input. "
+            f"Missing from registry: "
+            f"{model_ids_missing_from_registry}; "
+            f"missing from model: "
+            f"{registry_ids_missing_from_model}"
+        )
+'''
+
+if text.count(anchor) != 1:
+    raise RuntimeError(
+        "Could not locate registry_ids block."
+    )
+
+text = text.replace(anchor, insertion)
+
+path.write_text(
+    text,
+    encoding="utf-8",
+)
+
+print("History engine semantic universe enforcement added.")

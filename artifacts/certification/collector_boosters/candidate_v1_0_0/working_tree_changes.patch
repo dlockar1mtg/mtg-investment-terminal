@@ -1,0 +1,1050 @@
+﻿diff --git a/data/product_master/investment_products.csv b/data/product_master/investment_products.csv
+index ffb979a..93c97e5 100644
+--- a/data/product_master/investment_products.csv
++++ b/data/product_master/investment_products.csv
+@@ -4674,3 +4674,4 @@ TCGCSV-122-34468,Worldwake,Worldwake - Booster Box,34468,Worldwake - Booster Box
+ TCGCSV-124-32789,Zendikar,Zendikar - Booster Box,32789,Zendikar - Booster Box,1,124,Traditional Booster Display,approved,module1_auto,candidate_score=215.0
+ TCGCSV-124-32790,Zendikar,Zendikar - Booster Box Case (6 Booster Boxes),32790,Zendikar - Booster Box Case (6 Booster Boxes),1,124,Traditional Booster Display,review_required,module1_review,candidate_score=-55.0
+ TCGCSV-2648-220420,Zendikar Rising,Zendikar Rising - Theme Booster Display Box,220420,Zendikar Rising - Theme Booster Display Box,1,2648,Traditional Booster Display,approved,module1_auto,candidate_score=195.0
++TCGCSV-24766-706142,Star Trek,Star Trek Collector Booster Display,706142,Star Trek - Collector Booster Display,1,24766,Collector Booster Display,approved,auto_high_confidence_v9,candidate_score=240.0; market_price=701.58
+diff --git a/data/product_master/product_master_model_input.csv b/data/product_master/product_master_model_input.csv
+index 4da6e00..6350feb 100644
+--- a/data/product_master/product_master_model_input.csv
++++ b/data/product_master/product_master_model_input.csv
+@@ -1,49 +1,52 @@
+-box_name,set_name,official_product_name,set_type,months_since_release,current_price,estimated_floor_price,estimated_ceiling_price,fair_value_estimate,tcgplayer_product_id,tcgcsv_category_id,tcgcsv_group_id,price_source,market_price,low_price,mid_price,high_price,last_price_checked,source_product_name,source_group_name,published_on,supply_score,demand_score,chase_score,ip_score,historical_score,liquidity_score,reprint_risk,supply_dump_risk,liquidity_risk,chase_concentration_risk,new_set_uncertainty,data_quality_score,volatility_score,tcgplayer_product_id_str,investment_product_id,set_name_master,box_name_master,approved_tcgplayer_product_id,approved_product_name,tcgcsv_category_id_master,tcgcsv_group_id_master,investment_product_type,approval_status,approval_method,notes,approved_tcgplayer_product_id_str,history_observations,first_snapshot_date,latest_snapshot_date,current_price_history,history_high_price,history_low_price,drawdown_from_high,distance_from_low,return_30d,return_90d,return_180d,return_365d,annualized_volatility,momentum_score,drawdown_score,price_stability_score,history_confidence,investment_feature_score,box_name_db,latest_observation_date,observations,current_price_db,ath_price,atl_price,drawdown_from_ath,distance_from_atl,ma_7d,return_7d_db,ma_14d,return_14d_db,ma_30d,return_30d_db,ma_60d,return_60d_db,ma_90d,return_90d_db,ma_180d,return_180d_db,ma_365d,return_365d_db,daily_return_volatility,annualized_volatility_db,inventory_signal_score,inventory_signal_confidence,sales_velocity_score,sales_signal_confidence,real_demand_score,demand_signal_confidence,scarcity_signal_score,scarcity_signal_confidence,price_trend_signal_score,price_signal_confidence,real_signal_score,real_signal_confidence,liquidity_proxy_score,inventory_risk_proxy,market_regime_score,market_intelligence_score,mc_expected_value,mc_median,mc_p05,mc_p25,mc_p75,mc_p95,prob_double,prob_triple,prob_loss
+-Reality Fracture Collector Booster Display,Reality Fracture,Reality Fracture - Collector Booster Display,Standard,0,478.02,454.12,690.8,478.02,692983,1,24684,tcgcsv,478.02,477.74,477.81,690.8,2026-07-11T16:01:17+00:00,Reality Fracture - Collector Booster Display,Reality Fracture,2026-10-02T00:00:00,62,68,65,60,62,70,50,55,35,50,45,65,45,692983,TCGCSV-24684-692983,Reality Fracture,Reality Fracture Collector Booster Display,692983,Reality Fracture - Collector Booster Display,1,24684,Collector Booster Display,approved,auto_high_confidence_v9,candidate_score=240.0; market_price=478.02,692983,3,2026-07-08,2026-07-11,478.02,478.12,478.02,-0.0002,0.0,,,,,0.0028,50,55,75,10.0,50.5,Reality Fracture Collector Booster Display,2026-07-11,3,478.02,478.12,478.02,-0.0002,0.0,478.09,,478.09,,478.09,,478.09,,478.09,,478.09,,478.09,,0.00015,0.0028,50,0,50,0,64.33,25,62.0,25,50,10.0,56.6,12.0,70,55,53.5,55.32,718.75,718.8,711.46,715.79,721.6,725.95,0.0,0.0,0.0
+-The Hobbit Collector Booster Display,The Hobbit,The Hobbit - Collector Booster Display,Standard,0,817.32,776.45,950.0,817.32,692963,1,24683,tcgcsv,817.32,810.0,821.88,950.0,2026-07-11T16:01:17+00:00,The Hobbit - Collector Booster Display,The Hobbit,2026-08-14T00:00:00,62,68,65,60,62,70,50,55,35,50,45,65,45,692963,TCGCSV-24683-692963,The Hobbit,The Hobbit Collector Booster Display,692963,The Hobbit - Collector Booster Display,1,24683,Collector Booster Display,approved,auto_high_confidence_v9,candidate_score=240.0; market_price=817.32,692963,3,2026-07-08,2026-07-11,817.32,817.32,789.1,0.0,0.0358,,,,,0.4831,50,55,50,10.0,45.5,The Hobbit Collector Booster Display,2026-07-11,3,817.32,817.32,789.1,0.0,0.0358,798.51,,798.51,,798.51,,798.51,,798.51,,798.51,,798.51,,0.02529,0.4831,50,0,50,0,64.33,25,62.0,25,50,10.0,56.6,12.0,60,55,47.25,49.64,1237.0,685.2,121.67,348.61,1420.73,4049.57,0.2098,0.1224,0.5658
+-Marvel Super Heroes Collector Booster Display,Marvel Super Heroes,Marvel Super Heroes - Collector Booster Display,Universes Beyond,0,462.46,439.34,1500.0,462.46,675606,1,24553,tcgcsv,462.46,453.67,500.0,1500.0,2026-07-11T16:01:17+00:00,Marvel Super Heroes - Collector Booster Display,Marvel Super Heroes,2026-06-26T00:00:00,62,80,65,85,62,75,50,55,35,50,50,65,45,675606,TCGCSV-24553-675606,Marvel Super Heroes,Marvel Super Heroes Collector Booster Display,675606,Marvel Super Heroes - Collector Booster Display,1,24553,Collector Booster Display,approved,auto_high_confidence_v9,candidate_score=240.0; market_price=462.46,675606,3,2026-07-08,2026-07-11,462.46,462.46,453.39,0.0,0.02,,,,,0.2703,50,55,65,10.0,48.5,Marvel Super Heroes Collector Booster Display,2026-07-11,3,462.46,462.46,453.39,0.0,0.02,456.41,,456.41,,456.41,,456.41,,456.41,,456.41,,456.41,,0.01415,0.2703,50,0,50,0,76.67,25,62.0,25,50,10.0,59.83,12.0,75,55,51.0,55.3,693.38,573.61,223.15,391.41,863.73,1592.46,0.2162,0.075,0.3538
+-Secrets of Strixhaven Collector Booster Display,Secrets of Strixhaven,Secrets of Strixhaven - Collector Booster Display,Standard,2,478.11,454.2,1499.99,478.11,675558,1,24601,tcgcsv,478.11,464.01,550.0,1499.99,2026-07-11T16:01:17+00:00,Secrets of Strixhaven - Collector Booster Display,Secrets of Strixhaven,2026-04-24T00:00:00,62,68,65,60,62,70,50,55,35,50,45,65,45,675558,TCGCSV-24601-675558,Secrets of Strixhaven,Secrets of Strixhaven Collector Booster Display,675558,Secrets of Strixhaven - Collector Booster Display,1,24601,Collector Booster Display,approved,auto_high_confidence_v9,candidate_score=240.0; market_price=478.11,675558,3,2026-07-08,2026-07-11,478.11,478.11,460.34,0.0,0.0386,,,,,0.5215,50,55,50,10.0,45.5,Secrets of Strixhaven Collector Booster Display,2026-07-11,3,478.11,478.11,460.34,0.0,0.0386,466.26,,466.26,,466.26,,466.26,,466.26,,466.26,,466.26,,0.0273,0.5215,50,0,50,0,64.33,25,62.0,25,50,10.0,56.6,12.0,70,75,47.25,48.14,741.46,393.06,60.48,180.01,855.16,2569.02,0.2224,0.1354,0.5592
+-Teenage Mutant Ninja Turtles Collector Booster Display,Teenage Mutant Ninja Turtles,Teenage Mutant Ninja Turtles - Collector Booster Display,Standard,4,431.05,409.5,1599.99,431.05,657852,1,24495,tcgcsv,431.05,420.0,499.49,1599.99,2026-07-11T16:01:17+00:00,Teenage Mutant Ninja Turtles - Collector Booster Display,Teenage Mutant Ninja Turtles,2026-03-06T00:00:00,62,68,65,60,62,70,50,55,35,50,45,65,45,657852,TCGCSV-24495-657852,Teenage Mutant Ninja Turtles,Teenage Mutant Ninja Turtles Collector Booster Display,657852,Teenage Mutant Ninja Turtles - Collector Booster Display,1,24495,Collector Booster Display,approved,auto_high_confidence_v9,candidate_score=240.0; market_price=431.05,657852,3,2026-07-08,2026-07-11,431.05,431.05,427.62,0.0,0.008,,,,,0.1084,50,55,75,10.0,50.5,Teenage Mutant Ninja Turtles Collector Booster Display,2026-07-11,3,431.05,431.05,427.62,0.0,0.008,428.76,,428.76,,428.76,,428.76,,428.76,,428.76,,428.76,,0.00567,0.1084,50,0,50,0,64.33,25,62.0,25,50,10.0,56.6,12.0,70,75,53.5,51.32,647.27,630.0,425.37,538.99,734.93,930.85,0.0898,0.0004,0.0564
+-Lorwyn Eclipsed Collector Booster Display,Lorwyn Eclipsed,Lorwyn Eclipsed - Collector Booster Display,Standard,5,381.46,362.39,999.99,381.46,656322,1,24463,tcgcsv,381.46,379.99,479.96,999.99,2026-07-11T16:01:17+00:00,Lorwyn Eclipsed - Collector Booster Display,Lorwyn Eclipsed,2026-01-23T00:00:00,62,68,65,60,62,70,50,55,35,50,45,65,45,656322,TCGCSV-24463-656322,Lorwyn Eclipsed,Lorwyn Eclipsed Collector Booster Display,656322,Lorwyn Eclipsed - Collector Booster Display,1,24463,Collector Booster Display,approved,auto_high_confidence_v9,candidate_score=240.0; market_price=381.46,656322,3,2026-07-08,2026-07-11,381.46,382.9,381.46,-0.0038,0.0,,,,,0.0508,50,55,75,10.0,50.5,Lorwyn Eclipsed Collector Booster Display,2026-07-11,3,381.46,382.9,381.46,-0.0038,0.0,382.42,,382.42,,382.42,,382.42,,382.42,,382.42,,382.42,,0.00266,0.0508,50,0,50,0,64.33,25,62.0,25,50,10.0,56.6,12.0,70,75,53.5,51.32,570.78,567.47,471.2,525.55,612.18,682.45,0.005,0.0,0.0
+-Avatar: The Last Airbender Collector Booster Display,Avatar: The Last Airbender,Avatar: The Last Airbender - Collector Booster Display,Standard,7,424.65,403.42,1500.0,424.65,648650,1,24421,tcgcsv,424.65,435.0,577.77,1500.0,2026-07-11T16:01:17+00:00,Avatar: The Last Airbender - Collector Booster Display,Avatar: The Last Airbender,2025-11-21T00:00:00,62,68,65,60,62,70,50,55,35,50,45,65,45,648650,TCGCSV-24421-648650,Avatar: The Last Airbender,Avatar: The Last Airbender Collector Booster Display,648650,Avatar: The Last Airbender - Collector Booster Display,1,24421,Collector Booster Display,approved,auto_high_confidence_v9,candidate_score=240.0; market_price=424.65,648650,3,2026-07-08,2026-07-11,424.65,425.8,424.65,-0.0027,0.0,,,,,0.0365,50,55,75,10.0,50.5,Avatar: The Last Airbender Collector Booster Display,2026-07-11,3,424.65,425.8,424.65,-0.0027,0.0,425.42,,425.42,,425.42,,425.42,,425.42,,425.42,,425.42,,0.00191,0.0365,50,0,50,0,64.33,25,62.0,25,50,10.0,56.6,12.0,70,65,53.5,53.32,636.89,634.56,558.14,601.63,669.7,723.84,0.0004,0.0,0.0
+-Marvel's Spider-Man Collector Booster Display,Marvel's Spider-Man,Marvel's Spider-Man - Collector Booster Display,Universes Beyond,9,367.52,349.14,2000.0,367.52,621110,1,24245,tcgcsv,367.52,352.83,515.0,2000.0,2026-07-11T16:01:17+00:00,Marvel's Spider-Man - Collector Booster Display,Marvel's Spider-Man,2025-09-26T00:00:00,62,80,65,85,62,75,50,55,35,50,50,65,45,621110,TCGCSV-24245-621110,Marvel's Spider-Man,Marvel's Spider-Man Collector Booster Display,621110,Marvel's Spider-Man - Collector Booster Display,1,24245,Collector Booster Display,approved,auto_high_confidence_v9,candidate_score=240.0; market_price=367.52,621110,3,2026-07-08,2026-07-11,367.52,367.52,365.71,0.0,0.0049,,,,,0.0669,50,55,75,10.0,50.5,Marvel's Spider-Man Collector Booster Display,2026-07-11,3,367.52,367.52,365.71,0.0,0.0049,366.31,,366.31,,366.31,,366.31,,366.31,,366.31,,366.31,,0.0035,0.0669,50,0,50,0,76.67,25,62.0,25,50,10.0,59.83,12.0,75,65,53.5,54.57,550.71,544.26,426.73,494.22,601.22,693.13,0.0212,0.0,0.0028
+-Edge of Eternities Collector Booster Display,Edge of Eternities,Edge of Eternities - Collector Booster Display,Standard,11,622.38,591.26,1000.0,622.38,619672,1,24233,tcgcsv,622.38,630.0,799.97,1000.0,2026-07-11T16:01:17+00:00,Edge of Eternities - Collector Booster Display,Edge of Eternities,2025-08-01T00:00:00,62,68,65,60,62,70,50,55,35,50,45,65,45,619672,TCGCSV-24233-619672,Edge of Eternities,Edge of Eternities Collector Booster Display,619672,Edge of Eternities - Collector Booster Display,1,24233,Collector Booster Display,approved,auto_high_confidence_v9,candidate_score=240.0; market_price=622.38,619672,3,2026-07-08,2026-07-11,622.38,622.38,606.97,0.0,0.0254,,,,,0.343,50,55,50,10.0,45.5,Edge of Eternities Collector Booster Display,2026-07-11,3,622.38,622.38,606.97,0.0,0.0254,612.11,,612.11,,612.11,,612.11,,612.11,,612.11,,612.11,,0.01795,0.343,50,0,50,0,64.33,25,62.0,25,50,10.0,56.6,12.0,70,65,47.25,50.14,920.03,699.38,204.74,425.15,1153.68,2293.38,0.2222,0.0908,0.4368
+-FINAL FANTASY Collector Booster Display,FINAL FANTASY,FINAL FANTASY - Collector Booster Display,Universes Beyond,12,1508.77,1433.33,20000.0,1508.77,618893,1,24219,tcgcsv,1508.77,1495.0,1999.99,20000.0,2026-07-11T16:01:17+00:00,FINAL FANTASY Collector Booster Display,FINAL FANTASY,2025-06-13T00:00:00,72,93,89,100,62,82,42,62,35,58,72,65,45,618893,TCGCSV-24219-618893,FINAL FANTASY,FINAL FANTASY Collector Booster Display,618893,FINAL FANTASY Collector Booster Display,1,24219,Collector Booster Display,approved,seed_verified_from_user,Seeded from user verified current market around 1525.,618893,3,2026-07-08,2026-07-11,1508.77,1517.99,1508.77,-0.0061,0.0,,,,,0.0821,50,55,75,10.0,50.5,FINAL FANTASY Collector Booster Display,2026-07-11,3,1508.77,1517.99,1508.77,-0.0061,0.0,1514.92,,1514.92,,1514.92,,1514.92,,1514.92,,1514.92,,1514.92,,0.00429,0.0821,50,0,50,0,94.0,25,72.0,25,50,10.0,66.73,12.0,68,50,53.5,55.82,2256.86,2215.35,1661.94,1969.96,2502.72,2993.81,0.0462,0.0002,0.014
+-Tarkir: Dragonstorm Collector Booster Display,Tarkir: Dragonstorm,Tarkir: Dragonstorm - Collector Booster Display,Standard,14,463.19,440.03,1499.0,463.19,619649,1,24232,tcgcsv,463.19,494.75,588.99,1499.0,2026-07-11T16:01:17+00:00,Tarkir: Dragonstorm - Collector Booster Display,Tarkir: Dragonstorm,2025-04-11T00:00:00,62,68,65,60,62,70,50,55,35,50,45,65,45,619649,TCGCSV-24232-619649,Tarkir: Dragonstorm,Tarkir: Dragonstorm Collector Booster Display,619649,Tarkir: Dragonstorm - Collector Booster Display,1,24232,Collector Booster Display,approved,auto_high_confidence_v9,candidate_score=240.0; market_price=463.19,619649,3,2026-07-08,2026-07-11,463.19,463.19,459.6,0.0,0.0078,,,,,0.1055,50,55,75,10.0,50.5,Tarkir: Dragonstorm Collector Booster Display,2026-07-11,3,463.19,463.19,459.6,0.0,0.0078,460.8,,460.8,,460.8,,460.8,,460.8,,460.8,,460.8,,0.00552,0.1055,50,0,50,0,64.33,25,62.0,25,50,10.0,56.6,12.0,70,55,53.5,55.32,694.67,676.69,464.6,583.3,785.1,990.56,0.0862,0.0012,0.0488
+-Aetherdrift Collector Booster Display,Aetherdrift,Aetherdrift - Collector Booster Display,Standard,16,271.01,257.46,1100.0,271.01,604253,1,23874,tcgcsv,271.01,270.0,300.0,1100.0,2026-07-11T16:01:17+00:00,Aetherdrift - Collector Booster Display,Aetherdrift,2025-02-14T00:00:00,62,68,65,60,62,70,50,55,35,50,45,65,45,604253,TCGCSV-23874-604253,Aetherdrift,Aetherdrift Collector Booster Display,604253,Aetherdrift - Collector Booster Display,1,23874,Collector Booster Display,approved,auto_high_confidence_v9,candidate_score=240.0; market_price=271.01,604253,3,2026-07-08,2026-07-11,271.01,271.27,271.01,-0.001,0.0,,,,,0.0129,50,55,75,10.0,50.5,Aetherdrift Collector Booster Display,2026-07-11,3,271.01,271.27,271.01,-0.001,0.0,271.18,,271.18,,271.18,,271.18,,271.18,,271.18,,271.18,,0.00068,0.0129,50,0,50,0,64.33,25,62.0,25,50,10.0,56.6,12.0,78,55,53.5,57.32,408.78,408.6,389.85,400.91,416.49,428.37,0.0,0.0,0.0
+-Innistrad Remastered Collector Booster Display,Innistrad Remastered,Innistrad Remastered - Collector Booster Display,Standard,17,413.81,393.12,1299.99,413.81,594681,1,23848,tcgcsv,413.81,395.0,499.0,1299.99,2026-07-11T16:01:17+00:00,Innistrad Remastered - Collector Booster Display,Innistrad Remastered,2025-01-24T00:00:00,62,68,65,60,62,70,50,55,35,50,45,65,45,594681,TCGCSV-23848-594681,Innistrad Remastered,Innistrad Remastered Collector Booster Display,594681,Innistrad Remastered - Collector Booster Display,1,23848,Collector Booster Display,approved,auto_high_confidence_v9,candidate_score=240.0; market_price=413.81,594681,3,2026-07-08,2026-07-11,413.81,413.81,412.45,0.0,0.0033,,,,,0.0445,50,55,75,10.0,50.5,Innistrad Remastered Collector Booster Display,2026-07-11,3,413.81,413.81,412.45,0.0,0.0033,412.9,,412.9,,412.9,,412.9,,412.9,,412.9,,412.9,,0.00233,0.0445,50,0,50,0,64.33,25,62.0,25,50,10.0,56.6,12.0,70,55,53.5,55.32,622.34,619.29,526.62,579.05,662.25,725.61,0.0014,0.0,0.0
+-Foundations Collector Booster Display,Foundations,Magic: The Gathering Foundations - Collector Booster Display,Standard,19,737.34,700.47,1799.99,737.34,562122,1,23556,tcgcsv,737.34,799.99,899.99,1799.99,2026-07-11T16:01:17+00:00,Magic: The Gathering Foundations - Collector Booster Display,Foundations,2024-11-15T00:00:00,62,68,65,60,62,70,50,55,35,50,45,65,45,562122,TCGCSV-23556-562122,Foundations,Foundations Collector Booster Display,562122,Magic: The Gathering Foundations - Collector Booster Display,1,23556,Collector Booster Display,approved,auto_high_confidence_v9,candidate_score=240.0; market_price=737.34,562122,3,2026-07-08,2026-07-11,737.34,737.34,734.1,0.0,0.0044,,,,,0.0596,50,55,75,10.0,50.5,Foundations Collector Booster Display,2026-07-11,3,737.34,737.34,734.1,0.0,0.0044,735.18,,735.18,,735.18,,735.18,,735.18,,735.18,,735.18,,0.00312,0.0596,50,0,50,0,64.33,25,62.0,25,50,10.0,56.6,12.0,70,55,53.5,55.32,1110.58,1099.09,889.69,1009.29,1201.87,1365.27,0.016,0.0,0.0012
+-Duskmourn: House of Horror Collector Booster Display,Duskmourn: House of Horror,Duskmourn: House of Horror - Collector Booster Display,Standard,21,651.18,618.62,1249.99,651.18,557244,1,23550,tcgcsv,651.18,740.95,769.0,1249.99,2026-07-11T16:01:17+00:00,Duskmourn: House of Horror - Collector Booster Display,Duskmourn: House of Horror,2024-09-27T00:00:00,62,68,65,60,62,70,50,55,35,50,45,65,45,557244,TCGCSV-23550-557244,Duskmourn: House of Horror,Duskmourn: House of Horror Collector Booster Display,557244,Duskmourn: House of Horror - Collector Booster Display,1,23550,Collector Booster Display,approved,auto_high_confidence_v9,candidate_score=240.0; market_price=651.18,557244,3,2026-07-08,2026-07-11,651.18,651.18,644.87,0.0,0.0098,,,,,0.1322,50,55,75,10.0,50.5,Duskmourn: House of Horror Collector Booster Display,2026-07-11,3,651.18,651.18,644.87,0.0,0.0098,646.97,,646.97,,646.97,,646.97,,646.97,,646.97,,646.97,,0.00692,0.1322,50,0,50,0,64.33,25,62.0,25,50,10.0,56.6,12.0,70,55,53.5,55.32,974.47,930.61,578.75,772.5,1141.13,1494.84,0.125,0.0052,0.1068
+-Bloomburrow Collector Booster Display,Bloomburrow,Bloomburrow - Collector Booster Display,Standard,23,980.7,931.66,1999.99,980.7,541238,1,23447,tcgcsv,980.7,950.0,1300.0,1999.99,2026-07-11T16:01:17+00:00,Bloomburrow - Collector Booster Display,Bloomburrow,2024-08-02T00:00:00,62,68,65,60,62,70,50,55,35,50,45,65,45,541238,TCGCSV-23447-541238,Bloomburrow,Bloomburrow Collector Booster Display,541238,Bloomburrow - Collector Booster Display,1,23447,Collector Booster Display,approved,auto_high_confidence_v9,candidate_score=240.0; market_price=980.7,541238,3,2026-07-08,2026-07-11,980.7,980.7,980.26,0.0,0.0004,,,,,0.0061,50,55,75,10.0,50.5,Bloomburrow Collector Booster Display,2026-07-11,3,980.7,980.7,980.26,0.0,0.0004,980.41,,980.41,,980.41,,980.41,,980.41,,980.41,,980.41,,0.00032,0.0061,50,0,50,0,64.33,25,62.0,25,50,10.0,56.6,12.0,60,55,53.5,52.82,1468.98,1468.66,1437.38,1455.85,1481.63,1501.24,0.0,0.0,0.0
+-Universes Beyond: Assassin's Creed Collector Booster Display,Universes Beyond: Assassin's Creed,Universes Beyond: Assassin's Creed - Collector Booster Display,Universes Beyond,24,430.16,408.65,1050.0,430.16,541225,1,23446,tcgcsv,430.16,489.96,549.97,1050.0,2026-07-11T16:01:17+00:00,Universes Beyond: Assassin's Creed - Collector Booster Display,Universes Beyond: Assassin's Creed,2024-07-05T00:00:00,62,80,65,85,62,75,50,55,35,50,50,65,45,541225,TCGCSV-23446-541225,Universes Beyond: Assassin's Creed,Universes Beyond: Assassin's Creed Collector Booster Display,541225,Universes Beyond: Assassin's Creed - Collector Booster Display,1,23446,Collector Booster Display,approved,auto_high_confidence_v9,candidate_score=240.0; market_price=430.16,541225,3,2026-07-08,2026-07-11,430.16,430.16,420.08,0.0,0.024,,,,,0.3242,50,55,50,10.0,45.5,Universes Beyond: Assassin's Creed Collector Booster Display,2026-07-11,3,430.16,430.16,420.08,0.0,0.024,423.44,,423.44,,423.44,,423.44,,423.44,,423.44,,423.44,,0.01697,0.3242,50,0,50,0,76.67,25,62.0,25,50,10.0,59.83,12.0,75,55,47.25,53.39,649.44,503.89,151.89,309.94,818.26,1624.81,0.2288,0.0916,0.4102
+-Modern Horizons 3 Collector Booster Display,Modern Horizons 3,Modern Horizons 3 - Collector Booster Display,Modern Horizons,24,722.99,686.84,1000.0,722.99,541179,1,23444,tcgcsv,722.99,800.0,899.99,1000.0,2026-07-11T16:01:17+00:00,Modern Horizons 3 - Collector Booster Display,Modern Horizons 3,2024-06-14T00:00:00,62,82,75,60,72,78,50,55,35,50,45,65,45,541179,TCGCSV-23444-541179,Modern Horizons 3,Modern Horizons 3 Collector Booster Display,541179,Modern Horizons 3 - Collector Booster Display,1,23444,Collector Booster Display,approved,auto_high_confidence_v9,candidate_score=240.0; market_price=722.99,541179,3,2026-07-08,2026-07-11,722.99,722.99,715.23,0.0,0.0108,,,,,0.1466,50,55,75,10.0,50.5,Modern Horizons 3 Collector Booster Display,2026-07-11,3,722.99,722.99,715.23,0.0,0.0108,717.82,,717.82,,717.82,,717.82,,717.82,,717.82,,717.82,,0.00767,0.1466,50,0,50,0,72.33,25,62.0,25,50,10.0,58.69,12.0,70,55,53.5,55.32,1086.36,1029.44,595.57,830.77,1283.73,1750.84,0.148,0.0106,0.1306
+-Outlaws of Thunder Junction Collector Booster Display,Outlaws of Thunder Junction,Outlaws of Thunder Junction - Collector Booster Display,Standard,26,406.91,386.56,899.99,406.91,541090,1,23439,tcgcsv,406.91,399.0,470.0,899.99,2026-07-11T16:01:17+00:00,Outlaws of Thunder Junction - Collector Booster Display,Outlaws of Thunder Junction,2024-04-19T00:00:00,62,68,65,60,62,70,50,55,35,50,45,65,45,541090,TCGCSV-23439-541090,Outlaws of Thunder Junction,Outlaws of Thunder Junction Collector Booster Display,541090,Outlaws of Thunder Junction - Collector Booster Display,1,23439,Collector Booster Display,approved,auto_high_confidence_v9,candidate_score=240.0; market_price=406.91,541090,3,2026-07-08,2026-07-11,406.91,406.91,406.86,0.0,0.0001,,,,,0.0017,50,55,75,10.0,50.5,Outlaws of Thunder Junction Collector Booster Display,2026-07-11,3,406.91,406.91,406.86,0.0,0.0001,406.88,,406.88,,406.88,,406.88,,406.88,,406.88,,406.88,,9e-05,0.0017,50,0,50,0,64.33,25,62.0,25,50,10.0,56.6,12.0,70,55,53.5,55.32,611.84,611.79,608.28,610.29,613.37,615.63,0.0,0.0,0.0
+-Universes Beyond: Fallout Collector Booster Display,Universes Beyond: Fallout,Universes Beyond: Fallout - Collector Booster Display,Universes Beyond,28,1702.12,1617.01,16969.69,1702.12,523185,1,23337,tcgcsv,1702.12,1919.69,2134.99,16969.69,2026-07-11T16:01:17+00:00,Universes Beyond: Fallout - Collector Booster Display,Universes Beyond: Fallout,2024-03-08T00:00:00,62,80,65,85,62,75,50,55,35,50,50,65,45,523185,TCGCSV-23337-523185,Universes Beyond: Fallout,Universes Beyond: Fallout Collector Booster Display,523185,Universes Beyond: Fallout - Collector Booster Display,1,23337,Collector Booster Display,approved,auto_high_confidence_v9,candidate_score=240.0; market_price=1702.12,523185,3,2026-07-08,2026-07-11,1702.12,1702.12,1683.37,0.0,0.0111,,,,,0.1505,50,55,65,10.0,48.5,Universes Beyond: Fallout Collector Booster Display,2026-07-11,3,1702.12,1702.12,1683.37,0.0,0.0111,1689.62,,1689.62,,1689.62,,1689.62,,1689.62,,1689.62,,1689.62,,0.00788,0.1505,50,0,50,0,76.67,25,62.0,25,50,10.0,59.83,12.0,55,50,51.0,51.3,2529.16,2405.21,1382.05,1907.22,3004.65,4066.05,0.1506,0.012,0.1586
+-Murders at Karlov Manor Collector Booster Display,Murders at Karlov Manor,Murders at Karlov Manor - Collector Booster Display,Standard,29,352.29,334.68,599.99,352.29,529968,1,23361,tcgcsv,352.29,386.98,436.7,599.99,2026-07-11T16:01:17+00:00,Murders at Karlov Manor - Collector Booster Display,Murders at Karlov Manor,2024-02-09T00:00:00,62,68,65,60,62,70,50,55,35,50,45,65,45,529968,TCGCSV-23361-529968,Murders at Karlov Manor,Murders at Karlov Manor Collector Booster Display,529968,Murders at Karlov Manor - Collector Booster Display,1,23361,Collector Booster Display,approved,auto_high_confidence_v9,candidate_score=240.0; market_price=352.29,529968,3,2026-07-08,2026-07-11,352.29,352.29,347.6,0.0,0.0135,,,,,0.1823,50,55,65,10.0,48.5,Murders at Karlov Manor Collector Booster Display,2026-07-11,3,352.29,352.29,347.6,0.0,0.0135,349.16,,349.16,,349.16,,349.16,,349.16,,349.16,,349.16,,0.00954,0.1823,50,0,50,0,64.33,25,62.0,25,50,10.0,56.6,12.0,70,55,51.0,54.05,525.6,484.33,251.04,373.87,629.69,948.95,0.1738,0.0284,0.2064
+-Ravnica Remastered Collector Booster Display,Ravnica Remastered,Ravnica Remastered - Collector Booster Display,Standard,29,867.32,823.95,1499.95,867.32,517708,1,23319,tcgcsv,867.32,980.0,1000.0,1499.95,2026-07-11T16:01:17+00:00,Ravnica Remastered - Collector Booster Display,Ravnica Remastered,2024-01-12T00:00:00,62,68,65,60,62,70,50,55,35,50,45,65,45,517708,TCGCSV-23319-517708,Ravnica Remastered,Ravnica Remastered Collector Booster Display,517708,Ravnica Remastered - Collector Booster Display,1,23319,Collector Booster Display,approved,auto_high_confidence_v9,candidate_score=240.0; market_price=867.32,517708,3,2026-07-08,2026-07-11,867.32,867.32,867.32,0.0,0.0,,,,,0.0,50,55,75,10.0,50.5,Ravnica Remastered Collector Booster Display,2026-07-11,3,867.32,867.32,867.32,0.0,0.0,867.32,,867.32,,867.32,,867.32,,867.32,,867.32,,867.32,,0.0,0.0,50,0,50,0,64.33,25,62.0,25,50,10.0,56.6,12.0,60,55,53.5,52.82,1315.75,988.71,298.81,595.97,1637.33,3443.28,0.2238,0.0944,0.435
+-The Lost Caverns of Ixalan Collector Booster Display,The Lost Caverns of Ixalan,The Lost Caverns of Ixalan - Collector Booster Display,Standard,31,929.16,882.7,1999.95,929.16,516614,1,23312,tcgcsv,929.16,1029.69,1212.97,1999.95,2026-07-11T16:01:17+00:00,The Lost Caverns of Ixalan - Collector Booster Display,The Lost Caverns of Ixalan,2023-11-17T00:00:00,62,68,65,60,62,70,50,55,35,50,45,65,45,516614,TCGCSV-23312-516614,The Lost Caverns of Ixalan,The Lost Caverns of Ixalan Collector Booster Display,516614,The Lost Caverns of Ixalan - Collector Booster Display,1,23312,Collector Booster Display,approved,auto_high_confidence_v9,candidate_score=240.0; market_price=929.16,516614,3,2026-07-08,2026-07-11,929.16,929.16,923.56,0.0,0.0061,,,,,0.0819,50,55,75,10.0,50.5,The Lost Caverns of Ixalan Collector Booster Display,2026-07-11,3,929.16,929.16,923.56,0.0,0.0061,925.43,,925.43,,925.43,,925.43,,925.43,,925.43,,925.43,,0.00429,0.0819,50,0,50,0,64.33,25,62.0,25,50,10.0,56.6,12.0,60,55,53.5,52.82,1395.5,1373.75,1028.05,1220.0,1549.48,1847.8,0.0466,0.0,0.014
+-Universes Beyond: Doctor Who Collector Booster Display,Universes Beyond: Doctor Who,Universes Beyond: Doctor Who - Collector Booster Display,Universes Beyond,32,626.48,595.16,1000.0,626.48,496076,1,23165,tcgcsv,626.48,890.49,999.95,1000.0,2026-07-11T16:01:17+00:00,Universes Beyond: Doctor Who - Collector Booster Display,Universes Beyond: Doctor Who,2023-10-13T00:00:00,62,80,65,85,62,75,50,55,35,50,50,65,45,496076,TCGCSV-23165-496076,Universes Beyond: Doctor Who,Universes Beyond: Doctor Who Collector Booster Display,496076,Universes Beyond: Doctor Who - Collector Booster Display,1,23165,Collector Booster Display,approved,auto_high_confidence_v9,candidate_score=240.0; market_price=626.48,496076,3,2026-07-08,2026-07-11,626.48,626.48,618.44,0.0,0.013,,,,,0.1756,50,55,65,10.0,48.5,Universes Beyond: Doctor Who Collector Booster Display,2026-07-11,3,626.48,626.48,618.44,0.0,0.013,621.12,,621.12,,621.12,,621.12,,621.12,,621.12,,621.12,,0.00919,0.1756,50,0,50,0,76.67,25,62.0,25,50,10.0,59.83,12.0,75,55,51.0,55.3,940.75,866.46,466.99,669.84,1129.56,1652.6,0.1758,0.0252,0.1996
+-Wilds of Eldraine Collector Booster Display,Wilds of Eldraine,Wilds of Eldraine - Collector Booster Display,Standard,34,865.07,821.82,2300.0,865.07,496041,1,23163,tcgcsv,865.07,881.83,1004.46,2300.0,2026-07-11T16:01:17+00:00,Wilds of Eldraine - Collector Booster Display,Wilds of Eldraine,2023-09-08T00:00:00,62,68,65,60,62,70,50,55,35,50,45,65,45,496041,TCGCSV-23163-496041,Wilds of Eldraine,Wilds of Eldraine Collector Booster Display,496041,Wilds of Eldraine - Collector Booster Display,1,23163,Collector Booster Display,approved,auto_high_confidence_v9,candidate_score=240.0; market_price=865.07,496041,3,2026-07-08,2026-07-11,865.07,881.83,865.07,-0.019,0.0,,,,,0.2568,50,55,65,10.0,48.5,Wilds of Eldraine Collector Booster Display,2026-07-11,3,865.07,881.83,865.07,-0.019,0.0,876.24,,876.24,,876.24,,876.24,,876.24,,876.24,,876.24,,0.01344,0.2568,50,0,50,0,64.33,25,62.0,25,50,10.0,56.6,12.0,60,55,51.0,51.55,1298.35,1109.35,441.88,754.02,1620.48,2834.67,0.216,0.0686,0.3276
+-Commander Masters Collector Booster Display,Commander Masters,Commander Masters - Collector Booster Box,Masters,35,490.38,465.86,799.99,490.38,484929,1,23020,tcgcsv,490.38,490.0,547.97,799.99,2026-07-11T16:01:17+00:00,Commander Masters - Collector Booster Box,Commander Masters,2023-08-04T00:00:00,67,78,77,60,74,70,50,55,35,50,45,65,45,484929,TCGCSV-23020-484929,Commander Masters,Commander Masters Collector Booster Display,484929,Commander Masters - Collector Booster Box,1,23020,Collector Booster Display,approved,auto_high_confidence_v9,candidate_score=200.0; market_price=490.38,484929,3,2026-07-08,2026-07-11,490.38,490.38,490.38,0.0,0.0,,,,,0.0,50,55,75,10.0,50.5,Commander Masters Collector Booster Display,2026-07-11,3,490.38,490.38,490.38,0.0,0.0,490.38,,490.38,,490.38,,490.38,,490.38,,490.38,,490.38,,0.0,0.0,50,0,50,0,71.67,25,67.0,25,50,10.0,59.71,12.0,70,55,53.5,55.32,728.47,497.51,123.33,282.63,893.65,2146.95,0.2142,0.107,0.4918
+-Universes Beyond: The Lord of the Rings: Tales of Middle-earth Collector Booster Display,Universes Beyond: The Lord of the Rings: Tales of Middle-earth,Universes Beyond: The Lord of the Rings: Tales of Middle-earth - Collector Booster Display,Universes Beyond,36,1975.23,1876.47,16969.69,1975.23,484912,1,23019,tcgcsv,1975.23,2649.99,3499.99,16969.69,2026-07-11T16:01:17+00:00,The Lord of the Rings: Tales of Middle-earth Collector Booster Display,Universes Beyond: The Lord of the Rings: Tales of Middle-earth,2023-06-23T00:00:00,88,98,96,100,92,95,35,30,35,70,50,65,45,484912,TCGCSV-23019-484912,Universes Beyond: The Lord of the Rings: Tales of Middle-earth,Universes Beyond: The Lord of the Rings: Tales of Middle-earth Collector Booster Display,484912,The Lord of the Rings: Tales of Middle-earth Collector Booster Display,1,23019,Collector Booster Display,approved,seed_verified_from_user,Seeded because product 515906 appears case-level; user verified individual display market around 1925.,484912,3,2026-07-08,2026-07-11,1975.23,1975.23,1975.23,0.0,0.0,,,,,0.0,50,55,75,10.0,50.5,Universes Beyond: The Lord of the Rings: Tales of Middle-earth Collector Booster Display,2026-07-11,3,1975.23,1975.23,1975.23,0.0,0.0,1975.23,,1975.23,,1975.23,,1975.23,,1975.23,,1975.23,,1975.23,,0.0,0.0,50,0,50,0,98.0,25,88.0,25,50,10.0,71.58,12.0,68,42,53.5,57.42,2974.99,2496.56,894.59,1643.15,3776.85,6791.31,0.2292,0.0774,0.3504
+-March of the Machine: The Aftermath Collector Booster Display,March of the Machine: The Aftermath,March of the Machine: The Aftermath - Collector Booster Display,Standard,37,227.18,215.82,383.99,227.18,489207,1,22876,tcgcsv,227.18,227.98,279.99,383.99,2026-07-11T16:01:17+00:00,March of the Machine: The Aftermath - Collector Booster Display,March of the Machine: The Aftermath,2023-05-12T00:00:00,62,68,65,60,62,70,50,55,35,50,45,65,45,489207,TCGCSV-22876-489207,March of the Machine: The Aftermath,March of the Machine: The Aftermath Collector Booster Display,489207,March of the Machine: The Aftermath - Collector Booster Display,1,22876,Collector Booster Display,approved,auto_high_confidence_v9,candidate_score=240.0; market_price=227.18,489207,3,2026-07-08,2026-07-11,227.18,227.18,225.98,0.0,0.0053,,,,,0.0717,50,55,75,10.0,50.5,March of the Machine: The Aftermath Collector Booster Display,2026-07-11,3,227.18,227.18,225.98,0.0,0.0053,226.38,,226.38,,226.38,,226.38,,226.38,,226.38,,226.38,,0.00375,0.0717,50,0,50,0,64.33,25,62.0,25,50,10.0,56.6,12.0,78,43,53.5,59.72,344.69,340.58,261.31,305.24,378.69,444.19,0.0392,0.0002,0.0066
+-March of the Machine Collector Booster Display,March of the Machine,March of the Machine - Collector Booster Display,Standard,38,769.25,730.79,2999.0,769.25,475584,1,22875,tcgcsv,769.25,1039.29,1074.99,2999.0,2026-07-11T16:01:17+00:00,March of the Machine - Collector Booster Display,March of the Machine,2023-04-14T00:00:00,62,68,65,60,62,70,50,55,35,50,45,65,45,475584,TCGCSV-22875-475584,March of the Machine,March of the Machine Collector Booster Display,475584,March of the Machine - Collector Booster Display,1,22875,Collector Booster Display,approved,auto_high_confidence_v9,candidate_score=240.0; market_price=769.25,475584,3,2026-07-08,2026-07-11,769.25,769.25,769.25,0.0,0.0,,,,,0.0,50,55,75,10.0,50.5,March of the Machine Collector Booster Display,2026-07-11,3,769.25,769.25,769.25,0.0,0.0,769.25,,769.25,,769.25,,769.25,,769.25,,769.25,,769.25,,0.0,0.0,50,0,50,0,64.33,25,62.0,25,50,10.0,56.6,12.0,70,43,53.5,57.72,1152.24,864.43,256.88,522.68,1451.41,2927.06,0.2292,0.0982,0.4398
+-Phyrexia: All Will Be One Collector Booster Display,Phyrexia: All Will Be One,Phyrexia: All Will Be One - Collector Booster Display,Standard,41,920.02,874.02,2577.0,920.02,451880,1,17684,tcgcsv,920.02,1249.97,1295.9,2577.0,2026-07-11T16:01:17+00:00,Phyrexia: All Will Be One - Collector Booster Display,Phyrexia: All Will Be One,2023-02-03T00:00:00,62,68,65,60,62,70,50,55,35,50,45,65,45,451880,TCGCSV-17684-451880,Phyrexia: All Will Be One,Phyrexia: All Will Be One Collector Booster Display,451880,Phyrexia: All Will Be One - Collector Booster Display,1,17684,Collector Booster Display,approved,auto_high_confidence_v9,candidate_score=240.0; market_price=920.02,451880,3,2026-07-08,2026-07-11,920.02,920.02,913.62,0.0,0.007,,,,,0.0946,50,55,75,10.0,50.5,Phyrexia: All Will Be One Collector Booster Display,2026-07-11,3,920.02,920.02,913.62,0.0,0.007,915.75,,915.75,,915.75,,915.75,,915.75,,915.75,,915.75,,0.00495,0.0946,50,0,50,0,64.33,25,62.0,25,50,10.0,56.6,12.0,60,43,53.5,55.22,1382.56,1355.53,963.27,1174.72,1556.25,1893.03,0.067,0.0006,0.0328
+-Dominaria Remastered Collector Booster Display,Dominaria Remastered,Dominaria Remastered - Collector Booster Display,Standard,41,497.36,472.49,1000.0,497.36,449559,1,17670,tcgcsv,497.36,525.0,574.85,1000.0,2026-07-11T16:01:17+00:00,Dominaria Remastered - Collector Booster Display,Dominaria Remastered,2023-01-13T00:00:00,62,68,65,60,62,70,50,55,35,50,45,65,45,449559,TCGCSV-17670-449559,Dominaria Remastered,Dominaria Remastered Collector Booster Display,449559,Dominaria Remastered - Collector Booster Display,1,17670,Collector Booster Display,approved,auto_high_confidence_v9,candidate_score=240.0; market_price=497.36,449559,3,2026-07-08,2026-07-11,497.36,497.36,497.36,0.0,0.0,,,,,0.0,50,55,75,10.0,50.5,Dominaria Remastered Collector Booster Display,2026-07-11,3,497.36,497.36,497.36,0.0,0.0,497.36,,497.36,,497.36,,497.36,,497.36,,497.36,,497.36,,0.0,0.0,50,0,50,0,64.33,25,62.0,25,50,10.0,56.6,12.0,70,43,53.5,57.72,751.77,525.56,120.74,289.61,934.57,2060.96,0.2284,0.1098,0.4764
+-The Brothers' War Collector Booster Display,The Brothers' War,The Brothers' War - Collector Booster Display,Standard,43,695.22,660.46,1500.0,695.22,282224,1,3157,tcgcsv,695.22,866.0,949.99,1500.0,2026-07-11T16:01:17+00:00,The Brothers' War - Collector Booster Display,The Brothers' War,2022-11-18T00:00:00,62,68,65,60,62,70,50,55,35,50,45,65,45,282224,TCGCSV-3157-282224,The Brothers' War,The Brothers' War Collector Booster Display,282224,The Brothers' War - Collector Booster Display,1,3157,Collector Booster Display,approved,auto_high_confidence_v9,candidate_score=240.0; market_price=695.22,282224,3,2026-07-08,2026-07-11,695.22,695.22,685.62,0.0,0.014,,,,,0.1892,50,55,65,10.0,48.5,The Brothers' War Collector Booster Display,2026-07-11,3,695.22,695.22,685.62,0.0,0.014,688.82,,688.82,,688.82,,688.82,,688.82,,688.82,,688.82,,0.0099,0.1892,50,0,50,0,64.33,25,62.0,25,50,10.0,56.6,12.0,70,43,51.0,56.45,1045.86,959.41,486.83,733.17,1265.55,1901.96,0.1806,0.0306,0.2144
+-Dominaria United Collector Booster Display,Dominaria United,Dominaria United - Collector Booster Display,Standard,46,311.2,295.64,999.99,311.2,275412,1,3102,tcgcsv,311.2,306.63,349.99,999.99,2026-07-11T16:01:17+00:00,Dominaria United - Collector Booster Display,Dominaria United,2022-09-09T00:00:00,62,68,65,60,62,70,50,55,35,50,45,65,45,275412,TCGCSV-3102-275412,Dominaria United,Dominaria United Collector Booster Display,275412,Dominaria United - Collector Booster Display,1,3102,Collector Booster Display,approved,auto_high_confidence_v9,candidate_score=240.0; market_price=311.2,275412,3,2026-07-08,2026-07-11,311.2,311.2,306.63,0.0,0.0149,,,,,0.2013,50,55,65,10.0,48.5,Dominaria United Collector Booster Display,2026-07-11,3,311.2,311.2,306.63,0.0,0.0149,308.15,,308.15,,308.15,,308.15,,308.15,,308.15,,308.15,,0.01054,0.2013,50,0,50,0,64.33,25,62.0,25,50,10.0,56.6,12.0,78,43,51.0,58.45,472.78,425.72,209.27,319.16,576.51,903.96,0.1964,0.0432,0.2338
+-Unfinity Collector Booster Display,Unfinity,Unfinity - Collector Booster Display,Standard,47,335.93,319.13,989.99,335.93,275406,1,2958,tcgcsv,335.93,339.0,399.97,989.99,2026-07-11T16:01:17+00:00,Unfinity - Collector Booster Display,Unfinity,2022-07-29T00:00:00,62,68,65,60,62,70,50,55,35,50,45,65,45,275406,TCGCSV-2958-275406,Unfinity,Unfinity Collector Booster Display,275406,Unfinity - Collector Booster Display,1,2958,Collector Booster Display,approved,auto_high_confidence_v9,candidate_score=240.0; market_price=335.93,275406,3,2026-07-08,2026-07-11,335.93,335.93,334.84,0.0,0.0033,,,,,0.044,50,55,75,10.0,50.5,Unfinity Collector Booster Display,2026-07-11,3,335.93,335.93,334.84,0.0,0.0033,335.2,,335.2,,335.2,,335.2,,335.2,,335.2,,335.2,,0.0023,0.044,50,0,50,0,64.33,25,62.0,25,50,10.0,56.6,12.0,78,43,53.5,59.72,509.16,506.83,434.4,474.87,540.19,593.87,0.0016,0.0,0.0
+-Double Masters 2022 Collector Booster Display,Double Masters 2022,Double Masters 2022 - Collector Booster Display,Masters,48,410.8,390.26,999.99,410.8,271509,1,3070,tcgcsv,410.8,419.99,499.0,999.99,2026-07-11T16:01:17+00:00,Double Masters 2022 Collector Booster Display,Double Masters 2022,2022-07-08T00:00:00,84,92,91,60,91,86,35,30,35,52,45,65,45,271509,TCGCSV-3070-271509,Double Masters 2022,Double Masters 2022 Collector Booster Display,271509,Double Masters 2022 Collector Booster Display,1,3070,Collector Booster Display,approved,seed_verified_from_user,Seeded from user verified current market around 405.,271509,3,2026-07-08,2026-07-11,410.8,410.8,406.58,0.0,0.0104,,,,,0.1402,50,55,75,10.0,50.5,Double Masters 2022 Collector Booster Display,2026-07-11,3,410.8,410.8,406.58,0.0,0.0104,407.99,,407.99,,407.99,,407.99,,407.99,,407.99,,407.99,,0.00734,0.1402,50,0,50,0,81.0,25,84.0,25,50,10.0,66.19,12.0,78,35,53.5,61.32,627.04,595.67,367.05,487.37,735.68,977.84,0.1482,0.0092,0.107
+-Commander Legends: Battle for Baldur's Gate Collector Booster Display,Commander Legends: Battle for Baldur's Gate,Commander Legends: Battle for Baldur's Gate - Collector Booster Display,Commander,49,581.65,552.57,5012.0,581.65,267023,1,3047,tcgcsv,581.65,595.0,699.99,5012.0,2026-07-11T16:01:17+00:00,Commander Legends: Battle for Baldur's Gate - Collector Booster Display,Commander Legends: Battle for Baldur's Gate,2022-06-10T00:00:00,62,68,65,60,62,70,50,55,35,50,45,65,45,267023,TCGCSV-3047-267023,Commander Legends: Battle for Baldur's Gate,Commander Legends: Battle for Baldur's Gate Collector Booster Display,267023,Commander Legends: Battle for Baldur's Gate - Collector Booster Display,1,3047,Collector Booster Display,approved,auto_high_confidence_v9,candidate_score=240.0; market_price=581.65,267023,3,2026-07-08,2026-07-11,581.65,581.65,578.67,0.0,0.0051,,,,,0.0696,50,55,75,10.0,50.5,Commander Legends: Battle for Baldur's Gate Collector Booster Display,2026-07-11,3,581.65,581.65,578.67,0.0,0.0051,579.66,,579.66,,579.66,,579.66,,579.66,,579.66,,579.66,,0.00364,0.0696,50,0,50,0,64.33,25,62.0,25,50,10.0,56.6,12.0,70,43,53.5,57.72,882.24,872.25,676.6,788.2,967.37,1114.21,0.0286,0.0,0.0044
+-Streets of New Capenna Collector Booster Display,Streets of New Capenna,Streets of New Capenna - Collector Booster Display,Standard,50,247.41,235.04,999.99,247.41,264767,1,3026,tcgcsv,247.41,239.9,299.99,999.99,2026-07-11T16:01:17+00:00,Streets of New Capenna - Collector Booster Display,Streets of New Capenna,2022-04-29T00:00:00,62,68,65,60,62,70,50,55,35,50,45,65,45,264767,TCGCSV-3026-264767,Streets of New Capenna,Streets of New Capenna Collector Booster Display,264767,Streets of New Capenna - Collector Booster Display,1,3026,Collector Booster Display,approved,auto_high_confidence_v9,candidate_score=240.0; market_price=247.41,264767,3,2026-07-08,2026-07-11,247.41,247.41,247.41,0.0,0.0,,,,,0.0,50,55,75,10.0,50.5,Streets of New Capenna Collector Booster Display,2026-07-11,3,247.41,247.41,247.41,0.0,0.0,247.41,,247.41,,247.41,,247.41,,247.41,,247.41,,247.41,,0.0,0.0,50,0,50,0,64.33,25,62.0,25,50,10.0,56.6,12.0,78,43,53.5,59.72,378.91,256.35,59.35,137.55,471.51,1069.84,0.2298,0.109,0.4858
+-Kamigawa: Neon Dynasty Collector Booster Display,Kamigawa: Neon Dynasty,Kamigawa: Neon Dynasty - Collector Booster Display,Standard,52,497.04,472.19,1299.99,497.04,257563,1,2965,tcgcsv,497.04,485.0,599.97,1299.99,2026-07-11T16:01:17+00:00,Kamigawa: Neon Dynasty - Collector Booster Display,Kamigawa: Neon Dynasty,2022-02-18T00:00:00,86,91,88,76,90,88,32,28,35,44,45,65,45,257563,TCGCSV-2965-257563,Kamigawa: Neon Dynasty,Kamigawa: Neon Dynasty Collector Booster Display,257563,Kamigawa: Neon Dynasty - Collector Booster Display,1,2965,Collector Booster Display,approved,auto_high_confidence_v9,candidate_score=240.0; market_price=497.04,257563,3,2026-07-08,2026-07-11,497.04,497.04,495.72,0.0,0.0027,,,,,0.036,50,55,75,10.0,50.5,Kamigawa: Neon Dynasty Collector Booster Display,2026-07-11,3,497.04,497.04,495.72,0.0,0.0027,496.16,,496.16,,496.16,,496.16,,496.16,,496.16,,496.16,,0.00188,0.036,50,0,50,0,85.0,25,86.0,25,50,10.0,67.71,12.0,78,35,53.5,61.32,754.22,752.23,659.2,713.86,792.84,855.89,0.0002,0.0,0.0
+-Innistrad: Crimson Vow Collector Booster Display,Innistrad: Crimson Vow,Innistrad: Crimson Vow - Collector Booster Display,Standard,55,248.1,235.7,999.0,248.1,246457,1,2862,tcgcsv,248.1,248.88,301.99,999.0,2026-07-11T16:01:17+00:00,Innistrad: Crimson Vow - Collector Booster Display,Innistrad: Crimson Vow,2021-11-19T00:00:00,62,68,65,60,62,70,50,55,35,50,45,65,45,246457,TCGCSV-2862-246457,Innistrad: Crimson Vow,Innistrad: Crimson Vow Collector Booster Display,246457,Innistrad: Crimson Vow - Collector Booster Display,1,2862,Collector Booster Display,approved,auto_high_confidence_v9,candidate_score=240.0; market_price=248.1,246457,3,2026-07-08,2026-07-11,248.1,248.1,244.95,0.0,0.0129,,,,,0.1737,50,55,65,10.0,48.5,Innistrad: Crimson Vow Collector Booster Display,2026-07-11,3,248.1,248.1,244.95,0.0,0.0129,246.0,,246.0,,246.0,,246.0,,246.0,,246.0,,246.0,,0.00909,0.1737,50,0,50,0,64.33,25,62.0,25,50,10.0,56.6,12.0,78,43,51.0,58.45,373.51,350.03,189.64,269.66,445.92,649.14,0.1712,0.0218,0.1878
+-Innistrad: Midnight Hunt Collector Booster Display,Innistrad: Midnight Hunt,Innistrad: Midnight Hunt - Collector Booster Display,Standard,57,212.26,201.65,999.0,212.26,244384,1,2864,tcgcsv,212.26,230.99,263.99,999.0,2026-07-11T16:01:17+00:00,Innistrad: Midnight Hunt - Collector Booster Display,Innistrad: Midnight Hunt,2021-09-24T00:00:00,62,68,65,60,62,70,50,55,35,50,45,65,45,244384,TCGCSV-2864-244384,Innistrad: Midnight Hunt,Innistrad: Midnight Hunt Collector Booster Display,244384,Innistrad: Midnight Hunt - Collector Booster Display,1,2864,Collector Booster Display,approved,auto_high_confidence_v9,candidate_score=240.0; market_price=212.26,244384,3,2026-07-08,2026-07-11,212.26,212.26,212.26,0.0,0.0,,,,,0.0,50,55,75,10.0,50.5,Innistrad: Midnight Hunt Collector Booster Display,2026-07-11,3,212.26,212.26,212.26,0.0,0.0,212.26,,212.26,,212.26,,212.26,,212.26,,212.26,,212.26,,0.0,0.0,50,0,50,0,64.33,25,62.0,25,50,10.0,56.6,12.0,78,43,53.5,59.72,318.15,223.02,52.4,121.35,395.61,893.86,0.2246,0.1056,0.4734
+-Adventures in the Forgotten Realms Collector Booster Display,Adventures in the Forgotten Realms,Adventures in the Forgotten Realms - Collector Booster Display,Standard,59,318.01,302.11,795.95,318.01,238745,1,2823,tcgcsv,318.01,312.0,399.0,795.95,2026-07-11T16:01:17+00:00,Adventures in the Forgotten Realms - Collector Booster Display,Adventures in the Forgotten Realms,2021-07-23T00:00:00,62,68,65,60,62,70,50,55,35,50,45,65,45,238745,TCGCSV-2823-238745,Adventures in the Forgotten Realms,Adventures in the Forgotten Realms Collector Booster Display,238745,Adventures in the Forgotten Realms - Collector Booster Display,1,2823,Collector Booster Display,approved,auto_high_confidence_v9,candidate_score=240.0; market_price=318.01,238745,3,2026-07-08,2026-07-11,318.01,318.01,317.05,0.0,0.003,,,,,0.0409,50,55,75,10.0,50.5,Adventures in the Forgotten Realms Collector Booster Display,2026-07-11,3,318.01,318.01,317.05,0.0,0.003,317.37,,317.37,,317.37,,317.37,,317.37,,317.37,,317.37,,0.00214,0.0409,50,0,50,0,64.33,25,62.0,25,50,10.0,56.6,12.0,78,43,53.5,59.72,481.31,479.3,415.12,452.32,508.97,554.39,0.0008,0.0,0.0
+-Modern Horizons 2 Collector Booster Display,Modern Horizons 2,Modern Horizons 2 - Collector Booster Display,Modern Horizons,60,551.86,524.27,1499.99,551.86,236348,1,2809,tcgcsv,551.86,564.99,610.0,1499.99,2026-07-11T16:01:17+00:00,Modern Horizons 2 - Collector Booster Display,Modern Horizons 2,2021-06-19T00:00:00,62,82,75,60,72,78,50,55,35,50,45,65,45,236348,TCGCSV-2809-236348,Modern Horizons 2,Modern Horizons 2 Collector Booster Display,236348,Modern Horizons 2 - Collector Booster Display,1,2809,Collector Booster Display,approved,auto_high_confidence_v9,candidate_score=240.0; market_price=551.86,236348,3,2026-07-08,2026-07-11,551.86,551.86,550.66,0.0,0.0022,,,,,0.0294,50,55,75,10.0,50.5,Modern Horizons 2 Collector Booster Display,2026-07-11,3,551.86,551.86,550.66,0.0,0.0022,551.06,,551.06,,551.06,,551.06,,551.06,,551.06,,551.06,,0.00154,0.0294,50,0,50,0,72.33,25,62.0,25,50,10.0,58.69,12.0,70,43,53.5,57.72,832.4,831.13,748.77,795.84,867.35,925.18,0.0,0.0,0.0
+-Strixhaven: School of Mages Collector Booster Display,Strixhaven: School of Mages,Strixhaven: School of Mages - Collector Booster Display,Standard,62,622.76,591.62,1295.9,622.76,233232,1,2773,tcgcsv,622.76,630.0,769.85,1295.9,2026-07-11T16:01:17+00:00,Strixhaven: School of Mages - Collector Booster Display,Strixhaven: School of Mages,2021-04-23T00:00:00,62,68,65,60,62,70,50,55,35,50,45,65,45,233232,TCGCSV-2773-233232,Strixhaven: School of Mages,Strixhaven: School of Mages Collector Booster Display,233232,Strixhaven: School of Mages - Collector Booster Display,1,2773,Collector Booster Display,approved,auto_high_confidence_v9,candidate_score=240.0; market_price=622.76,233232,3,2026-07-08,2026-07-11,622.76,622.76,622.76,0.0,0.0,,,,,0.0,50,55,75,10.0,50.5,Strixhaven: School of Mages Collector Booster Display,2026-07-11,3,622.76,622.76,622.76,0.0,0.0,622.76,,622.76,,622.76,,622.76,,622.76,,622.76,,622.76,,0.0,0.0,50,0,50,0,64.33,25,62.0,25,50,10.0,56.6,12.0,70,43,53.5,57.72,933.29,661.84,157.5,373.59,1146.53,2648.71,0.2198,0.1088,0.4682
+-Kaldheim Collector Booster Display,Kaldheim,Kaldheim - Collector Booster Display,Standard,65,313.14,297.48,999.99,313.14,228249,1,2750,tcgcsv,313.14,314.87,359.99,999.99,2026-07-11T16:01:17+00:00,Kaldheim - Collector Booster Display,Kaldheim,2021-02-05T00:00:00,62,68,65,60,62,70,50,55,35,50,45,65,45,228249,TCGCSV-2750-228249,Kaldheim,Kaldheim Collector Booster Display,228249,Kaldheim - Collector Booster Display,1,2750,Collector Booster Display,approved,auto_high_confidence_v9,candidate_score=240.0; market_price=313.14,228249,3,2026-07-08,2026-07-11,313.14,313.14,313.08,0.0,0.0002,,,,,0.0026,50,55,75,10.0,50.5,Kaldheim Collector Booster Display,2026-07-11,3,313.14,313.14,313.08,0.0,0.0002,313.1,,313.1,,313.1,,313.1,,313.1,,313.1,,313.1,,0.00014,0.0026,50,0,50,0,64.33,25,62.0,25,50,10.0,56.6,12.0,78,43,53.5,59.72,474.02,473.99,469.57,472.14,475.89,478.59,0.0,0.0,0.0
+-Commander Legends Collector Booster Display,Commander Legends,Commander Legends - Collector Booster Display,Commander,67,707.48,672.11,1499.99,707.48,221323,1,2708,tcgcsv,707.48,784.0,852.5,1499.99,2026-07-11T16:01:17+00:00,Commander Legends - Collector Booster Display,Commander Legends,2020-11-20T00:00:00,62,68,65,60,62,70,50,55,35,50,45,65,45,221323,TCGCSV-2708-221323,Commander Legends,Commander Legends Collector Booster Display,221323,Commander Legends - Collector Booster Display,1,2708,Collector Booster Display,approved,auto_high_confidence_v9,candidate_score=240.0; market_price=707.48,221323,3,2026-07-08,2026-07-11,707.48,707.48,700.8,0.0,0.0095,,,,,0.1288,50,55,75,10.0,50.5,Commander Legends Collector Booster Display,2026-07-11,3,707.48,707.48,700.8,0.0,0.0095,703.03,,703.03,,703.03,,703.03,,703.03,,703.03,,703.03,,0.00674,0.1288,50,0,50,0,64.33,25,62.0,25,50,10.0,56.6,12.0,70,43,53.5,57.72,1065.45,1024.15,646.43,844.21,1240.46,1624.84,0.124,0.005,0.0898
+-Zendikar Rising Collector Booster Display,Zendikar Rising,Zendikar Rising - Collector Booster Display,Standard,69,370.37,351.85,999.99,370.37,220423,1,2648,tcgcsv,370.37,359.0,399.99,999.99,2026-07-11T16:01:17+00:00,Zendikar Rising - Collector Booster Display,Zendikar Rising,2020-09-25T00:00:00,62,68,65,60,62,70,50,55,35,50,45,65,45,220423,TCGCSV-2648-220423,Zendikar Rising,Zendikar Rising Collector Booster Display,220423,Zendikar Rising - Collector Booster Display,1,2648,Collector Booster Display,approved,auto_high_confidence_v9,candidate_score=240.0; market_price=370.37,220423,3,2026-07-08,2026-07-11,370.37,370.37,369.85,0.0,0.0014,,,,,0.019,50,55,75,10.0,50.5,Zendikar Rising Collector Booster Display,2026-07-11,3,370.37,370.37,369.85,0.0,0.0014,370.02,,370.02,,370.02,,370.02,,370.02,,370.02,,370.02,,0.00099,0.019,50,0,50,0,64.33,25,62.0,25,50,10.0,56.6,12.0,70,43,53.5,57.72,559.02,558.5,521.75,543.57,574.01,598.44,0.0,0.0,0.0
+-Core Set 2021 Collector Booster Display,Core Set 2021,Core Set 2021 - Collector Booster Display,Standard,72,403.03,382.88,700.0,403.03,214818,1,2653,tcgcsv,403.03,579.0,677.45,700.0,2026-07-11T16:01:17+00:00,Core Set 2021 - Collector Booster Display,Core Set 2021,2020-07-03T00:00:00,62,68,65,60,62,70,50,55,35,50,45,65,45,214818,TCGCSV-2653-214818,Core Set 2021,Core Set 2021 Collector Booster Display,214818,Core Set 2021 - Collector Booster Display,1,2653,Collector Booster Display,approved,auto_high_confidence_v9,candidate_score=240.0; market_price=403.03,214818,3,2026-07-08,2026-07-11,403.03,403.03,394.02,0.0,0.0229,,,,,0.3089,50,55,50,10.0,45.5,Core Set 2021 Collector Booster Display,2026-07-11,3,403.03,403.03,394.02,0.0,0.0229,397.02,,397.02,,397.02,,397.02,,397.02,,397.02,,397.02,,0.01617,0.3089,50,0,50,0,64.33,25,62.0,25,50,10.0,56.6,12.0,70,43,47.25,54.54,611.58,493.85,162.34,311.35,769.19,1446.65,0.225,0.0844,0.383
+-Ikoria: Lair of Behemoths Collector Booster Display,Ikoria: Lair of Behemoths,Ikoria: Lair of Behemoths - Collector Booster Display,Standard,73,561.43,533.36,1000.0,561.43,208279,1,2603,tcgcsv,561.43,635.0,715.0,1000.0,2026-07-11T16:01:17+00:00,Ikoria: Lair of Behemoths - Collector Booster Display,Ikoria: Lair of Behemoths,2020-05-15T00:00:00,62,68,65,60,62,70,50,55,35,50,45,65,45,208279,TCGCSV-2603-208279,Ikoria: Lair of Behemoths,Ikoria: Lair of Behemoths Collector Booster Display,208279,Ikoria: Lair of Behemoths - Collector Booster Display,1,2603,Collector Booster Display,approved,auto_high_confidence_v9,candidate_score=240.0; market_price=561.43,208279,3,2026-07-08,2026-07-11,561.43,561.43,561.43,0.0,0.0,,,,,0.0,50,55,75,10.0,50.5,Ikoria: Lair of Behemoths Collector Booster Display,2026-07-11,3,561.43,561.43,561.43,0.0,0.0,561.43,,561.43,,561.43,,561.43,,561.43,,561.43,,561.43,,0.0,0.0,50,0,50,0,64.33,25,62.0,25,50,10.0,56.6,12.0,70,43,53.5,57.72,842.32,580.08,137.53,322.73,1030.34,2389.47,0.2176,0.1068,0.4826
++box_name,set_name,official_product_name,set_type,months_since_release,current_price,estimated_floor_price,estimated_ceiling_price,fair_value_estimate,tcgplayer_product_id,tcgcsv_category_id,tcgcsv_group_id,price_source,market_price,low_price,mid_price,high_price,last_price_checked,source_product_name,source_group_name,published_on,supply_score,demand_score,chase_score,ip_score,historical_score,liquidity_score,reprint_risk,supply_dump_risk,liquidity_risk,chase_concentration_risk,new_set_uncertainty,data_quality_score,volatility_score,tcgplayer_product_id_str,investment_product_id,set_name_master,box_name_master,approved_tcgplayer_product_id,approved_product_name,tcgcsv_category_id_master,tcgcsv_group_id_master,investment_product_type,approval_status,approval_method,notes,approved_tcgplayer_product_id_str,history_observations,first_snapshot_date,latest_snapshot_date,current_price_history,history_high_price,history_low_price,drawdown_from_high,distance_from_low,return_30d,return_90d,return_180d,return_365d,annualized_volatility,observation_frequency,annualization_factor,history_source_layers,momentum_score,drawdown_score,price_stability_score,history_confidence,investment_feature_score,box_name_db,latest_observation_date,observations,current_price_db,ath_price,atl_price,drawdown_from_ath,distance_from_atl,ma_7d,return_7d_db,ma_14d,return_14d_db,ma_30d,return_30d_db,ma_60d,return_60d_db,ma_90d,return_90d_db,ma_180d,return_180d_db,ma_365d,return_365d_db,daily_return_volatility,annualized_volatility_db,inventory_signal_score,inventory_signal_confidence,sales_velocity_score,sales_signal_confidence,real_demand_score,demand_signal_confidence,scarcity_signal_score,scarcity_signal_confidence,price_trend_signal_score,price_signal_confidence,real_signal_score,real_signal_confidence,liquidity_proxy_score,inventory_risk_proxy,market_regime_score,market_intelligence_score,mc_expected_value,mc_median,mc_p05,mc_p25,mc_p75,mc_p95,prob_double,prob_triple,prob_loss
++Star Trek Collector Booster Display,Star Trek,Star Trek - Collector Booster Display,Standard,0,701.58,666.5,879.9,701.58,706142,1,24766,tcgcsv,701.58,695.86,701.86,879.9,2026-07-31T17:54:36+00:00,Star Trek - Collector Booster Display,Star Trek,2026-11-13T00:00:00,62,68,65,60,62,70,50,55,35,50,45,65,45,706142,TCGCSV-24766-706142,Star Trek,Star Trek Collector Booster Display,706142,Star Trek - Collector Booster Display,1,24766,Collector Booster Display,approved,auto_high_confidence_v9,candidate_score=240.0; market_price=701.58,706142,1,2026-07-31,2026-07-31,701.58,701.58,701.58,0.0,0.0,,,,,,INSUFFICIENT,,CURRENT_TCGCSV_REFRESH,50.0,55,50,3.3,44.5,Star Trek Collector Booster Display,2026-07-31,1,701.58,701.58,701.58,0.0,0.0,701.58,,701.58,,701.58,,701.58,,701.58,,701.58,,701.58,,,,50,0,50,0,64.33,25,62.0,25,50,3.33,56.73,10.67,70,55,46.58,51.7,1033.99,787.21,221.41,468.67,1271.04,2671.16,0.2112,0.0924,0.4404
++Reality Fracture Collector Booster Display,Reality Fracture,Reality Fracture - Collector Booster Display,Standard,0,475.68,451.9,699.99,475.68,692983,1,24684,tcgcsv,475.68,475.06,475.4,699.99,2026-07-31T17:54:36+00:00,Reality Fracture - Collector Booster Display,Reality Fracture,2026-10-02T00:00:00,62,68,65,60,62,70,50,55,35,50,45,65,45,692983,TCGCSV-24684-692983,Reality Fracture,Reality Fracture Collector Booster Display,692983,Reality Fracture - Collector Booster Display,1,24684,Collector Booster Display,approved,auto_high_confidence_v9,candidate_score=240.0; market_price=478.02,692983,5,2026-06-01,2026-07-31,475.68,508.37,365.45,-0.0643,0.3016,-0.0068,,,,0.774,MONTHLY,3.464102,CURRENT_TCGCSV_REFRESH|UNIVERSAL_GOVERNED_LEDGER,50.0,70,35,16.7,48.0,Reality Fracture Collector Booster Display,2026-07-31,1,475.68,475.68,475.68,0.0,0.0,475.68,,475.68,,475.68,,475.68,,475.68,,475.68,,475.68,,,,50,0,50,0,64.33,25,62.0,25,50,3.33,56.73,10.67,70,55,47.92,52.87,745.75,174.26,11.46,60.13,549.38,2858.68,0.1632,0.1104,0.7188
++The Hobbit Collector Booster Display,The Hobbit,The Hobbit - Collector Booster Display,Standard,0,782.66,743.53,958.88,782.66,692963,1,24683,tcgcsv,782.66,766.93,792.99,958.88,2026-07-31T17:54:36+00:00,The Hobbit - Collector Booster Display,The Hobbit,2026-08-14T00:00:00,62,68,65,60,62,70,50,55,35,50,45,65,45,692963,TCGCSV-24683-692963,The Hobbit,The Hobbit Collector Booster Display,692963,The Hobbit - Collector Booster Display,1,24683,Collector Booster Display,approved,auto_high_confidence_v9,candidate_score=240.0; market_price=817.32,692963,5,2026-06-01,2026-07-31,782.66,817.32,724.8,-0.0424,0.0798,0.0798,,,,0.3428,MONTHLY,3.464102,CURRENT_TCGCSV_REFRESH|UNIVERSAL_GOVERNED_LEDGER,50.0,55,50,16.7,46.5,The Hobbit Collector Booster Display,2026-07-31,1,782.66,782.66,782.66,0.0,0.0,782.66,,782.66,,782.66,,782.66,,782.66,,782.66,,782.66,,,,50,0,50,0,64.33,25,62.0,25,50,3.33,56.73,10.67,70,55,47.92,52.57,1169.53,874.11,269.47,542.85,1455.91,3121.03,0.2224,0.0964,0.4412
++Marvel Super Heroes Collector Booster Display,Marvel Super Heroes,Marvel Super Heroes - Collector Booster Display,Universes Beyond,1,451.91,429.31,1500.0,451.91,675606,1,24553,tcgcsv,451.91,445.0,550.0,1500.0,2026-07-31T17:54:36+00:00,Marvel Super Heroes - Collector Booster Display,Marvel Super Heroes,2026-06-26T00:00:00,62,80,65,85,62,75,50,55,35,50,50,65,45,675606,TCGCSV-24553-675606,Marvel Super Heroes,Marvel Super Heroes Collector Booster Display,675606,Marvel Super Heroes - Collector Booster Display,1,24553,Collector Booster Display,approved,auto_high_confidence_v9,candidate_score=240.0; market_price=462.46,675606,9,2026-02-01,2026-07-31,451.91,694.95,451.91,-0.3497,0.0,-0.0366,-0.2239,-0.3497,,0.2283,MONTHLY,3.464102,CURRENT_TCGCSV_REFRESH|UNIVERSAL_GOVERNED_LEDGER,22.58,55,65,30.0,41.9,Marvel Super Heroes Collector Booster Display,2026-07-31,1,451.91,451.91,451.91,0.0,0.0,451.91,,451.91,,451.91,,451.91,,451.91,,451.91,,451.91,,,,50,0,50,0,76.67,25,62.0,25,50,3.33,60.03,10.67,75,75,42.03,46.84,686.88,613.61,282.04,443.64,847.43,1338.18,0.2116,0.0472,0.2606
++Secrets of Strixhaven Collector Booster Display,Secrets of Strixhaven,Secrets of Strixhaven - Collector Booster Display,Standard,3,486.08,461.78,9999.0,486.08,675558,1,24601,tcgcsv,486.08,479.99,559.95,9999.0,2026-07-31T17:54:36+00:00,Secrets of Strixhaven - Collector Booster Display,Secrets of Strixhaven,2026-04-24T00:00:00,62,68,65,60,62,70,50,55,35,50,45,65,45,675558,TCGCSV-24601-675558,Secrets of Strixhaven,Secrets of Strixhaven Collector Booster Display,675558,Secrets of Strixhaven - Collector Booster Display,1,24601,Collector Booster Display,approved,auto_high_confidence_v9,candidate_score=240.0; market_price=478.11,675558,9,2026-02-01,2026-07-31,486.08,509.7,471.71,-0.0463,0.0305,-0.0006,-0.003,-0.0261,,0.1281,MONTHLY,3.464102,CURRENT_TCGCSV_REFRESH|UNIVERSAL_GOVERNED_LEDGER,48.78,55,75,30.0,53.07,Secrets of Strixhaven Collector Booster Display,2026-07-31,1,486.08,486.08,486.08,0.0,0.0,486.08,,486.08,,486.08,,486.08,,486.08,,486.08,,486.08,,,,50,0,50,0,64.33,25,62.0,25,50,3.33,56.73,10.67,70,75,55.01,52.37,731.4,706.92,455.13,593.49,840.2,1095.09,0.1118,0.003,0.0802
++Teenage Mutant Ninja Turtles Collector Booster Display,Teenage Mutant Ninja Turtles,Teenage Mutant Ninja Turtles - Collector Booster Display,Standard,4,436.91,415.06,1599.99,436.91,657852,1,24495,tcgcsv,436.91,442.0,542.83,1599.99,2026-07-31T17:54:36+00:00,Teenage Mutant Ninja Turtles - Collector Booster Display,Teenage Mutant Ninja Turtles,2026-03-06T00:00:00,62,68,65,60,62,70,50,55,35,50,45,65,45,657852,TCGCSV-24495-657852,Teenage Mutant Ninja Turtles,Teenage Mutant Ninja Turtles Collector Booster Display,657852,Teenage Mutant Ninja Turtles - Collector Booster Display,1,24495,Collector Booster Display,approved,auto_high_confidence_v9,candidate_score=240.0; market_price=431.05,657852,12,2025-11-01,2026-07-31,436.91,1072.17,372.46,-0.5925,0.173,0.0215,0.1134,0.0286,,0.6268,MONTHLY,3.464102,CURRENT_TCGCSV_REFRESH|UNIVERSAL_GOVERNED_LEDGER,57.95,35,35,40.0,43.78,Teenage Mutant Ninja Turtles Collector Booster Display,2026-07-31,1,436.91,436.91,436.91,0.0,0.0,436.91,,436.91,,436.91,,436.91,,436.91,,436.91,,436.91,,,,50,0,50,0,64.33,25,62.0,25,50,3.33,56.73,10.67,70,75,44.68,46.89,673.61,297.31,35.78,124.04,705.14,2431.1,0.197,0.119,0.6216
++Lorwyn Eclipsed Collector Booster Display,Lorwyn Eclipsed,Lorwyn Eclipsed - Collector Booster Display,Standard,6,429.51,408.03,1500.0,429.51,656322,1,24463,tcgcsv,429.51,419.0,513.29,1500.0,2026-07-31T17:54:36+00:00,Lorwyn Eclipsed - Collector Booster Display,Lorwyn Eclipsed,2026-01-23T00:00:00,62,68,65,60,62,70,50,55,35,50,45,65,45,656322,TCGCSV-24463-656322,Lorwyn Eclipsed,Lorwyn Eclipsed Collector Booster Display,656322,Lorwyn Eclipsed - Collector Booster Display,1,24463,Collector Booster Display,approved,auto_high_confidence_v9,candidate_score=240.0; market_price=381.46,656322,14,2025-10-01,2026-07-31,429.51,605.08,372.65,-0.2902,0.1526,0.112,0.1329,0.0749,,0.3163,MONTHLY,3.464102,CURRENT_TCGCSV_REFRESH|UNIVERSAL_GOVERNED_LEDGER,60.97,55,50,46.7,54.84,Lorwyn Eclipsed Collector Booster Display,2026-07-31,1,429.51,429.51,429.51,0.0,0.0,429.51,,429.51,,429.51,,429.51,,429.51,,429.51,,429.51,,,,50,0,50,0,64.33,25,62.0,25,50,3.33,56.73,10.67,70,65,55.31,54.83,648.02,530.41,193.68,349.06,809.74,1490.79,0.226,0.0802,0.366
++Avatar: The Last Airbender Collector Booster Display,Avatar: The Last Airbender,Avatar: The Last Airbender - Collector Booster Display,Standard,8,481.77,457.68,1500.0,481.77,648650,1,24421,tcgcsv,481.77,464.99,599.99,1500.0,2026-07-31T17:54:36+00:00,Avatar: The Last Airbender - Collector Booster Display,Avatar: The Last Airbender,2025-11-21T00:00:00,62,68,65,60,62,70,50,55,35,50,45,65,45,648650,TCGCSV-24421-648650,Avatar: The Last Airbender,Avatar: The Last Airbender Collector Booster Display,648650,Avatar: The Last Airbender - Collector Booster Display,1,24421,Collector Booster Display,approved,auto_high_confidence_v9,candidate_score=240.0; market_price=424.65,648650,15,2025-09-01,2026-07-31,481.77,904.21,140.0,-0.4672,2.4412,0.1499,0.266,0.2312,,2.5758,MONTHLY,3.464102,CURRENT_TCGCSV_REFRESH|UNIVERSAL_GOVERNED_LEDGER,75.21,35,35,50.0,51.32,Avatar: The Last Airbender Collector Booster Display,2026-07-31,1,481.77,481.77,481.77,0.0,0.0,481.77,,481.77,,481.77,,481.77,,481.77,,481.77,,481.77,,,,50,0,50,0,64.33,25,62.0,25,50,3.33,56.73,10.67,70,65,52.58,53.17,1338.89,0.0,0.0,0.0,0.06,8.28,0.0046,0.0038,0.993
++Marvel's Spider-Man Collector Booster Display,Marvel's Spider-Man,Marvel's Spider-Man - Collector Booster Display,Universes Beyond,10,394.25,374.54,2000.0,394.25,621110,1,24245,tcgcsv,394.25,397.99,600.0,2000.0,2026-07-31T17:54:36+00:00,Marvel's Spider-Man - Collector Booster Display,Marvel's Spider-Man,2025-09-26T00:00:00,62,80,65,85,62,75,50,55,35,50,50,65,45,621110,TCGCSV-24245-621110,Marvel's Spider-Man,Marvel's Spider-Man Collector Booster Display,621110,Marvel's Spider-Man - Collector Booster Display,1,24245,Collector Booster Display,approved,auto_high_confidence_v9,candidate_score=240.0; market_price=367.52,621110,19,2025-04-01,2026-07-31,394.25,883.42,328.15,-0.5537,0.2014,0.0865,0.1796,0.1288,-0.4723,0.5204,MONTHLY,3.464102,CURRENT_TCGCSV_REFRESH|UNIVERSAL_GOVERNED_LEDGER,65.93,35,50,63.3,53.07,Marvel's Spider-Man Collector Booster Display,2026-07-31,1,394.25,394.25,394.25,0.0,0.0,394.25,,394.25,,394.25,,394.25,,394.25,,394.25,,394.25,,,,50,0,50,0,76.67,25,62.0,25,50,3.33,60.03,10.67,75,65,53.95,55.25,586.93,365.02,73.03,190.18,703.14,1729.37,0.219,0.1122,0.532
++Edge of Eternities Collector Booster Display,Edge of Eternities,Edge of Eternities - Collector Booster Display,Standard,11,713.24,677.58,1499.95,713.24,619672,1,24233,tcgcsv,713.24,708.34,850.0,1499.95,2026-07-31T17:54:36+00:00,Edge of Eternities - Collector Booster Display,Edge of Eternities,2025-08-01T00:00:00,62,68,65,60,62,70,50,55,35,50,45,65,45,619672,TCGCSV-24233-619672,Edge of Eternities,Edge of Eternities Collector Booster Display,619672,Edge of Eternities - Collector Booster Display,1,24233,Collector Booster Display,approved,auto_high_confidence_v9,candidate_score=240.0; market_price=622.38,619672,21,2025-03-01,2026-07-31,713.24,725.0,252.62,-0.0162,1.8234,0.2212,0.2567,0.6546,1.1601,0.2097,MONTHLY,3.464102,CURRENT_TCGCSV_REFRESH|UNIVERSAL_GOVERNED_LEDGER,85.4,55,65,70.0,69.89,Edge of Eternities Collector Booster Display,2026-07-31,1,713.24,713.24,713.24,0.0,0.0,713.24,,713.24,,713.24,,713.24,,713.24,,713.24,,713.24,,,,50,0,50,0,64.33,25,62.0,25,50,3.33,56.73,10.67,70,65,71.16,63.38,1071.14,988.8,531.28,767.21,1287.02,1895.66,0.1738,0.027,0.1886
++FINAL FANTASY Collector Booster Display,FINAL FANTASY,FINAL FANTASY - Collector Booster Display,Universes Beyond,13,1780.25,1691.24,169420.69,1780.25,618893,1,24219,tcgcsv,1780.25,1738.99,2400.0,169420.69,2026-07-31T17:54:36+00:00,FINAL FANTASY Collector Booster Display,FINAL FANTASY,2025-06-13T00:00:00,72,93,89,100,62,82,42,62,35,58,72,65,45,618893,TCGCSV-24219-618893,FINAL FANTASY,FINAL FANTASY Collector Booster Display,618893,FINAL FANTASY Collector Booster Display,1,24219,Collector Booster Display,approved,seed_verified_from_user,Seeded from user verified current market around 1525.,618893,21,2025-03-01,2026-07-31,1780.25,1934.45,608.03,-0.0797,1.9279,0.2943,0.5332,0.7691,0.5165,0.5905,MONTHLY,3.464102,CURRENT_TCGCSV_REFRESH|UNIVERSAL_GOVERNED_LEDGER,90.0,70,35,70.0,70.0,FINAL FANTASY Collector Booster Display,2026-07-31,1,1780.25,1780.25,1780.25,0.0,0.0,1780.25,,1780.25,,1780.25,,1780.25,,1780.25,,1780.25,,1780.25,,,,50,0,50,0,94.0,25,72.0,25,50,3.33,67.08,10.67,68,50,69.25,65.24,2694.06,1483.89,250.0,734.4,2999.6,9019.42,0.2054,0.1164,0.5686
++FINAL FANTASY - Collector Booster Display (Japanese),FINAL FANTASY,FINAL FANTASY - Collector Booster Display (Japanese),Universes Beyond,13,698.3,663.38,1199.98,698.3,628315,1,24219,tcgcsv,698.3,764.95,899.48,1199.98,2026-07-31T17:54:36+00:00,FINAL FANTASY - Collector Booster Display (Japanese),FINAL FANTASY,2025-06-13T00:00:00,72,93,89,100,62,82,42,62,35,58,72,65,45,628315,TCGCSV-24219-628315,FINAL FANTASY,FINAL FANTASY - Collector Booster Display (Japanese),628315,FINAL FANTASY - Collector Booster Display (Japanese),1,24219,Collector Booster Display,approved,module1_auto,candidate_score=225.0,628315,1,2026-07-31,2026-07-31,698.3,698.3,698.3,0.0,0.0,,,,,,INSUFFICIENT,,CURRENT_TCGCSV_REFRESH,50.0,55,50,3.3,44.5,FINAL FANTASY - Collector Booster Display (Japanese),2026-07-31,1,698.3,698.3,698.3,0.0,0.0,698.3,,698.3,,698.3,,698.3,,698.3,,698.3,,698.3,,,,50,0,50,0,94.0,25,72.0,25,50,3.33,67.08,10.67,88,55,46.58,56.2,1065.81,709.31,161.22,389.51,1296.94,3148.22,0.2238,0.1162,0.492
++Tarkir: Dragonstorm Collector Booster Display,Tarkir: Dragonstorm,Tarkir: Dragonstorm - Collector Booster Display,Standard,15,487.56,463.18,1499.0,487.56,619649,1,24232,tcgcsv,487.56,476.57,597.0,1499.0,2026-07-31T17:54:36+00:00,Tarkir: Dragonstorm - Collector Booster Display,Tarkir: Dragonstorm,2025-04-11T00:00:00,62,68,65,60,62,70,50,55,35,50,45,65,45,619649,TCGCSV-24232-619649,Tarkir: Dragonstorm,Tarkir: Dragonstorm Collector Booster Display,619649,Tarkir: Dragonstorm - Collector Booster Display,1,24232,Collector Booster Display,approved,auto_high_confidence_v9,candidate_score=240.0; market_price=463.19,619649,20,2025-03-01,2026-07-31,487.56,499.48,249.43,-0.0239,0.9547,0.1327,0.2409,0.4743,0.4862,0.2677,MONTHLY,3.464102,CURRENT_TCGCSV_REFRESH|UNIVERSAL_GOVERNED_LEDGER,83.43,55,65,66.7,68.71,Tarkir: Dragonstorm Collector Booster Display,2026-07-31,1,487.56,487.56,487.56,0.0,0.0,487.56,,487.56,,487.56,,487.56,,487.56,,487.56,,487.56,,,,50,0,50,0,64.33,25,62.0,25,50,3.33,56.73,10.67,70,55,70.04,64.76,745.37,656.32,285.22,464.59,926.53,1482.02,0.2182,0.0536,0.2748
++Aetherdrift Collector Booster Display,Aetherdrift,Aetherdrift - Collector Booster Display,Standard,17,301.18,286.12,1100.0,301.18,604253,1,23874,tcgcsv,301.18,323.3,359.98,1100.0,2026-07-31T17:54:36+00:00,Aetherdrift - Collector Booster Display,Aetherdrift,2025-02-14T00:00:00,62,68,65,60,62,70,50,55,35,50,45,65,45,604253,TCGCSV-23874-604253,Aetherdrift,Aetherdrift Collector Booster Display,604253,Aetherdrift - Collector Booster Display,1,23874,Collector Booster Display,approved,auto_high_confidence_v9,candidate_score=240.0; market_price=271.01,604253,23,2025-01-01,2026-07-31,301.18,309.9,182.95,-0.0281,0.6462,0.1237,0.2632,0.3827,0.6054,0.3158,MONTHLY,3.464102,CURRENT_TCGCSV_REFRESH|UNIVERSAL_GOVERNED_LEDGER,81.1,55,50,76.7,66.39,Aetherdrift Collector Booster Display,2026-07-31,1,301.18,301.18,301.18,0.0,0.0,301.18,,301.18,,301.18,,301.18,,301.18,,301.18,,301.18,,,,50,0,50,0,64.33,25,62.0,25,50,3.33,56.73,10.67,78,55,66.36,65.0,463.82,389.86,154.07,268.12,577.37,1010.69,0.2258,0.0704,0.323
++Innistrad Remastered Collector Booster Display,Innistrad Remastered,Innistrad Remastered - Collector Booster Display,Standard,18,448.71,426.27,1299.99,448.71,594681,1,23848,tcgcsv,448.71,498.98,599.49,1299.99,2026-07-31T17:54:36+00:00,Innistrad Remastered - Collector Booster Display,Innistrad Remastered,2025-01-24T00:00:00,62,68,65,60,62,70,50,55,35,50,45,65,45,594681,TCGCSV-23848-594681,Innistrad Remastered,Innistrad Remastered Collector Booster Display,594681,Innistrad Remastered - Collector Booster Display,1,23848,Collector Booster Display,approved,auto_high_confidence_v9,candidate_score=240.0; market_price=413.81,594681,24,2024-12-01,2026-07-31,448.71,450.0,250.46,-0.0029,0.7915,0.1025,0.1429,0.4562,0.7915,0.294,MONTHLY,3.464102,CURRENT_TCGCSV_REFRESH|UNIVERSAL_GOVERNED_LEDGER,76.82,55,65,80.0,68.39,Innistrad Remastered Collector Booster Display,2026-07-31,1,448.71,448.71,448.71,0.0,0.0,448.71,,448.71,,448.71,,448.71,,448.71,,448.71,,448.71,,,,50,0,50,0,64.33,25,62.0,25,50,3.33,56.73,10.67,70,55,68.73,64.23,677.63,585.39,246.06,416.76,849.3,1390.05,0.2158,0.0556,0.2996
++Foundations Collector Booster Display,Foundations,Magic: The Gathering Foundations - Collector Booster Display,Standard,20,804.27,764.06,1799.99,804.27,562122,1,23556,tcgcsv,804.27,939.95,999.5,1799.99,2026-07-31T17:54:36+00:00,Magic: The Gathering Foundations - Collector Booster Display,Foundations,2024-11-15T00:00:00,62,68,65,60,62,70,50,55,35,50,45,65,45,562122,TCGCSV-23556-562122,Foundations,Foundations Collector Booster Display,562122,Magic: The Gathering Foundations - Collector Booster Display,1,23556,Collector Booster Display,approved,auto_high_confidence_v9,candidate_score=240.0; market_price=737.34,562122,26,2024-09-01,2026-07-31,804.27,804.27,206.99,0.0,2.8856,0.1188,0.1457,0.4189,0.868,2.086,MONTHLY,3.464102,CURRENT_TCGCSV_REFRESH|UNIVERSAL_GOVERNED_LEDGER,75.5,55,35,86.7,62.93,Foundations Collector Booster Display,2026-07-31,1,804.27,804.27,804.27,0.0,0.0,804.27,,804.27,,804.27,,804.27,,804.27,,804.27,,804.27,,,,50,0,50,0,64.33,25,62.0,25,50,3.33,56.73,10.67,60,55,61.37,58.07,807.97,1.41,0.0,0.13,15.82,585.19,0.0308,0.0246,0.9564
++Duskmourn: House of Horror Collector Booster Display,Duskmourn: House of Horror,Duskmourn: House of Horror - Collector Booster Display,Standard,22,688.02,653.62,899.99,688.02,557244,1,23550,tcgcsv,688.02,741.95,769.69,899.99,2026-07-31T17:54:36+00:00,Duskmourn: House of Horror - Collector Booster Display,Duskmourn: House of Horror,2024-09-27T00:00:00,62,68,65,60,62,70,50,55,35,50,45,65,45,557244,TCGCSV-23550-557244,Duskmourn: House of Horror,Duskmourn: House of Horror Collector Booster Display,557244,Duskmourn: House of Horror - Collector Booster Display,1,23550,Collector Booster Display,approved,auto_high_confidence_v9,candidate_score=240.0; market_price=651.18,557244,28,2024-08-01,2026-07-31,688.02,688.02,177.75,0.0,2.8708,0.1075,0.2037,0.6181,1.2843,1.9668,MONTHLY,3.464102,CURRENT_TCGCSV_REFRESH|UNIVERSAL_GOVERNED_LEDGER,82.22,55,35,93.3,66.27,Duskmourn: House of Horror Collector Booster Display,2026-07-31,1,688.02,688.02,688.02,0.0,0.0,688.02,,688.02,,688.02,,688.02,,688.02,,688.02,,688.02,,,,50,0,50,0,64.33,25,62.0,25,50,3.33,56.73,10.67,70,55,64.72,62.41,966.94,3.6,0.01,0.35,36.37,959.54,0.0408,0.0326,0.938
++Bloomburrow Collector Booster Display,Bloomburrow,Bloomburrow - Collector Booster Display,Standard,23,1069.11,1015.65,1999.99,1069.11,541238,1,23447,tcgcsv,1069.11,1199.0,1499.0,1999.99,2026-07-31T17:54:36+00:00,Bloomburrow - Collector Booster Display,Bloomburrow,2024-08-02T00:00:00,62,68,65,60,62,70,50,55,35,50,45,65,45,541238,TCGCSV-23447-541238,Bloomburrow,Bloomburrow Collector Booster Display,541238,Bloomburrow - Collector Booster Display,1,23447,Collector Booster Display,approved,auto_high_confidence_v9,candidate_score=240.0; market_price=980.7,541238,33,2024-03-01,2026-07-31,1069.11,1399.95,195.79,-0.2363,4.4604,0.127,0.3173,0.3726,1.2893,3.8105,MONTHLY,3.464102,CURRENT_TCGCSV_REFRESH|UNIVERSAL_GOVERNED_LEDGER,83.94,55,35,100.0,67.88,Bloomburrow Collector Booster Display,2026-07-31,1,1069.11,1069.11,1069.11,0.0,0.0,1069.11,,1069.11,,1069.11,,1069.11,,1069.11,,1069.11,,1069.11,,,,50,0,50,0,64.33,25,62.0,25,50,3.33,56.73,10.67,60,55,66.08,60.7,13.22,0.0,0.0,0.0,0.0,0.08,0.0004,0.0004,0.9996
++Universes Beyond: Assassin's Creed Collector Booster Display,Universes Beyond: Assassin's Creed,Universes Beyond: Assassin's Creed - Collector Booster Display,Universes Beyond,24,530.81,504.27,1050.0,530.81,541225,1,23446,tcgcsv,530.81,599.99,706.94,1050.0,2026-07-31T17:54:36+00:00,Universes Beyond: Assassin's Creed - Collector Booster Display,Universes Beyond: Assassin's Creed,2024-07-05T00:00:00,62,80,65,85,62,75,50,55,35,50,50,65,45,541225,TCGCSV-23446-541225,Universes Beyond: Assassin's Creed,Universes Beyond: Assassin's Creed Collector Booster Display,541225,Universes Beyond: Assassin's Creed - Collector Booster Display,1,23446,Collector Booster Display,approved,auto_high_confidence_v9,candidate_score=240.0; market_price=430.16,541225,32,2024-03-01,2026-07-31,530.81,530.81,210.1,0.0,1.5265,0.3209,0.5104,0.6338,0.8838,0.8896,MONTHLY,3.464102,CURRENT_TCGCSV_REFRESH|UNIVERSAL_GOVERNED_LEDGER,90.0,55,35,100.0,70.0,Universes Beyond: Assassin's Creed Collector Booster Display,2026-07-31,1,530.81,530.81,530.81,0.0,0.0,530.81,,530.81,,530.81,,530.81,,530.81,,530.81,,530.81,,,,50,0,50,0,76.67,25,62.0,25,50,3.33,60.03,10.67,75,55,68.5,65.72,820.62,248.58,24.52,92.17,699.04,3080.67,0.1684,0.1102,0.6932
++Modern Horizons 3 Collector Booster Display,Modern Horizons 3,Modern Horizons 3 - Collector Booster Display,Modern Horizons,25,807.28,766.92,1499.99,807.28,541179,1,23444,tcgcsv,807.28,834.88,999.0,1499.99,2026-07-31T17:54:36+00:00,Modern Horizons 3 - Collector Booster Display,Modern Horizons 3,2024-06-14T00:00:00,62,82,75,60,72,78,50,55,35,50,45,65,45,541179,TCGCSV-23444-541179,Modern Horizons 3,Modern Horizons 3 Collector Booster Display,541179,Modern Horizons 3 - Collector Booster Display,1,23444,Collector Booster Display,approved,auto_high_confidence_v9,candidate_score=240.0; market_price=722.99,541179,32,2024-03-01,2026-07-31,807.28,807.28,361.73,0.0,1.2317,0.1606,0.2634,0.4513,0.7432,0.4054,MONTHLY,3.464102,CURRENT_TCGCSV_REFRESH|UNIVERSAL_GOVERNED_LEDGER,83.86,55,50,100.0,70.85,Modern Horizons 3 Collector Booster Display,2026-07-31,1,807.28,807.28,807.28,0.0,0.0,807.28,,807.28,,807.28,,807.28,,807.28,,807.28,,807.28,,,,50,0,50,0,72.33,25,62.0,25,50,3.33,58.87,10.67,60,55,69.79,62.6,1215.0,969.3,307.51,599.36,1537.1,2876.93,0.229,0.0882,0.3962
++Outlaws of Thunder Junction Collector Booster Display,Outlaws of Thunder Junction,Outlaws of Thunder Junction - Collector Booster Display,Standard,27,429.6,408.12,1000.0,429.6,541090,1,23439,tcgcsv,429.6,453.0,500.0,1000.0,2026-07-31T17:54:36+00:00,Outlaws of Thunder Junction - Collector Booster Display,Outlaws of Thunder Junction,2024-04-19T00:00:00,62,68,65,60,62,70,50,55,35,50,45,65,45,541090,TCGCSV-23439-541090,Outlaws of Thunder Junction,Outlaws of Thunder Junction Collector Booster Display,541090,Outlaws of Thunder Junction - Collector Booster Display,1,23439,Collector Booster Display,approved,auto_high_confidence_v9,candidate_score=240.0; market_price=406.91,541090,32,2024-03-01,2026-07-31,429.6,429.6,184.69,0.0,1.3261,0.0639,0.115,0.4379,0.8705,0.5581,MONTHLY,3.464102,CURRENT_TCGCSV_REFRESH|UNIVERSAL_GOVERNED_LEDGER,74.42,55,35,100.0,64.55,Outlaws of Thunder Junction Collector Booster Display,2026-07-31,1,429.6,429.6,429.6,0.0,0.0,429.6,,429.6,,429.6,,429.6,,429.6,,429.6,,429.6,,,,50,0,50,0,64.33,25,62.0,25,50,3.33,56.73,10.67,70,55,62.27,61.2,647.3,411.97,87.65,223.93,764.36,2007.94,0.2182,0.1156,0.5212
++Universes Beyond: Fallout Collector Booster Display,Universes Beyond: Fallout,Universes Beyond: Fallout - Collector Booster Display,Universes Beyond,28,1760.06,1672.06,16969.69,1760.06,523185,1,23337,tcgcsv,1760.06,1956.89,2208.75,16969.69,2026-07-31T17:54:36+00:00,Universes Beyond: Fallout - Collector Booster Display,Universes Beyond: Fallout,2024-03-08T00:00:00,62,80,65,85,62,75,50,55,35,50,50,65,45,523185,TCGCSV-23337-523185,Universes Beyond: Fallout,Universes Beyond: Fallout Collector Booster Display,523185,Universes Beyond: Fallout - Collector Booster Display,1,23337,Collector Booster Display,approved,auto_high_confidence_v9,candidate_score=240.0; market_price=1702.12,523185,33,2024-02-08,2026-07-31,1760.06,1760.06,212.47,0.0,7.2836,0.0674,0.2707,0.5169,0.8071,4.4893,MONTHLY,3.464102,CURRENT_TCGCSV_REFRESH|UNIVERSAL_GOVERNED_LEDGER,86.24,55,35,100.0,68.68,Universes Beyond: Fallout Collector Booster Display,2026-07-31,1,1760.06,1760.06,1760.06,0.0,0.0,1760.06,,1760.06,,1760.06,,1760.06,,1760.06,,1760.06,,1760.06,,,,50,0,50,0,76.67,25,62.0,25,50,3.33,60.03,10.67,55,50,67.0,60.94,4.65,0.0,0.0,0.0,0.0,0.0,0.0002,0.0002,0.9998
++Murders at Karlov Manor Collector Booster Display,Murders at Karlov Manor,Murders at Karlov Manor - Collector Booster Display,Standard,29,377.98,359.08,1000.0,377.98,529968,1,23361,tcgcsv,377.98,382.84,440.0,1000.0,2026-07-31T17:54:36+00:00,Murders at Karlov Manor - Collector Booster Display,Murders at Karlov Manor,2024-02-09T00:00:00,62,68,65,60,62,70,50,55,35,50,45,65,45,529968,TCGCSV-23361-529968,Murders at Karlov Manor,Murders at Karlov Manor Collector Booster Display,529968,Murders at Karlov Manor - Collector Booster Display,1,23361,Collector Booster Display,approved,auto_high_confidence_v9,candidate_score=240.0; market_price=352.29,529968,33,2024-02-08,2026-07-31,377.98,377.98,140.96,0.0,1.6815,0.1023,0.1698,0.4563,1.0204,0.7281,MONTHLY,3.464102,CURRENT_TCGCSV_REFRESH|UNIVERSAL_GOVERNED_LEDGER,78.44,55,35,100.0,65.95,Murders at Karlov Manor Collector Booster Display,2026-07-31,1,377.98,377.98,377.98,0.0,0.0,377.98,,377.98,,377.98,,377.98,,377.98,,377.98,,377.98,,,,50,0,50,0,64.33,25,62.0,25,50,3.33,56.73,10.67,70,55,63.88,62.05,589.92,277.57,38.23,123.27,632.26,2107.78,0.2078,0.1244,0.605
++Ravnica Remastered Collector Booster Display,Ravnica Remastered,Ravnica Remastered - Collector Booster Display,Standard,30,974.18,925.47,1999.95,974.18,517708,1,23319,tcgcsv,974.18,1344.98,1492.0,1999.95,2026-07-31T17:54:36+00:00,Ravnica Remastered - Collector Booster Display,Ravnica Remastered,2024-01-12T00:00:00,62,68,65,60,62,70,50,55,35,50,45,65,45,517708,TCGCSV-23319-517708,Ravnica Remastered,Ravnica Remastered Collector Booster Display,517708,Ravnica Remastered - Collector Booster Display,1,23319,Collector Booster Display,approved,auto_high_confidence_v9,candidate_score=240.0; market_price=867.32,517708,33,2024-02-08,2026-07-31,974.18,974.18,255.35,0.0,2.8151,0.1519,0.288,0.5892,0.751,0.555,MONTHLY,3.464102,CURRENT_TCGCSV_REFRESH|UNIVERSAL_GOVERNED_LEDGER,87.28,55,35,100.0,69.05,Ravnica Remastered Collector Booster Display,2026-07-31,1,974.18,974.18,974.18,0.0,0.0,974.18,,974.18,,974.18,,974.18,,974.18,,974.18,,974.18,,,,50,0,50,0,64.33,25,62.0,25,50,3.33,56.73,10.67,60,55,67.41,61.4,1484.39,934.8,208.01,500.0,1781.12,4492.39,0.2192,0.12,0.5164
++The Lost Caverns of Ixalan Collector Booster Display,The Lost Caverns of Ixalan,The Lost Caverns of Ixalan - Collector Booster Display,Standard,32,1002.68,952.55,1999.95,1002.68,516614,1,23312,tcgcsv,1002.68,1185.0,1373.97,1999.95,2026-07-31T17:54:36+00:00,The Lost Caverns of Ixalan - Collector Booster Display,The Lost Caverns of Ixalan,2023-11-17T00:00:00,62,68,65,60,62,70,50,55,35,50,45,65,45,516614,TCGCSV-23312-516614,The Lost Caverns of Ixalan,The Lost Caverns of Ixalan Collector Booster Display,516614,The Lost Caverns of Ixalan - Collector Booster Display,1,23312,Collector Booster Display,approved,auto_high_confidence_v9,candidate_score=240.0; market_price=929.16,516614,33,2024-02-08,2026-07-31,1002.68,1002.68,240.0,0.0,3.1779,0.129,0.2563,0.5628,1.4125,2.003,MONTHLY,3.464102,CURRENT_TCGCSV_REFRESH|UNIVERSAL_GOVERNED_LEDGER,85.38,55,35,100.0,68.38,The Lost Caverns of Ixalan Collector Booster Display,2026-07-31,1,1002.68,1002.68,1002.68,0.0,0.0,1002.68,,1002.68,,1002.68,,1002.68,,1002.68,,1002.68,,1002.68,,,,50,0,50,0,64.33,25,62.0,25,50,3.33,56.73,10.67,60,55,66.65,61.0,1380.72,5.49,0.02,0.54,53.38,1529.3,0.0402,0.0288,0.934
++Universes Beyond: Doctor Who Collector Booster Display,Universes Beyond: Doctor Who,Universes Beyond: Doctor Who - Collector Booster Display,Universes Beyond,33,638.08,606.18,1499.9,638.08,496076,1,23165,tcgcsv,638.08,882.0,999.5,1499.9,2026-07-31T17:54:36+00:00,Universes Beyond: Doctor Who - Collector Booster Display,Universes Beyond: Doctor Who,2023-10-13T00:00:00,62,80,65,85,62,75,50,55,35,50,50,65,45,496076,TCGCSV-23165-496076,Universes Beyond: Doctor Who,Universes Beyond: Doctor Who Collector Booster Display,496076,Universes Beyond: Doctor Who - Collector Booster Display,1,23165,Collector Booster Display,approved,auto_high_confidence_v9,candidate_score=240.0; market_price=626.48,496076,33,2024-02-08,2026-07-31,638.08,638.08,201.65,0.0,2.1643,0.0538,0.253,0.483,0.9213,0.3475,MONTHLY,3.464102,CURRENT_TCGCSV_REFRESH|UNIVERSAL_GOVERNED_LEDGER,84.5,55,50,100.0,71.08,Universes Beyond: Doctor Who Collector Booster Display,2026-07-31,1,638.08,638.08,638.08,0.0,0.0,638.08,,638.08,,638.08,,638.08,,638.08,,638.08,,638.08,,,,50,0,50,0,76.67,25,62.0,25,50,3.33,60.03,10.67,75,55,70.05,66.48,968.87,816.05,321.32,559.24,1207.0,2168.13,0.2168,0.074,0.3308
++Wilds of Eldraine Collector Booster Display,Wilds of Eldraine,Wilds of Eldraine - Collector Booster Display,Standard,34,905.95,860.65,2300.0,905.95,496041,1,23163,tcgcsv,905.95,898.99,1158.94,2300.0,2026-07-31T17:54:36+00:00,Wilds of Eldraine - Collector Booster Display,Wilds of Eldraine,2023-09-08T00:00:00,62,68,65,60,62,70,50,55,35,50,45,65,45,496041,TCGCSV-23163-496041,Wilds of Eldraine,Wilds of Eldraine Collector Booster Display,496041,Wilds of Eldraine - Collector Booster Display,1,23163,Collector Booster Display,approved,auto_high_confidence_v9,candidate_score=240.0; market_price=865.07,496041,33,2024-02-08,2026-07-31,905.95,972.49,183.91,-0.0684,3.9261,-0.0017,0.0217,0.0271,0.5573,0.3075,MONTHLY,3.464102,CURRENT_TCGCSV_REFRESH|UNIVERSAL_GOVERNED_LEDGER,52.39,70,50,100.0,64.34,Wilds of Eldraine Collector Booster Display,2026-07-31,1,905.95,905.95,905.95,0.0,0.0,905.95,,905.95,,905.95,,905.95,,905.95,,905.95,,905.95,,,,50,0,50,0,64.33,25,62.0,25,50,3.33,56.73,10.67,60,55,60.96,58.2,1367.62,1207.46,507.38,848.02,1712.99,2812.05,0.2194,0.0552,0.2908
++Commander Masters Collector Booster Display,Commander Masters,Commander Masters - Collector Booster Box,Masters,35,506.55,477.39,900.0,506.55,484929,1,23020,tcgcsv,506.55,477.39,600.99,900.0,2026-07-31T17:54:36+00:00,Commander Masters - Collector Booster Box,Commander Masters,2023-08-04T00:00:00,67,78,77,60,74,70,50,55,35,50,45,65,45,484929,TCGCSV-23020-484929,Commander Masters,Commander Masters Collector Booster Display,484929,Commander Masters - Collector Booster Box,1,23020,Collector Booster Display,approved,auto_high_confidence_v9,candidate_score=200.0; market_price=490.38,484929,33,2024-02-08,2026-07-31,506.55,548.0,174.39,-0.0756,1.9047,0.0841,0.351,0.5626,0.7206,0.2211,MONTHLY,3.464102,CURRENT_TCGCSV_REFRESH|UNIVERSAL_GOVERNED_LEDGER,90.0,70,65,100.0,80.5,Commander Masters Collector Booster Display,2026-07-31,1,506.55,506.55,506.55,0.0,0.0,506.55,,506.55,,506.55,,506.55,,506.55,,506.55,,506.55,,,,50,0,50,0,71.67,25,67.0,25,50,3.33,59.91,10.67,70,55,79.75,70.51,785.73,731.91,390.4,564.43,941.33,1374.34,0.1914,0.0302,0.1694
++Universes Beyond: The Lord of the Rings: Tales of Middle-earth Collector Booster Display,Universes Beyond: The Lord of the Rings: Tales of Middle-earth,Universes Beyond: The Lord of the Rings: Tales of Middle-earth - Collector Booster Display,Universes Beyond,37,2030.03,1928.53,16969.69,2030.03,484912,1,23019,tcgcsv,2030.03,1999.0,2999.99,16969.69,2026-07-31T17:54:36+00:00,The Lord of the Rings: Tales of Middle-earth Collector Booster Display,Universes Beyond: The Lord of the Rings: Tales of Middle-earth,2023-06-23T00:00:00,88,98,96,100,92,95,35,30,35,70,50,65,45,484912,TCGCSV-23019-484912,Universes Beyond: The Lord of the Rings: Tales of Middle-earth,Universes Beyond: The Lord of the Rings: Tales of Middle-earth Collector Booster Display,484912,The Lord of the Rings: Tales of Middle-earth Collector Booster Display,1,23019,Collector Booster Display,approved,seed_verified_from_user,Seeded because product 515906 appears case-level; user verified individual display market around 1925.,484912,33,2024-02-08,2026-07-31,2030.03,2225.0,411.96,-0.0876,3.9277,0.1159,0.6238,0.7826,1.2482,0.2532,MONTHLY,3.464102,CURRENT_TCGCSV_REFRESH|UNIVERSAL_GOVERNED_LEDGER,90.0,70,65,100.0,80.5,Universes Beyond: The Lord of the Rings: Tales of Middle-earth Collector Booster Display,2026-07-31,1,2030.03,2030.03,2030.03,0.0,0.0,2030.03,,2030.03,,2030.03,,2030.03,,2030.03,,2030.03,,2030.03,,,,50,0,50,0,98.0,25,88.0,25,50,3.33,72.02,10.67,68,30,79.75,75.01,3126.04,2840.1,1417.24,2128.97,3821.74,5711.82,0.2088,0.0378,0.2164
++The Lord of the Rings: Tales of Middle-earth - Special Edition Collector Booster Display,Universes Beyond: The Lord of the Rings: Tales of Middle-earth,The Lord of the Rings: Tales of Middle-earth - Special Edition Collector Booster Display,Universes Beyond,37,5729.4,5442.93,169420.69,5729.4,515906,1,23019,tcgcsv,5729.4,6799.97,10475.0,169420.69,2026-07-31T17:54:36+00:00,The Lord of the Rings: Tales of Middle-earth - Special Edition Collector Booster Display,Universes Beyond: The Lord of the Rings: Tales of Middle-earth,2023-06-23T00:00:00,88,98,96,100,92,95,35,30,35,70,50,65,45,515906,TCGCSV-23019-515906,Universes Beyond: The Lord of the Rings: Tales of Middle-earth,The Lord of the Rings: Tales of Middle-earth - Special Edition Collector Booster Display,515906,The Lord of the Rings: Tales of Middle-earth - Special Edition Collector Booster Display,1,23019,Collector Booster Display,approved,module1_auto,candidate_score=225.0,515906,32,2024-02-08,2026-07-31,5729.4,5729.4,320.58,0.0,16.872,0.0694,1.0219,1.3077,2.2212,1.1876,MONTHLY,3.464102,CURRENT_TCGCSV_REFRESH|UNIVERSAL_GOVERNED_LEDGER,90.0,55,35,100.0,70.0,The Lord of the Rings: Tales of Middle-earth - Special Edition Collector Booster Display,2026-07-31,1,5729.4,5729.4,5729.4,0.0,0.0,5729.4,,5729.4,,5729.4,,5729.4,,5729.4,,5729.4,,5729.4,,,,50,0,50,0,98.0,25,88.0,25,50,3.33,72.02,10.67,68,30,68.5,68.97,8813.28,1221.77,45.11,306.59,4635.62,30738.88,0.1264,0.0918,0.7794
++March of the Machine: The Aftermath Collector Booster Display,March of the Machine: The Aftermath,March of the Machine: The Aftermath - Collector Booster Display,Standard,38,246.06,233.76,500.0,246.06,489207,1,22876,tcgcsv,246.06,299.95,325.0,500.0,2026-07-31T17:54:36+00:00,March of the Machine: The Aftermath - Collector Booster Display,March of the Machine: The Aftermath,2023-05-12T00:00:00,62,68,65,60,62,70,50,55,35,50,45,65,45,489207,TCGCSV-22876-489207,March of the Machine: The Aftermath,March of the Machine: The Aftermath Collector Booster Display,489207,March of the Machine: The Aftermath - Collector Booster Display,1,22876,Collector Booster Display,approved,auto_high_confidence_v9,candidate_score=240.0; market_price=227.18,489207,34,2024-02-08,2026-07-31,246.06,246.06,78.88,0.0,2.1194,0.1102,0.3008,0.4578,0.9971,0.4422,MONTHLY,3.464102,CURRENT_TCGCSV_REFRESH|UNIVERSAL_GOVERNED_LEDGER,86.36,55,50,100.0,71.73,March of the Machine: The Aftermath Collector Booster Display,2026-07-31,1,246.06,246.06,246.06,0.0,0.0,246.06,,246.06,,246.06,,246.06,,246.06,,246.06,,246.06,,,,50,0,50,0,64.33,25,62.0,25,50,3.33,56.73,10.67,78,43,70.79,70.02,379.18,293.21,83.94,176.64,478.37,937.2,0.2376,0.101,0.4114
++March of the Machine Collector Booster Display,March of the Machine,March of the Machine - Collector Booster Display,Standard,39,783.34,744.17,1984.5,783.34,475584,1,22875,tcgcsv,783.34,1009.0,1028.68,1984.5,2026-07-31T17:54:36+00:00,March of the Machine - Collector Booster Display,March of the Machine,2023-04-14T00:00:00,62,68,65,60,62,70,50,55,35,50,45,65,45,475584,TCGCSV-22875-475584,March of the Machine,March of the Machine Collector Booster Display,475584,March of the Machine - Collector Booster Display,1,22875,Collector Booster Display,approved,auto_high_confidence_v9,candidate_score=240.0; market_price=769.25,475584,34,2024-02-08,2026-07-31,783.34,783.34,201.16,0.0,2.8941,0.1343,0.2896,0.5711,1.5887,0.9247,MONTHLY,3.464102,CURRENT_TCGCSV_REFRESH|UNIVERSAL_GOVERNED_LEDGER,87.38,55,35,100.0,69.08,March of the Machine Collector Booster Display,2026-07-31,1,783.34,783.34,783.34,0.0,0.0,783.34,,783.34,,783.34,,783.34,,783.34,,783.34,,783.34,,,,50,0,50,0,64.33,25,62.0,25,50,3.33,56.73,10.67,70,43,67.45,66.32,1149.43,356.43,27.82,129.68,1009.65,4669.98,0.17,0.1124,0.6924
++Phyrexia: All Will Be One Collector Booster Display,Phyrexia: All Will Be One,Phyrexia: All Will Be One - Collector Booster Display,Standard,41,951.79,904.2,2577.0,951.79,451880,1,17684,tcgcsv,951.79,1229.45,1392.72,2577.0,2026-07-31T17:54:36+00:00,Phyrexia: All Will Be One - Collector Booster Display,Phyrexia: All Will Be One,2023-02-03T00:00:00,62,68,65,60,62,70,50,55,35,50,45,65,45,451880,TCGCSV-17684-451880,Phyrexia: All Will Be One,Phyrexia: All Will Be One Collector Booster Display,451880,Phyrexia: All Will Be One - Collector Booster Display,1,17684,Collector Booster Display,approved,auto_high_confidence_v9,candidate_score=240.0; market_price=920.02,451880,33,2024-02-08,2026-07-31,951.79,951.79,218.49,0.0,3.3562,0.0727,0.194,0.1866,1.2198,2.0468,MONTHLY,3.464102,CURRENT_TCGCSV_REFRESH|UNIVERSAL_GOVERNED_LEDGER,69.1,55,35,100.0,62.68,Phyrexia: All Will Be One Collector Booster Display,2026-07-31,1,951.79,951.79,951.79,0.0,0.0,951.79,,951.79,,951.79,,951.79,,951.79,,951.79,,951.79,,,,50,0,50,0,64.33,25,62.0,25,50,3.33,56.73,10.67,60,43,60.14,59.98,8911.35,3.89,0.02,0.41,41.68,1405.2,0.0414,0.032,0.9394
++Dominaria Remastered Collector Booster Display,Dominaria Remastered,Dominaria Remastered - Collector Booster Display,Standard,42,529.07,502.62,1000.0,529.07,449559,1,17670,tcgcsv,529.07,539.01,629.08,1000.0,2026-07-31T17:54:36+00:00,Dominaria Remastered - Collector Booster Display,Dominaria Remastered,2023-01-13T00:00:00,62,68,65,60,62,70,50,55,35,50,45,65,45,449559,TCGCSV-17670-449559,Dominaria Remastered,Dominaria Remastered Collector Booster Display,449559,Dominaria Remastered - Collector Booster Display,1,17670,Collector Booster Display,approved,auto_high_confidence_v9,candidate_score=240.0; market_price=497.36,449559,34,2024-02-08,2026-07-31,529.07,562.5,168.51,-0.0594,2.1397,0.0677,0.2119,0.3781,0.9885,0.3939,MONTHLY,3.464102,CURRENT_TCGCSV_REFRESH|UNIVERSAL_GOVERNED_LEDGER,77.84,70,50,100.0,73.24,Dominaria Remastered Collector Booster Display,2026-07-31,1,529.07,529.07,529.07,0.0,0.0,529.07,,529.07,,529.07,,529.07,,529.07,,529.07,,529.07,,,,50,0,50,0,64.33,25,62.0,25,50,3.33,56.73,10.67,70,43,71.14,68.45,814.93,658.18,227.6,420.28,1020.99,1960.4,0.2308,0.0892,0.3772
++The Brothers' War Collector Booster Display,The Brothers' War,The Brothers' War - Collector Booster Display,Standard,44,742.23,705.12,2000.0,742.23,282224,1,3157,tcgcsv,742.23,865.75,949.99,2000.0,2026-07-31T17:54:36+00:00,The Brothers' War - Collector Booster Display,The Brothers' War,2022-11-18T00:00:00,62,68,65,60,62,70,50,55,35,50,45,65,45,282224,TCGCSV-3157-282224,The Brothers' War,The Brothers' War Collector Booster Display,282224,The Brothers' War - Collector Booster Display,1,3157,Collector Booster Display,approved,auto_high_confidence_v9,candidate_score=240.0; market_price=695.22,282224,33,2024-02-08,2026-07-31,742.23,742.23,175.31,0.0,3.2338,0.1585,0.482,0.5317,1.6469,0.4621,MONTHLY,3.464102,CURRENT_TCGCSV_REFRESH|UNIVERSAL_GOVERNED_LEDGER,90.0,55,50,100.0,73.0,The Brothers' War Collector Booster Display,2026-07-31,1,742.23,742.23,742.23,0.0,0.0,742.23,,742.23,,742.23,,742.23,,742.23,,742.23,,742.23,,,,50,0,50,0,64.33,25,62.0,25,50,3.33,56.73,10.67,70,43,72.25,68.79,1165.13,846.3,247.97,508.84,1445.41,2973.76,0.2426,0.109,0.432
++Dominaria United Collector Booster Display,Dominaria United,Dominaria United - Collector Booster Display,Standard,46,349.95,332.45,999.99,349.95,275412,1,3102,tcgcsv,349.95,360.0,449.95,999.99,2026-07-31T17:54:36+00:00,Dominaria United - Collector Booster Display,Dominaria United,2022-09-09T00:00:00,62,68,65,60,62,70,50,55,35,50,45,65,45,275412,TCGCSV-3102-275412,Dominaria United,Dominaria United Collector Booster Display,275412,Dominaria United - Collector Booster Display,1,3102,Collector Booster Display,approved,auto_high_confidence_v9,candidate_score=240.0; market_price=311.2,275412,34,2024-02-08,2026-07-31,349.95,427.5,137.66,-0.1814,1.5421,0.1564,0.1992,0.3965,0.6338,0.2439,MONTHLY,3.464102,CURRENT_TCGCSV_REFRESH|UNIVERSAL_GOVERNED_LEDGER,77.81,70,65,100.0,76.23,Dominaria United Collector Booster Display,2026-07-31,1,349.95,349.95,349.95,0.0,0.0,349.95,,349.95,,349.95,,349.95,,349.95,,349.95,,349.95,,,,50,0,50,0,64.33,25,62.0,25,50,3.33,56.73,10.67,78,43,74.87,72.35,547.36,503.46,253.88,383.14,665.5,974.07,0.207,0.0348,0.1862
++Unfinity Collector Booster Display,Unfinity,Unfinity - Collector Booster Display,Standard,48,360.28,342.27,1000.0,360.28,275406,1,2958,tcgcsv,360.28,394.99,469.99,1000.0,2026-07-31T17:54:36+00:00,Unfinity - Collector Booster Display,Unfinity,2022-07-29T00:00:00,62,68,65,60,62,70,50,55,35,50,45,65,45,275406,TCGCSV-2958-275406,Unfinity,Unfinity Collector Booster Display,275406,Unfinity - Collector Booster Display,1,2958,Collector Booster Display,approved,auto_high_confidence_v9,candidate_score=240.0; market_price=335.93,275406,33,2024-02-08,2026-07-31,360.28,360.28,128.86,0.0,1.7959,0.0798,0.1784,0.401,0.5469,0.3329,MONTHLY,3.464102,CURRENT_TCGCSV_REFRESH|UNIVERSAL_GOVERNED_LEDGER,76.74,55,50,100.0,68.36,Unfinity Collector Booster Display,2026-07-31,1,360.28,360.28,360.28,0.0,0.0,360.28,,360.28,,360.28,,360.28,,360.28,,360.28,,360.28,,,,50,0,50,0,64.33,25,62.0,25,50,3.33,56.73,10.67,70,43,66.95,66.0,551.74,471.43,184.77,316.47,696.4,1176.67,0.229,0.069,0.3238
++Double Masters 2022 Collector Booster Display,Double Masters 2022,Double Masters 2022 - Collector Booster Display,Masters,48,437.78,415.89,999.99,437.78,271509,1,3070,tcgcsv,437.78,479.99,526.0,999.99,2026-07-31T17:54:36+00:00,Double Masters 2022 Collector Booster Display,Double Masters 2022,2022-07-08T00:00:00,84,92,91,60,91,86,35,30,35,52,45,65,45,271509,TCGCSV-3070-271509,Double Masters 2022,Double Masters 2022 Collector Booster Display,271509,Double Masters 2022 Collector Booster Display,1,3070,Collector Booster Display,approved,seed_verified_from_user,Seeded from user verified current market around 405.,271509,34,2024-02-08,2026-07-31,437.78,437.78,193.48,0.0,1.2627,0.0876,0.1951,0.3997,0.6558,0.1769,MONTHLY,3.464102,CURRENT_TCGCSV_REFRESH|UNIVERSAL_GOVERNED_LEDGER,77.69,55,65,100.0,71.69,Double Masters 2022 Collector Booster Display,2026-07-31,1,437.78,437.78,437.78,0.0,0.0,437.78,,437.78,,437.78,,437.78,,437.78,,437.78,,437.78,,,,50,0,50,0,81.0,25,84.0,25,50,3.33,66.52,10.67,78,35,71.08,71.72,675.0,646.83,392.71,530.68,789.03,1053.68,0.152,0.0102,0.0994
++Commander Legends: Battle for Baldur's Gate Collector Booster Display,Commander Legends: Battle for Baldur's Gate,Commander Legends: Battle for Baldur's Gate - Collector Booster Display,Commander,49,596.38,566.56,5012.0,596.38,267023,1,3047,tcgcsv,596.38,580.0,699.99,5012.0,2026-07-31T17:54:36+00:00,Commander Legends: Battle for Baldur's Gate - Collector Booster Display,Commander Legends: Battle for Baldur's Gate,2022-06-10T00:00:00,62,68,65,60,62,70,50,55,35,50,45,65,45,267023,TCGCSV-3047-267023,Commander Legends: Battle for Baldur's Gate,Commander Legends: Battle for Baldur's Gate Collector Booster Display,267023,Commander Legends: Battle for Baldur's Gate - Collector Booster Display,1,3047,Collector Booster Display,approved,auto_high_confidence_v9,candidate_score=240.0; market_price=581.65,267023,34,2024-02-08,2026-07-31,596.38,596.38,153.08,0.0,2.8959,0.0415,0.3456,0.6138,1.1011,0.1856,MONTHLY,3.464102,CURRENT_TCGCSV_REFRESH|UNIVERSAL_GOVERNED_LEDGER,90.0,55,65,100.0,76.0,Commander Legends: Battle for Baldur's Gate Collector Booster Display,2026-07-31,1,596.38,596.38,596.38,0.0,0.0,596.38,,596.38,,596.38,,596.38,,596.38,,596.38,,596.38,,,,50,0,50,0,64.33,25,62.0,25,50,3.33,56.73,10.67,70,43,76.0,70.7,915.15,876.68,529.72,707.5,1069.69,1456.48,0.157,0.0104,0.111
++Streets of New Capenna Collector Booster Display,Streets of New Capenna,Streets of New Capenna - Collector Booster Display,Standard,51,274.96,261.21,1000.0,274.96,264767,1,3026,tcgcsv,274.96,298.98,389.88,1000.0,2026-07-31T17:54:36+00:00,Streets of New Capenna - Collector Booster Display,Streets of New Capenna,2022-04-29T00:00:00,62,68,65,60,62,70,50,55,35,50,45,65,45,264767,TCGCSV-3026-264767,Streets of New Capenna,Streets of New Capenna Collector Booster Display,264767,Streets of New Capenna - Collector Booster Display,1,3026,Collector Booster Display,approved,auto_high_confidence_v9,candidate_score=240.0; market_price=247.41,264767,33,2024-02-08,2026-07-31,274.96,285.0,113.92,-0.0352,1.4136,0.1113,0.2719,0.4217,0.6309,0.1493,MONTHLY,3.464102,CURRENT_TCGCSV_REFRESH|UNIVERSAL_GOVERNED_LEDGER,83.18,55,75,100.0,75.61,Streets of New Capenna Collector Booster Display,2026-07-31,1,274.96,274.96,274.96,0.0,0.0,274.96,,274.96,,274.96,,274.96,,274.96,,274.96,,274.96,,,,50,0,50,0,64.33,25,62.0,25,50,3.33,56.73,10.67,78,43,75.77,72.54,424.03,412.99,272.48,346.78,486.87,615.25,0.116,0.003,0.0536
++Kamigawa: Neon Dynasty Collector Booster Display,Kamigawa: Neon Dynasty,Kamigawa: Neon Dynasty - Collector Booster Display,Standard,53,528.41,501.99,1500.0,528.41,257563,1,2965,tcgcsv,528.41,598.97,699.99,1500.0,2026-07-31T17:54:36+00:00,Kamigawa: Neon Dynasty - Collector Booster Display,Kamigawa: Neon Dynasty,2022-02-18T00:00:00,86,91,88,76,90,88,32,28,35,44,45,65,45,257563,TCGCSV-2965-257563,Kamigawa: Neon Dynasty,Kamigawa: Neon Dynasty Collector Booster Display,257563,Kamigawa: Neon Dynasty - Collector Booster Display,1,2965,Collector Booster Display,approved,auto_high_confidence_v9,candidate_score=240.0; market_price=497.04,257563,34,2024-02-08,2026-07-31,528.41,528.41,199.92,0.0,1.6431,0.074,0.1821,0.4104,0.8626,0.3599,MONTHLY,3.464102,CURRENT_TCGCSV_REFRESH|UNIVERSAL_GOVERNED_LEDGER,77.34,55,50,100.0,68.57,Kamigawa: Neon Dynasty Collector Booster Display,2026-07-31,1,528.41,528.41,528.41,0.0,0.0,528.41,,528.41,,528.41,,528.41,,528.41,,528.41,,528.41,,,,50,0,50,0,85.0,25,86.0,25,50,3.33,68.07,10.67,78,35,67.19,69.73,808.68,675.08,255.13,456.11,1013.81,1808.13,0.2242,0.0776,0.3392
++Innistrad: Crimson Vow Collector Booster Display,Innistrad: Crimson Vow,Innistrad: Crimson Vow - Collector Booster Display,Standard,56,286.57,272.24,999.0,286.57,246457,1,2862,tcgcsv,286.57,305.0,398.99,999.0,2026-07-31T17:54:36+00:00,Innistrad: Crimson Vow - Collector Booster Display,Innistrad: Crimson Vow,2021-11-19T00:00:00,62,68,65,60,62,70,50,55,35,50,45,65,45,246457,TCGCSV-2862-246457,Innistrad: Crimson Vow,Innistrad: Crimson Vow Collector Booster Display,246457,Innistrad: Crimson Vow - Collector Booster Display,1,2862,Collector Booster Display,approved,auto_high_confidence_v9,candidate_score=240.0; market_price=248.1,246457,34,2024-02-08,2026-07-31,286.57,286.57,109.84,0.0,1.609,0.1869,0.2882,0.4609,0.9798,0.3068,MONTHLY,3.464102,CURRENT_TCGCSV_REFRESH|UNIVERSAL_GOVERNED_LEDGER,85.73,55,50,100.0,71.51,Innistrad: Crimson Vow Collector Booster Display,2026-07-31,1,286.57,286.57,286.57,0.0,0.0,286.57,,286.57,,286.57,,286.57,,286.57,,286.57,,286.57,,,,50,0,50,0,64.33,25,62.0,25,50,3.33,56.73,10.67,78,43,70.54,69.89,437.87,385.75,166.92,272.3,543.29,912.11,0.2172,0.0586,0.2812
++Innistrad: Midnight Hunt Collector Booster Display,Innistrad: Midnight Hunt,Innistrad: Midnight Hunt - Collector Booster Display,Standard,58,252.9,240.26,999.0,252.9,244384,1,2864,tcgcsv,252.9,249.99,329.69,999.0,2026-07-31T17:54:36+00:00,Innistrad: Midnight Hunt - Collector Booster Display,Innistrad: Midnight Hunt,2021-09-24T00:00:00,62,68,65,60,62,70,50,55,35,50,45,65,45,244384,TCGCSV-2864-244384,Innistrad: Midnight Hunt,Innistrad: Midnight Hunt Collector Booster Display,244384,Innistrad: Midnight Hunt - Collector Booster Display,1,2864,Collector Booster Display,approved,auto_high_confidence_v9,candidate_score=240.0; market_price=212.26,244384,34,2024-02-08,2026-07-31,252.9,255.0,107.35,-0.0082,1.3558,0.2171,0.2856,0.3906,0.7826,0.1867,MONTHLY,3.464102,CURRENT_TCGCSV_REFRESH|UNIVERSAL_GOVERNED_LEDGER,82.76,55,65,100.0,73.47,Innistrad: Midnight Hunt Collector Booster Display,2026-07-31,1,252.9,252.9,252.9,0.0,0.0,252.9,,252.9,,252.9,,252.9,,252.9,,252.9,,252.9,,,,50,0,50,0,64.33,25,62.0,25,50,3.33,56.73,10.67,78,43,73.1,71.18,390.71,374.78,223.84,305.22,456.52,616.63,0.157,0.0096,0.1036
++Adventures in the Forgotten Realms Collector Booster Display,Adventures in the Forgotten Realms,Adventures in the Forgotten Realms - Collector Booster Display,Standard,60,377.61,358.73,1000.0,377.61,238745,1,2823,tcgcsv,377.61,399.96,499.99,1000.0,2026-07-31T17:54:36+00:00,Adventures in the Forgotten Realms - Collector Booster Display,Adventures in the Forgotten Realms,2021-07-23T00:00:00,62,68,65,60,62,70,50,55,35,50,45,65,45,238745,TCGCSV-2823-238745,Adventures in the Forgotten Realms,Adventures in the Forgotten Realms Collector Booster Display,238745,Adventures in the Forgotten Realms - Collector Booster Display,1,2823,Collector Booster Display,approved,auto_high_confidence_v9,candidate_score=240.0; market_price=318.01,238745,34,2024-02-08,2026-07-31,377.61,407.47,105.23,-0.0733,2.5884,0.2454,0.2909,0.3873,0.7523,0.2604,MONTHLY,3.464102,CURRENT_TCGCSV_REFRESH|UNIVERSAL_GOVERNED_LEDGER,82.95,70,65,100.0,78.03,Adventures in the Forgotten Realms Collector Booster Display,2026-07-31,1,377.61,377.61,377.61,0.0,0.0,377.61,,377.61,,377.61,,377.61,,377.61,,377.61,,377.61,,,,50,0,50,0,64.33,25,62.0,25,50,3.33,56.73,10.67,70,43,76.93,71.43,584.0,527.81,256.31,390.7,717.65,1110.41,0.2144,0.0446,0.2238
++Modern Horizons 2 Collector Booster Display,Modern Horizons 2,Modern Horizons 2 - Collector Booster Display,Modern Horizons,61,590.32,560.8,1499.99,590.32,236348,1,2809,tcgcsv,590.32,639.99,724.99,1499.99,2026-07-31T17:54:36+00:00,Modern Horizons 2 - Collector Booster Display,Modern Horizons 2,2021-06-19T00:00:00,62,82,75,60,72,78,50,55,35,50,45,65,45,236348,TCGCSV-2809-236348,Modern Horizons 2,Modern Horizons 2 Collector Booster Display,236348,Modern Horizons 2 - Collector Booster Display,1,2809,Collector Booster Display,approved,auto_high_confidence_v9,candidate_score=240.0; market_price=551.86,236348,33,2024-02-08,2026-07-31,590.32,605.0,311.77,-0.0243,0.8934,0.0897,0.1864,0.496,0.7505,0.1289,MONTHLY,3.464102,CURRENT_TCGCSV_REFRESH|UNIVERSAL_GOVERNED_LEDGER,81.02,55,75,100.0,74.86,Modern Horizons 2 Collector Booster Display,2026-07-31,1,590.32,590.32,590.32,0.0,0.0,590.32,,590.32,,590.32,,590.32,,590.32,,590.32,,590.32,,,,50,0,50,0,72.33,25,62.0,25,50,3.33,58.87,10.67,70,43,74.91,70.09,906.11,885.11,621.09,762.77,1025.79,1262.71,0.0916,0.0006,0.0304
++Strixhaven: School of Mages Collector Booster Display,Strixhaven: School of Mages,Strixhaven: School of Mages - Collector Booster Display,Standard,63,629.6,598.12,1500.0,629.6,233232,1,2773,tcgcsv,629.6,629.01,680.0,1500.0,2026-07-31T17:54:36+00:00,Strixhaven: School of Mages - Collector Booster Display,Strixhaven: School of Mages,2021-04-23T00:00:00,62,68,65,60,62,70,50,55,35,50,45,65,45,233232,TCGCSV-2773-233232,Strixhaven: School of Mages,Strixhaven: School of Mages Collector Booster Display,233232,Strixhaven: School of Mages - Collector Booster Display,1,2773,Collector Booster Display,approved,auto_high_confidence_v9,candidate_score=240.0; market_price=622.76,233232,33,2024-02-08,2026-07-31,629.6,629.6,200.08,0.0,2.1467,0.019,0.0519,0.3359,0.8714,0.1577,MONTHLY,3.464102,CURRENT_TCGCSV_REFRESH|UNIVERSAL_GOVERNED_LEDGER,66.55,55,65,100.0,67.79,Strixhaven: School of Mages Collector Booster Display,2026-07-31,1,629.6,629.6,629.6,0.0,0.0,629.6,,629.6,,629.6,,629.6,,629.6,,629.6,,629.6,,,,50,0,50,0,64.33,25,62.0,25,50,3.33,56.73,10.67,70,43,66.62,65.78,962.54,928.87,601.46,781.28,1106.42,1443.77,0.1248,0.0044,0.0702
++Kaldheim Collector Booster Display,Kaldheim,Kaldheim - Collector Booster Display,Standard,65,332.89,316.25,999.99,332.89,228249,1,2750,tcgcsv,332.89,340.0,410.0,999.99,2026-07-31T17:54:36+00:00,Kaldheim - Collector Booster Display,Kaldheim,2021-02-05T00:00:00,62,68,65,60,62,70,50,55,35,50,45,65,45,228249,TCGCSV-2750-228249,Kaldheim,Kaldheim Collector Booster Display,228249,Kaldheim - Collector Booster Display,1,2750,Collector Booster Display,approved,auto_high_confidence_v9,candidate_score=240.0; market_price=313.14,228249,34,2024-02-08,2026-07-31,332.89,349.99,137.66,-0.0489,1.4182,0.0714,0.1365,0.1947,0.6654,0.1544,MONTHLY,3.464102,CURRENT_TCGCSV_REFRESH|UNIVERSAL_GOVERNED_LEDGER,65.98,55,65,100.0,67.59,Kaldheim Collector Booster Display,2026-07-31,1,332.89,332.89,332.89,0.0,0.0,332.89,,332.89,,332.89,,332.89,,332.89,,332.89,,332.89,,,,50,0,50,0,64.33,25,62.0,25,50,3.33,56.73,10.67,78,43,66.39,67.65,512.37,497.54,324.38,416.67,589.95,752.14,0.1268,0.0028,0.0602
++Commander Legends Collector Booster Display,Commander Legends,Commander Legends - Collector Booster Display,Commander,68,722.61,686.48,1499.99,722.61,221323,1,2708,tcgcsv,722.61,793.0,945.0,1499.99,2026-07-31T17:54:36+00:00,Commander Legends - Collector Booster Display,Commander Legends,2020-11-20T00:00:00,62,68,65,60,62,70,50,55,35,50,45,65,45,221323,TCGCSV-2708-221323,Commander Legends,Commander Legends Collector Booster Display,221323,Commander Legends - Collector Booster Display,1,2708,Collector Booster Display,approved,auto_high_confidence_v9,candidate_score=240.0; market_price=707.48,221323,34,2024-02-08,2026-07-31,722.61,722.61,380.03,0.0,0.9015,0.0425,0.0883,0.1235,0.5092,0.2133,MONTHLY,3.464102,CURRENT_TCGCSV_REFRESH|UNIVERSAL_GOVERNED_LEDGER,60.24,55,65,100.0,65.58,Commander Legends Collector Booster Display,2026-07-31,1,722.61,722.61,722.61,0.0,0.0,722.61,,722.61,,722.61,,722.61,,722.61,,722.61,,722.61,,,,50,0,50,0,64.33,25,62.0,25,50,3.33,56.73,10.67,70,43,64.1,64.45,1099.45,1033.92,572.9,812.89,1308.66,1847.91,0.1668,0.0172,0.1584
++Zendikar Rising Collector Booster Display,Zendikar Rising,Zendikar Rising - Collector Booster Display,Standard,70,431.07,409.52,1000.0,431.07,220423,1,2648,tcgcsv,431.07,479.99,599.95,1000.0,2026-07-31T17:54:36+00:00,Zendikar Rising - Collector Booster Display,Zendikar Rising,2020-09-25T00:00:00,62,68,65,60,62,70,50,55,35,50,45,65,45,220423,TCGCSV-2648-220423,Zendikar Rising,Zendikar Rising Collector Booster Display,220423,Zendikar Rising - Collector Booster Display,1,2648,Collector Booster Display,approved,auto_high_confidence_v9,candidate_score=240.0; market_price=370.37,220423,33,2024-02-08,2026-07-31,431.07,460.73,205.86,-0.0644,1.094,0.1783,0.2946,0.5022,0.6351,0.1838,MONTHLY,3.464102,CURRENT_TCGCSV_REFRESH|UNIVERSAL_GOVERNED_LEDGER,87.68,70,65,100.0,79.69,Zendikar Rising Collector Booster Display,2026-07-31,1,431.07,431.07,431.07,0.0,0.0,431.07,,431.07,,431.07,,431.07,,431.07,,431.07,,431.07,,,,50,0,50,0,64.33,25,62.0,25,50,3.33,56.73,10.67,70,43,78.82,72.42,665.35,638.53,383.97,517.52,778.04,1048.75,0.1522,0.0116,0.1024
++Core Set 2021 Collector Booster Display,Core Set 2021,Core Set 2021 - Collector Booster Display,Standard,72,457.08,434.23,5000.0,457.08,214818,1,2653,tcgcsv,457.08,649.0,684.69,5000.0,2026-07-31T17:54:36+00:00,Core Set 2021 - Collector Booster Display,Core Set 2021,2020-07-03T00:00:00,62,68,65,60,62,70,50,55,35,50,45,65,45,214818,TCGCSV-2653-214818,Core Set 2021,Core Set 2021 Collector Booster Display,214818,Core Set 2021 - Collector Booster Display,1,2653,Collector Booster Display,approved,auto_high_confidence_v9,candidate_score=240.0; market_price=403.03,214818,34,2024-02-08,2026-07-31,457.08,519.99,195.37,-0.121,1.3396,0.1781,0.4316,0.5784,0.7918,0.6979,MONTHLY,3.464102,CURRENT_TCGCSV_REFRESH|UNIVERSAL_GOVERNED_LEDGER,90.0,70,35,100.0,74.5,Core Set 2021 Collector Booster Display,2026-07-31,1,457.08,457.08,457.08,0.0,0.0,457.08,,457.08,,457.08,,457.08,,457.08,,457.08,,457.08,,,,50,0,50,0,64.33,25,62.0,25,50,3.33,56.73,10.67,70,43,72.25,69.09,708.29,364.37,49.38,159.65,791.5,2415.95,0.2148,0.1242,0.5746
++Ikoria: Lair of Behemoths Collector Booster Display,Ikoria: Lair of Behemoths,Ikoria: Lair of Behemoths - Collector Booster Display,Standard,74,623.98,592.78,1000.0,623.98,208279,1,2603,tcgcsv,623.98,693.33,865.0,1000.0,2026-07-31T17:54:36+00:00,Ikoria: Lair of Behemoths - Collector Booster Display,Ikoria: Lair of Behemoths,2020-05-15T00:00:00,62,68,65,60,62,70,50,55,35,50,45,65,45,208279,TCGCSV-2603-208279,Ikoria: Lair of Behemoths,Ikoria: Lair of Behemoths Collector Booster Display,208279,Ikoria: Lair of Behemoths - Collector Booster Display,1,2603,Collector Booster Display,approved,auto_high_confidence_v9,candidate_score=240.0; market_price=561.43,208279,34,2024-02-08,2026-07-31,623.98,623.98,105.79,0.0,4.8983,0.1273,0.2991,0.4334,0.7546,1.8364,MONTHLY,3.464102,CURRENT_TCGCSV_REFRESH|UNIVERSAL_GOVERNED_LEDGER,85.28,55,35,100.0,68.35,Ikoria: Lair of Behemoths Collector Booster Display,2026-07-31,1,623.98,623.98,623.98,0.0,0.0,623.98,,623.98,,623.98,,623.98,,623.98,,623.98,,623.98,,,,50,0,50,0,64.33,25,62.0,25,50,3.33,56.73,10.67,70,43,66.61,65.88,1442.81,8.71,0.05,0.97,71.84,1436.31,0.0558,0.0432,0.9158
+diff --git a/models/investment_features.py b/models/investment_features.py
+index 93f4e85..10a2411 100644
+--- a/models/investment_features.py
++++ b/models/investment_features.py
+@@ -1,9 +1,11 @@
++
+ from __future__ import annotations
+ 
+ from pathlib import Path
+ import math
+-import pandas as pd
++
+ import numpy as np
++import pandas as pd
+ 
+ from config import (
+     HISTORY_DIR,
+@@ -13,211 +15,794 @@ from config import (
+ )
+ 
+ 
+-def load_history_snapshots(history_dir=HISTORY_DIR):
+-    """
+-    Loads both old daily snapshots and v10-compatible snapshots.
++ROOT = Path(__file__).resolve().parents[1]
++
++UNIVERSAL_HISTORY_FILE = (
++    ROOT
++    / "data"
++    / "operations"
++    / "mtg_universal_history_ledger"
++    / "universal_mtg_daily_consolidated_ledger.csv"
++)
++
++CURRENT_OBSERVATIONS_FILE = (
++    ROOT
++    / "data"
++    / "market_database"
++    / "daily_price_observations.csv"
++)
++
++
++def _clean_id_series(series: pd.Series) -> pd.Series:
++    return (
++        series.astype("string")
++        .fillna("")
++        .str.strip()
++        .str.replace(r"\.0$", "", regex=True)
++    )
++
++
++def _normalize_history_frame(frame: pd.DataFrame) -> pd.DataFrame:
++    if frame is None or frame.empty:
++        return pd.DataFrame()
++
++    result = frame.copy()
++
++    rename_map = {
++        "canonical_product_name": "box_name",
++        "observation_date": "snapshot_date",
++        "consolidated_market_price": "current_price",
++    }
++
++    result = result.rename(
++        columns={
++            old: new
++            for old, new in rename_map.items()
++            if old in result.columns and new not in result.columns
++        }
++    )
++
++    required = {
++        "box_name",
++        "snapshot_date",
++        "current_price",
++    }
++
++    if not required.issubset(result.columns):
++        return pd.DataFrame()
++
++    if "tcgplayer_product_id" not in result.columns:
++        result["tcgplayer_product_id"] = ""
++
++    result["tcgplayer_product_id"] = _clean_id_series(
++        result["tcgplayer_product_id"]
++    )
++
++    result["snapshot_date"] = pd.to_datetime(
++        result["snapshot_date"],
++        errors="coerce",
++        utc=True,
++    ).dt.tz_localize(None)
++
++    result["current_price"] = pd.to_numeric(
++        result["current_price"],
++        errors="coerce",
++    )
++
++    result = result.dropna(
++        subset=[
++            "box_name",
++            "snapshot_date",
++            "current_price",
++        ]
++    )
++
++    result = result[result["current_price"] > 0].copy()
++
++    return result
++
+ 
+-    Expected useful fields:
+-    - snapshot_date
+-    - box_name
+-    - current_price / market_price
+-    - price_source
+-    """
++def load_legacy_history_snapshots(
++    history_dir=HISTORY_DIR,
++) -> pd.DataFrame:
+     history_dir = Path(history_dir)
++
+     if not history_dir.exists():
+         return pd.DataFrame()
+ 
+-    frames = []
++    frames: list[pd.DataFrame] = []
++
+     for file in history_dir.glob("*.csv"):
+         try:
+-            df = pd.read_csv(file)
+-            if "snapshot_date" not in df.columns:
+-                # infer from filename when possible
+-                stem = file.stem
+-                inferred = stem.replace("price_snapshot_", "")
+-                df["snapshot_date"] = inferred
+-            frames.append(df)
++            frame = pd.read_csv(file)
++
++            if (
++                "snapshot_date" not in frame.columns
++                and "observation_date" in frame.columns
++            ):
++                frame["snapshot_date"] = frame[
++                    "observation_date"
++                ]
++
++            if "snapshot_date" not in frame.columns:
++                inferred = file.stem.replace(
++                    "price_snapshot_",
++                    "",
++                )
++                frame["snapshot_date"] = inferred
++
++            if (
++                "current_price" not in frame.columns
++                and "market_price" in frame.columns
++            ):
++                frame["current_price"] = frame[
++                    "market_price"
++                ]
++
++            normalized = _normalize_history_frame(frame)
++
++            if not normalized.empty:
++                frames.append(normalized)
++
+         except Exception:
+             continue
+ 
+     if not frames:
+         return pd.DataFrame()
+ 
+-    hist = pd.concat(frames, ignore_index=True, sort=False)
++    return pd.concat(
++        frames,
++        ignore_index=True,
++        sort=False,
++    )
++
++
++def load_universal_history() -> pd.DataFrame:
++    if not UNIVERSAL_HISTORY_FILE.is_file():
++        return pd.DataFrame()
++
++    frame = pd.read_csv(UNIVERSAL_HISTORY_FILE)
++
++    return _normalize_history_frame(frame)
++
++
++def load_current_observations() -> pd.DataFrame:
++    if not CURRENT_OBSERVATIONS_FILE.is_file():
++        return pd.DataFrame()
++
++    frame = pd.read_csv(CURRENT_OBSERVATIONS_FILE)
+ 
+-    if "current_price" not in hist.columns and "market_price" in hist.columns:
+-        hist["current_price"] = hist["market_price"]
++    return _normalize_history_frame(frame)
++
++
++def load_history_snapshots(
++    history_dir=HISTORY_DIR,
++) -> pd.DataFrame:
++    frames: list[pd.DataFrame] = []
++
++    universal = load_universal_history()
++
++    if not universal.empty:
++        universal["history_source_layer"] = (
++            "UNIVERSAL_GOVERNED_LEDGER"
++        )
++        frames.append(universal)
++
++    legacy = load_legacy_history_snapshots(history_dir)
++
++    if not legacy.empty:
++        legacy["history_source_layer"] = (
++            "LEGACY_HISTORY_DIRECTORY"
++        )
++        frames.append(legacy)
++
++    current = load_current_observations()
++
++    if not current.empty:
++        current["history_source_layer"] = (
++            "CURRENT_TCGCSV_REFRESH"
++        )
++        frames.append(current)
++
++    if not frames:
++        return pd.DataFrame()
+ 
+-    hist["current_price"] = pd.to_numeric(hist.get("current_price"), errors="coerce")
+-    hist["snapshot_date"] = pd.to_datetime(hist["snapshot_date"], errors="coerce")
+-    hist = hist.dropna(subset=["box_name", "snapshot_date", "current_price"])
+-    hist = hist[hist["current_price"] > 0].copy()
+-    hist = hist.sort_values(["box_name", "snapshot_date"])
+-    return hist
++    history = pd.concat(
++        frames,
++        ignore_index=True,
++        sort=False,
++    )
+ 
++    history["tcgplayer_product_id"] = _clean_id_series(
++        history["tcgplayer_product_id"]
++    )
+ 
+-def _price_days_ago(group, days):
++    history = history.sort_values(
++        [
++            "tcgplayer_product_id",
++            "box_name",
++            "snapshot_date",
++            "history_source_layer",
++        ]
++    )
++
++    identity_key = history[
++        "tcgplayer_product_id"
++    ].where(
++        history["tcgplayer_product_id"] != "",
++        history["box_name"].astype("string"),
++    )
++
++    history["_identity_key"] = identity_key
++
++    source_priority = {
++        "LEGACY_HISTORY_DIRECTORY": 1,
++        "UNIVERSAL_GOVERNED_LEDGER": 2,
++        "CURRENT_TCGCSV_REFRESH": 3,
++    }
++
++    history["_source_priority"] = (
++        history["history_source_layer"]
++        .map(source_priority)
++        .fillna(0)
++    )
++
++    history = history.sort_values(
++        [
++            "_identity_key",
++            "snapshot_date",
++            "_source_priority",
++        ]
++    )
++
++    history = history.drop_duplicates(
++        subset=[
++            "_identity_key",
++            "snapshot_date",
++        ],
++        keep="last",
++    )
++
++    return history.drop(
++        columns=[
++            "_identity_key",
++            "_source_priority",
++        ]
++    )
++
++
++def _price_days_ago(
++    group: pd.DataFrame,
++    days: int,
++) -> float:
+     if group.empty:
+         return np.nan
++
+     latest_date = group["snapshot_date"].max()
+     target_date = latest_date - pd.Timedelta(days=days)
+-    eligible = group[group["snapshot_date"] <= target_date]
++
++    eligible = group[
++        group["snapshot_date"] <= target_date
++    ]
++
+     if eligible.empty:
+         return np.nan
+-    return float(eligible.iloc[-1]["current_price"])
++
++    return float(
++        eligible.iloc[-1]["current_price"]
++    )
+ 
+ 
+-def _safe_return(current, previous):
+-    if pd.isna(previous) or previous <= 0 or pd.isna(current):
++def _safe_return(
++    current: float,
++    previous: float,
++) -> float:
++    if (
++        pd.isna(previous)
++        or previous <= 0
++        or pd.isna(current)
++    ):
+         return np.nan
++
+     return (current / previous) - 1
+ 
+ 
+-def build_historical_metrics(history_df):
++def _infer_observation_frequency(
++    dates: pd.Series,
++) -> tuple[str, float]:
++    clean_dates = (
++        pd.to_datetime(dates, errors="coerce")
++        .dropna()
++        .sort_values()
++        .drop_duplicates()
++    )
++
++    if len(clean_dates) < 2:
++        return "INSUFFICIENT", np.nan
++
++    day_gaps = (
++        clean_dates.diff()
++        .dt.total_seconds()
++        .div(86400)
++        .dropna()
++    )
++
++    if day_gaps.empty:
++        return "INSUFFICIENT", np.nan
++
++    median_gap = float(day_gaps.median())
++
++    if median_gap <= 2:
++        return "DAILY", math.sqrt(365)
++
++    if median_gap <= 10:
++        return "WEEKLY", math.sqrt(52)
++
++    if median_gap <= 45:
++        return "MONTHLY", math.sqrt(12)
++
++    if median_gap <= 100:
++        return "QUARTERLY", math.sqrt(4)
++
++    return "IRREGULAR", np.nan
++
++
++def build_historical_metrics(
++    history_df: pd.DataFrame,
++) -> pd.DataFrame:
+     if history_df is None or history_df.empty:
+         return pd.DataFrame()
+ 
+-    rows = []
+-    for box_name, group in history_df.groupby("box_name"):
+-        group = group.sort_values("snapshot_date").copy()
++    rows: list[dict[str, object]] = []
++
++    id_available = (
++        "tcgplayer_product_id"
++        in history_df.columns
++    )
++
++    group_field = (
++        "tcgplayer_product_id"
++        if id_available
++        else "box_name"
++    )
++
++    for group_id, group in history_df.groupby(
++        group_field,
++        dropna=False,
++    ):
++        group = (
++            group.sort_values("snapshot_date")
++            .drop_duplicates(
++                subset=["snapshot_date"],
++                keep="last",
++            )
++            .copy()
++        )
++
++        if group.empty:
++            continue
++
+         latest = group.iloc[-1]
+-        current = float(latest["current_price"])
++        current = float(
++            latest["current_price"]
++        )
++
++        prices = pd.to_numeric(
++            group["current_price"],
++            errors="coerce",
++        ).dropna()
++
++        if prices.empty:
++            continue
+ 
+-        prices = group["current_price"].astype(float)
+         high = float(prices.max())
+         low = float(prices.min())
+ 
+-        returns = prices.pct_change().replace([np.inf, -np.inf], np.nan).dropna()
+-        volatility = float(returns.std() * math.sqrt(365)) if len(returns) >= 2 else np.nan
++        returns = (
++            prices.pct_change()
++            .replace(
++                [np.inf, -np.inf],
++                np.nan,
++            )
++            .dropna()
++        )
++
++        frequency, annualization_factor = (
++            _infer_observation_frequency(
++                group["snapshot_date"]
++            )
++        )
++
++        volatility = np.nan
++
++        if (
++            len(returns) >= 2
++            and not pd.isna(
++                annualization_factor
++            )
++        ):
++            volatility = float(
++                returns.std()
++                * annualization_factor
++            )
+ 
+         p30 = _price_days_ago(group, 30)
+         p90 = _price_days_ago(group, 90)
+         p180 = _price_days_ago(group, 180)
+         p365 = _price_days_ago(group, 365)
+ 
+-        rows.append({
+-            "box_name": box_name,
+-            "history_observations": len(group),
+-            "first_snapshot_date": group["snapshot_date"].min().date().isoformat(),
+-            "latest_snapshot_date": group["snapshot_date"].max().date().isoformat(),
+-            "current_price_history": round(current, 2),
+-            "history_high_price": round(high, 2),
+-            "history_low_price": round(low, 2),
+-            "drawdown_from_high": round((current / high) - 1, 4) if high > 0 else np.nan,
+-            "distance_from_low": round((current / low) - 1, 4) if low > 0 else np.nan,
+-            "return_30d": round(_safe_return(current, p30), 4) if not pd.isna(p30) else np.nan,
+-            "return_90d": round(_safe_return(current, p90), 4) if not pd.isna(p90) else np.nan,
+-            "return_180d": round(_safe_return(current, p180), 4) if not pd.isna(p180) else np.nan,
+-            "return_365d": round(_safe_return(current, p365), 4) if not pd.isna(p365) else np.nan,
+-            "annualized_volatility": round(volatility, 4) if not pd.isna(volatility) else np.nan,
+-        })
++        source_layers = ""
++
++        if "history_source_layer" in group.columns:
++            source_layers = "|".join(
++                sorted(
++                    {
++                        str(value).strip()
++                        for value in group[
++                            "history_source_layer"
++                        ].dropna()
++                        if str(value).strip()
++                    }
++                )
++            )
++
++        rows.append(
++            {
++                "tcgplayer_product_id": (
++                    str(group_id).strip()
++                    if id_available
++                    else ""
++                ),
++                "box_name": str(
++                    latest["box_name"]
++                ).strip(),
++                "history_observations": len(
++                    group
++                ),
++                "first_snapshot_date": (
++                    group["snapshot_date"]
++                    .min()
++                    .date()
++                    .isoformat()
++                ),
++                "latest_snapshot_date": (
++                    group["snapshot_date"]
++                    .max()
++                    .date()
++                    .isoformat()
++                ),
++                "current_price_history": round(
++                    current,
++                    2,
++                ),
++                "history_high_price": round(
++                    high,
++                    2,
++                ),
++                "history_low_price": round(
++                    low,
++                    2,
++                ),
++                "drawdown_from_high": round(
++                    (current / high) - 1,
++                    4,
++                )
++                if high > 0
++                else np.nan,
++                "distance_from_low": round(
++                    (current / low) - 1,
++                    4,
++                )
++                if low > 0
++                else np.nan,
++                "return_30d": round(
++                    _safe_return(
++                        current,
++                        p30,
++                    ),
++                    4,
++                )
++                if not pd.isna(p30)
++                else np.nan,
++                "return_90d": round(
++                    _safe_return(
++                        current,
++                        p90,
++                    ),
++                    4,
++                )
++                if not pd.isna(p90)
++                else np.nan,
++                "return_180d": round(
++                    _safe_return(
++                        current,
++                        p180,
++                    ),
++                    4,
++                )
++                if not pd.isna(p180)
++                else np.nan,
++                "return_365d": round(
++                    _safe_return(
++                        current,
++                        p365,
++                    ),
++                    4,
++                )
++                if not pd.isna(p365)
++                else np.nan,
++                "annualized_volatility": round(
++                    volatility,
++                    4,
++                )
++                if not pd.isna(volatility)
++                else np.nan,
++                "observation_frequency": (
++                    frequency
++                ),
++                "annualization_factor": round(
++                    annualization_factor,
++                    6,
++                )
++                if not pd.isna(
++                    annualization_factor
++                )
++                else np.nan,
++                "history_source_layers": (
++                    source_layers
++                ),
++            }
++        )
+ 
+     metrics = pd.DataFrame(rows)
+-    Path(HISTORICAL_METRICS_FILE).parent.mkdir(parents=True, exist_ok=True)
+-    metrics.to_csv(HISTORICAL_METRICS_FILE, index=False)
++
++    Path(
++        HISTORICAL_METRICS_FILE
++    ).parent.mkdir(
++        parents=True,
++        exist_ok=True,
++    )
++
++    metrics.to_csv(
++        HISTORICAL_METRICS_FILE,
++        index=False,
++    )
++
+     return metrics
+ 
+ 
+-def load_release_metadata():
++def load_release_metadata() -> pd.DataFrame:
+     path = Path(RELEASE_METADATA_FILE)
++
+     if not path.exists():
+-        return pd.DataFrame(columns=[
+-            "box_name",
+-            "release_date",
+-            "release_msrp",
+-            "notes",
+-        ])
+-    df = pd.read_csv(path)
+-    return df
++        return pd.DataFrame(
++            columns=[
++                "box_name",
++                "release_date",
++                "release_msrp",
++                "notes",
++            ]
++        )
+ 
++    return pd.read_csv(path)
+ 
+-def _score_momentum(row):
+-    # Conservative momentum score. Positive 90/180d helps, sharp recent spikes hurt.
+-    r90 = row.get("return_90d")
+-    r180 = row.get("return_180d")
+ 
++def _score_momentum(
++    row: pd.Series,
++) -> float:
+     score = 50
+-    for r, weight in [(r90, 60), (r180, 40)]:
+-        if pd.isna(r):
++
++    for value, weight in [
++        (row.get("return_90d"), 60),
++        (row.get("return_180d"), 40),
++    ]:
++        if pd.isna(value):
+             continue
+-        score += max(-20, min(20, r * weight))
+ 
+-    # Penalize extreme short-term spikes.
++        score += max(
++            -20,
++            min(20, value * weight),
++        )
++
+     r30 = row.get("return_30d")
+-    if not pd.isna(r30) and r30 > 0.35:
++
++    if (
++        not pd.isna(r30)
++        and r30 > 0.35
++    ):
+         score -= 10
+ 
+-    return round(max(0, min(100, score)), 2)
++    return round(
++        max(0, min(100, score)),
++        2,
++    )
+ 
+ 
+-def _score_drawdown(row):
+-    dd = row.get("drawdown_from_high")
+-    if pd.isna(dd):
++def _score_drawdown(
++    row: pd.Series,
++) -> float:
++    drawdown = row.get(
++        "drawdown_from_high"
++    )
++
++    if pd.isna(drawdown):
+         return 50
+-    # Mild drawdown can be good entry; severe drawdown suggests weakness.
+-    if dd >= -0.05:
++
++    if drawdown >= -0.05:
+         return 55
+-    if dd >= -0.20:
++
++    if drawdown >= -0.20:
+         return 70
+-    if dd >= -0.40:
++
++    if drawdown >= -0.40:
+         return 55
++
+     return 35
+ 
+ 
+-def _score_volatility(row):
+-    vol = row.get("annualized_volatility")
+-    if pd.isna(vol):
++def _score_volatility(
++    row: pd.Series,
++) -> float:
++    volatility = row.get(
++        "annualized_volatility"
++    )
++
++    if pd.isna(volatility):
+         return 50
+-    if vol < 0.15:
++
++    if volatility < 0.15:
+         return 75
+-    if vol < 0.30:
++
++    if volatility < 0.30:
+         return 65
+-    if vol < 0.55:
++
++    if volatility < 0.55:
+         return 50
++
+     return 35
+ 
+ 
+-def build_investment_features(model_df):
+-    """
+-    Adds history-based feature columns to the active product-master model input.
+-    If there is not much history yet, v10 starts collecting it and falls back safely.
+-    """
++def build_investment_features(
++    model_df: pd.DataFrame,
++) -> pd.DataFrame:
+     model = model_df.copy()
+-    hist = load_history_snapshots()
+-    metrics = build_historical_metrics(hist)
++
++    model["tcgplayer_product_id"] = (
++        _clean_id_series(
++            model.get(
++                "tcgplayer_product_id",
++                model.get(
++                    "approved_tcgplayer_product_id",
++                    pd.Series(
++                        "",
++                        index=model.index,
++                    ),
++                ),
++            )
++        )
++    )
++
++    history = load_history_snapshots()
++    metrics = build_historical_metrics(
++        history
++    )
++
++    metric_columns = [
++        "history_observations",
++        "first_snapshot_date",
++        "latest_snapshot_date",
++        "current_price_history",
++        "history_high_price",
++        "history_low_price",
++        "drawdown_from_high",
++        "distance_from_low",
++        "return_30d",
++        "return_90d",
++        "return_180d",
++        "return_365d",
++        "annualized_volatility",
++        "observation_frequency",
++        "annualization_factor",
++        "history_source_layers",
++    ]
+ 
+     if not metrics.empty:
+-        model = model.merge(metrics, on="box_name", how="left")
++        metrics[
++            "tcgplayer_product_id"
++        ] = _clean_id_series(
++            metrics[
++                "tcgplayer_product_id"
++            ]
++        )
++
++        metrics = metrics.drop_duplicates(
++            subset=[
++                "tcgplayer_product_id"
++            ],
++            keep="last",
++        )
++
++        model = model.merge(
++            metrics[
++                [
++                    "tcgplayer_product_id",
++                    *metric_columns,
++                ]
++            ],
++            on="tcgplayer_product_id",
++            how="left",
++            validate="one_to_one",
++        )
++
+     else:
+-        # provide empty columns
+-        for col in [
+-            "history_observations", "history_high_price", "history_low_price",
+-            "drawdown_from_high", "distance_from_low", "return_30d", "return_90d",
+-            "return_180d", "return_365d", "annualized_volatility"
+-        ]:
+-            model[col] = np.nan
++        for column in metric_columns:
++            model[column] = np.nan
+ 
+     release = load_release_metadata()
+-    if not release.empty:
+-        model = model.merge(release, on="box_name", how="left")
+-
+-    # Feature scores
+-    model["momentum_score"] = model.apply(_score_momentum, axis=1)
+-    model["drawdown_score"] = model.apply(_score_drawdown, axis=1)
+-    model["price_stability_score"] = model.apply(_score_volatility, axis=1)
+ 
+-    # History confidence starts low until enough observations exist.
+-    obs = pd.to_numeric(model.get("history_observations"), errors="coerce").fillna(0)
+-    model["history_confidence"] = (obs / 30 * 100).clip(lower=0, upper=100).round(1)
++    if not release.empty:
++        model = model.merge(
++            release,
++            on="box_name",
++            how="left",
++        )
++
++    model["momentum_score"] = (
++        model.apply(
++            _score_momentum,
++            axis=1,
++        )
++    )
++
++    model["drawdown_score"] = (
++        model.apply(
++            _score_drawdown,
++            axis=1,
++        )
++    )
++
++    model["price_stability_score"] = (
++        model.apply(
++            _score_volatility,
++            axis=1,
++        )
++    )
++
++    observations = pd.to_numeric(
++        model.get(
++            "history_observations"
++        ),
++        errors="coerce",
++    ).fillna(0)
++
++    model["history_confidence"] = (
++        observations
++        .div(30)
++        .mul(100)
++        .clip(
++            lower=0,
++            upper=100,
++        )
++        .round(1)
++    )
+ 
+-    # Investment feature blend, intentionally modest until real history accumulates.
+     model["investment_feature_score"] = (
+-        model["momentum_score"] * 0.35 +
+-        model["drawdown_score"] * 0.30 +
+-        model["price_stability_score"] * 0.20 +
+-        model["history_confidence"] * 0.15
++        model["momentum_score"] * 0.35
++        + model["drawdown_score"] * 0.30
++        + model["price_stability_score"] * 0.20
++        + model["history_confidence"] * 0.15
+     ).round(2)
+ 
+-    Path(INVESTMENT_FEATURES_FILE).parent.mkdir(parents=True, exist_ok=True)
+-    model.to_csv(INVESTMENT_FEATURES_FILE, index=False)
+-    return model
++    Path(
++        INVESTMENT_FEATURES_FILE
++    ).parent.mkdir(
++        parents=True,
++        exist_ok=True,
++    )
++
++    model.to_csv(
++        INVESTMENT_FEATURES_FILE,
++        index=False,
++    )
++
++    return model
+\ No newline at end of file

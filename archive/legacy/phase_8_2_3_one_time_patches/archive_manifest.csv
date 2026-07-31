@@ -1,0 +1,2 @@
+archived_at_utc,original_path,archive_path,sha256,reason,restoration_allowed
+2026-07-31T19:08:50.037480+00:00,scripts/certify_collector_booster_history_before_semantic_universe.py,archive/legacy/phase_8_2_3_one_time_patches/certify_collector_booster_history_before_semantic_universe.py.archived.txt,8F04843B6B8D35A4C73DBD8E1CC1D21EEDE190E9CD34743CB3A61896464AE3A3,"One-time migration, patch, or backup script with no active references.",true

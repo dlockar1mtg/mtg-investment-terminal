@@ -347,4 +347,8 @@ def test_no_identity_review_or_platform_mutation() -> None:
         low_memory=False,
     )
 
-    assert len(production) == 4675
+    assert len(production) >= 4675
+
+    assert production[
+        "investment_product_id"
+    ].astype(str).str.strip().is_unique

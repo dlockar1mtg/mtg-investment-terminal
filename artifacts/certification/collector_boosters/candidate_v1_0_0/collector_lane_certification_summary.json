@@ -1,0 +1,15 @@
+﻿{
+    "generated_at":  "2026-07-31T13:07:47.7645029-05:00",
+    "lane":  "COLLECTOR_BOOSTER_BOX",
+    "candidate_version":  "1.0.0",
+    "total_products":  51,
+    "fresh_price_products":  51,
+    "history_bridge_pass_products":  49,
+    "frequency_pass_products":  49,
+    "volatility_pass_products":  43,
+    "forecast_present_products":  47,
+    "forecast_order_pass_products":  51,
+    "extreme_spread_products":  20,
+    "candidate_pass_products":  43,
+    "certification_status":  "CALIBRATION_REVIEW_REQUIRED"
+}

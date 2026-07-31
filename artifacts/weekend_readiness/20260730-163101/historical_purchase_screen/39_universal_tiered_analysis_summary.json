@@ -1,0 +1,56 @@
+{
+  "generated_at": "2026-07-30T17:07:19.839348",
+  "as_of_date": "2026-07-30",
+  "registry_products": 1141,
+  "universal_products_analyzed": 1141,
+  "tier_counts": {
+    "TIER_1": 783,
+    "TIER_2": 165,
+    "TIER_3": 193
+  },
+  "purchase_readiness_counts": {
+    "MANUAL_PURCHASE_REVIEW": 263,
+    "NOT_PURCHASE_READY": 454,
+    "PROVISIONAL_RESEARCH_CANDIDATE": 119,
+    "PURCHASE_ANALYSIS_ELIGIBLE": 112,
+    "RESEARCH_ONLY": 193
+  },
+  "product_class_counts": {
+    "COLLECTOR_BOOSTER_BOX": 49,
+    "PRE_COLLECTOR_BOOSTER_BOX": 119,
+    "SECRET_LAIR": 973
+  },
+  "tier_class_counts": {
+    "TIER_1": {
+      "COLLECTOR_BOOSTER_BOX": 42,
+      "PRE_COLLECTOR_BOOSTER_BOX": 114,
+      "SECRET_LAIR": 627
+    },
+    "TIER_2": {
+      "COLLECTOR_BOOSTER_BOX": 7,
+      "PRE_COLLECTOR_BOOSTER_BOX": 1,
+      "SECRET_LAIR": 157
+    },
+    "TIER_3": {
+      "PRE_COLLECTOR_BOOSTER_BOX": 4,
+      "SECRET_LAIR": 189
+    }
+  },
+  "actionable_or_research_candidate_rows": 494,
+  "output_files": {
+    "universal": "artifacts\\weekend_readiness\\20260730-163101\\historical_purchase_screen\\34_universal_tiered_analysis.csv",
+    "tier_1": "artifacts\\weekend_readiness\\20260730-163101\\historical_purchase_screen\\35_tier_1_full_historical_analysis.csv",
+    "tier_2": "artifacts\\weekend_readiness\\20260730-163101\\historical_purchase_screen\\36_tier_2_limited_historical_analysis.csv",
+    "tier_3": "artifacts\\weekend_readiness\\20260730-163101\\historical_purchase_screen\\37_tier_3_current_evidence_analysis.csv",
+    "actionable": "artifacts\\weekend_readiness\\20260730-163101\\historical_purchase_screen\\38_universal_purchase_action_candidates.csv"
+  },
+  "important_interpretation": [
+    "All governed products receive an analytical row.",
+    "Tier 1 supports full historical analysis.",
+    "Tier 2 supports provisional limited-history analysis.",
+    "Tier 3 uses current evidence and comparable-product context.",
+    "Tier 2 and Tier 3 scores are not equivalent in confidence to Tier 1.",
+    "Purchase readiness remains separate from analytical coverage.",
+    "No score is a certified forward forecast."
+  ]
+}
