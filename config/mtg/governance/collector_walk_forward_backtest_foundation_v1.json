@@ -1,0 +1,116 @@
+{
+  "foundation_name": "Collector Walk-Forward Backtest Foundation",
+  "foundation_version": "1.0.0",
+  "status": "CANDIDATE_INACTIVE",
+  "owner": "Devon Lockard",
+  "purpose": "Create time-correct historical decision snapshots and evaluate candidate Collector methodology without activating forecasts or recommendations.",
+  "governing_inputs": {
+    "numeric_candidate": "config/mtg/governance/collector_numeric_specification_candidate_v1.json",
+    "adaptive_calibration": "config/mtg/governance/collector_adaptive_calibration_candidate_v1.json",
+    "conceptual_approval": "config/mtg/governance/collector_numeric_methodology_owner_approval_v1.json"
+  },
+  "snapshot_contract": {
+    "required_keys": [
+      "snapshot_id",
+      "decision_date",
+      "investment_product_id",
+      "product_name",
+      "release_date",
+      "release_age_days",
+      "forecast_method",
+      "current_price",
+      "current_price_date",
+      "history_cutoff_date",
+      "evidence_cutoff_date",
+      "comparable_cutoff_date",
+      "model_candidate_version"
+    ],
+    "future_information_prohibited": true,
+    "as_of_join_required": true,
+    "route_reconstruction_required": true,
+    "comparable_reconstruction_required": true,
+    "missing_input_must_be_visible": true
+  },
+  "outcome_contract": {
+    "required_horizons_days": [365, 1095, 1825],
+    "required_fields": [
+      "snapshot_id",
+      "outcome_horizon_days",
+      "outcome_date",
+      "outcome_price",
+      "gross_return",
+      "estimated_costs",
+      "net_return",
+      "maximum_interim_drawdown",
+      "liquidity_observation",
+      "outcome_matured"
+    ],
+    "unmatured_outcomes_excluded_from_scoring": true,
+    "unmatured_outcomes_retained_for_future_matching": true
+  },
+  "evaluation_contract": {
+    "walk_forward_required": true,
+    "holdout_required": true,
+    "route_specific_results_required": true,
+    "release_age_results_required": true,
+    "early_opportunity_results_required": true,
+    "cost_adjusted_results_required": true,
+    "risk_adjusted_results_required": true,
+    "interval_coverage_required": true,
+    "parameter_stability_required": true,
+    "required_metric_families": [
+      "forecast_error",
+      "directional_accuracy",
+      "ranking_quality",
+      "net_return_after_costs",
+      "maximum_drawdown",
+      "downside_capture",
+      "interval_coverage",
+      "early_opportunity_hit_rate",
+      "early_opportunity_miss_rate",
+      "false_positive_rate",
+      "recommendation_churn",
+      "parameter_stability"
+    ]
+  },
+  "parameter_search_contract": {
+    "baseline_candidate_must_run_first": true,
+    "alternative_parameter_search_allowed": true,
+    "single_and_multi_parameter_tests_allowed": true,
+    "objective_metric_weights": null,
+    "minimum_improvement_required": null,
+    "maximum_downside_degradation": null,
+    "minimum_sample_thresholds": null,
+    "all_thresholds_status": "UNSET_PENDING_BACKTEST_AND_OWNER_APPROVAL"
+  },
+  "recommendation_controls": {
+    "recommendation_generation_allowed": true,
+    "automatic_model_update_allowed": false,
+    "owner_approval_required": true,
+    "recertification_required": true,
+    "active_model_file_may_be_modified": false,
+    "required_recommendation_outputs": [
+      "parameter_name",
+      "current_candidate_value",
+      "recommended_value",
+      "absolute_change",
+      "relative_change",
+      "in_sample_result",
+      "out_of_sample_result",
+      "risk_adjusted_result",
+      "maximum_drawdown_change",
+      "route_results",
+      "release_age_results",
+      "early_opportunity_results",
+      "stability_result",
+      "limitations",
+      "owner_approval_status"
+    ]
+  },
+  "authorizations": {
+    "exact_numeric_specification_approved": false,
+    "methodology_activated": false,
+    "projection_authorized": false,
+    "purchase_recommendation_authorized": false
+  }
+}
