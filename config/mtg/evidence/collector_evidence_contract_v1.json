@@ -1,0 +1,104 @@
+{
+  "contract_name": "collector_supply_demand_liquidity_evidence",
+  "contract_version": "1.0.0",
+  "standard_name": "MTG Forecasting and Decision Standard",
+  "standard_version": "1.0.0",
+  "lane": "COLLECTOR_BOOSTER",
+  "contract_status": "IMPLEMENTATION_BASELINE",
+  "evidence_types": [
+    "DIRECT",
+    "MARKET_PROXY",
+    "COMPARABLE_DERIVED",
+    "MANUAL_GOVERNED",
+    "MISSING"
+  ],
+  "confidence_classes": [
+    "HIGH",
+    "MODERATE",
+    "LOW",
+    "INSUFFICIENT"
+  ],
+  "required_identity_fields": [
+    "investment_product_id",
+    "product_name",
+    "product_lane",
+    "identity_status",
+    "release_date",
+    "product_configuration"
+  ],
+  "required_supply_fields": [
+    "print_structure_class",
+    "supply_profile_class",
+    "limited_print_indicator",
+    "print_to_demand_indicator",
+    "restock_status",
+    "retail_availability_score",
+    "marketplace_listing_count",
+    "marketplace_listing_trend",
+    "sealed_supply_trend",
+    "reprint_exposure_score",
+    "supply_evidence_type",
+    "supply_confidence_class",
+    "supply_source_summary",
+    "supply_observed_at"
+  ],
+  "required_demand_fields": [
+    "sales_velocity_score",
+    "transaction_count",
+    "listing_absorption_score",
+    "price_resilience_score",
+    "franchise_strength_score",
+    "gameplay_demand_score",
+    "premium_contents_score",
+    "chase_card_strength_score",
+    "expected_value_support_score",
+    "demand_evidence_type",
+    "demand_confidence_class",
+    "demand_source_summary",
+    "demand_observed_at"
+  ],
+  "required_liquidity_fields": [
+    "liquidity_score",
+    "transaction_frequency_score",
+    "market_depth_score",
+    "estimated_exit_days",
+    "liquidity_evidence_type",
+    "liquidity_confidence_class",
+    "liquidity_source_summary",
+    "liquidity_observed_at"
+  ],
+  "required_comparable_fields": [
+    "release_era_class",
+    "lifecycle_stage",
+    "price_band_class",
+    "franchise_class",
+    "premium_contents_class",
+    "supply_profile_class",
+    "liquidity_class",
+    "reprint_exposure_class"
+  ],
+  "required_readiness_fields": [
+    "supply_evidence_ready",
+    "demand_evidence_ready",
+    "liquidity_evidence_ready",
+    "comparable_evidence_ready",
+    "missing_evidence_flags",
+    "proxy_methods_used",
+    "limitations",
+    "purchase_recommendation_authorized"
+  ],
+  "rules": {
+    "unknown_print_run_must_remain_unknown": true,
+    "missing_direct_evidence_may_use_governed_proxy": true,
+    "proxy_use_must_reduce_confidence": true,
+    "missing_values_must_not_be_silently_imputed": true,
+    "all_estimates_require_method_and_source": true,
+    "all_scores_require_scale_definition": true,
+    "all_observations_require_effective_date": true,
+    "comparable_forecast_requires_supply_evidence": true,
+    "comparable_forecast_requires_demand_evidence": true,
+    "comparable_forecast_requires_liquidity_evidence": true,
+    "comparable_forecast_requires_comparable_dimensions": true,
+    "purchase_recommendation_authorized": false
+  }
+}

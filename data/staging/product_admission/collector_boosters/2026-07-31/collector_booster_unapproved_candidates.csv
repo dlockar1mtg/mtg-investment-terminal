@@ -1,0 +1,2 @@
+"investment_product_id","set_name","box_name","approved_tcgplayer_product_id","approved_product_name","tcgcsv_category_id","tcgcsv_group_id","investment_product_type","approval_status","approval_method","notes"
+"TCGCSV-24766-706142","Star Trek","Star Trek Collector Booster Display","706142","Star Trek - Collector Booster Display","1","24766","Collector Booster Display","approved","auto_high_confidence_v9","candidate_score=240.0; market_price=701.58"

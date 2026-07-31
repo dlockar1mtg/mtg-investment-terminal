@@ -1,0 +1,28 @@
+{
+    "decision_id":  "collector-identity-TCGCSV-2494-490512-v1",
+    "decision_version":  "1.0.0",
+    "decided_at_utc":  "2026-07-31T18:48:17.0712628+00:00",
+    "investment_product_id":  "TCGCSV-2494-490512",
+    "approved_tcgplayer_product_id":  "490512",
+    "set_name":  "Throne of Eldraine",
+    "registry_box_name":  "Throne of Eldraine Collector Booster Display",
+    "approved_product_name":  "Throne of Eldraine - Collector Booster Case",
+    "final_disposition":  "EXCLUDE_CONFIGURATION",
+    "exclusion_reason":  "Approved source identity is Collector Booster Case, not an individual Collector Booster Display.",
+    "model_admission_authorized":  false,
+    "history_admission_authorized":  false,
+    "forecast_authorized":  false,
+    "purchase_recommendation_authorized":  false,
+    "registry_row_deleted":  false,
+    "registry_row_reclassified":  false,
+    "governing_action":  "Exclude from Collector Booster Display certification and model reconciliation.",
+    "evidence":  [
+                     "approval_status=review_required",
+                     "approval_method=needs_manual_review_v9",
+                     "candidate_score=-800.0",
+                     "market_price=nan",
+                     "exact_model_rows=0",
+                     "history_rows=0",
+                     "approved_product_name contains Collector Booster Case"
+                 ]
+}

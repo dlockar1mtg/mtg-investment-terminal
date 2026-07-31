@@ -1,0 +1,29 @@
+{
+  "generated_at": "2026-07-30T16:58:45.918457",
+  "metric_products": 989,
+  "eligible_for_calibrated_ranking": 180,
+  "ranked_products": 180,
+  "shortlist_products": 50,
+  "manual_review_or_excluded": 809,
+  "shortlist_by_class": {
+    "COLLECTOR_BOOSTER_BOX": 15,
+    "PRE_COLLECTOR_BOOSTER_BOX": 15,
+    "SECRET_LAIR": 20
+  },
+  "tier_counts": {
+    "A": 2,
+    "B": 34,
+    "C": 144
+  },
+  "entry_state_counts": {
+    "CURRENT_LISTING_ABOVE_ENTRY_LIMIT": 39,
+    "CURRENT_LISTING_WITHIN_ENTRY_LIMIT": 11
+  },
+  "important_limitations": [
+    "The calibrated score is historical and relative within product class.",
+    "The maximum entry price is preliminary, not a live purchase instruction.",
+    "eBay values are listing evidence and may not represent completed transactions.",
+    "Every shortlisted product requires exact identity, condition, shipping, tax, and seller verification.",
+    "No result is a certified forward forecast."
+  ]
+}

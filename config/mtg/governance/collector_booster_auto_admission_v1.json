@@ -1,0 +1,78 @@
+{
+  "policy_name": "collector_booster_auto_admission",
+  "policy_version": "1.0.0",
+  "lane": "COLLECTOR_BOOSTER_BOX",
+  "enabled": true,
+  "allowed_product_types": [
+    "Collector Booster Display"
+  ],
+  "required_approval_statuses": [
+    "approved"
+  ],
+  "allowed_discovery_methods": [
+    "auto_high_confidence_v9",
+    "governed_auto_admission_v1"
+  ],
+  "minimum_candidate_score": 200.0,
+  "minimum_market_price": 1.0,
+  "required_fields": [
+    "investment_product_id",
+    "set_name",
+    "box_name",
+    "approved_tcgplayer_product_id",
+    "approved_product_name",
+    "tcgcsv_category_id",
+    "tcgcsv_group_id",
+    "investment_product_type",
+    "approval_status",
+    "approval_method"
+  ],
+  "identity_conflict_terms": [
+    "case",
+    "master case",
+    "single pack",
+    "booster pack",
+    "sample pack",
+    "display case",
+    "bundle",
+    "collector sample"
+  ],
+  "future_release_policy": {
+    "allow_admission": true,
+    "forecast_status": "HISTORY_ACCUMULATING",
+    "purchase_recommendation_authorized": false
+  },
+  "history_quality_bands": {
+    "NONE": {
+      "minimum_observations": 0,
+      "maximum_observations": 1,
+      "direct_forecast_allowed": false
+    },
+    "VERY_LIMITED": {
+      "minimum_observations": 2,
+      "maximum_observations": 4,
+      "direct_forecast_allowed": false
+    },
+    "LIMITED": {
+      "minimum_observations": 5,
+      "maximum_observations": 11,
+      "direct_forecast_allowed": false
+    },
+    "MODERATE": {
+      "minimum_observations": 12,
+      "maximum_observations": 29,
+      "direct_forecast_allowed": true
+    },
+    "STRONG": {
+      "minimum_observations": 30,
+      "maximum_observations": null,
+      "direct_forecast_allowed": true
+    }
+  },
+  "change_control": {
+    "product_addition_is_methodology_change": false,
+    "policy_change_requires_approval": true,
+    "threshold_change_requires_approval": true,
+    "identity_rule_change_requires_approval": true
+  }
+}

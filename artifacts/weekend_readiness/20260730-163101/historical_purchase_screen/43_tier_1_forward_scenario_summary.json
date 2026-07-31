@@ -1,0 +1,55 @@
+{
+  "generated_at": "2026-07-30T17:19:34.520978",
+  "projection_as_of_date": "2026-07-30",
+  "tier_1_input_products": 783,
+  "scenario_projection_products": 779,
+  "review_required_products": 4,
+  "priority_projection_products": 112,
+  "class_counts": {
+    "COLLECTOR_BOOSTER_BOX": 41,
+    "PRE_COLLECTOR_BOOSTER_BOX": 111,
+    "SECRET_LAIR": 627
+  },
+  "confidence_counts": {
+    "HIGH": 459,
+    "LOW": 91,
+    "MODERATE": 118,
+    "MODERATE_HIGH": 111
+  },
+  "projection_state_counts": {
+    "CURRENT_VALUE_REFRESH_REQUIRED": 14,
+    "ELEVATED_UNCERTAINTY": 111,
+    "SCENARIO_MODEL_READY": 577,
+    "SCENARIO_REVIEW_REQUIRED": 77
+  },
+  "base_forward_cagr_summary_by_class": {
+    "COLLECTOR_BOOSTER_BOX": {
+      "minimum_pct": -3.69,
+      "median_pct": 9.78,
+      "maximum_pct": 12.2
+    },
+    "PRE_COLLECTOR_BOOSTER_BOX": {
+      "minimum_pct": -3.43,
+      "median_pct": 5.69,
+      "maximum_pct": 10.11
+    },
+    "SECRET_LAIR": {
+      "minimum_pct": -7.0,
+      "median_pct": 4.3,
+      "maximum_pct": 11.87
+    }
+  },
+  "output_files": {
+    "all_tier_1_scenarios": "artifacts\\weekend_readiness\\20260730-163101\\historical_purchase_screen\\40_tier_1_forward_scenario_projections.csv",
+    "review_required": "artifacts\\weekend_readiness\\20260730-163101\\historical_purchase_screen\\41_tier_1_projection_review_required.csv",
+    "priority_view": "artifacts\\weekend_readiness\\20260730-163101\\historical_purchase_screen\\42_tier_1_projection_priority_view.csv"
+  },
+  "important_interpretation": [
+    "These outputs are scenario projections, not certified forecasts.",
+    "Historical CAGR is moderated and not directly extended forward.",
+    "Conservative, base, and high rates are class anchored.",
+    "Current market values must be verified before purchase decisions.",
+    "Projected values exclude fees, taxes, shipping, spreads, and liquidity effects.",
+    "Forecast confidence measures input evidence strength, not probability of achieving the projected return."
+  ]
+}

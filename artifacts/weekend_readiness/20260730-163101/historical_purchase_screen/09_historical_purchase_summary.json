@@ -1,0 +1,45 @@
+{
+  "generated_at": "2026-07-30T16:55:55.912916",
+  "as_of_date": "2026-07-30",
+  "history_source": "artifacts\\weekend_readiness\\20260730-163101\\historical_purchase_screen\\25_trusted_canonical_daily_history.csv",
+  "history_input_rows": 21885,
+  "valid_product_date_rows": 21885,
+  "products_analyzed": 989,
+  "invalid_history_rows": 0,
+  "candidate_products": 182,
+  "manual_review_products": 389,
+  "not_purchase_ready_products": 418,
+  "state_counts": {
+    "HISTORICALLY_STABLE": 35,
+    "HISTORICALLY_STRONG": 147,
+    "INSUFFICIENT_HISTORY": 36,
+    "MANUAL_REVIEW_REQUIRED": 368,
+    "NOT_PURCHASE_READY": 382,
+    "POSITIVE_BUT_VOLATILE": 20,
+    "PRICE_VERIFICATION_REQUIRED": 1
+  },
+  "product_class_counts": {
+    "COLLECTOR_BOOSTER_BOX": 49,
+    "PRE_COLLECTOR_BOOSTER_BOX": 115,
+    "SECRET_LAIR": 825
+  },
+  "candidate_class_counts": {
+    "COLLECTOR_BOOSTER_BOX": 40,
+    "PRE_COLLECTOR_BOOSTER_BOX": 52,
+    "SECRET_LAIR": 90
+  },
+  "history_class_counts": {
+    "LONG_HISTORY": 577,
+    "MEDIUM_HISTORY": 206,
+    "MINIMAL_HISTORY": 10,
+    "SHORT_HISTORY": 155,
+    "SINGLE_DATE": 41
+  },
+  "important_limitations": [
+    "This is historical performance analysis, not a forecast.",
+    "Historical returns do not establish future returns.",
+    "Latest historical prices may not equal executable purchase prices.",
+    "Candidate products require exact current-price and identity verification.",
+    "Fees, shipping, taxes, spreads, and resale liquidity are not yet applied."
+  ]
+}

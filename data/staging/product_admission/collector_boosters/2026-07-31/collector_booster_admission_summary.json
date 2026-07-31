@@ -1,0 +1,17 @@
+{
+    "generated_at_utc":  "2026-07-31T18:16:21.8344593+00:00",
+    "lane":  "COLLECTOR_BOOSTER_BOX",
+    "candidate_count":  1,
+    "candidate_ids":  [
+                          "TCGCSV-24766-706142"
+                      ],
+    "candidate_names":  [
+                            "Star Trek Collector Booster Display"
+                        ],
+    "admission_status":  "REVIEW_REQUIRED",
+    "identity_discovery_status":  "HIGH_CONFIDENCE_CANDIDATE",
+    "production_registry_mutation_authorized":  false,
+    "forecast_certification_eligible":  false,
+    "purchase_recommendation_authorized":  false,
+    "reason":  "Live discovery added a product not present in the certified production registry. Explicit admission approval and recertification are required."
+}

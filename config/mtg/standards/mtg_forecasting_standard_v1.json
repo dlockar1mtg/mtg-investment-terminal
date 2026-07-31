@@ -1,0 +1,177 @@
+{
+  "standard_name": "MTG Forecasting and Decision Standard",
+  "standard_version": "1.0.0",
+  "standard_status": "CANONICAL_BASELINE",
+  "change_control": {
+    "method_changes_require_approval": true,
+    "threshold_changes_require_approval": true,
+    "weight_changes_require_approval": true,
+    "source_hierarchy_changes_require_approval": true,
+    "product_universe_changes_require_governance": true,
+    "material_changes_require_recertification": true
+  },
+  "governing_principles": [
+    "Every governed product receives an explicit method route or deferral reason.",
+    "Insufficient direct history does not automatically prohibit forecasting.",
+    "Comparable products are approved forecast evidence.",
+    "Comparable forecasts must identify the comparables and selection basis.",
+    "Direct-history quarantine applies to the method, not automatically to the product.",
+    "Identity and current-price failures remain fail-closed.",
+    "Confidence and uncertainty must reflect the evidence actually used.",
+    "Forecast outputs must disclose method, evidence, limitations, and version.",
+    "Passing automated tests is necessary but not sufficient for certification.",
+    "Purchase authorization remains separate from forecast generation."
+  ],
+  "forecast_horizons_years": [
+    1,
+    3,
+    5
+  ],
+  "scenario_names": [
+    "DOWNSIDE",
+    "BASE",
+    "UPSIDE"
+  ],
+  "required_eligibility_fields": [
+    "direct_history_method_allowed",
+    "comparable_method_allowed",
+    "forecast_output_allowed",
+    "purchase_analysis_allowed",
+    "purchase_recommendation_authorized"
+  ],
+  "prohibited_ambiguous_interpretations": {
+    "direct_history_method_allowed_false": "Must not be interpreted as all forecasting prohibited.",
+    "history_quarantined": "Must not be interpreted as permanent product rejection."
+  },
+  "common_methods": [
+    "DIRECT_HISTORY_CALIBRATED",
+    "DIRECT_HISTORY_LIMITED",
+    "COMPARABLE_PRODUCT_ADJUSTED",
+    "FUNDAMENTAL_COMPARABLE_HYBRID",
+    "DEFERRED_IDENTITY",
+    "DEFERRED_MISSING_PRICE",
+    "DEFERRED_INSUFFICIENT_EVIDENCE"
+  ],
+  "lanes": {
+    "COLLECTOR_BOOSTER": {
+      "lane_status": "IMPLEMENTATION_IN_PROGRESS",
+      "supported_methods": [
+        "DIRECT_HISTORY_CALIBRATED",
+        "DIRECT_HISTORY_LIMITED",
+        "COMPARABLE_PRODUCT_ADJUSTED",
+        "FUNDAMENTAL_COMPARABLE_HYBRID",
+        "DEFERRED_IDENTITY",
+        "DEFERRED_MISSING_PRICE",
+        "DEFERRED_INSUFFICIENT_EVIDENCE"
+      ],
+      "comparable_factors": [
+        "sealed_product_configuration",
+        "release_era",
+        "lifecycle_stage",
+        "print_structure",
+        "supply_profile",
+        "franchise_strength",
+        "gameplay_demand",
+        "premium_contents",
+        "initial_price_band",
+        "current_price_band",
+        "liquidity",
+        "reprint_exposure",
+        "historical_market_behavior"
+      ]
+    },
+    "PRE_COLLECTOR_BOOSTER": {
+      "lane_status": "SPECIFICATION_REQUIRED",
+      "supported_methods": [
+        "DIRECT_HISTORY_CALIBRATED",
+        "SPARSE_HISTORY_ROBUST",
+        "COMPARABLE_ERA_ADJUSTED",
+        "SUPPLY_SCARCITY_HYBRID",
+        "DEFERRED_IDENTITY",
+        "DEFERRED_PRICE_QUALITY",
+        "DEFERRED_INSUFFICIENT_EVIDENCE"
+      ],
+      "lane_specific_factors": [
+        "sealed_supply_survival",
+        "product_configuration",
+        "release_era",
+        "observation_sparsity",
+        "liquidity",
+        "reprint_exposure",
+        "nostalgia_demand",
+        "set_significance"
+      ]
+    },
+    "SECRET_LAIR": {
+      "lane_status": "SPECIFICATION_REQUIRED",
+      "supported_methods": [
+        "DIRECT_SECONDARY_HISTORY",
+        "COMPARABLE_DROP_ADJUSTED",
+        "SINGLES_VALUE_ANCHORED",
+        "IP_PREMIUM_HYBRID",
+        "ARTIST_PREMIUM_HYBRID",
+        "DEFERRED_CONFIGURATION",
+        "DEFERRED_PRICE_QUALITY",
+        "DEFERRED_INSUFFICIENT_EVIDENCE"
+      ],
+      "lane_specific_factors": [
+        "foil_configuration",
+        "drop_type",
+        "card_count",
+        "intellectual_property",
+        "artist",
+        "purchase_window",
+        "print_to_demand_status",
+        "bundle_status",
+        "bonus_card_uncertainty",
+        "singles_equivalent_value",
+        "reprint_exposure",
+        "release_recency",
+        "liquidity"
+      ]
+    }
+  },
+  "required_product_output_fields": [
+    "investment_product_id",
+    "product_name",
+    "product_lane",
+    "identity_status",
+    "current_price",
+    "current_price_date",
+    "forecast_method",
+    "forecast_method_version",
+    "method_reason",
+    "direct_history_status",
+    "direct_history_quality_band",
+    "direct_history_observations",
+    "comparable_group_id",
+    "comparable_products_used",
+    "comparable_selection_basis",
+    "direct_history_weight",
+    "comparable_weight",
+    "fundamental_weight",
+    "forecast_1y",
+    "forecast_3y",
+    "forecast_5y",
+    "downside_1y",
+    "base_1y",
+    "upside_1y",
+    "downside_3y",
+    "base_3y",
+    "upside_3y",
+    "downside_5y",
+    "base_5y",
+    "upside_5y",
+    "confidence_score",
+    "confidence_class",
+    "uncertainty_width",
+    "liquidity_class",
+    "limitations",
+    "source_summary",
+    "direct_history_method_allowed",
+    "comparable_method_allowed",
+    "forecast_output_allowed",
+    "purchase_analysis_allowed",
+    "purchase_recommendation_authorized"
+  ]
+}

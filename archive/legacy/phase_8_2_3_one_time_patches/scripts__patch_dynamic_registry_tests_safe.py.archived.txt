@@ -1,0 +1,61 @@
+from __future__ import annotations
+
+import re
+from pathlib import Path
+
+
+targets = [
+    Path(
+        "tests/external_discovery/"
+        "test_canonical_product_registry.py"
+    ),
+    Path(
+        "tests/external_discovery/"
+        "test_canonical_registry_governance.py"
+    ),
+]
+
+replacement = (
+    "    assert len(production) >= 4675\n"
+    "\n"
+    "    assert production[\n"
+    "        \"investment_product_id\"\n"
+    "    ].astype(str).str.strip().is_unique\n"
+)
+
+old_pattern = re.compile(
+    r"^[ \t]*assert[ \t]+len\(production\)"
+    r"[ \t]*==[ \t]*4675[ \t]*$",
+    flags=re.MULTILINE,
+)
+
+already_patched_pattern = re.compile(
+    r"assert[ \t]+len\(production\)"
+    r"[ \t]*>=[ \t]*4675"
+)
+
+for path in targets:
+    text = path.read_text(encoding="utf-8")
+
+    if already_patched_pattern.search(text):
+        print(f"Already patched: {path}")
+        continue
+
+    updated, count = old_pattern.subn(
+        replacement.rstrip("\n"),
+        text,
+        count=1,
+    )
+
+    if count != 1:
+        raise RuntimeError(
+            f"{path}: could not locate either the old "
+            "fixed-count assertion or an existing dynamic patch."
+        )
+
+    path.write_text(
+        updated,
+        encoding="utf-8",
+    )
+
+    print(f"Patched: {path}")

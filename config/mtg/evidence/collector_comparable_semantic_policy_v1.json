@@ -1,0 +1,107 @@
+{
+  "policy_name": "collector_comparable_semantic_compatibility",
+  "policy_version": "1.0.0",
+  "lane": "COLLECTOR_BOOSTER",
+  "product_family_rules": [
+    {
+      "class": "MODERN_HORIZONS",
+      "patterns": [
+        "MODERN HORIZONS"
+      ]
+    },
+    {
+      "class": "MASTERS",
+      "patterns": [
+        "MASTERS"
+      ]
+    },
+    {
+      "class": "COMMANDER",
+      "patterns": [
+        "COMMANDER LEGENDS"
+      ]
+    },
+    {
+      "class": "REMASTERED",
+      "patterns": [
+        "REMASTERED"
+      ]
+    },
+    {
+      "class": "UNIVERSES_BEYOND",
+      "patterns": [
+        "UNIVERSES BEYOND",
+        "LORD OF THE RINGS",
+        "DOCTOR WHO",
+        "FALLOUT",
+        "ASSASSIN'S CREED",
+        "FINAL FANTASY",
+        "SPIDER-MAN",
+        "MARVEL",
+        "AVATAR",
+        "TEENAGE MUTANT NINJA TURTLES",
+        "THE HOBBIT",
+        "STAR TREK"
+      ]
+    },
+    {
+      "class": "CORE_OR_FOUNDATION",
+      "patterns": [
+        "CORE SET",
+        "FOUNDATIONS"
+      ]
+    },
+    {
+      "class": "SPECIALTY",
+      "patterns": [
+        "UNFINITY",
+        "AFTERMATH"
+      ]
+    },
+    {
+      "class": "STANDARD_MAGIC",
+      "patterns": []
+    }
+  ],
+  "edition_rules": [
+    {
+      "class": "JAPANESE_EDITION",
+      "patterns": [
+        "(JAPANESE)",
+        "JAPANESE"
+      ]
+    },
+    {
+      "class": "SPECIAL_EDITION",
+      "patterns": [
+        "SPECIAL EDITION"
+      ]
+    },
+    {
+      "class": "STANDARD_ENGLISH",
+      "patterns": []
+    }
+  ],
+  "hard_compatibility_rules": {
+    "japanese_target_requires_japanese_or_same_set_peer": true,
+    "special_edition_prefers_same_set_or_same_family": true,
+    "licensed_ip_target_requires_minimum_licensed_ip_peers": 2,
+    "same_product_identity_excluded": true
+  },
+  "soft_compatibility_rules": {
+    "same_product_family_bonus": 1.0,
+    "different_product_family_partial_credit": 0.0,
+    "same_franchise_class_bonus": 1.0,
+    "different_franchise_class_partial_credit": 0.0,
+    "same_premium_class_bonus": 1.0,
+    "different_premium_class_partial_credit": 0.0,
+    "same_reprint_class_bonus": 1.0,
+    "different_reprint_class_partial_credit": 0.0
+  },
+  "rules": {
+    "semantic_constraints_cannot_be_bypassed_by_high_price_similarity": true,
+    "semantic_failure_requires_review": true,
+    "projection_authorized": false,
+    "purchase_recommendation_authorized": false
+  }
+}

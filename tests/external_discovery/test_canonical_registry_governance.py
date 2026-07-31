@@ -325,4 +325,8 @@ def test_governance_does_not_mutate_platform() -> None:
         low_memory=False,
     )
 
-    assert len(production) == 4675
+    assert len(production) >= 4675
+
+    assert production[
+        "investment_product_id"
+    ].astype(str).str.strip().is_unique

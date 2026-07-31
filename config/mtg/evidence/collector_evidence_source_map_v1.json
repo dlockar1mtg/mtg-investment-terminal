@@ -1,0 +1,167 @@
+{
+  "map_name": "collector_evidence_source_map",
+  "map_version": "1.0.0",
+  "lane": "COLLECTOR_BOOSTER",
+  "primary_source": {
+    "path": "data/staging/purchase_refresh/2026-07-31/collector_history_rebuilt/product_master_model_input.csv",
+    "source_status": "CANDIDATE_GOVERNED_PROXY_SOURCE",
+    "identity_field": "investment_product_id"
+  },
+  "supporting_sources": [
+    {
+      "path": "data/product_master/investment_products.csv",
+      "purpose": "identity_and_product_metadata"
+    },
+    {
+      "path": "data/operations/collector_forecast_method_routing/candidate_v1_0_0/collector_forecast_method_routes.csv",
+      "purpose": "governed_method_route"
+    },
+    {
+      "path": "data/operations/collector_booster_history_certification/candidate_v1_0_0/collector_history_product_certification.csv",
+      "purpose": "history_quality_and_observation_evidence"
+    }
+  ],
+  "field_mappings": [
+    {
+      "source_field": "supply_score",
+      "target_field": "supply_score",
+      "signal_group": "SUPPLY",
+      "evidence_type": "MARKET_PROXY",
+      "required": true
+    },
+    {
+      "source_field": "scarcity_signal_score",
+      "target_field": "scarcity_signal_score",
+      "signal_group": "SUPPLY",
+      "evidence_type": "MARKET_PROXY",
+      "required": true
+    },
+    {
+      "source_field": "inventory_signal_score",
+      "target_field": "inventory_signal_score",
+      "signal_group": "SUPPLY",
+      "evidence_type": "MARKET_PROXY",
+      "required": true
+    },
+    {
+      "source_field": "inventory_risk_proxy",
+      "target_field": "inventory_risk_proxy",
+      "signal_group": "SUPPLY",
+      "evidence_type": "MARKET_PROXY",
+      "required": false
+    },
+    {
+      "source_field": "supply_dump_risk",
+      "target_field": "supply_dump_risk",
+      "signal_group": "SUPPLY",
+      "evidence_type": "MARKET_PROXY",
+      "required": false
+    },
+    {
+      "source_field": "demand_score",
+      "target_field": "demand_score",
+      "signal_group": "DEMAND",
+      "evidence_type": "MARKET_PROXY",
+      "required": true
+    },
+    {
+      "source_field": "real_demand_score",
+      "target_field": "real_demand_score",
+      "signal_group": "DEMAND",
+      "evidence_type": "MARKET_PROXY",
+      "required": true
+    },
+    {
+      "source_field": "sales_velocity_score",
+      "target_field": "sales_velocity_score",
+      "signal_group": "DEMAND",
+      "evidence_type": "MARKET_PROXY",
+      "required": true
+    },
+    {
+      "source_field": "demand_signal_confidence",
+      "target_field": "demand_signal_confidence",
+      "signal_group": "DEMAND",
+      "evidence_type": "MARKET_PROXY",
+      "required": false
+    },
+    {
+      "source_field": "mc_expected_value",
+      "target_field": "expected_value_support_score",
+      "signal_group": "DEMAND",
+      "evidence_type": "MODEL_DERIVED",
+      "required": false
+    },
+    {
+      "source_field": "liquidity_score",
+      "target_field": "liquidity_score",
+      "signal_group": "LIQUIDITY",
+      "evidence_type": "MARKET_PROXY",
+      "required": true
+    },
+    {
+      "source_field": "liquidity_proxy_score",
+      "target_field": "liquidity_proxy_score",
+      "signal_group": "LIQUIDITY",
+      "evidence_type": "MARKET_PROXY",
+      "required": false
+    },
+    {
+      "source_field": "liquidity_risk",
+      "target_field": "liquidity_risk",
+      "signal_group": "LIQUIDITY",
+      "evidence_type": "MODEL_DERIVED",
+      "required": false
+    },
+    {
+      "source_field": "current_price",
+      "target_field": "current_price",
+      "signal_group": "PRICE",
+      "evidence_type": "DIRECT",
+      "required": true
+    },
+    {
+      "source_field": "market_price",
+      "target_field": "market_price",
+      "signal_group": "PRICE",
+      "evidence_type": "DIRECT",
+      "required": false
+    },
+    {
+      "source_field": "annualized_volatility",
+      "target_field": "annualized_volatility",
+      "signal_group": "PRICE",
+      "evidence_type": "MODEL_DERIVED",
+      "required": false
+    },
+    {
+      "source_field": "return_365d",
+      "target_field": "return_365d",
+      "signal_group": "PRICE",
+      "evidence_type": "MODEL_DERIVED",
+      "required": false
+    },
+    {
+      "source_field": "investment_product_type",
+      "target_field": "product_configuration",
+      "signal_group": "COMPARABLE",
+      "evidence_type": "DIRECT",
+      "required": true
+    }
+  ],
+  "prohibited_claims": [
+    "Exact print-run quantity",
+    "Direct transaction count unless independently sourced",
+    "Direct listing count unless independently sourced",
+    "Direct marketplace inventory unless independently sourced",
+    "Direct sell-through rate unless independently sourced"
+  ],
+  "rules": {
+    "scores_must_be_numeric": true,
+    "scores_must_be_finite": true,
+    "unknown_direct_metrics_remain_blank": true,
+    "proxy_scores_must_be_labeled_as_proxies": true,
+    "source_field_must_exist_before_mapping": true,
+    "purchase_recommendation_authorized": false
+  }
+}

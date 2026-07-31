@@ -1,0 +1,34 @@
+from pathlib import Path
+
+
+path = Path(
+    "scripts/audit_collector_display_universe.py"
+)
+
+text = path.read_text(encoding="utf-8")
+
+old = '''    "display case",
+    "case of",
+    "mastercase",
+    "booster pack",
+'''
+
+new = '''    "display case",
+    "collector booster case",
+    "booster case",
+    "case of",
+    "mastercase",
+    "booster pack",
+'''
+
+if text.count(old) != 1:
+    raise RuntimeError(
+        "Could not locate universe exclusion term block."
+    )
+
+path.write_text(
+    text.replace(old, new),
+    encoding="utf-8",
+)
+
+print("Universe audit case terms updated.")

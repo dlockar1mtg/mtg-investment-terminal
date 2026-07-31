@@ -1,0 +1,21 @@
+{
+    "generated_at":  "2026-07-31T13:17:46.7842859-05:00",
+    "lane":  "COLLECTOR_BOOSTER_BOX",
+    "candidate_version":  "1.0.0",
+    "refreshed_discovered_products":  51,
+    "production_admitted_products":  50,
+    "admission_pending_products":  1,
+    "fresh_price_products":  50,
+    "history_bridge_pass_products":  49,
+    "frequency_pass_products":  49,
+    "volatility_pass_products":  43,
+    "forecast_present_products":  46,
+    "forecast_order_pass_products":  50,
+    "extreme_spread_products":  19,
+    "candidate_technical_pass_products":  43,
+    "admission_pending_ids":  [
+                                  "TCGCSV-24766-706142"
+                              ],
+    "certification_status":  "UNIVERSAL_HISTORY_SEMANTIC_REVIEW_REQUIRED",
+    "purchase_recommendations_authorized":  false
+}

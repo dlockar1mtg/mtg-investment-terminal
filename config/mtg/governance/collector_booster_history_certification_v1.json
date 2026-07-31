@@ -1,0 +1,89 @@
+{
+  "policy_name": "collector_booster_history_certification",
+  "policy_version": "1.0.0",
+  "lane": "COLLECTOR_BOOSTER_BOX",
+  "identity_field": "investment_product_id",
+  "history_identity_field": "investment_product_id",
+  "price_field": "consolidated_market_price",
+  "date_field": "observation_date",
+  "current_price_field": "current_price",
+  "history_quality_bands": {
+    "NONE": {
+      "minimum_distinct_dates": 0,
+      "maximum_distinct_dates": 1,
+      "direct_forecast_allowed": false
+    },
+    "VERY_LIMITED": {
+      "minimum_distinct_dates": 2,
+      "maximum_distinct_dates": 4,
+      "direct_forecast_allowed": false
+    },
+    "LIMITED": {
+      "minimum_distinct_dates": 5,
+      "maximum_distinct_dates": 11,
+      "direct_forecast_allowed": false
+    },
+    "MODERATE": {
+      "minimum_distinct_dates": 12,
+      "maximum_distinct_dates": 29,
+      "direct_forecast_allowed": true
+    },
+    "STRONG": {
+      "minimum_distinct_dates": 30,
+      "maximum_distinct_dates": null,
+      "direct_forecast_allowed": true
+    }
+  },
+  "quality_thresholds": {
+    "maximum_current_vs_history_discontinuity_pct": 50.0,
+    "maximum_single_period_increase_pct": 100.0,
+    "maximum_single_period_decrease_pct": -50.0,
+    "maximum_annualized_volatility": 1.0,
+    "minimum_positive_price": 1.0,
+    "maximum_duplicate_date_rows": 0
+  },
+  "certification_rules": {
+    "require_unique_product_identity": true,
+    "require_positive_prices": true,
+    "require_monotonic_dates": true,
+    "require_no_duplicate_dates": true,
+    "require_explainable_discontinuities": true,
+    "unsupported_forecasts_fail_closed": true
+  },
+  "allowed_statuses": [
+    "CERTIFIED",
+    "CERTIFIED_LIMITED",
+    "HISTORY_ACCUMULATING",
+    "QUARANTINED"
+  ],
+  "change_control": {
+    "new_observations_are_methodology_changes": false,
+    "quality_threshold_changes_require_approval": true,
+    "band_changes_require_approval": true,
+    "price_field_changes_require_approval": true
+  },
+  "product_universe": {
+    "required_product_type": "Collector Booster Display",
+    "required_name_terms": [
+      "collector booster",
+      "display"
+    ],
+    "excluded_name_terms": [
+      "master case",
+      "box case",
+      "display case",
+      "case of",
+      "mastercase",
+      "booster pack",
+      "single pack",
+      "sample pack",
+      "collector sample",
+      "bundle",
+      "collector booster case",
+      "booster case"
+    ],
+    "require_model_input_reconciliation": true,
+    "allow_filtered_registry_ids_missing_from_model": false,
+    "allow_model_ids_missing_from_filtered_registry": false
+  }
+}

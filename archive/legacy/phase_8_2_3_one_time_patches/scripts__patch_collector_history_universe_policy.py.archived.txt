@@ -1,0 +1,42 @@
+import json
+from pathlib import Path
+
+
+path = Path(
+    "config/mtg/governance/"
+    "collector_booster_history_certification_v1.json"
+)
+
+payload = json.loads(
+    path.read_text(encoding="utf-8-sig")
+)
+
+payload["product_universe"] = {
+    "required_product_type": "Collector Booster Display",
+    "required_name_terms": [
+        "collector booster",
+        "display"
+    ],
+    "excluded_name_terms": [
+        "master case",
+        "box case",
+        "display case",
+        "case of",
+        "mastercase",
+        "booster pack",
+        "single pack",
+        "sample pack",
+        "collector sample",
+        "bundle"
+    ],
+    "require_model_input_reconciliation": True,
+    "allow_filtered_registry_ids_missing_from_model": False,
+    "allow_model_ids_missing_from_filtered_registry": False
+}
+
+path.write_text(
+    json.dumps(payload, indent=2),
+    encoding="utf-8"
+)
+
+print("History universe policy installed.")

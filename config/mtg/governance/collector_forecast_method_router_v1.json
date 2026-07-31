@@ -1,0 +1,80 @@
+{
+  "policy_name": "collector_forecast_method_router",
+  "policy_version": "1.0.0",
+  "standard_name": "MTG Forecasting and Decision Standard",
+  "standard_version": "1.0.0",
+  "lane": "COLLECTOR_BOOSTER",
+  "supported_methods": [
+    "DIRECT_HISTORY_CALIBRATED",
+    "DIRECT_HISTORY_LIMITED",
+    "COMPARABLE_PRODUCT_ADJUSTED",
+    "FUNDAMENTAL_COMPARABLE_HYBRID",
+    "DEFERRED_IDENTITY",
+    "DEFERRED_MISSING_PRICE",
+    "DEFERRED_INSUFFICIENT_EVIDENCE"
+  ],
+  "routing_rules": {
+    "CERTIFIED": {
+      "forecast_method": "DIRECT_HISTORY_CALIBRATED",
+      "direct_history_method_allowed": true,
+      "comparable_method_allowed": true,
+      "forecast_output_allowed": true,
+      "purchase_analysis_allowed": true
+    },
+    "CERTIFIED_LIMITED": {
+      "forecast_method": "DIRECT_HISTORY_LIMITED",
+      "direct_history_method_allowed": true,
+      "comparable_method_allowed": true,
+      "forecast_output_allowed": true,
+      "purchase_analysis_allowed": true
+    },
+    "QUARANTINED": {
+      "forecast_method": "COMPARABLE_PRODUCT_ADJUSTED",
+      "direct_history_method_allowed": false,
+      "comparable_method_allowed": true,
+      "forecast_output_allowed": true,
+      "purchase_analysis_allowed": true
+    },
+    "HISTORY_ACCUMULATING": {
+      "forecast_method": "COMPARABLE_PRODUCT_ADJUSTED",
+      "direct_history_method_allowed": false,
+      "comparable_method_allowed": true,
+      "forecast_output_allowed": true,
+      "purchase_analysis_allowed": true
+    }
+  },
+  "fail_closed_rules": {
+    "identity_invalid_method": "DEFERRED_IDENTITY",
+    "missing_or_nonpositive_current_price_method": "DEFERRED_MISSING_PRICE",
+    "missing_history_certification_method": "DEFERRED_INSUFFICIENT_EVIDENCE",
+    "unknown_history_status_method": "DEFERRED_INSUFFICIENT_EVIDENCE"
+  },
+  "identity_valid_statuses": [
+    "VERIFIED",
+    "APPROVED",
+    "GOVERNED",
+    "ACTIVE"
+  ],
+  "required_output_fields": [
+    "investment_product_id",
+    "product_name",
+    "product_lane",
+    "identity_status",
+    "current_price",
+    "history_certification_status",
+    "history_quality_band",
+    "direct_history_method_allowed",
+    "comparable_method_allowed",
+    "forecast_output_allowed",
+    "purchase_analysis_allowed",
+    "purchase_recommendation_authorized",
+    "forecast_method",
+    "forecast_method_version",
+    "method_reason",
+    "comparable_group_required",
+    "limitations",
+    "standard_name",
+    "standard_version"
+  ],
+  "purchase_recommendation_authorized": false
+}

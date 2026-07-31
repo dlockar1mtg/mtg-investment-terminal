@@ -1,0 +1,856 @@
+from __future__ import annotations
+
+import argparse
+import csv
+import hashlib
+import json
+import math
+from collections import Counter, defaultdict
+from datetime import datetime, timezone
+from pathlib import Path
+from statistics import median
+from typing import Any
+
+
+ROOT = Path(__file__).resolve().parents[1]
+
+DEFAULT_POLICY = (
+    ROOT
+    / "config"
+    / "mtg"
+    / "governance"
+    / "collector_booster_history_certification_v1.json"
+)
+
+DEFAULT_REGISTRY = (
+    ROOT
+    / "data"
+    / "product_master"
+    / "investment_products.csv"
+)
+
+DEFAULT_MODEL = (
+    ROOT
+    / "data"
+    / "product_master"
+    / "product_master_model_input.csv"
+)
+
+DEFAULT_HISTORY = (
+    ROOT
+    / "data"
+    / "operations"
+    / "mtg_universal_history_ledger"
+    / "universal_mtg_daily_consolidated_ledger.csv"
+)
+
+DEFAULT_OUTPUT = (
+    ROOT
+    / "data"
+    / "operations"
+    / "collector_booster_history_certification"
+)
+
+
+def clean(value: Any) -> str:
+    return str(value or "").strip()
+
+
+def number(value: Any) -> float | None:
+    text = clean(value).replace("$", "").replace(",", "")
+
+    if not text:
+        return None
+
+    try:
+        value_float = float(text)
+    except ValueError:
+        return None
+
+    if not math.isfinite(value_float):
+        return None
+
+    return value_float
+
+
+def parse_date(value: Any) -> datetime | None:
+    text = clean(value)
+
+    if not text:
+        return None
+
+    normalized = text.replace("Z", "+00:00")
+
+    try:
+        return datetime.fromisoformat(normalized)
+    except ValueError:
+        pass
+
+    for pattern in (
+        "%Y-%m-%d",
+        "%m/%d/%Y",
+        "%Y-%m-%d %H:%M:%S",
+    ):
+        try:
+            return datetime.strptime(text, pattern)
+        except ValueError:
+            continue
+
+    return None
+
+
+def read_csv(path: Path) -> list[dict[str, str]]:
+    if not path.exists():
+        raise FileNotFoundError(path)
+
+    with path.open("r", encoding="utf-8-sig", newline="") as handle:
+        return list(csv.DictReader(handle))
+
+
+def write_csv(
+    path: Path,
+    rows: list[dict[str, Any]],
+    fieldnames: list[str] | None = None,
+) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+
+    if fieldnames is None:
+        fieldnames = []
+
+        for row in rows:
+            for key in row:
+                if key not in fieldnames:
+                    fieldnames.append(key)
+
+    with path.open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.DictWriter(
+            handle,
+            fieldnames=fieldnames,
+            extrasaction="ignore",
+        )
+        writer.writeheader()
+        writer.writerows(rows)
+
+
+def sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+
+    with path.open("rb") as handle:
+        for block in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(block)
+
+    return digest.hexdigest().upper()
+
+
+def choose_key(
+    row: dict[str, str],
+) -> tuple[str, str]:
+    investment_id = clean(row.get("investment_product_id"))
+
+    if investment_id:
+        return "investment_product_id", investment_id
+
+    tcgplayer_id = clean(
+        row.get("tcgplayer_product_id")
+        or row.get("approved_tcgplayer_product_id")
+    )
+
+    return "tcgplayer_product_id", tcgplayer_id
+
+
+def choose_price(row: dict[str, str]) -> float | None:
+    for field in (
+        "consolidated_market_price",
+        "market_price",
+        "price",
+        "current_price",
+    ):
+        parsed = number(row.get(field))
+
+        if parsed is not None:
+            return parsed
+
+    return None
+
+
+def quality_band(
+    distinct_dates: int,
+    bands: dict[str, dict[str, Any]],
+) -> str:
+    ordered = (
+        "NONE",
+        "VERY_LIMITED",
+        "LIMITED",
+        "MODERATE",
+        "STRONG",
+    )
+
+    for name in ordered:
+        rule = bands[name]
+        minimum = int(rule["minimum_distinct_dates"])
+        maximum = rule["maximum_distinct_dates"]
+
+        if distinct_dates < minimum:
+            continue
+
+        if maximum is None or distinct_dates <= int(maximum):
+            return name
+
+    return "NONE"
+
+
+def calculate_period_changes(
+    observations: list[dict[str, Any]],
+) -> list[float]:
+    changes: list[float] = []
+
+    for index in range(1, len(observations)):
+        prior = observations[index - 1]["price"]
+        current = observations[index]["price"]
+
+        if prior > 0:
+            changes.append(((current / prior) - 1.0) * 100.0)
+
+    return changes
+
+
+def calculate_log_volatility(
+    observations: list[dict[str, Any]],
+) -> float | None:
+    log_returns: list[float] = []
+
+    for index in range(1, len(observations)):
+        prior = observations[index - 1]["price"]
+        current = observations[index]["price"]
+
+        if prior > 0 and current > 0:
+            log_returns.append(math.log(current / prior))
+
+    if len(log_returns) < 2:
+        return None
+
+    mean = sum(log_returns) / len(log_returns)
+
+    variance = sum(
+        (value - mean) ** 2
+        for value in log_returns
+    ) / (len(log_returns) - 1)
+
+    periodic_volatility = math.sqrt(variance)
+
+    return periodic_volatility * math.sqrt(12.0)
+
+
+def run(
+    registry_path: Path,
+    model_path: Path,
+    history_path: Path,
+    policy_path: Path,
+    output_root: Path,
+) -> dict[str, Any]:
+    policy = json.loads(
+        policy_path.read_text(encoding="utf-8-sig")
+    )
+
+    registry = read_csv(registry_path)
+    model = read_csv(model_path)
+    history = read_csv(history_path)
+
+    universe = policy["product_universe"]
+
+    required_type = clean(
+        universe["required_product_type"]
+    )
+
+    required_terms = [
+        clean(value).lower()
+        for value in universe["required_name_terms"]
+    ]
+
+    excluded_terms = [
+        clean(value).lower()
+        for value in universe["excluded_name_terms"]
+    ]
+
+    collector_registry = []
+
+    for row in registry:
+        if (
+            clean(row.get("investment_product_type"))
+            != required_type
+        ):
+            continue
+
+        combined_name = clean(
+            f"{row.get('box_name', '')} "
+            f"{row.get('approved_product_name', '')}"
+        ).lower()
+
+        if not all(
+            term in combined_name
+            for term in required_terms
+        ):
+            continue
+
+        if any(
+            term in combined_name
+            for term in excluded_terms
+        ):
+            continue
+
+        collector_registry.append(row)
+
+    registry_ids = {
+        clean(row.get("investment_product_id"))
+        for row in collector_registry
+        if clean(row.get("investment_product_id"))
+    }
+
+    model_ids = {
+        clean(row.get("investment_product_id"))
+        for row in model
+        if clean(row.get("investment_product_id"))
+    }
+
+    model_ids_missing_from_registry = sorted(
+        model_ids - registry_ids
+    )
+
+    registry_ids_missing_from_model = sorted(
+        registry_ids - model_ids
+    )
+
+    if (
+        universe[
+            "require_model_input_reconciliation"
+        ]
+        and (
+            model_ids_missing_from_registry
+            or registry_ids_missing_from_model
+        )
+    ):
+        raise RuntimeError(
+            "Collector display universe does not reconcile "
+            "to model input. "
+            f"Missing from registry: "
+            f"{model_ids_missing_from_registry}; "
+            f"missing from model: "
+            f"{registry_ids_missing_from_model}"
+        )
+
+    model_by_investment_id = {
+        clean(row.get("investment_product_id")): row
+        for row in model
+        if clean(row.get("investment_product_id"))
+    }
+
+    model_by_tcgplayer_id = {
+        clean(row.get("tcgplayer_product_id")): row
+        for row in model
+        if clean(row.get("tcgplayer_product_id"))
+    }
+
+    history_by_investment_id: dict[
+        str,
+        list[dict[str, str]],
+    ] = defaultdict(list)
+
+    history_by_tcgplayer_id: dict[
+        str,
+        list[dict[str, str]],
+    ] = defaultdict(list)
+
+    for row in history:
+        investment_id = clean(row.get("investment_product_id"))
+
+        if investment_id:
+            history_by_investment_id[investment_id].append(row)
+
+        tcgplayer_id = clean(
+            row.get("tcgplayer_product_id")
+            or row.get("approved_tcgplayer_product_id")
+        )
+
+        if tcgplayer_id:
+            history_by_tcgplayer_id[tcgplayer_id].append(row)
+
+    thresholds = policy["quality_thresholds"]
+    bands = policy["history_quality_bands"]
+
+    product_results: list[dict[str, Any]] = []
+    anomaly_rows: list[dict[str, Any]] = []
+
+    for registry_row in collector_registry:
+        investment_id = clean(
+            registry_row.get("investment_product_id")
+        )
+        tcgplayer_id = clean(
+            registry_row.get("approved_tcgplayer_product_id")
+        )
+
+        model_row = model_by_investment_id.get(investment_id)
+
+        if model_row is None and tcgplayer_id:
+            model_row = model_by_tcgplayer_id.get(tcgplayer_id)
+
+        source_rows = list(
+            history_by_investment_id.get(investment_id, [])
+        )
+
+        if not source_rows and tcgplayer_id:
+            source_rows = list(
+                history_by_tcgplayer_id.get(tcgplayer_id, [])
+            )
+
+        parsed_observations: list[dict[str, Any]] = []
+        invalid_date_rows = 0
+        invalid_price_rows = 0
+
+        for row in source_rows:
+            parsed_date = parse_date(
+                row.get("observation_date")
+                or row.get("date")
+            )
+            parsed_price = choose_price(row)
+
+            if parsed_date is None:
+                invalid_date_rows += 1
+                continue
+
+            if (
+                parsed_price is None
+                or parsed_price
+                < float(thresholds["minimum_positive_price"])
+            ):
+                invalid_price_rows += 1
+                continue
+
+            parsed_observations.append(
+                {
+                    "date": parsed_date,
+                    "date_text": parsed_date.date().isoformat(),
+                    "price": parsed_price,
+                    "source_row": row,
+                }
+            )
+
+        parsed_observations.sort(
+            key=lambda item: item["date"]
+        )
+
+        date_counts = Counter(
+            item["date_text"]
+            for item in parsed_observations
+        )
+
+        duplicate_dates = sorted(
+            date_text
+            for date_text, count in date_counts.items()
+            if count > 1
+        )
+
+        consolidated: list[dict[str, Any]] = []
+
+        for date_text in sorted(date_counts):
+            same_day = [
+                item
+                for item in parsed_observations
+                if item["date_text"] == date_text
+            ]
+
+            consolidated.append(
+                {
+                    "date": same_day[-1]["date"],
+                    "date_text": date_text,
+                    "price": median(
+                        item["price"]
+                        for item in same_day
+                    ),
+                }
+            )
+
+        changes = calculate_period_changes(consolidated)
+
+        largest_increase = (
+            max(changes)
+            if changes
+            else None
+        )
+        largest_decrease = (
+            min(changes)
+            if changes
+            else None
+        )
+
+        robust_volatility = calculate_log_volatility(
+            consolidated
+        )
+
+        current_price = (
+            number(model_row.get("current_price"))
+            if model_row
+            else None
+        )
+
+        latest_history_price = (
+            consolidated[-1]["price"]
+            if consolidated
+            else None
+        )
+
+        current_vs_history_pct = None
+
+        if (
+            current_price is not None
+            and latest_history_price is not None
+            and latest_history_price > 0
+        ):
+            current_vs_history_pct = (
+                (current_price / latest_history_price) - 1.0
+            ) * 100.0
+
+        distinct_dates = len(consolidated)
+        band = quality_band(distinct_dates, bands)
+
+        direct_forecast_allowed = bool(
+            bands[band]["direct_forecast_allowed"]
+        )
+
+        flags: list[str] = []
+
+        if invalid_date_rows:
+            flags.append("INVALID_HISTORY_DATES")
+
+        if invalid_price_rows:
+            flags.append("INVALID_HISTORY_PRICES")
+
+        if len(duplicate_dates) > int(
+            thresholds["maximum_duplicate_date_rows"]
+        ):
+            flags.append("DUPLICATE_HISTORY_DATES")
+
+        if (
+            largest_increase is not None
+            and largest_increase
+            > float(
+                thresholds[
+                    "maximum_single_period_increase_pct"
+                ]
+            )
+        ):
+            flags.append("EXCESSIVE_PERIOD_INCREASE")
+
+        if (
+            largest_decrease is not None
+            and largest_decrease
+            < float(
+                thresholds[
+                    "maximum_single_period_decrease_pct"
+                ]
+            )
+        ):
+            flags.append("EXCESSIVE_PERIOD_DECREASE")
+
+        if (
+            current_vs_history_pct is not None
+            and abs(current_vs_history_pct)
+            > float(
+                thresholds[
+                    "maximum_current_vs_history_discontinuity_pct"
+                ]
+            )
+        ):
+            flags.append("CURRENT_HISTORY_DISCONTINUITY")
+
+        if (
+            robust_volatility is not None
+            and robust_volatility
+            > float(
+                thresholds[
+                    "maximum_annualized_volatility"
+                ]
+            )
+        ):
+            flags.append("VOLATILITY_OUTLIER")
+
+        blocking_flags = {
+            "INVALID_HISTORY_PRICES",
+            "DUPLICATE_HISTORY_DATES",
+            "EXCESSIVE_PERIOD_INCREASE",
+            "EXCESSIVE_PERIOD_DECREASE",
+            "CURRENT_HISTORY_DISCONTINUITY",
+            "VOLATILITY_OUTLIER",
+        }
+
+        has_blocking_flag = any(
+            flag in blocking_flags
+            for flag in flags
+        )
+
+        if band in {"NONE", "VERY_LIMITED", "LIMITED"}:
+            certification_status = "HISTORY_ACCUMULATING"
+        elif has_blocking_flag:
+            certification_status = "QUARANTINED"
+        elif band == "MODERATE":
+            certification_status = "CERTIFIED_LIMITED"
+        else:
+            certification_status = "CERTIFIED"
+
+        forecast_allowed = bool(
+            direct_forecast_allowed
+            and not has_blocking_flag
+        )
+
+        result = {
+            "investment_product_id": investment_id,
+            "tcgplayer_product_id": tcgplayer_id,
+            "set_name": clean(registry_row.get("set_name")),
+            "product_name": clean(registry_row.get("box_name")),
+            "history_source_rows": len(source_rows),
+            "valid_history_rows": len(parsed_observations),
+            "distinct_history_dates": distinct_dates,
+            "duplicate_date_count": len(duplicate_dates),
+            "invalid_date_rows": invalid_date_rows,
+            "invalid_price_rows": invalid_price_rows,
+            "first_history_date": (
+                consolidated[0]["date_text"]
+                if consolidated
+                else ""
+            ),
+            "latest_history_date": (
+                consolidated[-1]["date_text"]
+                if consolidated
+                else ""
+            ),
+            "latest_history_price": (
+                round(latest_history_price, 2)
+                if latest_history_price is not None
+                else ""
+            ),
+            "current_price": (
+                round(current_price, 2)
+                if current_price is not None
+                else ""
+            ),
+            "current_vs_history_pct": (
+                round(current_vs_history_pct, 2)
+                if current_vs_history_pct is not None
+                else ""
+            ),
+            "largest_period_increase_pct": (
+                round(largest_increase, 2)
+                if largest_increase is not None
+                else ""
+            ),
+            "largest_period_decrease_pct": (
+                round(largest_decrease, 2)
+                if largest_decrease is not None
+                else ""
+            ),
+            "robust_annualized_volatility": (
+                round(robust_volatility, 4)
+                if robust_volatility is not None
+                else ""
+            ),
+            "history_quality_band": band,
+            "history_certification_status": (
+                certification_status
+            ),
+            "direct_forecast_allowed": str(
+                forecast_allowed
+            ).lower(),
+            "quality_flags": "|".join(flags),
+        }
+
+        product_results.append(result)
+
+        if flags:
+            anomaly_rows.append(result)
+
+    status_counts = Counter(
+        row["history_certification_status"]
+        for row in product_results
+    )
+
+    band_counts = Counter(
+        row["history_quality_band"]
+        for row in product_results
+    )
+
+    forecast_allowed_count = sum(
+        row["direct_forecast_allowed"] == "true"
+        for row in product_results
+    )
+
+    output_root.mkdir(parents=True, exist_ok=True)
+
+    write_csv(
+        output_root
+        / "collector_history_product_certification.csv",
+        product_results,
+    )
+
+    write_csv(
+        output_root
+        / "collector_history_anomaly_queue.csv",
+        anomaly_rows,
+    )
+
+    eligible_rows = [
+        row
+        for row in product_results
+        if row["direct_forecast_allowed"] == "true"
+    ]
+
+    blocked_rows = [
+        row
+        for row in product_results
+        if row["direct_forecast_allowed"] != "true"
+    ]
+
+    write_csv(
+        output_root
+        / "collector_history_forecast_eligible.csv",
+        eligible_rows,
+    )
+
+    write_csv(
+        output_root
+        / "collector_history_forecast_blocked.csv",
+        blocked_rows,
+    )
+
+    manifest = {
+        "status": (
+            "CERTIFICATION_REVIEW_REQUIRED"
+            if anomaly_rows
+            else "CERTIFIED"
+        ),
+        "policy_name": policy["policy_name"],
+        "policy_version": policy["policy_version"],
+        "lane": policy["lane"],
+        "generated_at_utc": datetime.now(
+            timezone.utc
+        ).isoformat(),
+        "production_collector_products": len(
+            collector_registry
+        ),
+        "model_collector_products": sum(
+            1
+            for row in model
+            if clean(row.get("investment_product_type"))
+            == "Collector Booster Display"
+            or clean(row.get("product_type"))
+            == "Collector Booster Display"
+        ),
+        "history_rows_read": len(history),
+        "status_counts": dict(status_counts),
+        "quality_band_counts": dict(band_counts),
+        "forecast_allowed_count": forecast_allowed_count,
+        "forecast_blocked_count": (
+            len(product_results)
+            - forecast_allowed_count
+        ),
+        "anomaly_product_count": len(anomaly_rows),
+        "registry_identity_count": len(registry_ids),
+        "purchase_recommendations_authorized": False,
+        "inputs": {
+            "registry_path": str(registry_path.resolve()),
+            "registry_sha256": sha256(registry_path),
+            "model_path": str(model_path.resolve()),
+            "model_sha256": sha256(model_path),
+            "history_path": str(history_path.resolve()),
+            "history_sha256": sha256(history_path),
+            "policy_path": str(policy_path.resolve()),
+            "policy_sha256": sha256(policy_path),
+        },
+        "outputs": {
+            "product_certification": str(
+                (
+                    output_root
+                    / "collector_history_product_certification.csv"
+                ).resolve()
+            ),
+            "anomaly_queue": str(
+                (
+                    output_root
+                    / "collector_history_anomaly_queue.csv"
+                ).resolve()
+            ),
+            "forecast_eligible": str(
+                (
+                    output_root
+                    / "collector_history_forecast_eligible.csv"
+                ).resolve()
+            ),
+            "forecast_blocked": str(
+                (
+                    output_root
+                    / "collector_history_forecast_blocked.csv"
+                ).resolve()
+            ),
+        },
+    }
+
+    manifest_path = (
+        output_root
+        / "collector_history_certification_manifest.json"
+    )
+
+    manifest_path.write_text(
+        json.dumps(manifest, indent=2),
+        encoding="utf-8",
+    )
+
+    print("COLLECTOR HISTORY CERTIFICATION COMPLETE")
+    print(json.dumps(manifest, indent=2))
+
+    return manifest
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(
+        description=(
+            "Certify governed Collector Booster historical "
+            "series and determine direct forecast eligibility."
+        )
+    )
+    parser.add_argument(
+        "--registry",
+        type=Path,
+        default=DEFAULT_REGISTRY,
+    )
+    parser.add_argument(
+        "--model",
+        type=Path,
+        default=DEFAULT_MODEL,
+    )
+    parser.add_argument(
+        "--history",
+        type=Path,
+        default=DEFAULT_HISTORY,
+    )
+    parser.add_argument(
+        "--policy",
+        type=Path,
+        default=DEFAULT_POLICY,
+    )
+    parser.add_argument(
+        "--output-root",
+        type=Path,
+        default=DEFAULT_OUTPUT,
+    )
+
+    args = parser.parse_args()
+
+    run(
+        registry_path=args.registry,
+        model_path=args.model,
+        history_path=args.history,
+        policy_path=args.policy,
+        output_root=args.output_root,
+    )
+
+
+if __name__ == "__main__":
+    main()

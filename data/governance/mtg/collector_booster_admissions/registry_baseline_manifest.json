@@ -1,0 +1,9 @@
+{
+    "baseline_name":  "mtg_production_registry_v1",
+    "baseline_version":  "1.0.0",
+    "baseline_rows":  4675,
+    "baseline_sha256":  "2F2E552C9A931AC0604051565E65A57ADF12008C51DB2F9065A2D51891079C59",
+    "admissions_ledger":  "data/governance/mtg/collector_booster_admissions/applied_admissions.csv",
+    "current_registry":  "data/product_master/investment_products.csv",
+    "governing_equation":  "current_registry = baseline + active_admissions - governed_retirements"
+}

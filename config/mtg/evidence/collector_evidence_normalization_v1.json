@@ -1,0 +1,81 @@
+{
+  "policy_name": "collector_evidence_normalization",
+  "policy_version": "1.0.0",
+  "lane": "COLLECTOR_BOOSTER",
+  "score_scale": {
+    "minimum": 0.0,
+    "maximum": 100.0,
+    "normalization_method": "CLIP_OR_PERCENT_SCALE",
+    "values_between_zero_and_one_are_multiplied_by_100": true,
+    "values_between_zero_and_100_are_retained": true,
+    "values_outside_range_are_invalid": true
+  },
+  "readiness_thresholds": {
+    "minimum_supply_components": 2,
+    "minimum_demand_components": 2,
+    "minimum_liquidity_components": 1,
+    "minimum_comparable_dimensions": 4,
+    "minimum_group_confidence_score": 40.0
+  },
+  "confidence_classes": {
+    "HIGH": {
+      "minimum": 80.0
+    },
+    "MODERATE": {
+      "minimum": 60.0
+    },
+    "LOW": {
+      "minimum": 40.0
+    },
+    "INSUFFICIENT": {
+      "minimum": 0.0
+    }
+  },
+  "comparable_classes": {
+    "release_era": {
+      "CURRENT": 2025,
+      "RECENT": 2022,
+      "EARLY_COLLECTOR": 2019
+    },
+    "price_bands": [
+      {
+        "class": "UNDER_150",
+        "maximum": 149.99
+      },
+      {
+        "class": "150_TO_249",
+        "maximum": 249.99
+      },
+      {
+        "class": "250_TO_399",
+        "maximum": 399.99
+      },
+      {
+        "class": "400_TO_599",
+        "maximum": 599.99
+      },
+      {
+        "class": "600_PLUS",
+        "maximum": null
+      }
+    ],
+    "liquidity_classes": {
+      "HIGH": 75.0,
+      "MODERATE": 50.0,
+      "LOW": 25.0,
+      "VERY_LOW": 0.0
+    },
+    "supply_classes": {
+      "CONSTRAINED": 70.0,
+      "BALANCED": 40.0,
+      "ABUNDANT": 0.0
+    }
+  },
+  "rules": {
+    "missing_required_source_field_fails_group": true,
+    "missing_optional_field_does_not_fail_group": true,
+    "nonfinite_score_is_missing": true,
+    "readiness_does_not_authorize_purchase": true,
+    "purchase_recommendation_authorized": false
+  }
+}

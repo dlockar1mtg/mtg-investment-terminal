@@ -1,0 +1,30 @@
+import json
+from pathlib import Path
+
+
+path = Path(
+    "config/mtg/governance/"
+    "collector_booster_history_certification_v1.json"
+)
+
+payload = json.loads(
+    path.read_text(encoding="utf-8-sig")
+)
+
+terms = payload[
+    "product_universe"
+]["excluded_name_terms"]
+
+for term in [
+    "collector booster case",
+    "booster case",
+]:
+    if term not in terms:
+        terms.append(term)
+
+path.write_text(
+    json.dumps(payload, indent=2),
+    encoding="utf-8",
+)
+
+print("Added governed case exclusion terms.")

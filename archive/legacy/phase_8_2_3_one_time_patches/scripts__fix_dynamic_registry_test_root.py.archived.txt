@@ -1,0 +1,25 @@
+from pathlib import Path
+
+
+path = Path(
+    "tests/test_dynamic_product_registry_governance.py"
+)
+
+text = path.read_text(encoding="utf-8")
+
+old = "ROOT = Path(__file__).resolve().parents[2]"
+new = "ROOT = Path(__file__).resolve().parents[1]"
+
+count = text.count(old)
+
+if count != 1:
+    raise RuntimeError(
+        f"Expected exactly one ROOT declaration, found {count}"
+    )
+
+path.write_text(
+    text.replace(old, new),
+    encoding="utf-8",
+)
+
+print("Updated repository root calculation.")

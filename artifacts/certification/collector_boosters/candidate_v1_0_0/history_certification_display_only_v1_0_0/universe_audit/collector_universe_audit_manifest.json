@@ -1,0 +1,16 @@
+{
+  "status": "PASS",
+  "generated_at_utc": "2026-07-31T18:50:01.353471+00:00",
+  "registry_display_type_rows": 78,
+  "filtered_display_rows": 51,
+  "excluded_configuration_rows": 27,
+  "manual_review_rows": 0,
+  "model_identity_rows": 51,
+  "model_ids_missing_from_filtered_registry": 0,
+  "filtered_registry_ids_missing_from_model": 0,
+  "classification_counts": {
+    "INCLUDE_DISPLAY": 51,
+    "EXCLUDE_CONFIGURATION": 27
+  },
+  "required_equation": "filtered_display_ids == model_input_ids"
+}

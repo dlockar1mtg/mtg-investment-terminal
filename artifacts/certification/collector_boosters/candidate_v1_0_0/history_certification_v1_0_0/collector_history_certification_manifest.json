@@ -1,0 +1,44 @@
+{
+  "status": "CERTIFICATION_REVIEW_REQUIRED",
+  "policy_name": "collector_booster_history_certification",
+  "policy_version": "1.0.0",
+  "lane": "COLLECTOR_BOOSTER_BOX",
+  "generated_at_utc": "2026-07-31T18:36:11.082209+00:00",
+  "production_collector_products": 78,
+  "model_collector_products": 51,
+  "history_rows_read": 22960,
+  "status_counts": {
+    "CERTIFIED": 19,
+    "CERTIFIED_LIMITED": 7,
+    "QUARANTINED": 18,
+    "HISTORY_ACCUMULATING": 34
+  },
+  "quality_band_counts": {
+    "STRONG": 34,
+    "MODERATE": 10,
+    "LIMITED": 3,
+    "VERY_LIMITED": 2,
+    "NONE": 29
+  },
+  "forecast_allowed_count": 26,
+  "forecast_blocked_count": 52,
+  "anomaly_product_count": 18,
+  "registry_identity_count": 78,
+  "purchase_recommendations_authorized": false,
+  "inputs": {
+    "registry_path": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\product_master\\investment_products.csv",
+    "registry_sha256": "80A262BCB2A575FBFC8A0589910ADDB6C5FA7E66D3BCC7AF292F725164716939",
+    "model_path": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\product_master\\product_master_model_input.csv",
+    "model_sha256": "CD8BAE5D314A07CEDEAF59F3171BDF85EDB7CC66292D6AD03B27939E08FCF94E",
+    "history_path": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\operations\\mtg_universal_history_ledger\\universal_mtg_daily_consolidated_ledger.csv",
+    "history_sha256": "9A8026BEB0AFFEA772E92F335BA3E8D6061E5C6F6A8BC6A0014A5401A3ACB8F4",
+    "policy_path": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\config\\mtg\\governance\\collector_booster_history_certification_v1.json",
+    "policy_sha256": "FF636190A4208DFF6FA9E3B922EF456B28BFF47419B7209FF2DA416B99695524"
+  },
+  "outputs": {
+    "product_certification": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\operations\\collector_booster_history_certification\\candidate_v1_0_0\\collector_history_product_certification.csv",
+    "anomaly_queue": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\operations\\collector_booster_history_certification\\candidate_v1_0_0\\collector_history_anomaly_queue.csv",
+    "forecast_eligible": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\operations\\collector_booster_history_certification\\candidate_v1_0_0\\collector_history_forecast_eligible.csv",
+    "forecast_blocked": "C:\\Users\\DevonLockard\\mtg-investment-terminal\\data\\operations\\collector_booster_history_certification\\candidate_v1_0_0\\collector_history_forecast_blocked.csv"
+  }
+}
