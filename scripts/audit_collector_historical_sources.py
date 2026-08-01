@@ -26,7 +26,7 @@ def inspect_csv(path:Path):
     return [str(x).strip() for x in header],rows
 
 def inspect_json(path:Path):
-    obj=json.loads(path.read_text(encoding="utf-8",errors="replace"))
+    obj=json.loads(path.read_text(encoding="utf-8-sig",errors="replace"))
     if isinstance(obj,list): rows=obj
     elif isinstance(obj,dict) and isinstance(obj.get("results"),list): rows=obj["results"]
     elif isinstance(obj,dict): rows=[obj]
@@ -37,9 +37,8 @@ def inspect_json(path:Path):
             for key in row:
                 if key not in cols: cols.append(str(key))
     return cols,len(rows)
-
 def main():
-    a=parser().parse_args(); policy=json.loads(a.policy.resolve().read_text(encoding="utf-8")); out=a.output_dir.resolve(); out.mkdir(parents=True,exist_ok=True)
+    a=parser().parse_args(); policy=json.loads(a.policy.resolve().read_text(encoding="utf-8-sig")); out=a.output_dir.resolve(); out.mkdir(parents=True,exist_ok=True)
     roots=[ROOT/x for x in policy["candidate_roots"]]; exts=lowset(policy["candidate_extensions"]); markers=lowset(policy["history_name_markers"])
     inventory=[]; schema=[]; candidates=[]; errors=[]
     for base in roots:
@@ -69,7 +68,7 @@ def main():
     write("collector_history_schema_inventory.csv",schema,["path","column_name"])
     write("collector_history_candidate_sources.csv",candidates,inv_fields)
     write("collector_history_source_errors.csv",errors,["path","error_type","error_message"])
-    summary={"audit_name":"Collector Historical Source Inventory","audit_version":"1.0.0","generated_at":datetime.now(timezone.utc).isoformat(),"files_profiled":len(inventory),"candidate_sources":len(candidates),"high_priority_sources":sum(r["candidate_status"]=="HIGH_PRIORITY" for r in candidates),"source_errors":len(errors),"fixed_product_count_assumed":False,"historical_selection_executed":False,"historical_append_authorized":False,"forecasting_resume_authorized":False,"purchase_recommendation_authorized":False,"status":"PASS_SOURCE_INVENTORY" if candidates else "REVIEW_REQUIRED"}
+    summary={"audit_name":"Collector Historical Source Inventory","audit_version":"1.0.1","generated_at":datetime.now(timezone.utc).isoformat(),"files_profiled":len(inventory),"candidate_sources":len(candidates),"high_priority_sources":sum(r["candidate_status"]=="HIGH_PRIORITY" for r in candidates),"source_errors":len(errors),"fixed_product_count_assumed":False,"historical_selection_executed":False,"historical_append_authorized":False,"forecasting_resume_authorized":False,"purchase_recommendation_authorized":False,"status":"PASS_SOURCE_INVENTORY" if candidates else "REVIEW_REQUIRED"}
     (out/"collector_history_inventory_summary.json").write_text(json.dumps(summary,indent=2)+"\n",encoding="utf-8"); print(json.dumps(summary,indent=2))
     return 1 if a.strict and (not candidates or errors) else 0
 if __name__=="__main__": raise SystemExit(main())
