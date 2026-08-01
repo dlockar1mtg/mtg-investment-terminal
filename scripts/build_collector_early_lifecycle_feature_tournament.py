@@ -92,6 +92,33 @@ def expanding_priors(frame: pd.DataFrame, minimum_prior_cases: int) -> pd.DataFr
     return work
 
 
+def calibrate_rank_to_prior_returns(
+    frame: pd.DataFrame,
+    raw_score: pd.Series,
+    minimum_prior_cases: int,
+) -> tuple[pd.Series, pd.Series, pd.Series]:
+    calibrated = pd.Series(np.nan, index=frame.index, dtype=float)
+    percentile = pd.Series(np.nan, index=frame.index, dtype=float)
+    prior_count = pd.Series(0, index=frame.index, dtype=int)
+    for cutoff, current in frame.groupby("decision_cutoff", sort=True):
+        prior = frame[frame["decision_cutoff"] < cutoff]["realized_return_365"].dropna().astype(float)
+        prior_count.loc[current.index] = int(len(prior))
+        if len(prior) < minimum_prior_cases:
+            continue
+        scores = pd.to_numeric(raw_score.loc[current.index], errors="coerce")
+        valid = scores.dropna()
+        if valid.empty:
+            continue
+        ranks = valid.rank(method="average", pct=True)
+        percentile.loc[ranks.index] = ranks
+        prior_values = np.sort(prior.to_numpy(dtype=float))
+        calibrated.loc[ranks.index] = [
+            float(np.quantile(prior_values, min(max(float(p), 0.0), 1.0), method="linear"))
+            for p in ranks
+        ]
+    return calibrated, percentile, prior_count
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--strict", action="store_true")
@@ -126,7 +153,8 @@ def main() -> int:
         universal_prior = base["realized_return_365"].expanding(min_periods=int(cfg["minimum_prior_cases"])).median().shift(1)
         age = base["expanding_age_prior"].fillna(universal_prior)
         age_price = base["expanding_age_price_prior"].fillna(age)
-        candidate_map = {
+
+        raw_map = {
             "MOMENTUM_MEDIAN_BASELINE": base["forecast_signal"],
             "CONTRARIAN_MOMENTUM": -base["forecast_signal"],
             "EXPANDING_AGE_PRIOR": age,
@@ -135,27 +163,41 @@ def main() -> int:
             "CONTRARIAN_AGE_PRICE_BLEND_50_50": 0.50 * (-base["forecast_signal"]) + 0.50 * age_price,
             "CONTRARIAN_AGE_PRICE_BLEND_25_75": 0.25 * (-base["forecast_signal"]) + 0.75 * age_price,
         }
+
         rows: list[pd.DataFrame] = []
         metrics_rows: list[dict[str, object]] = []
         thresholds = [float(x) for x in cfg["breakout_thresholds"]]
-        for method, signal in candidate_map.items():
+        minimum_prior_cases = int(cfg["minimum_prior_cases"])
+        for method, raw_score in raw_map.items():
             candidate = base.copy()
             candidate["candidate_method"] = method
-            candidate["candidate_signal"] = pd.to_numeric(signal, errors="coerce")
-            candidate = candidate.dropna(subset=["candidate_signal"]).copy()
+            candidate["raw_ranking_score"] = pd.to_numeric(raw_score, errors="coerce")
+            calibrated, percentile, prior_count = calibrate_rank_to_prior_returns(
+                candidate,
+                candidate["raw_ranking_score"],
+                minimum_prior_cases,
+            )
+            candidate["ranking_percentile_at_cutoff"] = percentile
+            candidate["calibration_prior_count"] = prior_count
+            candidate["candidate_signal"] = calibrated
+            candidate["point_forecast_calibration"] = "EXPANDING_PRIOR_RETURN_QUANTILE"
+            candidate = candidate.dropna(subset=["raw_ranking_score", "candidate_signal"]).copy()
             candidate["future_information_used"] = False
             rows.append(candidate)
             metrics_rows.append({"candidate_method": method, **score_metrics(candidate, thresholds)})
+
         predictions = pd.concat(rows, ignore_index=True) if rows else pd.DataFrame()
         leaderboard = pd.DataFrame(metrics_rows)
         if not leaderboard.empty:
             leaderboard["qualification_flag"] = (
                 (leaderboard["rank_correlation"] > 0) &
-                (leaderboard["top_bottom_spread"] > 0)
+                (leaderboard["top_bottom_spread"] > 0) &
+                (leaderboard["breakout_recall_70"] > 0)
             )
             leaderboard["selection_score"] = (
                 leaderboard["rank_correlation"].fillna(-1.0) +
                 leaderboard["top_bottom_spread"].fillna(-1.0) +
+                leaderboard["breakout_recall_70"].fillna(0.0) +
                 leaderboard["top_quantile_capture_70"].fillna(0.0) -
                 leaderboard["false_negative_rate_70"].fillna(1.0) -
                 0.25 * leaderboard["false_positive_rate_50"].fillna(0.0)
@@ -175,6 +217,8 @@ def main() -> int:
     result = {
         "audit_name": cfg["program_name"],
         "audit_version": cfg["program_version"],
+        "ranking_return_separation_required": True,
+        "point_forecast_calibration_contract": "EXPANDING_PRIOR_RETURN_QUANTILE",
         "candidate_count": int(leaderboard["candidate_method"].nunique()) if not leaderboard.empty else 0,
         "prediction_row_count": int(len(predictions)),
         "qualified_candidate_count": qualified,
