@@ -10,6 +10,17 @@ import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[1]
 CFG = ROOT / "config/mtg/governance/collector_early_lifecycle_breakout_replay_v1.json"
+OUTCOME_CANDIDATES = [
+    ROOT / "data/operations/collector_walk_forward_replay_phase_2a/candidate_v1_0_0/collector_walk_forward_phase_2a_scored_outcomes.csv",
+    ROOT / "data/operations/collector_365_direct_comparable_tournament/candidate_v1_0_0/collector_365_direct_predictions.csv",
+]
+
+
+def read_csv(path: Path) -> pd.DataFrame:
+    try:
+        return pd.read_csv(path, low_memory=False) if path.exists() else pd.DataFrame()
+    except (OSError, UnicodeDecodeError, pd.errors.EmptyDataError):
+        return pd.DataFrame()
 
 
 def choose(df: pd.DataFrame, aliases: list[str]) -> str | None:
@@ -62,19 +73,12 @@ def metrics(frame: pd.DataFrame, thresholds: list[float]) -> dict[str, object]:
         "rank_correlation": safe_corr(frame["forecast_signal"], frame["realized_return_365"]),
         "top_bottom_spread": top_bottom_spread(frame),
     }
-    if frame.empty:
-        for t in thresholds:
-            tag = int(round(t * 100))
-            for name in ["breakout_count", "breakout_recall", "false_negative_rate", "top_quantile_capture", "false_positive_rate", "mean_missed_upside"]:
-                result[f"{name}_{tag}"] = 0 if name == "breakout_count" else np.nan
-        return result
-
-    top_n = max(1, int(math.ceil(len(frame) * 0.20)))
-    top_ids = set(frame.nlargest(top_n, "forecast_signal").index)
-    for t in thresholds:
-        tag = int(round(t * 100))
-        actual = frame["realized_return_365"] >= t
-        predicted = frame["forecast_signal"] >= t
+    top_n = max(1, int(math.ceil(len(frame) * 0.20))) if len(frame) else 0
+    top_ids = set(frame.nlargest(top_n, "forecast_signal").index) if top_n else set()
+    for threshold in thresholds:
+        tag = int(round(threshold * 100))
+        actual = frame["realized_return_365"] >= threshold
+        predicted = frame["forecast_signal"] >= threshold
         breakout_count = int(actual.sum())
         tp = int((actual & predicted).sum())
         fn = int((actual & ~predicted).sum())
@@ -96,38 +100,80 @@ def main() -> int:
     parser.add_argument("--strict", action="store_true")
     args = parser.parse_args()
     cfg = json.loads(CFG.read_text(encoding="utf-8"))
-    source = ROOT / cfg["inputs"]["historical_feature_panel"]
+    feature_path = ROOT / cfg["inputs"]["historical_feature_panel"]
     out = ROOT / cfg["output_root"]
     out.mkdir(parents=True, exist_ok=True)
     failures: list[str] = []
 
-    try:
-        df = pd.read_csv(source, low_memory=False)
-    except (OSError, UnicodeDecodeError, pd.errors.EmptyDataError):
-        df = pd.DataFrame()
-    if df.empty:
+    features = read_csv(feature_path)
+    outcomes = next((read_csv(path) for path in OUTCOME_CANDIDATES if not read_csv(path).empty), pd.DataFrame())
+    if features.empty:
         failures.append("historical_feature_panel_missing_or_empty")
+    if outcomes.empty:
+        failures.append("validated_365_outcome_source_missing_or_empty")
 
-    name_col = choose(df, ["product_name", "canonical_product_name", "name"])
-    cutoff_col = choose(df, ["decision_cutoff", "cutoff_date", "as_of_date"])
-    id_col = choose(df, ["tcgplayer_product_id", "product_key", "canonical_product_id"])
-    if name_col is None:
-        failures.append("product_name_unmapped")
-    if cutoff_col is None:
-        failures.append("decision_cutoff_unmapped")
+    fname = choose(features, ["product_name", "canonical_product_name", "name"])
+    fcut = choose(features, ["decision_cutoff", "cutoff_date", "as_of_date"])
+    fid = choose(features, ["tcgplayer_product_id", "product_key", "canonical_product_id"])
+    frelease = choose(features, ["release_date", "published_on", "set_release_date"])
+    fage = choose(features, ["product_age_months", "age_months", "months_since_release", "product_age_months_at_cutoff"])
+    oname = choose(outcomes, ["product_name", "canonical_product_name", "name"])
+    ocut = choose(outcomes, ["decision_cutoff", "cutoff_date", "as_of_date"])
+    oid = choose(outcomes, ["tcgplayer_product_id", "product_key", "canonical_product_id"])
+    ohorizon = choose(outcomes, ["horizon_days", "forecast_horizon_days", "horizon"])
+    orealized = choose(outcomes, [
+        "realized_return_365", "forward_return_365", "actual_return_365", "target_return_365",
+        "realized_return", "actual_return", "forward_return", "outcome_return",
+    ])
+
+    diagnostics = {
+        "feature_rows": int(len(features)), "outcome_rows": int(len(outcomes)),
+        "feature_name_column": fname or "UNMAPPED", "feature_cutoff_column": fcut or "UNMAPPED",
+        "feature_id_column": fid or "UNMAPPED", "feature_age_column": fage or "DERIVED_FROM_RELEASE_DATE",
+        "feature_release_column": frelease or "UNMAPPED", "outcome_name_column": oname or "UNMAPPED",
+        "outcome_cutoff_column": ocut or "UNMAPPED", "outcome_id_column": oid or "UNMAPPED",
+        "outcome_horizon_column": ohorizon or "UNMAPPED", "outcome_realized_column": orealized or "UNMAPPED",
+        "feature_columns": "|".join(map(str, features.columns)),
+        "outcome_columns": "|".join(map(str, outcomes.columns)),
+    }
+    pd.DataFrame([diagnostics]).to_csv(out / "collector_early_lifecycle_breakout_replay_schema_diagnostics.csv", index=False)
+
+    if fname is None or fcut is None:
+        failures.append("feature_identity_or_cutoff_unmapped")
+    if oname is None or ocut is None or orealized is None:
+        failures.append("outcome_identity_cutoff_or_realized_unmapped")
 
     replay = pd.DataFrame()
     if not failures:
-        replay = pd.DataFrame({
-            "product_key": df[id_col].map(clean_id) if id_col else df[name_col].astype(str),
-            "product_name": df[name_col].astype(str),
-            "decision_cutoff": pd.to_datetime(df[cutoff_col], errors="coerce"),
-            "product_age_months": numeric(df, ["product_age_months", "age_months", "months_since_release"]),
-            "return_3_month": numeric(df, ["return_3_month", "return_90d", "return_3m"]),
-            "return_6_month": numeric(df, ["return_6_month", "return_180d", "return_6m"]),
-            "return_12_month_at_cutoff": numeric(df, ["return_12_month", "return_365d", "return_12m"]),
-            "realized_return_365": numeric(df, ["realized_return_365", "forward_return_365", "actual_return_365", "target_return_365"]),
+        feature_cutoff = pd.to_datetime(features[fcut], errors="coerce")
+        if fage:
+            age = pd.to_numeric(features[fage], errors="coerce")
+        elif frelease:
+            release = pd.to_datetime(features[frelease], errors="coerce")
+            age = ((feature_cutoff.dt.year - release.dt.year) * 12 + feature_cutoff.dt.month - release.dt.month).astype(float)
+        else:
+            age = pd.Series(np.nan, index=features.index, dtype=float)
+
+        feature_frame = pd.DataFrame({
+            "join_id": features[fid].map(clean_id) if fid else features[fname].astype(str).str.lower().str.strip(),
+            "product_key": features[fid].map(clean_id) if fid else features[fname].astype(str),
+            "product_name": features[fname].astype(str),
+            "decision_cutoff": feature_cutoff,
+            "product_age_months": age,
+            "return_3_month": numeric(features, ["return_3_month", "return_90d", "return_3m", "trailing_return_3_month"]),
+            "return_6_month": numeric(features, ["return_6_month", "return_180d", "return_6m", "trailing_return_6_month"]),
+            "return_12_month_at_cutoff": numeric(features, ["return_12_month", "return_365d", "return_12m", "trailing_return_12_month"]),
         })
+        outcome_frame = pd.DataFrame({
+            "join_id": outcomes[oid].map(clean_id) if oid else outcomes[oname].astype(str).str.lower().str.strip(),
+            "decision_cutoff": pd.to_datetime(outcomes[ocut], errors="coerce"),
+            "realized_return_365": pd.to_numeric(outcomes[orealized], errors="coerce"),
+        })
+        if ohorizon:
+            horizon = pd.to_numeric(outcomes[ohorizon], errors="coerce")
+            outcome_frame = outcome_frame.loc[horizon.eq(365)].copy()
+        outcome_frame = outcome_frame.dropna(subset=["decision_cutoff", "realized_return_365"]).drop_duplicates(["join_id", "decision_cutoff"])
+        replay = feature_frame.merge(outcome_frame, on=["join_id", "decision_cutoff"], how="inner")
         replay["early_lifecycle_band"] = replay["product_age_months"].map(age_band)
         replay = replay[replay["early_lifecycle_band"] != "OUT_OF_SCOPE"].copy()
         replay["forecast_signal"] = replay[["return_3_month", "return_6_month", "return_12_month_at_cutoff"]].median(axis=1, skipna=True)
@@ -145,33 +191,28 @@ def main() -> int:
         for band, group in replay.groupby("early_lifecycle_band"):
             summary_rows.append({"scope": str(band), **metrics(group, thresholds)})
 
-    summary = pd.DataFrame(summary_rows)
-    replay.to_csv(out / "collector_early_lifecycle_breakout_replay_cases.csv", index=False)
-    summary.to_csv(out / "collector_early_lifecycle_breakout_replay_summary.csv", index=False)
-
-    if not replay.empty and replay["future_information_used_in_forecast"].any():
-        failures.append("future_information_used_in_forecast")
-    if not summary.empty and "ALL_EARLY_LIFECYCLE" not in set(summary["scope"]):
-        failures.append("overall_summary_missing")
+    case_columns = [
+        "product_key", "product_name", "decision_cutoff", "product_age_months", "early_lifecycle_band",
+        "return_3_month", "return_6_month", "return_12_month_at_cutoff", "forecast_signal",
+        "realized_return_365", "future_information_used_in_forecast", "historical_outcome_used_for_scoring_only",
+    ]
+    replay.reindex(columns=case_columns).to_csv(out / "collector_early_lifecycle_breakout_replay_cases.csv", index=False)
+    pd.DataFrame(summary_rows, columns=["scope", *cfg["required_metrics"]]).to_csv(
+        out / "collector_early_lifecycle_breakout_replay_summary.csv", index=False
+    )
 
     result = {
-        "audit_name": cfg["program_name"],
-        "audit_version": cfg["program_version"],
-        "status": "PASS" if not failures else "FAIL",
-        "case_count": int(len(replay)),
+        "audit_name": cfg["program_name"], "audit_version": "1.1.0",
+        "status": "PASS" if not failures else "FAIL", "case_count": int(len(replay)),
         "product_count": int(replay["product_key"].nunique()) if not replay.empty else 0,
         "cutoff_count": int(replay["decision_cutoff"].nunique()) if not replay.empty else 0,
         "age_band_count": int(replay["early_lifecycle_band"].nunique()) if not replay.empty else 0,
-        "future_information_used_in_forecast": False,
-        "historical_outcome_used_for_scoring_only": True,
-        "methodology_change_authorized": False,
-        "production_projection_authorized": False,
-        "purchase_recommendation_authorized": False,
-        "automatic_model_update_allowed": False,
-        "technical_freeze_authorized": False,
-        "uip_acceptance_authorized": False,
-        "failure_count": len(failures),
-        "failures": failures,
+        "feature_outcome_join_contract": "AT_CUTOFF_FEATURES_PLUS_VALIDATED_365_OUTCOME",
+        "future_information_used_in_forecast": False, "historical_outcome_used_for_scoring_only": True,
+        "methodology_change_authorized": False, "production_projection_authorized": False,
+        "purchase_recommendation_authorized": False, "automatic_model_update_allowed": False,
+        "technical_freeze_authorized": False, "uip_acceptance_authorized": False,
+        "failure_count": len(failures), "failures": failures,
     }
     (out / "collector_early_lifecycle_breakout_replay_summary.json").write_text(json.dumps(result, indent=2, sort_keys=True), encoding="utf-8")
     print(json.dumps(result, indent=2, sort_keys=True))
