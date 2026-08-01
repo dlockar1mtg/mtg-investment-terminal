@@ -53,6 +53,9 @@ def main() -> int:
             failures.append("direct_metrics_incomplete")
         if not {"CURRENT_365", "NO_CHANGE", "CATEGORY_MEDIAN"}.issubset(set(direct.get("variant", []))):
             failures.append("required_baselines_missing")
+        current = direct.loc[direct.get("variant", pd.Series(dtype=str)).astype(str).eq("CURRENT_365")]
+        if current.empty or pd.to_numeric(current.get("case_count"), errors="coerce").fillna(0).max() <= 0:
+            failures.append("current_365_baseline_empty")
         if not (direct.get("variant_type", pd.Series(dtype=str)).astype(str) == "DIRECT_CHALLENGER").any():
             failures.append("direct_challengers_missing")
 
@@ -65,8 +68,8 @@ def main() -> int:
         allowed_routes = {"BLENDED", "COMPARABLE", "BLOCKED"}
         if not set(comp.get("forecast_route", [])).issubset(allowed_routes):
             failures.append("invalid_comparable_route")
-        authorized = comp.get("forecast_route", pd.Series(dtype=str)).isin(["BLENDED", "COMPARABLE"])
-        if authorized.any() and (pd.to_numeric(comp.loc[authorized, "comparable_count"], errors="coerce") < 3).any():
+        eligible = comp.get("forecast_route", pd.Series(dtype=str)).isin(["BLENDED", "COMPARABLE"])
+        if eligible.any() and (pd.to_numeric(comp.loc[eligible, "comparable_count"], errors="coerce") < 3).any():
             failures.append("insufficient_comparable_count")
 
     if matches.empty:
@@ -77,6 +80,17 @@ def main() -> int:
         weights = pd.to_numeric(matches.get("comparable_weight"), errors="coerce")
         if weights.isna().any() or (weights < 0).any() or (weights > 1).any():
             failures.append("invalid_comparable_weights")
+        if {"target_product", "decision_cutoff", "comparable_weight"}.issubset(matches.columns):
+            totals = matches.assign(_weight=weights).groupby(["target_product", "decision_cutoff"])["_weight"].sum()
+            if ((totals - 1.0).abs() > 1e-6).any():
+                failures.append("comparable_weight_totals_invalid")
+
+    if summary.get("current_baseline_comparable") is not True:
+        failures.append("current_baseline_comparability_gate_failed")
+    if int(summary.get("current_baseline_case_count", 0) or 0) <= 0:
+        failures.append("current_baseline_case_count_invalid")
+    if summary.get("direct_owner_review_eligible") is not True:
+        failures.append("direct_owner_review_gate_closed")
 
     for key in [
         "direct_method_authorized", "comparable_transfer_method_authorized",
@@ -91,7 +105,7 @@ def main() -> int:
 
     result = {
         "audit_name": "Collector 365-Day Direct and Comparable Transfer Tournament Audit",
-        "audit_version": "1.0.0",
+        "audit_version": "1.0.1",
         "status": "PASS" if not failures else "FAIL",
         "failure_count": len(failures),
         "failures": failures,
