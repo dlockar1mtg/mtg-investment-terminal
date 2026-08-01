@@ -1,0 +1,16 @@
+{
+  "audit_name": "Collector Walk-Forward Phase 2G Bias-Corrected Conformal Calibration",
+  "audit_version": "1.0.0",
+  "source_training_windows": ["EXPANDING", "LAST_2_CUTOFFS", "LAST_3_CUTOFFS", "LAST_4_CUTOFFS", "LAST_6_CUTOFFS"],
+  "target_coverages": [0.68],
+  "minimum_calibration_cases": 50,
+  "minimum_calibration_cutoffs": 2,
+  "bias_estimator": "MEDIAN_SIGNED_RESIDUAL",
+  "radius_estimator": "ABSOLUTE_CENTERED_RESIDUAL_QUANTILE",
+  "shadow_only": true,
+  "candidate_methodology_change_authorized": false,
+  "production_projection_authorized": false,
+  "purchase_recommendation_authorized": false,
+  "automatic_model_update_allowed": false,
+  "freeze_suspended_pending_walk_forward": true
+}
