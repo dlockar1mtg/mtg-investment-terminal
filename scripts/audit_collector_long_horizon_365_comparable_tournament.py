@@ -62,7 +62,11 @@ def main() -> int:
     if comp.empty:
         failures.append("comparable_predictions_empty")
     else:
-        required_comp = {"forecast_route", "comparable_forecast_return_365", "realized_return_365", "comparable_count", "uncertainty_multiplier", "evidence_grade"}
+        required_comp = {
+            "forecast_route", "comparable_forecast_return_365", "realized_return_365",
+            "comparable_count", "uncertainty_multiplier", "evidence_grade",
+            "comparable_signal_source", "peer_future_outcomes_used",
+        }
         if not required_comp.issubset(comp.columns):
             failures.append("comparable_contract_incomplete")
         allowed_routes = {"BLENDED", "COMPARABLE", "BLOCKED"}
@@ -71,15 +75,25 @@ def main() -> int:
         eligible = comp.get("forecast_route", pd.Series(dtype=str)).isin(["BLENDED", "COMPARABLE"])
         if eligible.any() and (pd.to_numeric(comp.loc[eligible, "comparable_count"], errors="coerce") < 3).any():
             failures.append("insufficient_comparable_count")
+        if comp.get("peer_future_outcomes_used", pd.Series(dtype=str)).astype(str).str.lower().eq("true").any():
+            failures.append("comparable_future_outcome_leakage_detected")
+        if not comp.get("comparable_signal_source", pd.Series(dtype=str)).astype(str).eq("PEER_RETURN_12_MONTH_AT_CUTOFF").all():
+            failures.append("comparable_signal_source_invalid")
 
     if matches.empty:
         failures.append("comparable_matches_empty")
     else:
-        if not {"target_product", "comparable_product", "match_distance", "comparable_weight", "decision_cutoff"}.issubset(matches.columns):
+        required_match = {
+            "target_product", "comparable_product", "match_distance", "comparable_weight",
+            "decision_cutoff", "comparable_available_signal_365", "peer_future_outcome_used",
+        }
+        if not required_match.issubset(matches.columns):
             failures.append("comparable_match_contract_incomplete")
         weights = pd.to_numeric(matches.get("comparable_weight"), errors="coerce")
         if weights.isna().any() or (weights < 0).any() or (weights > 1).any():
             failures.append("invalid_comparable_weights")
+        if matches.get("peer_future_outcome_used", pd.Series(dtype=str)).astype(str).str.lower().eq("true").any():
+            failures.append("comparable_match_future_outcome_leakage_detected")
         if {"target_product", "decision_cutoff", "comparable_weight"}.issubset(matches.columns):
             totals = matches.assign(_weight=weights).groupby(["target_product", "decision_cutoff"])["_weight"].sum()
             if ((totals - 1.0).abs() > 1e-6).any():
@@ -89,8 +103,14 @@ def main() -> int:
         failures.append("current_baseline_comparability_gate_failed")
     if int(summary.get("current_baseline_case_count", 0) or 0) <= 0:
         failures.append("current_baseline_case_count_invalid")
+    if summary.get("comparable_leakage_free") is not True:
+        failures.append("comparable_leakage_free_gate_failed")
+    if summary.get("comparable_signal_source") != "PEER_RETURN_12_MONTH_AT_CUTOFF":
+        failures.append("summary_comparable_signal_source_invalid")
     if summary.get("direct_owner_review_eligible") is not True:
         failures.append("direct_owner_review_gate_closed")
+    if summary.get("comparable_owner_review_eligible") is not True:
+        failures.append("comparable_owner_review_gate_closed")
 
     for key in [
         "direct_method_authorized", "comparable_transfer_method_authorized",
@@ -105,7 +125,7 @@ def main() -> int:
 
     result = {
         "audit_name": "Collector 365-Day Direct and Comparable Transfer Tournament Audit",
-        "audit_version": "1.0.1",
+        "audit_version": "1.0.2",
         "status": "PASS" if not failures else "FAIL",
         "failure_count": len(failures),
         "failures": failures,
