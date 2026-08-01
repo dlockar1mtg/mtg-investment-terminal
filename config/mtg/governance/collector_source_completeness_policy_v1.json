@@ -1,0 +1,104 @@
+{
+  "policy_name": "Collector Source Completeness and Permanence Policy",
+  "policy_version": "1.0.0",
+  "scope": "Dynamic English factory-sealed Collector Booster Display source layer",
+  "principles": {
+    "zero_blank_critical_fields": true,
+    "zero_unverified_critical_fields": true,
+    "missing_never_means_zero": true,
+    "raw_source_payloads_are_immutable": true,
+    "derived_outputs_are_rebuildable": true,
+    "new_products_fail_closed_until_fully_certified": true,
+    "source_schema_changes_fail_closed": true,
+    "source_freshness_is_enforced": true,
+    "supply_and_demand_proxies_must_be_labeled_as_proxies": true,
+    "unavailable_metrics_must_have_explicit_reason_codes": true,
+    "forecasting_resume_authorized": false,
+    "purchase_recommendation_authorized": false,
+    "uip_delivery_authorized": false
+  },
+  "critical_product_fields": [
+    "tcgplayer_product_id",
+    "box_name",
+    "identity_authority_status",
+    "language_evidence",
+    "configuration_status",
+    "release_date",
+    "release_date_authority_status",
+    "release_date_source_url",
+    "market_price"
+  ],
+  "required_source_artifacts": [
+    {
+      "source_code": "DYNAMIC_TCGCSV_CATALOG",
+      "artifact": "data/governance/permanence/certification/collector_dynamic_universe/collector_dynamic_governed_active.csv",
+      "cadence": "WEEKLY_AND_BEFORE_PURCHASE_RUN",
+      "maximum_age_hours": 168,
+      "required": true
+    },
+    {
+      "source_code": "OFFICIAL_WIZARDS_RELEASE_AUTHORITY",
+      "artifact": "data/governance/permanence/certification/collector_official_release_date_authority/collector_official_release_date_authority.csv",
+      "cadence": "ON_NEW_PRODUCT_OR_OFFICIAL_CHANGE",
+      "maximum_age_hours": 8760,
+      "required": true
+    },
+    {
+      "source_code": "TCGCSV_CURRENT_PRICE",
+      "artifact": "data/operations/tcgcsv/collector_live_price_observations.csv",
+      "cadence": "DAILY",
+      "maximum_age_hours": 36,
+      "required": true
+    },
+    {
+      "source_code": "TCGCSV_MONTHLY_ARCHIVE",
+      "artifact": "data/operations/mtg_universal_history_completion/archive/universal_tcgcsv_monthly_archive_observations.csv",
+      "cadence": "MONTHLY",
+      "maximum_age_hours": 840,
+      "required": true
+    },
+    {
+      "source_code": "MTGJSON_SEALED_STRUCTURE",
+      "artifact": "data/governance/permanence/certification/collector_mtgjson_sealed_crosswalk/collector_mtgjson_sealed_crosswalk.csv",
+      "cadence": "WEEKLY_AND_ON_NEW_PRODUCT",
+      "maximum_age_hours": 168,
+      "required": true
+    },
+    {
+      "source_code": "LISTING_SUPPLY_SNAPSHOT",
+      "artifact": "data/governance/permanence/certification/collector_supply_demand/collector_certified_listing_supply_snapshot.csv",
+      "cadence": "DAILY",
+      "maximum_age_hours": 36,
+      "required": false
+    }
+  ],
+  "supply_demand_metrics": [
+    {"metric": "market_price", "availability": "DIRECTLY_OBSERVED", "source": "TCGCSV_CURRENT_PRICE"},
+    {"metric": "low_mid_high_spread", "availability": "DIRECTLY_OBSERVED", "source": "TCGCSV_CURRENT_PRICE"},
+    {"metric": "price_momentum_proxy", "availability": "DERIVED_PROXY", "source": "TCGCSV_MONTHLY_ARCHIVE"},
+    {"metric": "price_volatility_proxy", "availability": "DERIVED_PROXY", "source": "TCGCSV_MONTHLY_ARCHIVE"},
+    {"metric": "active_listing_count", "availability": "NOT_YET_CERTIFIED", "source": "LISTING_SUPPLY_SNAPSHOT"},
+    {"metric": "unique_seller_count", "availability": "NOT_YET_CERTIFIED", "source": "LISTING_SUPPLY_SNAPSHOT"},
+    {"metric": "listed_quantity", "availability": "NOT_YET_CERTIFIED", "source": "LISTING_SUPPLY_SNAPSHOT"},
+    {"metric": "asking_price_dispersion", "availability": "NOT_YET_CERTIFIED", "source": "LISTING_SUPPLY_SNAPSHOT"},
+    {"metric": "completed_sales", "availability": "NOT_AVAILABLE_FROM_CURRENT_SOURCES", "reason": "NO_TRANSACTION_FEED"},
+    {"metric": "buyer_count", "availability": "NOT_AVAILABLE_FROM_CURRENT_SOURCES", "reason": "NO_BUYER_FEED"},
+    {"metric": "days_to_sale", "availability": "NOT_AVAILABLE_FROM_CURRENT_SOURCES", "reason": "NO_TRANSACTION_TIMESTAMPS"},
+    {"metric": "print_run", "availability": "NOT_PUBLICLY_DISCLOSED", "reason": "WIZARDS_DOES_NOT_PUBLISH_PRODUCT_LEVEL_PRINT_RUN"}
+  ],
+  "pipeline_dependencies": [
+    ["DYNAMIC_TCGCSV_CATALOG", "GOVERNED_IDENTITY"],
+    ["OFFICIAL_WIZARDS_RELEASE_AUTHORITY", "GOVERNED_IDENTITY"],
+    ["MTGJSON_SEALED_STRUCTURE", "GOVERNED_IDENTITY"],
+    ["GOVERNED_IDENTITY", "TCGCSV_CURRENT_PRICE"],
+    ["GOVERNED_IDENTITY", "TCGCSV_MONTHLY_ARCHIVE"],
+    ["TCGCSV_CURRENT_PRICE", "CERTIFIED_HISTORY"],
+    ["TCGCSV_MONTHLY_ARCHIVE", "CERTIFIED_HISTORY"],
+    ["LISTING_SUPPLY_SNAPSHOT", "SUPPLY_DEMAND_FEATURES"],
+    ["CERTIFIED_HISTORY", "FORECAST_INPUTS"],
+    ["SUPPLY_DEMAND_FEATURES", "FORECAST_INPUTS"],
+    ["FORECAST_INPUTS", "FORECAST_VALIDATION"],
+    ["FORECAST_VALIDATION", "PURCHASE_READINESS"],
+    ["PURCHASE_READINESS", "UIP_EXPORT"]
+  ]
+}
