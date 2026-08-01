@@ -39,7 +39,7 @@ def trailing_return(group: pd.DataFrame, cutoff: pd.Timestamp, days: int) -> flo
     if g.empty:
         return None
     end = g.iloc[-1]
-    target = cutoff - pd.Timedelta(days=days)
+    target = cutoff - pd.Timedelta(days=int(days))
     start_candidates = g[g["observation_date"] <= target]
     if start_candidates.empty:
         return None
@@ -71,6 +71,15 @@ def decision_state(forecast_return: float | None, confidence: float | None, reco
     return "NEUTRAL"
 
 
+def normalize_merge_keys(frame: pd.DataFrame) -> pd.DataFrame:
+    work = frame.copy()
+    work["decision_cutoff"] = pd.to_datetime(work["decision_cutoff"], errors="coerce")
+    work["product_key"] = work["product_key"].astype(str).str.strip()
+    work["product_name"] = work["product_name"].astype(str).str.strip()
+    work["entry_price"] = pd.to_numeric(work["entry_price"], errors="coerce")
+    return work
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--strict", action="store_true")
@@ -90,9 +99,9 @@ def main() -> int:
     rows: list[dict[str, object]] = []
     for _, item in eligibility.iterrows():
         cutoff = pd.Timestamp(item["decision_cutoff"])
-        key = str(item["product_key"])
+        key = str(item["product_key"]).strip()
         history_days = int(item["available_history_days"])
-        group = collector_ledger[collector_ledger["product_key"].astype(str) == key]
+        group = collector_ledger[collector_ledger["product_key"].astype(str).str.strip() == key]
         route = "INSUFFICIENT_HISTORY"
         reconstructable = False
         block_reason = ""
@@ -141,6 +150,8 @@ def main() -> int:
         })
 
     forecasts = pd.DataFrame(rows)
+    outcomes = normalize_merge_keys(outcomes)
+    forecasts = normalize_merge_keys(forecasts)
     scored = outcomes.merge(
         forecasts,
         on=["decision_cutoff", "product_key", "product_name", "entry_price"],
