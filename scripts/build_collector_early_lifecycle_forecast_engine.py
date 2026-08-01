@@ -24,8 +24,8 @@ def read_csv(path: Path) -> pd.DataFrame:
 
 
 def choose(df: pd.DataFrame, aliases: list[str]) -> str | None:
-    cols = {str(c).lower(): str(c) for c in df.columns}
-    return next((cols[a.lower()] for a in aliases if a.lower() in cols), None)
+    columns = {str(column).lower(): str(column) for column in df.columns}
+    return next((columns[alias.lower()] for alias in aliases if alias.lower() in columns), None)
 
 
 def norm(value: object) -> str:
@@ -43,12 +43,14 @@ def num(value: object) -> float:
 
 
 def first_value(row: pd.Series, aliases: list[str], default: object = np.nan) -> object:
-    lower = {str(c).lower(): c for c in row.index}
+    columns = {str(column).lower(): column for column in row.index}
     for alias in aliases:
-        if alias.lower() in lower:
-            value = row[lower[alias.lower()]]
-            if pd.notna(value) and str(value).strip() not in {"", "nan", "None"}:
-                return value
+        column = columns.get(alias.lower())
+        if column is None:
+            continue
+        value = row[column]
+        if pd.notna(value) and str(value).strip() not in {"", "nan", "None"}:
+            return value
     return default
 
 
@@ -84,7 +86,8 @@ def price_band(price: float) -> str:
 
 def release_class(name: str) -> str:
     value = name.lower()
-    if "universes beyond" in value or any(x in value for x in ["final fantasy", "doctor who", "fallout", "assassin", "spider-man", "avatar", "turtles"]):
+    crossover_tokens = ["final fantasy", "doctor who", "fallout", "assassin", "spider-man", "avatar", "turtles"]
+    if "universes beyond" in value or any(token in value for token in crossover_tokens):
         return "UNIVERSES_BEYOND"
     if "masters" in value or "double masters" in value:
         return "MASTERS_PREMIUM"
@@ -99,10 +102,71 @@ def available_numeric(row: pd.Series, aliases: list[str]) -> float:
     return num(first_value(row, aliases))
 
 
+def prepare_peer_pool(features: pd.DataFrame) -> pd.DataFrame:
+    if features.empty:
+        return pd.DataFrame()
+    pool = features.copy()
+    pool["candidate_age"] = pd.to_numeric(pool.get("product_age_months"), errors="coerce")
+    pool["candidate_price"] = pd.to_numeric(pool.get("market_price_at_cutoff"), errors="coerce")
+    pool["peer_signal"] = pd.to_numeric(pool.get("return_12_month"), errors="coerce")
+    pool = pool.dropna(subset=["peer_signal"])
+    if "decision_cutoff" in pool.columns:
+        pool = pool.sort_values("decision_cutoff")
+    pool = pool.drop_duplicates("normalized_name", keep="last")
+    pool["peer_release_class"] = pool["product_name"].astype(str).map(release_class)
+    pool["peer_price_band"] = pool["candidate_price"].map(price_band)
+    return pool
+
+
+def select_peers(
+    pool: pd.DataFrame,
+    identity: str,
+    target_age: float,
+    target_price: float,
+    target_class: str,
+    target_price_band: str,
+) -> tuple[pd.DataFrame, str, str]:
+    eligible = pool[pool["normalized_name"] != identity].copy()
+    if eligible.empty:
+        return eligible, "UNIVERSAL_COLLECTOR_PRIOR", "PRIOR_ONLY"
+
+    age_diff = (eligible["candidate_age"] - target_age).abs() if math.isfinite(target_age) else pd.Series(np.inf, index=eligible.index)
+    price_ratio = eligible["candidate_price"] / target_price if math.isfinite(target_price) and target_price > 0 else pd.Series(np.nan, index=eligible.index)
+    same_class = eligible["peer_release_class"].eq(target_class)
+    same_band = eligible["peer_price_band"].eq(target_price_band)
+    price_near = price_ratio.between(0.5, 2.0, inclusive="both")
+
+    tiers: list[tuple[str, pd.Series, str]] = [
+        ("AGE_CLASS_PRICE", age_diff.le(6) & same_class & price_near, "STRONG"),
+        ("AGE_CLASS", age_diff.le(9) & same_class, "GOOD"),
+        ("AGE_PRICE", age_diff.le(9) & price_near, "GOOD"),
+        ("RELEASE_CLASS", same_class, "MODERATE"),
+        ("PRICE_BAND", same_band, "MODERATE"),
+        ("AGE_ALIGNED_ANY_CLASS", age_diff.le(18), "WEAK"),
+        ("UNIVERSAL_COLLECTOR_COHORT", pd.Series(True, index=eligible.index), "VERY_WEAK"),
+    ]
+
+    for tier, mask, quality in tiers:
+        selected = eligible.loc[mask].copy()
+        if selected.empty:
+            continue
+        selected["age_difference_months"] = age_diff.loc[selected.index]
+        selected["price_ratio"] = price_ratio.loc[selected.index]
+        selected["match_distance"] = (
+            selected["age_difference_months"].fillna(24.0) / 12.0
+            + (selected["price_ratio"].fillna(1.0) - 1.0).abs()
+            + (~selected["peer_release_class"].eq(target_class)).astype(float) * 0.5
+        )
+        return selected.sort_values(["match_distance", "product_name"]).head(8), tier, quality
+
+    return eligible.head(8), "UNIVERSAL_COLLECTOR_COHORT", "VERY_WEAK"
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--strict", action="store_true")
     args = parser.parse_args()
+
     cfg = json.loads(CFG.read_text(encoding="utf-8"))
     OUT.mkdir(parents=True, exist_ok=True)
     failures: list[str] = []
@@ -110,8 +174,9 @@ def main() -> int:
     master = read_csv(ROOT / cfg["inputs"]["product_master"])
     features = read_csv(ROOT / cfg["inputs"]["historical_feature_panel"])
     monthly = read_csv(ROOT / cfg["inputs"]["monthly_price_panel"])
-    forecast_parts = [read_csv(ROOT / p) for p in cfg["inputs"].get("forecast_candidates", [])]
-    forecasts = pd.concat([x for x in forecast_parts if not x.empty], ignore_index=True) if any(not x.empty for x in forecast_parts) else pd.DataFrame()
+    forecast_parts = [read_csv(ROOT / path) for path in cfg["inputs"].get("forecast_candidates", [])]
+    nonempty_forecasts = [frame for frame in forecast_parts if not frame.empty]
+    forecasts = pd.concat(nonempty_forecasts, ignore_index=True) if nonempty_forecasts else pd.DataFrame()
 
     if master.empty:
         failures.append("product_master_missing_or_empty")
@@ -132,178 +197,252 @@ def main() -> int:
         failures.append("collector_universe_empty")
 
     for frame in [features, monthly, forecasts]:
-        if not frame.empty:
-            ncol = choose(frame, ["product_name", "name", "canonical_product_name"])
-            frame["normalized_name"] = frame[ncol].map(norm) if ncol else ""
+        if frame.empty:
+            continue
+        frame_name_col = choose(frame, ["product_name", "name", "canonical_product_name"])
+        frame["normalized_name"] = frame[frame_name_col].map(norm) if frame_name_col else ""
+
+    peer_pool = prepare_peer_pool(features)
+    universal_prior = float(peer_pool["peer_signal"].median()) if not peer_pool.empty else np.nan
+    if not math.isfinite(universal_prior):
+        failures.append("universal_collector_prior_unavailable")
+        universal_prior = 0.0
 
     output_rows: list[dict[str, object]] = []
-    comp_rows: list[dict[str, object]] = []
+    comparable_rows: list[dict[str, object]] = []
     as_of = pd.Timestamp.now(tz="UTC").tz_convert(None).normalize()
 
     for _, product in universe.iterrows():
-        pname = str(product[name_col])
+        product_name = str(product[name_col])
         identity = product["normalized_name"]
-        pkey = str(product[key_col]) if key_col and pd.notna(product[key_col]) else identity
+        product_key = str(product[key_col]) if key_col and pd.notna(product[key_col]) else identity
         release = pd.to_datetime(product[release_col], errors="coerce") if release_col else pd.NaT
-        frows = features.loc[features.get("normalized_name", pd.Series(dtype=str)).eq(identity)].copy() if not features.empty else pd.DataFrame()
-        mrows = monthly.loc[monthly.get("normalized_name", pd.Series(dtype=str)).eq(identity)].copy() if not monthly.empty else pd.DataFrame()
-        prows = forecasts.loc[forecasts.get("normalized_name", pd.Series(dtype=str)).eq(identity)].copy() if not forecasts.empty else pd.DataFrame()
 
-        if pd.isna(release) and not frows.empty and "release_date" in frows:
-            release_values = pd.to_datetime(frows["release_date"], errors="coerce").dropna()
+        feature_rows = features.loc[features.get("normalized_name", pd.Series(dtype=str)).eq(identity)].copy() if not features.empty else pd.DataFrame()
+        monthly_rows = monthly.loc[monthly.get("normalized_name", pd.Series(dtype=str)).eq(identity)].copy() if not monthly.empty else pd.DataFrame()
+        forecast_rows = forecasts.loc[forecasts.get("normalized_name", pd.Series(dtype=str)).eq(identity)].copy() if not forecasts.empty else pd.DataFrame()
+
+        if pd.isna(release) and not feature_rows.empty and "release_date" in feature_rows.columns:
+            release_values = pd.to_datetime(feature_rows["release_date"], errors="coerce").dropna()
             release = release_values.iloc[-1] if not release_values.empty else pd.NaT
+
         age = ((as_of.year - release.year) * 12 + as_of.month - release.month) if pd.notna(release) else np.nan
         band = age_band(float(age) if pd.notna(age) else np.nan)
+        current_class = release_class(product_name)
 
-        latest_feature = frows.sort_values("decision_cutoff").iloc[-1] if not frows.empty and "decision_cutoff" in frows else (frows.iloc[-1] if not frows.empty else pd.Series(dtype=object))
+        if not feature_rows.empty and "decision_cutoff" in feature_rows.columns:
+            latest_feature = feature_rows.sort_values("decision_cutoff").iloc[-1]
+        elif not feature_rows.empty:
+            latest_feature = feature_rows.iloc[-1]
+        else:
+            latest_feature = pd.Series(dtype=object)
+
         current_price = num(product[price_col]) if price_col else np.nan
-        if not math.isfinite(current_price) and not mrows.empty and "market_price" in mrows:
-            current_price = num(pd.to_numeric(mrows["market_price"], errors="coerce").dropna().iloc[-1]) if pd.to_numeric(mrows["market_price"], errors="coerce").notna().any() else np.nan
-        history_count = int(len(mrows)) if not mrows.empty else int(num(first_value(latest_feature, ["history_observation_count"], 0)) or 0)
+        if not math.isfinite(current_price) and not monthly_rows.empty and "market_price" in monthly_rows.columns:
+            prices = pd.to_numeric(monthly_rows["market_price"], errors="coerce").dropna()
+            current_price = num(prices.iloc[-1]) if not prices.empty else np.nan
+        current_price_band = price_band(current_price)
+        history_count = len(monthly_rows) if not monthly_rows.empty else int(num(first_value(latest_feature, ["history_observation_count"], 0)) or 0)
 
         signal90 = np.nan
         signal180 = np.nan
-        if not prows.empty:
-            horizon_col = choose(prows, ["horizon_days", "forecast_horizon_days"])
-            forecast_col = choose(prows, ["forecast_return", "point_forecast_return", "forecast_return_365_equivalent", "predicted_return", "shadow_forecast_return"])
+        if not forecast_rows.empty:
+            horizon_col = choose(forecast_rows, ["horizon_days", "forecast_horizon_days"])
+            forecast_col = choose(forecast_rows, ["forecast_return", "point_forecast_return", "forecast_return_365_equivalent", "predicted_return", "shadow_forecast_return"])
             if horizon_col and forecast_col:
-                h = pd.to_numeric(prows[horizon_col], errors="coerce")
-                vals = pd.to_numeric(prows[forecast_col], errors="coerce")
-                if (h == 90).any():
-                    signal90 = num(vals[h == 90].dropna().iloc[-1]) if vals[h == 90].notna().any() else np.nan
-                if (h == 180).any():
-                    signal180 = num(vals[h == 180].dropna().iloc[-1]) if vals[h == 180].notna().any() else np.nan
+                horizons = pd.to_numeric(forecast_rows[horizon_col], errors="coerce")
+                values = pd.to_numeric(forecast_rows[forecast_col], errors="coerce")
+                values90 = values[horizons.eq(90)].dropna()
+                values180 = values[horizons.eq(180)].dropna()
+                signal90 = num(values90.iloc[-1]) if not values90.empty else np.nan
+                signal180 = num(values180.iloc[-1]) if not values180.empty else np.nan
 
         own3 = available_numeric(latest_feature, ["return_3_month"])
         own6 = available_numeric(latest_feature, ["return_6_month"])
         own12 = available_numeric(latest_feature, ["return_12_month"])
-        vol = available_numeric(latest_feature, ["trailing_12_month_volatility"])
-        drawdown = available_numeric(latest_feature, ["maximum_12_month_drawdown"])
+        volatility = available_numeric(latest_feature, ["trailing_12_month_volatility"])
 
-        candidates = features.copy() if not features.empty else pd.DataFrame()
-        if not candidates.empty:
-            candidates = candidates[candidates["normalized_name"] != identity].copy()
-            candidates["candidate_age"] = pd.to_numeric(candidates.get("product_age_months"), errors="coerce")
-            candidates["candidate_price"] = pd.to_numeric(candidates.get("market_price_at_cutoff"), errors="coerce")
-            if math.isfinite(age):
-                candidates = candidates[(candidates["candidate_age"] - age).abs() <= 6]
-            if math.isfinite(current_price):
-                candidates = candidates[(candidates["candidate_price"] / current_price).between(0.5, 2.0, inclusive="both")]
-            candidates["peer_signal"] = pd.to_numeric(candidates.get("return_12_month"), errors="coerce")
-            candidates = candidates.dropna(subset=["peer_signal"]).sort_values("decision_cutoff").drop_duplicates("normalized_name", keep="last")
-            candidates["peer_release_class"] = candidates["product_name"].astype(str).map(release_class)
-            same_class = candidates[candidates["peer_release_class"] == release_class(pname)]
-            if len(same_class) >= 3:
-                candidates = same_class
-            candidates = candidates.head(8)
-        comp_count = int(len(candidates))
-        peer_signal = float(candidates["peer_signal"].median()) if comp_count else np.nan
-        comp_names = "|".join(candidates["product_name"].astype(str).tolist()) if comp_count else NA
-        for rank, (_, peer) in enumerate(candidates.iterrows(), start=1):
-            comp_rows.append({"target_product": pname, "comparable_rank": rank, "comparable_product": peer["product_name"], "age_difference_months": abs(num(peer.get("candidate_age")) - num(age)), "price_ratio": num(peer.get("candidate_price")) / current_price if math.isfinite(current_price) and current_price > 0 else NA, "peer_signal_at_cutoff": num(peer.get("peer_signal")), "future_information_used": False})
+        peers, match_tier, match_quality = select_peers(
+            peer_pool,
+            identity,
+            float(age) if pd.notna(age) else np.nan,
+            current_price,
+            current_class,
+            current_price_band,
+        )
+        comparable_count = len(peers)
+        peer_signal = float(peers["peer_signal"].median()) if comparable_count else universal_prior
+        comparable_group = "|".join(peers["product_name"].astype(str).tolist()) if comparable_count else "UNIVERSAL_COLLECTOR_PRIOR"
 
-        bridge_values = [x for x in [signal90, signal180, own3, own6, own12, peer_signal] if math.isfinite(x)]
-        bridge = float(np.median(bridge_values)) if bridge_values else np.nan
-        supply_fields = ["listing_count", "active_listing_count", "sales_count", "sold_count", "inventory_score", "supply_score"]
-        demand_fields = ["demand_score", "demand_durability_score", "franchise_strength", "franchise_score"]
-        supply_available = any(str(first_value(product, [x], "")).strip() not in {"", "nan", "None"} for x in supply_fields)
-        demand_available = any(str(first_value(product, [x], "")).strip() not in {"", "nan", "None"} for x in demand_fields)
+        if comparable_count:
+            inverse_distance = 1.0 / (1.0 + peers["match_distance"].fillna(1.0))
+            weights = inverse_distance / inverse_distance.sum()
+            for rank, ((_, peer), weight) in enumerate(zip(peers.iterrows(), weights), start=1):
+                comparable_rows.append({
+                    "target_product": product_name,
+                    "comparable_rank": rank,
+                    "comparable_product": peer["product_name"],
+                    "match_tier": match_tier,
+                    "match_quality": match_quality,
+                    "age_difference_months": num(peer.get("age_difference_months")),
+                    "price_ratio": num(peer.get("price_ratio")),
+                    "comparable_weight": float(weight),
+                    "peer_signal_at_cutoff": num(peer.get("peer_signal")),
+                    "future_information_used": False,
+                })
+        else:
+            comparable_rows.append({
+                "target_product": product_name,
+                "comparable_rank": 1,
+                "comparable_product": "UNIVERSAL_COLLECTOR_PRIOR",
+                "match_tier": "UNIVERSAL_COLLECTOR_PRIOR",
+                "match_quality": "PRIOR_ONLY",
+                "age_difference_months": NA,
+                "price_ratio": NA,
+                "comparable_weight": 1.0,
+                "peer_signal_at_cutoff": universal_prior,
+                "future_information_used": False,
+            })
 
+        available_signals = [value for value in [signal90, signal180, own3, own6, own12, peer_signal] if math.isfinite(value)]
+        base = float(np.median(available_signals)) if available_signals else universal_prior
         validated_bridge = math.isfinite(signal90) or math.isfinite(signal180)
-        if history_count >= 9 and comp_count >= 3 and validated_bridge and math.isfinite(bridge):
+
+        if history_count >= 9 and comparable_count >= 3 and validated_bridge:
             status = "PROVISIONAL_365"
             route = "EARLY_LIFECYCLE_COMPARABLE_BRIDGE"
             uncertainty = 1.75 if band in {"LAUNCH_PRICE_DISCOVERY", "INITIAL_SUPPLY_ABSORPTION"} else 1.5
-            base = bridge
-            width = max(0.30, abs(base) * uncertainty, (vol if math.isfinite(vol) else 0.20) * uncertainty)
             confidence = "LOW"
             evidence = "C_PROXY_PRIOR"
-            blocked = NAP
-            next_req = "MATURE_ANOTHER_365_DAY_OUTCOME_AND_REVALIDATE_RANKING"
-        elif history_count >= 3 and (comp_count >= 1 or len(bridge_values) >= 2):
+            forecast_basis = "OWN_HISTORY_PLUS_VALIDATED_NEAR_TERM_PLUS_MATCHED_PEERS"
+            next_requirement = "MATURE_ANOTHER_365_DAY_OUTCOME_AND_REVALIDATE_RANKING"
+        elif history_count >= 3 and (comparable_count >= 1 or len(available_signals) >= 2):
             status = "SCENARIO_ELIGIBLE"
-            route = "EARLY_LIFECYCLE_SCENARIO"
+            route = "COMPARABLE_SUPPORTED_SCENARIO_AND_POINT"
             uncertainty = 2.0 if band in {"LAUNCH_PRICE_DISCOVERY", "INITIAL_SUPPLY_ABSORPTION"} else 1.75
-            base = bridge if math.isfinite(bridge) else 0.0
-            width = max(0.40, abs(base) * uncertainty, (vol if math.isfinite(vol) else 0.25) * uncertainty)
             confidence = "VERY_LOW"
             evidence = "D_EXPERIMENTAL"
-            blocked = "POINT_FORECAST_NOT_QUALIFIED"
-            next_req = "ADD_VALIDATED_90_OR_180_SIGNAL_AND_AT_LEAST_THREE_AGE_ALIGNED_COMPARABLES"
+            forecast_basis = "AVAILABLE_PRODUCT_SIGNALS_PLUS_MATCHED_PEERS"
+            next_requirement = "ADD_VALIDATED_90_OR_180_SIGNAL_AND_AT_LEAST_THREE_STRONGER_COMPARABLES"
         else:
-            status = "BLOCKED"
-            route = "NO_RELIABLE_EARLY_LIFECYCLE_EVIDENCE"
-            uncertainty = 2.5
-            base = bridge if math.isfinite(bridge) else 0.0
-            width = max(0.50, abs(base) * uncertainty)
-            confidence = "UNRATED"
-            evidence = "BLOCKED"
-            blocked = "INSUFFICIENT_HISTORY_COMPARABLES_OR_BRIDGE_SIGNAL"
-            next_req = "COLLECT_AT_LEAST_THREE_MONTHLY_OBSERVATIONS_OR_ONE_VALIDATED_NEAR_TERM_FORECAST"
+            status = "UNIVERSAL_MATCHED_365"
+            route = match_tier
+            uncertainty = 3.0 if match_quality in {"VERY_WEAK", "PRIOR_ONLY"} else 2.5
+            confidence = "VERY_LOW"
+            evidence = "D_EXPERIMENTAL"
+            forecast_basis = "BROAD_MATCHED_COHORT" if comparable_count else "UNIVERSAL_COLLECTOR_PRIOR"
+            next_requirement = "REPLACE_BROAD_PRIOR_WITH_PRODUCT_HISTORY_NEAR_TERM_SIGNAL_OR_STRONGER_MATCH"
 
+        width = max(0.40, abs(base) * uncertainty, (volatility if math.isfinite(volatility) else 0.25) * uncertainty)
         bear = base - width
         bull = base + width
-        point = base if status == "PROVISIONAL_365" else NA
-        next_trigger = "NEXT_MONTHLY_OBSERVATION_OR_LIFECYCLE_BAND_CHANGE"
-        lineage = sorted(set(([str(x) for x in mrows.get("source_lineage", pd.Series(dtype=str)).dropna().unique()] if not mrows.empty else []) + ([str(x) for x in frows.get("source_lineage", pd.Series(dtype=str)).dropna().unique()] if not frows.empty else [])))
+
+        supply_fields = ["listing_count", "active_listing_count", "sales_count", "sold_count", "inventory_score", "supply_score"]
+        demand_fields = ["demand_score", "demand_durability_score", "franchise_strength", "franchise_score"]
+        supply_available = any(str(first_value(product, [field], "")).strip() not in {"", "nan", "None"} for field in supply_fields)
+        demand_available = any(str(first_value(product, [field], "")).strip() not in {"", "nan", "None"} for field in demand_fields)
+
+        lineage_values = []
+        if not monthly_rows.empty and "source_lineage" in monthly_rows.columns:
+            lineage_values.extend(str(value) for value in monthly_rows["source_lineage"].dropna().unique())
+        if not feature_rows.empty and "source_lineage" in feature_rows.columns:
+            lineage_values.extend(str(value) for value in feature_rows["source_lineage"].dropna().unique())
+        lineage = "|".join(sorted(set(lineage_values))) if lineage_values else "PRODUCT_MASTER_PLUS_MATCHED_COHORT"
 
         output_rows.append({
-            "product_key": pkey, "product_name": pname, "release_date": release.date().isoformat() if pd.notna(release) else NA,
-            "product_age_months": int(age) if pd.notna(age) else NA, "early_lifecycle_band": band,
-            "forecast_status": status, "forecast_route": route, "forecast_center_365": point,
-            "bear_return_365": bear, "base_return_365": base, "bull_return_365": bull,
-            "forecast_lower_365": bear, "forecast_upper_365": bull,
+            "product_key": product_key,
+            "product_name": product_name,
+            "release_date": release.date().isoformat() if pd.notna(release) else NA,
+            "product_age_months": int(age) if pd.notna(age) else NA,
+            "early_lifecycle_band": band,
+            "forecast_status": status,
+            "forecast_route": route,
+            "forecast_center_365": base,
+            "bear_return_365": bear,
+            "base_return_365": base,
+            "bull_return_365": bull,
+            "forecast_lower_365": bear,
+            "forecast_upper_365": bull,
             "forecast_90_signal": signal90 if math.isfinite(signal90) else NA,
             "forecast_180_signal": signal180 if math.isfinite(signal180) else NA,
-            "age_aligned_comparable_count": comp_count, "age_aligned_comparable_group": comp_names,
-            "release_class": release_class(pname), "price_band": price_band(current_price),
+            "age_aligned_comparable_count": comparable_count,
+            "age_aligned_comparable_group": comparable_group,
+            "match_tier": match_tier,
+            "match_quality": match_quality,
+            "forecast_basis": forecast_basis,
+            "release_class": current_class,
+            "price_band": current_price_band,
             "supply_inventory_evidence": "AVAILABLE" if supply_available else NA,
             "franchise_demand_evidence": "AVAILABLE" if demand_available else NA,
-            "evidence_grade": evidence, "confidence_tier": confidence, "uncertainty_multiplier": uncertainty,
-            "blocked_reason": blocked, "next_evidence_requirement": next_req, "next_review_trigger": next_trigger,
-            "source_lineage": "|".join(lineage) if lineage else "PRODUCT_MASTER_ONLY",
+            "evidence_grade": evidence,
+            "confidence_tier": confidence,
+            "uncertainty_multiplier": uncertainty,
+            "blocked_reason": NAP,
+            "next_evidence_requirement": next_requirement,
+            "next_review_trigger": "NEXT_MONTHLY_OBSERVATION_OR_LIFECYCLE_BAND_CHANGE",
+            "source_lineage": lineage,
             "future_information_used": False,
         })
 
-    output = pd.DataFrame(output_rows)
-    comparables = pd.DataFrame(comp_rows)
-    required = cfg["required_output_fields"]
-    output = output.reindex(columns=required)
+    output = pd.DataFrame(output_rows).reindex(columns=cfg["required_output_fields"])
+    comparables = pd.DataFrame(comparable_rows)
     output = output.replace([np.inf, -np.inf], np.nan).fillna(NA)
-    output = output.applymap(lambda x: NA if isinstance(x, str) and not x.strip() else x)
+    output = output.apply(lambda column: column.map(lambda value: NA if isinstance(value, str) and not value.strip() else value))
+
     output.to_csv(OUT / "collector_early_lifecycle_complete_universe.csv", index=False)
     comparables.to_csv(OUT / "collector_early_lifecycle_age_aligned_comparables.csv", index=False)
 
+    blank_values = output.astype(str).apply(lambda column: column.str.strip().eq("")).to_numpy().any()
     if len(output) != len(universe):
         failures.append("complete_universe_row_count_mismatch")
     if output["product_name"].duplicated().any():
         failures.append("duplicate_products_in_output")
-    if output.isna().any().any() or output.astype(str).apply(lambda s: s.str.strip().eq("").any()).any():
+    if output.isna().to_numpy().any() or blank_values:
         failures.append("missing_output_values_detected")
-    if not set(output["forecast_status"]).issubset({"PROVISIONAL_365", "SCENARIO_ELIGIBLE", "BLOCKED"}):
+    allowed_statuses = {"PROVISIONAL_365", "SCENARIO_ELIGIBLE", "UNIVERSAL_MATCHED_365"}
+    if not set(output["forecast_status"]).issubset(allowed_statuses):
         failures.append("invalid_status")
-    if ((output["forecast_status"] != "PROVISIONAL_365") & (output["forecast_center_365"].astype(str) != NA)).any():
-        failures.append("point_forecast_exposed_without_provisional_status")
+    if output["forecast_status"].eq("BLOCKED").any():
+        failures.append("blocked_status_detected")
+    if output["forecast_center_365"].astype(str).isin(["", NA]).any():
+        failures.append("point_forecast_missing")
+    if output["age_aligned_comparable_group"].astype(str).isin(["", NA]).any():
+        failures.append("match_or_prior_missing")
     if output["future_information_used"].astype(str).str.lower().eq("true").any():
         failures.append("future_information_detected")
 
     result = {
-        "audit_name": cfg["program_name"], "audit_version": cfg["program_version"],
-        "status": "PASS" if not failures else "FAIL", "complete_universe_product_count": int(len(universe)),
-        "output_product_count": int(len(output)), "missing_product_count": int(max(0, len(universe) - len(output))),
-        "provisional_365_count": int((output["forecast_status"] == "PROVISIONAL_365").sum()) if not output.empty else 0,
-        "scenario_eligible_count": int((output["forecast_status"] == "SCENARIO_ELIGIBLE").sum()) if not output.empty else 0,
-        "blocked_count": int((output["forecast_status"] == "BLOCKED").sum()) if not output.empty else 0,
+        "audit_name": cfg["program_name"],
+        "audit_version": cfg["program_version"],
+        "status": "PASS" if not failures else "FAIL",
+        "complete_universe_product_count": int(len(universe)),
+        "output_product_count": int(len(output)),
+        "missing_product_count": int(max(0, len(universe) - len(output))),
+        "provisional_365_count": int(output["forecast_status"].eq("PROVISIONAL_365").sum()) if not output.empty else 0,
+        "scenario_eligible_count": int(output["forecast_status"].eq("SCENARIO_ELIGIBLE").sum()) if not output.empty else 0,
+        "universal_matched_365_count": int(output["forecast_status"].eq("UNIVERSAL_MATCHED_365").sum()) if not output.empty else 0,
+        "blocked_count": 0,
         "all_products_have_status": bool(not output.empty and output["forecast_status"].notna().all()),
-        "all_required_fields_populated": bool(not output.empty and not output.isna().any().any()),
-        "future_information_used": False, "shadow_only": True,
-        "early_lifecycle_shadow_implementation_authorized": False, "provisional_365_authorized": False,
-        "scenario_output_authorized": False, "production_projection_authorized": False,
-        "purchase_recommendation_authorized": False, "automatic_model_update_allowed": False,
-        "technical_freeze_authorized": False, "uip_acceptance_authorized": False,
-        "failure_count": len(failures), "failures": failures,
+        "all_products_have_point_forecast": bool(not output.empty and not output["forecast_center_365"].astype(str).isin(["", NA]).any()),
+        "all_products_have_match_or_prior": bool(not output.empty and not output["age_aligned_comparable_group"].astype(str).isin(["", NA]).any()),
+        "all_required_fields_populated": bool(not output.empty and not output.isna().to_numpy().any() and not blank_values),
+        "future_information_used": False,
+        "shadow_only": True,
+        "early_lifecycle_shadow_implementation_authorized": False,
+        "provisional_365_authorized": False,
+        "scenario_output_authorized": False,
+        "universal_matched_365_authorized": False,
+        "production_projection_authorized": False,
+        "purchase_recommendation_authorized": False,
+        "automatic_model_update_allowed": False,
+        "technical_freeze_authorized": False,
+        "uip_acceptance_authorized": False,
+        "failure_count": len(failures),
+        "failures": failures,
     }
-    (OUT / "collector_early_lifecycle_forecast_engine_summary.json").write_text(json.dumps(result, indent=2, sort_keys=True), encoding="utf-8")
+    (OUT / "collector_early_lifecycle_forecast_engine_summary.json").write_text(
+        json.dumps(result, indent=2, sort_keys=True), encoding="utf-8"
+    )
     print(json.dumps(result, indent=2, sort_keys=True))
     return 1 if args.strict and failures else 0
 
