@@ -1,0 +1,44 @@
+{
+  "mapping_name": "Collector Long-Horizon Canonical Source Mapping",
+  "mapping_version": "1.0.0",
+  "primary_class": "COLLECTOR_BOOSTER_DISPLAY",
+  "canonical_sources": {
+    "price_history": "data/operations/mtg_universal_history_ledger/universal_mtg_historical_observation_ledger.csv",
+    "release_registry": "data/validation/phase_10/collector_booster_boxes/governed_registry/collector_booster_box_governed_registry.csv",
+    "walk_forward_outcomes": "data/operations/collector_walk_forward_replay_phase_2a/candidate_v1_0_0/collector_walk_forward_phase_2a_scored_outcomes.csv",
+    "current_fundamentals": "data/product_master/product_master_model_input.csv"
+  },
+  "field_aliases": {
+    "product_key": ["product_key", "tcgplayer_product_id", "product_id"],
+    "product_name": ["product_name", "name", "canonical_product_name"],
+    "observation_date": ["observation_date", "date", "snapshot_date"],
+    "decision_cutoff": ["decision_cutoff"],
+    "release_date": ["release_date", "set_release_date"],
+    "market_price": ["market_price", "market", "current_market_price", "price"],
+    "listing_count": ["listing_count", "active_listing_count"],
+    "sales_count": ["sales_count", "sold_count"],
+    "demand_score": ["demand_score", "demand_durability_score"],
+    "reprint_risk": ["reprint_risk", "reprint_substitution_risk"]
+  },
+  "historical_feature_policy": {
+    "price_and_release_features_allowed": true,
+    "current_only_fundamentals_allowed_in_replay": false,
+    "fundamental_value_requires_observation_date": true,
+    "duplicate_output_files_forbidden": true,
+    "review_queue_files_forbidden": true,
+    "future_information_forbidden": true
+  },
+  "required_outputs": [
+    "collector_long_horizon_monthly_price_panel.csv",
+    "collector_long_horizon_decision_feature_panel.csv",
+    "collector_long_horizon_feature_coverage.csv",
+    "collector_long_horizon_source_lineage.csv"
+  ],
+  "shadow_only": true,
+  "candidate_methodology_change_authorized": false,
+  "production_projection_authorized": false,
+  "purchase_recommendation_authorized": false,
+  "automatic_model_update_allowed": false,
+  "technical_freeze_authorized": false,
+  "uip_acceptance_authorized": false
+}
