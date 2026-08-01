@@ -15,7 +15,9 @@ FORECASTS = ROOT / "data/operations/collector_early_lifecycle_forecast_engine/ca
 
 def clean_id(value: object) -> str:
     text = str(value or "").strip()
-    return text[:-2] if text.endswith(".0") else text
+    if text.endswith(".0") and text[:-2].isdigit():
+        text = text[:-2]
+    return text
 
 
 def id_set(df: pd.DataFrame, aliases: list[str]) -> set[str]:
@@ -52,7 +54,7 @@ def main() -> int:
 
     master_ids = id_set(collector_master, ["tcgplayer_product_id", "product_key"])
     registry_ids = id_set(registry, ["tcgplayer_product_id", "canonical_product_id"])
-    canonical_ids = id_set(canonical, ["product_key", "tcgplayer_product_id"])
+    canonical_ids = id_set(canonical, ["tcgplayer_product_id", "product_key"])
     forecast_ids = id_set(forecasts, ["product_key", "tcgplayer_product_id"])
 
     if not master_ids:
@@ -67,19 +69,31 @@ def main() -> int:
         failures.append("forecast_products_not_in_canonical:" + "|".join(sorted(forecast_ids - canonical_ids)))
 
     if not registry.empty:
-        if registry["tcgplayer_product_id"].map(clean_id).duplicated().any():
+        registry_normalized = registry["tcgplayer_product_id"].map(clean_id)
+        if registry_normalized.duplicated().any():
             failures.append("duplicate_registry_tcgplayer_ids")
         if registry["canonical_product_name"].duplicated().any():
             failures.append("duplicate_registry_names")
 
     if not canonical.empty:
-        if canonical["product_key"].map(clean_id).duplicated().any():
-            failures.append("duplicate_canonical_product_ids")
+        if "tcgplayer_product_id" not in canonical.columns:
+            failures.append("canonical_tcgplayer_identity_column_missing")
+        else:
+            canonical_tcg = canonical["tcgplayer_product_id"].map(clean_id)
+            canonical_key = canonical["product_key"].map(clean_id)
+            if canonical_tcg.isin(["", "NOT_AVAILABLE"]).any():
+                failures.append("canonical_tcgplayer_identity_missing")
+            if not canonical_key.equals(canonical_tcg):
+                mismatch_ids = canonical.loc[canonical_key != canonical_tcg, "product_key"].map(clean_id).tolist()
+                failures.append("canonical_product_key_not_tcgplayer_identity:" + "|".join(mismatch_ids))
+            if canonical_key.duplicated().any():
+                failures.append("duplicate_canonical_product_ids")
         if canonical["product_name"].duplicated().any():
             failures.append("duplicate_canonical_product_names")
 
     if not forecasts.empty:
-        if forecasts["product_key"].map(clean_id).duplicated().any():
+        forecast_keys = forecasts["product_key"].map(clean_id)
+        if forecast_keys.duplicated().any():
             failures.append("duplicate_forecast_product_ids")
         if forecasts["product_name"].duplicated().any():
             failures.append("duplicate_forecast_products")
@@ -90,8 +104,9 @@ def main() -> int:
 
     result = {
         "audit_name": "Collector Dynamic Registry and Forecast Alignment Audit",
-        "audit_version": "2.0.0",
+        "audit_version": "2.1.0",
         "dynamic_count_policy": True,
+        "identity_contract": "TCGPLAYER_PRODUCT_ID_PRIMARY",
         "product_master_collector_count": int(len(master_ids)),
         "registry_count": int(len(registry_ids)),
         "canonical_universe_count": int(len(canonical_ids)),
