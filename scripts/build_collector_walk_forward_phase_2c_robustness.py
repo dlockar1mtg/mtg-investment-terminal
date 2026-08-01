@@ -20,8 +20,8 @@ def summarize(frame: pd.DataFrame, test_name: str) -> list[dict[str, object]]:
         candidate = group[group["variant_name"] == "CROSS_SECTIONAL_MEDIAN_BLEND_50"]
         if current.empty or candidate.empty:
             continue
-        current_mae = float(current["absolute_return_error"].mean())
-        candidate_mae = float(candidate["absolute_return_error"].mean())
+        current_mae = float(current["absolute_error"].mean())
+        candidate_mae = float(candidate["absolute_error"].mean())
         rows.append({
             "robustness_test": test_name,
             "horizon_days": int(horizon),
@@ -30,7 +30,7 @@ def summarize(frame: pd.DataFrame, test_name: str) -> list[dict[str, object]]:
             "candidate_variant_mae": candidate_mae,
             "mae_improvement": current_mae - candidate_mae,
             "candidate_direction_accuracy": float(candidate["direction_correct"].mean()),
-            "candidate_mean_signed_error": float(candidate["signed_return_error"].mean()),
+            "candidate_mean_signed_error": float(candidate["signed_error"].mean()),
             "candidate_outperforms_current": bool(candidate_mae < current_mae),
         })
     return rows
@@ -45,16 +45,16 @@ def main() -> int:
     OUT.mkdir(parents=True, exist_ok=True)
 
     variants = pd.read_csv(PHASE_2B / "collector_walk_forward_phase_2b_variant_outcomes.csv", parse_dates=["decision_cutoff"])
-    variants["absolute_return_error"] = pd.to_numeric(variants["absolute_return_error"], errors="coerce")
-    variants["signed_return_error"] = pd.to_numeric(variants["signed_return_error"], errors="coerce")
+    variants["absolute_error"] = pd.to_numeric(variants["absolute_error"], errors="coerce")
+    variants["signed_error"] = pd.to_numeric(variants["signed_error"], errors="coerce")
     variants["direction_correct"] = variants["direction_correct"].astype(str).str.lower().eq("true")
 
     paired = variants[variants["variant_name"].isin([cfg["comparison_variant"], cfg["candidate_variant"]])].copy()
     current = paired[paired["variant_name"] == cfg["comparison_variant"]].copy()
 
-    product_error = current.groupby("product_name")["absolute_return_error"].mean().sort_values(ascending=False)
+    product_error = current.groupby("product_name")["absolute_error"].mean().sort_values(ascending=False)
     highest_error_product = str(product_error.index[0]) if not product_error.empty else ""
-    trim_threshold = float(current["absolute_return_error"].quantile(0.95)) if not current.empty else np.nan
+    trim_threshold = float(current["absolute_error"].quantile(0.95)) if not current.empty else np.nan
     cutoff_values = sorted(current["decision_cutoff"].dropna().unique())
     midpoint = cutoff_values[len(cutoff_values) // 2] if cutoff_values else None
 
@@ -62,11 +62,11 @@ def main() -> int:
         "ALL_CASES": paired,
         "EXCLUDE_HIGHEST_ERROR_PRODUCT": paired[paired["product_name"] != highest_error_product],
         "TRIM_TOP_5_PERCENT_CURRENT_MODEL_ERRORS": paired.merge(
-            current[["decision_cutoff", "product_key", "product_name", "horizon_days", "absolute_return_error"]],
+            current[["decision_cutoff", "product_key", "product_name", "horizon_days", "absolute_error"]],
             on=["decision_cutoff", "product_key", "product_name", "horizon_days"],
             how="left",
             suffixes=("", "_current"),
-        ).query("absolute_return_error_current <= @trim_threshold"),
+        ).query("absolute_error_current <= @trim_threshold"),
     }
     if midpoint is not None:
         frames["EARLY_CUTOFF_HALF"] = paired[paired["decision_cutoff"] < midpoint]
