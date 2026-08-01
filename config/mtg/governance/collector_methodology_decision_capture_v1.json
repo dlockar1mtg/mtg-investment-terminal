@@ -1,0 +1,19 @@
+{
+  "contract_name": "Collector Methodology Decision Capture",
+  "contract_version": "1.0.0",
+  "status": "INACTIVE_OWNER_DECISION_REQUIRED",
+  "inputs": {
+    "sensitivity_root": "data/operations/collector_methodology_sensitivity_review/candidate_v1_0_0",
+    "owner_package_root": "data/operations/collector_methodology_owner_decision_package/candidate_v1_0_0"
+  },
+  "output_directory": "data/operations/collector_methodology_decision_capture/candidate_v1_0_0",
+  "rules": {
+    "baseline_adjustment_must_be_reconciled": true,
+    "unresolved_adjustment_must_not_be_named_without_source": true,
+    "all_six_owner_decisions_required_before_activation": true,
+    "candidate_projection_authorized": false,
+    "production_projection_authorized": false,
+    "purchase_recommendation_authorized": false,
+    "automatic_model_update_allowed": false
+  }
+}
