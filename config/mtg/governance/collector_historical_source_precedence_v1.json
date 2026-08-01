@@ -1,0 +1,53 @@
+{
+  "policy_name": "Collector Historical Source Precedence",
+  "policy_version": "1.0.0",
+  "scope": "Dynamic English factory-sealed Collector Booster Display historical candidate reconstruction",
+  "primary_exact_id_sources": [
+    {
+      "path": "data/operations/mtg_universal_history_ledger/universal_mtg_historical_observation_ledger.csv",
+      "precedence": 10
+    },
+    {
+      "path": "data/operations/mtg_history_foundation/universal_mtg_price_history.csv",
+      "precedence": 20
+    },
+    {
+      "path": "data/operations/mtg_universal_history_completion/archive/universal_tcgcsv_monthly_archive_observations.csv",
+      "precedence": 30
+    },
+    {
+      "path": "data/operations/mtg_universal_history_ledger/universal_mtg_daily_consolidated_ledger.csv",
+      "precedence": 40
+    },
+    {
+      "path": "artifacts/certification/collector_boosters/candidate_v1_0_0/certification_inputs/universal_mtg_daily_consolidated_ledger.csv",
+      "precedence": 50
+    }
+  ],
+  "secondary_name_only_sources": [
+    {
+      "path": "data/operations/collector_long_horizon_historical_feature_panel/candidate_v1_0_0/collector_long_horizon_monthly_price_panel.csv",
+      "use": "alias recovery and gap comparison only"
+    },
+    {
+      "path": "data/operations/collector_historical_foundation/candidate_v1_0_0/collector_governed_historical_observations.csv",
+      "use": "alias recovery and source comparison only"
+    }
+  ],
+  "selection_rules": {
+    "exact_tcgplayer_product_id_required_for_automatic_selection": true,
+    "governed_product_membership_required": true,
+    "one_selected_row_per_product_month": true,
+    "lower_precedence_number_wins": true,
+    "same_precedence_conflicts_require_review": true,
+    "name_only_rows_never_auto_selected": true,
+    "presale_rows_isolated": true,
+    "missing_prices_never_zero_filled": true,
+    "source_specific_rows_preserved": true
+  },
+  "authorization": {
+    "historical_append_authorized": false,
+    "forecasting_resume_authorized": false,
+    "purchase_recommendation_authorized": false
+  }
+}
