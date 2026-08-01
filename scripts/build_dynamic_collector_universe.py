@@ -43,6 +43,16 @@ def norm_id(value: object) -> str:
     return value[:-2] if value.endswith(".0") else value
 
 
+def normalize_marker_text(value: object) -> str:
+    """Normalize naming variants without changing the preserved source name.
+
+    TCGCSV contains variants such as ``Master Case`` and ``MasterCase``. Marker
+    matching therefore removes punctuation and whitespace after lowercasing so
+    semantically identical configuration names classify the same way.
+    """
+    return re.sub(r"[^a-z0-9]+", "", clean(value).lower())
+
+
 def pick_column(frame: pd.DataFrame, candidates: list[str]) -> str | None:
     lookup = {str(c).lower(): str(c) for c in frame.columns}
     for candidate in candidates:
@@ -61,9 +71,10 @@ def latest_snapshot_products(snapshot_root: Path) -> tuple[Path | None, str]:
 
 
 def contains_marker(name: str, markers: list[str]) -> str:
-    lower = name.lower()
+    normalized_name = normalize_marker_text(name)
     for marker in markers:
-        if marker.lower() in lower:
+        normalized_marker = normalize_marker_text(marker)
+        if normalized_marker and normalized_marker in normalized_name:
             return marker
     return ""
 
@@ -89,7 +100,7 @@ def main() -> int:
     if failures:
         summary = {
             "block_name": "Dynamic Collector Universe Discovery",
-            "block_version": "1.0.0",
+            "block_version": "1.0.1",
             "generated_at": datetime.now(timezone.utc).isoformat(),
             "status": "FAIL",
             "failures": failures,
@@ -122,7 +133,7 @@ def main() -> int:
         failures.append("snapshot_schema_missing:" + ",".join(required_missing))
         summary = {
             "block_name": "Dynamic Collector Universe Discovery",
-            "block_version": "1.0.0",
+            "block_version": "1.0.1",
             "generated_at": datetime.now(timezone.utc).isoformat(),
             "status": "FAIL",
             "snapshot_path": str(snapshot_path),
@@ -214,7 +225,7 @@ def main() -> int:
 
     summary = {
         "block_name": "Dynamic Collector Universe Discovery",
-        "block_version": "1.0.0",
+        "block_version": "1.0.1",
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "snapshot_run_id": snapshot_run_id,
         "snapshot_path": str(snapshot_path),
@@ -227,6 +238,7 @@ def main() -> int:
         "missing_governed_review_rows": int(len(missing_governed)),
         "fixed_product_count_assumed": False,
         "automatic_new_product_admission": False,
+        "marker_matching_normalized": True,
         "historical_append_authorized": False,
         "forecasting_resume_authorized": False,
         "purchase_recommendation_authorized": False,
