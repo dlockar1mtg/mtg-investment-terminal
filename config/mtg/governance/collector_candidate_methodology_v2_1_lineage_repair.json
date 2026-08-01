@@ -1,0 +1,22 @@
+{
+  "contract_name": "Collector Candidate Methodology v2.1 Lineage Repair",
+  "contract_version": "2.1.0",
+  "status": "CANDIDATE_DEVELOPMENT_AND_TESTING_ONLY",
+  "inputs": {
+    "approval": "config/mtg/governance/collector_candidate_methodology_v2_approval.json",
+    "reconciliation_root": "data/operations/collector_route_reconciliation/candidate_v1_0_0"
+  },
+  "output_directory": "data/operations/collector_candidate_methodology_v2_1/candidate_v2_1_0",
+  "rules": {
+    "peer_trimmed_mean_must_be_recomputed_from_peer_contributions": true,
+    "route_blending_must_occur_exactly_once": true,
+    "unweighted_trimmed_mean_is_current_owner_approved_candidate": true,
+    "similarity_weighted_trimmed_mean_is_amendment_diagnostic_only": true,
+    "reverse_scores_are_diagnostic_only": true,
+    "japanese_hybrid_formula_authorized": false,
+    "candidate_projection_authorized": false,
+    "production_projection_authorized": false,
+    "purchase_recommendation_authorized": false,
+    "automatic_model_update_allowed": false
+  }
+}
