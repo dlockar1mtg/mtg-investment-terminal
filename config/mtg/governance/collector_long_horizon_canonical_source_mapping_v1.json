@@ -1,6 +1,6 @@
 {
   "mapping_name": "Collector Long-Horizon Canonical Source Mapping",
-  "mapping_version": "1.0.0",
+  "mapping_version": "1.0.1",
   "primary_class": "COLLECTOR_BOOSTER_DISPLAY",
   "canonical_sources": {
     "price_history": "data/operations/mtg_universal_history_ledger/universal_mtg_historical_observation_ledger.csv",
@@ -8,13 +8,19 @@
     "walk_forward_outcomes": "data/operations/collector_walk_forward_replay_phase_2a/candidate_v1_0_0/collector_walk_forward_phase_2a_scored_outcomes.csv",
     "current_fundamentals": "data/product_master/product_master_model_input.csv"
   },
+  "price_history_sources": [
+    "data/operations/mtg_universal_history_ledger/universal_mtg_historical_observation_ledger.csv",
+    "data/operations/collector_historical_foundation/candidate_v1_0_0/collector_governed_historical_observations.csv",
+    "data/operations/collector_deep_history_recovery/candidate_v1_0_0/collector_deep_history_candidate.csv",
+    "data/operations/collector_dual_track_evaluation/candidate_v1_0_0/collector_retrospective_outcome_history.csv"
+  ],
   "field_aliases": {
     "product_key": ["product_key", "tcgplayer_product_id", "product_id"],
     "product_name": ["product_name", "name", "canonical_product_name"],
-    "observation_date": ["observation_date", "date", "snapshot_date"],
+    "observation_date": ["observation_date", "date", "snapshot_date", "price_date"],
     "decision_cutoff": ["decision_cutoff"],
     "release_date": ["release_date", "set_release_date"],
-    "market_price": ["market_price", "market", "current_market_price", "price"],
+    "market_price": ["market_price", "market", "current_market_price", "price", "observed_price"],
     "listing_count": ["listing_count", "active_listing_count"],
     "sales_count": ["sales_count", "sold_count"],
     "demand_score": ["demand_score", "demand_durability_score"],
@@ -26,7 +32,8 @@
     "fundamental_value_requires_observation_date": true,
     "duplicate_output_files_forbidden": true,
     "review_queue_files_forbidden": true,
-    "future_information_forbidden": true
+    "future_information_forbidden": true,
+    "multi_source_history_requires_deduplication": true
   },
   "required_outputs": [
     "collector_long_horizon_monthly_price_panel.csv",
