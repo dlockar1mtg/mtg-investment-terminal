@@ -1,0 +1,26 @@
+{
+  "audit_name": "Collector Candidate v2.4 Prospective Confidence and Decision Calibration Tournament",
+  "audit_version": "1.0.0",
+  "confidence_methods": [
+    "PRIOR_PRODUCT_MAE",
+    "PRIOR_PRODUCT_MAE_PLUS_FORECAST_EXTREMENESS",
+    "PRIOR_HORIZON_MAE"
+  ],
+  "decision_lower_quantiles": [0.2, 0.25, 0.33, 0.4],
+  "decision_upper_quantiles": [0.6, 0.67, 0.75, 0.8],
+  "minimum_prior_product_cases": 2,
+  "minimum_prior_horizon_cases": 30,
+  "minimum_decision_cases": 60,
+  "required_confidence_ordering": ["HIGH", "MEDIUM", "LOW"],
+  "required_decision_ordering": ["FAVORABLE", "WATCH", "NEUTRAL"],
+  "shadow_only": true,
+  "prospective_confidence_method_authorized": false,
+  "decision_state_method_authorized": false,
+  "candidate_methodology_change_authorized": false,
+  "production_projection_authorized": false,
+  "purchase_recommendation_authorized": false,
+  "automatic_model_update_allowed": false,
+  "technical_freeze_authorized": false,
+  "uip_acceptance_authorized": false,
+  "freeze_suspended_pending_walk_forward": true
+}
