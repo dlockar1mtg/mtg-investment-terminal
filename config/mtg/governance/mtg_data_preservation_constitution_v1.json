@@ -1,0 +1,83 @@
+{
+  "constitution_name": "MTG Permanent Data Preservation Constitution",
+  "constitution_version": "1.0.0",
+  "effective_status": "STOP_THE_LINE_ACTIVE",
+  "governing_rule": "No downstream process may delete, overwrite, shorten, silently remap, substitute, or write backward into project data.",
+  "layer_order": [
+    "IMMUTABLE_RAW",
+    "GOVERNED_IDENTITY",
+    "CERTIFIED_HISTORY",
+    "CERTIFIED_FEATURES",
+    "MODEL_EXPERIMENTS",
+    "SHADOW_FORECASTS",
+    "APPROVED_OUTPUTS",
+    "UIP"
+  ],
+  "dataset_states": [
+    "RAW",
+    "CANDIDATE",
+    "QUARANTINED",
+    "CERTIFIED",
+    "SUPERSEDED",
+    "INVALIDATED",
+    "ARCHIVED"
+  ],
+  "non_negotiable_controls": {
+    "raw_append_only": true,
+    "raw_overwrite_forbidden": true,
+    "raw_delete_forbidden": true,
+    "certified_overwrite_forbidden": true,
+    "certified_delete_forbidden": true,
+    "downstream_writeback_forbidden": true,
+    "mutable_latest_as_authoritative_forbidden": true,
+    "unregistered_model_input_forbidden": true,
+    "blank_governed_identity_for_recognized_rows_forbidden": true,
+    "silent_row_drop_forbidden": true,
+    "silent_identity_change_forbidden": true,
+    "unexplained_history_truncation_forbidden": true,
+    "unresolved_certified_product_month_duplicates_forbidden": true,
+    "unclassified_same_month_price_conflicts_forbidden": true,
+    "failed_candidate_promotion_forbidden": true,
+    "fixed_product_count_requirements_forbidden": true,
+    "owner_approval_invention_forbidden": true
+  },
+  "mandatory_accounting_equation": "input_rows = selected_rows + duplicate_rows + quarantined_rows + rejected_conflict_rows",
+  "mandatory_identity_equation": "recognized_rows = governed_identity_rows + explicitly_quarantined_identity_rows",
+  "mandatory_growth_equation": "all_currently_eligible_governed_products = certified_current_universe_products",
+  "promotion_requirements": [
+    "candidate_manifest_complete",
+    "content_hashes_verified",
+    "parent_hashes_verified",
+    "identity_certification_pass",
+    "row_preservation_certification_pass",
+    "continuity_certification_pass",
+    "uniqueness_certification_pass",
+    "lineage_certification_pass",
+    "conflict_certification_pass",
+    "independent_certification_pass",
+    "owner_review_when_required",
+    "atomic_promotion"
+  ],
+  "stop_the_line_conditions": [
+    "recognized_blank_identity_count_greater_than_zero",
+    "unexplained_input_output_row_difference",
+    "known_history_first_observation_moves_forward",
+    "known_history_month_count_declines",
+    "existing_history_splits_into_new_identity",
+    "duplicate_certified_product_month_count_greater_than_zero",
+    "unclassified_price_conflict_count_greater_than_zero",
+    "source_lineage_missing",
+    "dataset_hash_mismatch",
+    "model_input_not_certified",
+    "unexpected_input_or_output_path",
+    "restore_test_failed"
+  ],
+  "authorization": {
+    "forecasting_resume_authorized": false,
+    "production_projection_authorized": false,
+    "purchase_recommendation_authorized": false,
+    "automatic_model_update_allowed": false,
+    "technical_freeze_authorized": false,
+    "uip_acceptance_authorized": false
+  }
+}
