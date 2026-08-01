@@ -1,0 +1,36 @@
+{
+  "review_name": "Collector Walk-Forward Replay Phase 2A",
+  "review_version": "1.0.0",
+  "status": "INACTIVE_DEVELOPMENT_AND_TESTING_ONLY",
+  "scope": "COLLECTOR_BOOSTER_ONLY",
+  "minimum_history_days": 90,
+  "calibrated_history_days": 365,
+  "outcome_horizons_days": [90, 180, 365],
+  "neutral_return_thresholds": [0.05, 0.10],
+  "collector_name_pattern": "Collector Booster Display",
+  "point_in_time_rules": {
+    "future_information_prohibited": true,
+    "current_candidate_rates_prohibited_as_historical_inputs": true,
+    "current_route_assignments_prohibited_as_historical_inputs": true,
+    "outcome_prices_prohibited_from_forecast_inputs": true,
+    "historical_similarity_weights_required_for_comparable_routes": true,
+    "historical_fundamental_adjustments_required_for_adjusted_routes": true
+  },
+  "dynamic_route_rules": {
+    "history_days_below_90": "INSUFFICIENT_HISTORY",
+    "history_days_90_to_364": "DIRECT_HISTORY_LIMITED_RECONSTRUCTION_REQUIRED",
+    "history_days_365_or_more": "DIRECT_HISTORY_CALIBRATED_REPLAYABLE"
+  },
+  "test_only_decision_rules": {
+    "FAVORABLE": {"minimum_forecast_return": 0.20, "minimum_confidence": 50},
+    "WATCH": {"minimum_forecast_return": 0.10, "minimum_confidence": 40},
+    "NEUTRAL": {"minimum_forecast_return": -0.05},
+    "AVOID": {"maximum_forecast_return": -0.05},
+    "INSUFFICIENT_EVIDENCE": "used whenever the full approved route cannot be reconstructed"
+  },
+  "freeze_suspended_pending_walk_forward": true,
+  "historical_decisions_test_only": true,
+  "production_projection_authorized": false,
+  "purchase_recommendation_authorized": false,
+  "automatic_model_update_allowed": false
+}
