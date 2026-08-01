@@ -23,12 +23,9 @@ def main() -> int:
     args = parser.parse_args()
     failures: list[str] = []
 
-    predictions_path = OUT / "collector_early_lifecycle_feature_tournament_predictions.csv"
-    leaderboard_path = OUT / "collector_early_lifecycle_feature_tournament_leaderboard.csv"
+    predictions = safe_read(OUT / "collector_early_lifecycle_feature_tournament_predictions.csv")
+    leaderboard = safe_read(OUT / "collector_early_lifecycle_feature_tournament_leaderboard.csv")
     summary_path = OUT / "collector_early_lifecycle_feature_tournament_summary.json"
-
-    predictions = safe_read(predictions_path)
-    leaderboard = safe_read(leaderboard_path)
     summary = json.loads(summary_path.read_text(encoding="utf-8")) if summary_path.exists() else {}
 
     if predictions.empty:
@@ -36,7 +33,9 @@ def main() -> int:
     else:
         required = {
             "product_key", "product_name", "decision_cutoff", "candidate_method",
-            "candidate_signal", "realized_return_365", "future_information_used",
+            "raw_ranking_score", "ranking_percentile_at_cutoff", "calibration_prior_count",
+            "candidate_signal", "point_forecast_calibration", "realized_return_365",
+            "future_information_used",
         }
         if not required.issubset(predictions.columns):
             failures.append("required_prediction_fields_missing")
@@ -44,6 +43,13 @@ def main() -> int:
             failures.append("future_information_detected")
         if predictions["candidate_signal"].isna().any():
             failures.append("missing_candidate_signals")
+        if not predictions["point_forecast_calibration"].eq("EXPANDING_PRIOR_RETURN_QUANTILE").all():
+            failures.append("unexpected_point_forecast_calibration")
+        if (pd.to_numeric(predictions["calibration_prior_count"], errors="coerce") < 3).any():
+            failures.append("insufficient_calibration_prior")
+        pct = pd.to_numeric(predictions["ranking_percentile_at_cutoff"], errors="coerce")
+        if pct.isna().any() or ((pct < 0) | (pct > 1)).any():
+            failures.append("invalid_ranking_percentile")
 
     if leaderboard.empty:
         failures.append("tournament_leaderboard_empty")
@@ -64,7 +70,20 @@ def main() -> int:
         }
         if not expected.issubset(set(leaderboard["candidate_method"])):
             failures.append("candidate_methods_missing")
+        qualified = leaderboard["qualification_flag"].astype(str).str.lower().eq("true")
+        if qualified.any():
+            q = leaderboard.loc[qualified]
+            if not (
+                (pd.to_numeric(q["rank_correlation"], errors="coerce") > 0) &
+                (pd.to_numeric(q["top_bottom_spread"], errors="coerce") > 0) &
+                (pd.to_numeric(q["breakout_recall_70"], errors="coerce") > 0)
+            ).all():
+                failures.append("qualified_candidate_guardrail_failed")
 
+    if summary.get("ranking_return_separation_required") is not True:
+        failures.append("ranking_return_separation_not_required")
+    if summary.get("point_forecast_calibration_contract") != "EXPANDING_PRIOR_RETURN_QUANTILE":
+        failures.append("summary_calibration_contract_failed")
     if summary.get("future_information_used") is not False:
         failures.append("summary_future_information_control_failed")
     if summary.get("owner_review_required") is not True:
@@ -79,7 +98,7 @@ def main() -> int:
 
     result = {
         "audit_name": "Collector Early-Lifecycle Feature Tournament Audit",
-        "audit_version": "1.0.0",
+        "audit_version": "1.1.0",
         "status": "PASS" if not failures else "FAIL",
         "failure_count": len(failures),
         "failures": failures,
