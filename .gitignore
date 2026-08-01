@@ -68,6 +68,15 @@ auth.json
 *.bz2
 
 # ------------------------------------------------------------
+# Permanent local data vault and generated permanence state
+# ------------------------------------------------------------
+# The vault is append-only evidence storage and is backed up outside ordinary Git.
+# Governance code/config remains tracked; generated objects, registries, manifests,
+# inventories, certifications, and restore-test outputs remain local/runtime data.
+data_vault/
+data/governance/permanence/
+
+# ------------------------------------------------------------
 # Runtime / generated data
 # ------------------------------------------------------------
 
