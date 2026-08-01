@@ -1,0 +1,25 @@
+{
+  "contract_name": "Collector Route Reconciliation Candidate",
+  "contract_version": "1.0.0",
+  "status": "CANDIDATE_INACTIVE",
+  "inputs": {
+    "repaired_root": "data/operations/collector_comparable_repair_and_outcome_review/candidate_v1_0_0",
+    "dual_track_root": "data/operations/collector_dual_track_evaluation/candidate_v1_0_0",
+    "numeric_specification": "config/mtg/governance/collector_candidate_numeric_specification_v1.json",
+    "japanese_override": "config/mtg/governance/collector_japanese_final_fantasy_comparable_override_v1.json"
+  },
+  "output_directory": "data/operations/collector_route_reconciliation/candidate_v1_0_0",
+  "rules": {
+    "preserve_repaired_complete_baseline": true,
+    "reconcile_only_incomplete_routes": true,
+    "canonical_ids_must_resolve_to_numeric_tcgplayer_ids": true,
+    "reverse_pair_scores_are_diagnostic_only": true,
+    "reverse_pair_scores_require_owner_approval": true,
+    "retrospective_inputs_are_diagnostic_only": true,
+    "future_information_prohibited": true,
+    "candidate_projection_authorized": false,
+    "production_projection_authorized": false,
+    "purchase_recommendation_authorized": false,
+    "automatic_model_update_allowed": false
+  }
+}
