@@ -58,17 +58,30 @@ def metric_rows(frame: pd.DataFrame, forecast_col: str, label: str, extra: dict[
     }
 
 
-def standardize_outcomes(raw: pd.DataFrame) -> pd.DataFrame:
+def standardize_outcomes(raw: pd.DataFrame) -> tuple[pd.DataFrame, str | None]:
     if raw.empty:
-        return pd.DataFrame()
+        return pd.DataFrame(), None
     key = choose(raw, ["product_key", "tcgplayer_product_id", "product_id"])
     name = choose(raw, ["product_name", "name"])
     cutoff = choose(raw, ["decision_cutoff"])
     horizon = choose(raw, ["horizon_days", "forecast_horizon_days"])
     realized = choose(raw, ["realized_return", "actual_return", "outcome_return", "realized_return_365"])
-    baseline = choose(raw, ["forecast_return", "baseline_forecast_return", "current_forecast_return", "shadow_forecast_return"])
+    baseline = choose(raw, [
+        "forecast_return_365_equivalent",
+        "forecast_return_365",
+        "current_forecast_return_365",
+        "baseline_forecast_return_365",
+        "point_forecast_return_365",
+        "predicted_return_365",
+        "forecast_return",
+        "baseline_forecast_return",
+        "current_forecast_return",
+        "shadow_forecast_return",
+        "predicted_return",
+        "point_forecast_return",
+    ])
     if cutoff is None or realized is None or (key is None and name is None):
-        return pd.DataFrame()
+        return pd.DataFrame(), baseline
     out = pd.DataFrame({
         "product_key": raw[key].astype(str) if key else "",
         "product_name": raw[name].astype(str) if name else "",
@@ -77,7 +90,7 @@ def standardize_outcomes(raw: pd.DataFrame) -> pd.DataFrame:
         "realized_return_365": num(raw[realized]),
         "current_forecast_return_365": num(raw[baseline]) if baseline else np.nan,
     })
-    return out[out["horizon_days"] == 365].dropna(subset=["decision_cutoff", "realized_return_365"])
+    return out[out["horizon_days"] == 365].dropna(subset=["decision_cutoff", "realized_return_365"]), baseline
 
 
 def comparable_predictions(data: pd.DataFrame, minimum: int, maximum: int) -> tuple[pd.DataFrame, pd.DataFrame]:
@@ -92,7 +105,7 @@ def comparable_predictions(data: pd.DataFrame, minimum: int, maximum: int) -> tu
         if len(matured) < minimum + 1:
             continue
         med = matured[features].median(numeric_only=True)
-        scale = matured[features].apply(pd.to_numeric, errors="coerce").mad() if hasattr(matured[features], "mad") else (matured[features].apply(pd.to_numeric, errors="coerce") - med).abs().mean()
+        scale = (matured[features].apply(pd.to_numeric, errors="coerce") - med).abs().mean()
         scale = scale.replace(0, np.nan).fillna(1.0)
         for idx, target in matured.iterrows():
             pool = matured.drop(index=idx).copy()
@@ -123,7 +136,8 @@ def comparable_predictions(data: pd.DataFrame, minimum: int, maximum: int) -> tu
                     "target_product_key": target["product_key"], "target_product": target["product_name"],
                     "decision_cutoff": cutoff, "comparable_rank": rank,
                     "comparable_product_key": peer["product_key"], "comparable_product": peer["product_name"],
-                    "match_distance": float(peer["distance"]), "comparable_weight": float((1.0 / (1.0 + peer["distance"])) / weights.sum()),
+                    "match_distance": float(peer["distance"]),
+                    "comparable_weight": float((1.0 / (1.0 + peer["distance"])) / weights.sum()),
                     "comparable_realized_return_365": float(peer["realized_return_365"]),
                 })
     return pd.DataFrame(predictions), pd.DataFrame(details)
@@ -138,7 +152,7 @@ def main() -> int:
     failures: list[str] = []
 
     features = read_csv(ROOT / cfg["inputs"]["decision_feature_panel"])
-    outcomes = standardize_outcomes(read_csv(ROOT / cfg["inputs"]["walk_forward_outcomes"]))
+    outcomes, current_baseline_source_column = standardize_outcomes(read_csv(ROOT / cfg["inputs"]["walk_forward_outcomes"]))
     if features.empty:
         failures.append("decision_feature_panel_missing_or_empty")
     if outcomes.empty:
@@ -165,8 +179,9 @@ def main() -> int:
         merged["persistence"] = num(merged["return_persistence"]).fillna(0)
         merged["no_change_forecast"] = 0.0
         merged["category_forecast"] = merged["category_signal"]
-        baseline_col = "current_forecast_return_365"
-        summary_rows.append(metric_rows(merged, baseline_col, "CURRENT_365", {"variant_type": "BASELINE"}))
+        summary_rows.append(metric_rows(merged, "current_forecast_return_365", "CURRENT_365", {
+            "variant_type": "BASELINE", "source_column": current_baseline_source_column or "UNMAPPED",
+        }))
         summary_rows.append(metric_rows(merged, "no_change_forecast", "NO_CHANGE", {"variant_type": "BASELINE"}))
         summary_rows.append(metric_rows(merged, "category_forecast", "CATEGORY_MEDIAN", {"variant_type": "BASELINE"}))
 
@@ -190,7 +205,15 @@ def main() -> int:
         summary = summary.sort_values(["mae", "signed_bias"], na_position="last")
     predictions = pd.concat(prediction_rows, ignore_index=True) if prediction_rows else pd.DataFrame()
 
-    comp_predictions, comp_details = comparable_predictions(merged, cfg["comparable_transfer"]["minimum_comparables"], cfg["comparable_transfer"]["maximum_comparables"]) if not merged.empty else (pd.DataFrame(), pd.DataFrame())
+    current_row = summary.loc[summary.get("variant", pd.Series(dtype=str)).eq("CURRENT_365")]
+    current_baseline_case_count = int(current_row["case_count"].iloc[0]) if not current_row.empty else 0
+    current_baseline_comparable = current_baseline_case_count > 0
+    if not current_baseline_comparable:
+        failures.append("current_365_baseline_unmapped_or_empty")
+
+    comp_predictions, comp_details = comparable_predictions(
+        merged, cfg["comparable_transfer"]["minimum_comparables"], cfg["comparable_transfer"]["maximum_comparables"]
+    ) if not merged.empty else (pd.DataFrame(), pd.DataFrame())
     comp_summary = pd.DataFrame()
     if not comp_predictions.empty:
         rows = []
@@ -211,12 +234,18 @@ def main() -> int:
     if comp_predictions.empty:
         failures.append("comparable_transfer_backtest_empty")
     result = {
-        "audit_name": cfg["program_name"], "audit_version": cfg["program_version"],
+        "audit_name": cfg["program_name"], "audit_version": "1.0.1",
         "status": "PASS" if not failures else "FAIL",
         "direct_variant_count": int(len(summary)), "direct_prediction_count": int(len(predictions)),
         "direct_winner_count": winner_count, "comparable_prediction_count": int(len(comp_predictions)),
         "comparable_match_count": int(len(comp_details)), "comparable_route_count": int(comp_predictions["forecast_route"].nunique()) if not comp_predictions.empty else 0,
-        "owner_review_required": True, "shadow_only": True,
+        "current_baseline_source_column": current_baseline_source_column,
+        "current_baseline_case_count": current_baseline_case_count,
+        "current_baseline_comparable": current_baseline_comparable,
+        "owner_review_required": True,
+        "direct_owner_review_eligible": bool(current_baseline_comparable and not failures),
+        "comparable_owner_review_eligible": bool(not comp_predictions.empty),
+        "shadow_only": True,
         "direct_method_authorized": False, "comparable_transfer_method_authorized": False,
         "candidate_methodology_change_authorized": False, "production_projection_authorized": False,
         "purchase_recommendation_authorized": False, "automatic_model_update_allowed": False,
