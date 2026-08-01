@@ -1,10 +1,11 @@
 {
   "program_name": "Collector Early-Lifecycle Forecast Engine",
-  "program_version": "1.1.0",
+  "program_version": "1.2.0",
   "primary_class": "COLLECTOR_BOOSTER_DISPLAY",
   "purpose": "Ensure every Collector product receives a complete governed forecast and scenario output through the strongest available direct, comparable, or universal-prior route.",
   "inputs": {
-    "product_master": "data/product_master/product_master_model_input.csv",
+    "product_master": "data/operations/collector_early_lifecycle_universe/candidate_v1_0_0/collector_early_lifecycle_canonical_universe.csv",
+    "universe_adapter_summary": "data/operations/collector_early_lifecycle_universe/candidate_v1_0_0/collector_early_lifecycle_universe_adapter_summary.json",
     "historical_feature_panel": "data/operations/collector_long_horizon_historical_feature_panel/candidate_v1_0_0/collector_long_horizon_decision_feature_panel.csv",
     "monthly_price_panel": "data/operations/collector_long_horizon_historical_feature_panel/candidate_v1_0_0/collector_long_horizon_monthly_price_panel.csv",
     "forecast_candidates": [
@@ -67,6 +68,7 @@
     "not_available_token": "NOT_AVAILABLE",
     "not_applicable_token": "NOT_APPLICABLE"
   },
+  "canonical_universe_adapter_required": true,
   "complete_universe_required": true,
   "point_forecast_required_for_every_product": true,
   "scenario_fields_required_for_every_product": true,
