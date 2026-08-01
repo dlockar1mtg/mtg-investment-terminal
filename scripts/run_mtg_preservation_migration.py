@@ -37,7 +37,11 @@ def git_commit() -> str:
 
 def is_excluded(relative: str, excluded_roots: list[str]) -> bool:
     normalized = relative.replace("\\", "/").lower()
-    return any(normalized == root.lower().rstrip("/") or normalized.startswith(root.lower().rstrip("/") + "/") for root in excluded_roots)
+    return any(
+        normalized == root.lower().rstrip("/")
+        or normalized.startswith(root.lower().rstrip("/") + "/")
+        for root in excluded_roots
+    )
 
 
 def discover_files(cfg: dict) -> list[Path]:
@@ -81,6 +85,12 @@ def write_csv(path: Path, fieldnames: list[str], rows: list[dict[str, object]]) 
         writer.writerows(rows)
 
 
+def compact_destination(vault_root: Path, ingestion_id: str, relative_path: str, suffix: str) -> Path:
+    path_hash = hashlib.sha256(relative_path.encode("utf-8")).hexdigest()[:24]
+    safe_suffix = suffix.lower() if suffix else ".bin"
+    return vault_root / ingestion_id / f"object-{path_hash}{safe_suffix}"
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--strict", action="store_true")
@@ -98,46 +108,91 @@ def main() -> int:
     classification_path = ROOT / cfg["classification_path"]
     orphan_path = ROOT / cfg["orphan_report_path"]
     summary_path = ROOT / cfg["summary_path"]
+    missing_source_path = summary_path.parent / "preservation_migration_missing_sources.csv"
+    copy_error_path = summary_path.parent / "preservation_migration_copy_errors.csv"
 
-    for directory in [vault_root, manifest_root, registry_path.parent, lineage_path.parent, classification_path.parent, orphan_path.parent, summary_path.parent]:
+    for directory in [
+        vault_root,
+        manifest_root,
+        registry_path.parent,
+        lineage_path.parent,
+        classification_path.parent,
+        orphan_path.parent,
+        summary_path.parent,
+    ]:
         directory.mkdir(parents=True, exist_ok=True)
 
     discovered = discover_files(cfg)
     copied = 0
     reused = 0
     hash_mismatches = 0
+    missing_sources: list[dict[str, object]] = []
+    copy_errors: list[dict[str, object]] = []
     manifest_rows: list[dict[str, object]] = []
     classification_rows: list[dict[str, object]] = []
 
     existing_registry = read_csv_rows(registry_path)
-    registry_by_id = {(row.get("dataset_id", ""), row.get("dataset_version", "")): row for row in existing_registry}
+    registry_by_id = {
+        (row.get("dataset_id", ""), row.get("dataset_version", "")): row
+        for row in existing_registry
+    }
 
     for source in discovered:
-        rel = source.relative_to(ROOT).as_posix()
-        source_hash = sha256(source)
+        try:
+            rel = source.relative_to(ROOT).as_posix()
+        except ValueError:
+            failures.append(f"source_outside_repository:{source}")
+            continue
+
+        if not source.exists() or not source.is_file():
+            missing_sources.append({"source_relative_path": rel, "reason": "missing_after_discovery"})
+            failures.append(f"source_missing_after_discovery:{rel}")
+            continue
+
+        try:
+            source_hash = sha256(source)
+            source_size = source.stat().st_size
+        except OSError as exc:
+            copy_errors.append({"source_relative_path": rel, "operation": "hash_source", "error": repr(exc)})
+            failures.append(f"source_hash_error:{rel}:{type(exc).__name__}")
+            continue
+
         ingestion_id = f"sha256-{source_hash[:16]}"
-        destination = vault_root / ingestion_id / rel
+        destination = compact_destination(vault_root, ingestion_id, rel, source.suffix)
         destination.parent.mkdir(parents=True, exist_ok=True)
 
-        if destination.exists():
-            destination_hash = sha256(destination)
-            if destination_hash != source_hash:
-                failures.append(f"vault_hash_conflict:{rel}:{ingestion_id}")
-                hash_mismatches += 1
-                continue
-            reused += 1
-        else:
-            shutil.copy2(source, destination)
-            destination_hash = sha256(destination)
-            if destination_hash != source_hash:
-                failures.append(f"copy_hash_mismatch:{rel}:{ingestion_id}")
-                hash_mismatches += 1
-                destination.unlink(missing_ok=True)
-                continue
-            copied += 1
+        try:
+            if destination.exists():
+                destination_hash = sha256(destination)
+                if destination_hash != source_hash:
+                    failures.append(f"vault_hash_conflict:{rel}:{ingestion_id}")
+                    hash_mismatches += 1
+                    continue
+                reused += 1
+            else:
+                shutil.copy2(source, destination)
+                destination_hash = sha256(destination)
+                if destination_hash != source_hash:
+                    failures.append(f"copy_hash_mismatch:{rel}:{ingestion_id}")
+                    hash_mismatches += 1
+                    destination.unlink(missing_ok=True)
+                    continue
+                copied += 1
+        except OSError as exc:
+            copy_errors.append(
+                {
+                    "source_relative_path": rel,
+                    "destination_relative_path": destination.relative_to(ROOT).as_posix(),
+                    "operation": "copy_or_verify",
+                    "error": repr(exc),
+                }
+            )
+            failures.append(f"copy_error:{rel}:{type(exc).__name__}")
+            continue
 
         state, reason = classify(rel)
-        dataset_id = "mtg-file-" + hashlib.sha256(rel.encode("utf-8")).hexdigest()[:20]
+        path_digest = hashlib.sha256(rel.encode("utf-8")).hexdigest()
+        dataset_id = "mtg-file-" + path_digest[:20]
         dataset_version = ingestion_id
         manifest = {
             "dataset_id": dataset_id,
@@ -147,32 +202,43 @@ def main() -> int:
             "vault_relative_path": destination.relative_to(ROOT).as_posix(),
             "source_sha256": source_hash,
             "vault_sha256": destination_hash,
-            "size_bytes": source.stat().st_size,
+            "size_bytes": source_size,
             "copied_at": now,
             "copy_only": True,
             "source_preserved_in_place": True,
+            "vault_path_policy": "COMPACT_CONTENT_ADDRESSED_OBJECT",
             "builder_commit": commit,
             "classification_reason": reason,
         }
-        manifest_path = manifest_root / ingestion_id / (hashlib.sha256(rel.encode("utf-8")).hexdigest()[:20] + ".manifest.json")
+        manifest_path = manifest_root / ingestion_id / f"{path_digest[:20]}.manifest.json"
         manifest_path.parent.mkdir(parents=True, exist_ok=True)
         if manifest_path.exists():
-            existing_manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-            if existing_manifest.get("source_sha256") != source_hash or existing_manifest.get("source_relative_path") != rel:
+            try:
+                existing_manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+            except (OSError, json.JSONDecodeError) as exc:
+                failures.append(f"manifest_read_error:{rel}:{type(exc).__name__}")
+                continue
+            if (
+                existing_manifest.get("source_sha256") != source_hash
+                or existing_manifest.get("source_relative_path") != rel
+            ):
                 failures.append(f"manifest_conflict:{rel}:{ingestion_id}")
+                continue
         else:
             manifest_path.write_text(json.dumps(manifest, indent=2, sort_keys=True), encoding="utf-8")
 
         manifest_rows.append(manifest)
-        classification_rows.append({
-            "dataset_id": dataset_id,
-            "dataset_version": dataset_version,
-            "relative_path": rel,
-            "dataset_state": state,
-            "classification_reason": reason,
-            "content_sha256": source_hash,
-            "review_required": state != "RAW",
-        })
+        classification_rows.append(
+            {
+                "dataset_id": dataset_id,
+                "dataset_version": dataset_version,
+                "relative_path": rel,
+                "dataset_state": state,
+                "classification_reason": reason,
+                "content_sha256": source_hash,
+                "review_required": state != "RAW",
+            }
+        )
 
         key = (dataset_id, dataset_version)
         if key not in registry_by_id:
@@ -233,10 +299,16 @@ def main() -> int:
         [
             "dataset_id", "dataset_version", "dataset_state", "source_relative_path",
             "vault_relative_path", "source_sha256", "vault_sha256", "size_bytes",
-            "copied_at", "copy_only", "source_preserved_in_place", "builder_commit",
-            "classification_reason",
+            "copied_at", "copy_only", "source_preserved_in_place", "vault_path_policy",
+            "builder_commit", "classification_reason",
         ],
         manifest_rows,
+    )
+    write_csv(missing_source_path, ["source_relative_path", "reason"], missing_sources)
+    write_csv(
+        copy_error_path,
+        ["source_relative_path", "destination_relative_path", "operation", "error"],
+        copy_errors,
     )
 
     if not discovered:
@@ -246,11 +318,14 @@ def main() -> int:
 
     summary = {
         "audit_name": cfg["program_name"],
-        "audit_version": cfg["program_version"],
+        "audit_version": "1.1.0",
+        "vault_path_policy": "COMPACT_CONTENT_ADDRESSED_OBJECT",
         "discovered_file_count": len(discovered),
         "vault_copy_created_count": copied,
         "vault_copy_reused_count": reused,
         "hash_mismatch_count": hash_mismatches,
+        "missing_source_count": len(missing_sources),
+        "copy_error_count": len(copy_errors),
         "registered_dataset_count": len(registry_by_id),
         "classified_dataset_count": len(classification_rows),
         "raw_classification_count": sum(1 for row in classification_rows if row["dataset_state"] == "RAW"),
