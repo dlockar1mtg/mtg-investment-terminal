@@ -1,0 +1,18 @@
+{
+  "contract_name": "Collector Candidate v2 Peer-Set Diversity Audit",
+  "contract_version": "1.0.0",
+  "status": "DIAGNOSTIC_ACTIVE",
+  "inputs": {
+    "reconciliation_root": "data/operations/collector_route_reconciliation/candidate_v1_0_0",
+    "candidate_v2_root": "data/operations/collector_candidate_methodology_v2/candidate_v2_0_0"
+  },
+  "output_directory": "data/operations/collector_candidate_v2_peer_set_audit/candidate_v1_0_0",
+  "rules": {
+    "target_peer_sets_must_be_fingerprinted": true,
+    "trimmed_means_must_be_recomputed_from_target_rows": true,
+    "global_pool_collapse_must_fail": true,
+    "production_projection_authorized": false,
+    "purchase_recommendation_authorized": false,
+    "automatic_model_update_allowed": false
+  }
+}
