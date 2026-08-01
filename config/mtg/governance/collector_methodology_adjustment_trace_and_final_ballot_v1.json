@@ -1,0 +1,21 @@
+{
+  "contract_name": "Collector Methodology Adjustment Trace and Final Ballot",
+  "contract_version": "1.0.0",
+  "status": "INACTIVE_OWNER_REVIEW_REQUIRED",
+  "inputs": {
+    "decision_capture_root": "data/operations/collector_methodology_decision_capture/candidate_v1_0_0",
+    "reconciliation_root": "data/operations/collector_route_reconciliation/candidate_v1_0_0",
+    "owner_decision_root": "data/operations/collector_methodology_owner_decision_package/candidate_v1_0_0"
+  },
+  "output_directory": "data/operations/collector_methodology_adjustment_trace_and_final_ballot/candidate_v1_0_0",
+  "rules": {
+    "fundamental_adjustment_must_be_compared_to_unresolved_adjustment": true,
+    "unexplained_residual_must_remain_visible": true,
+    "all_six_owner_decisions_must_remain_explicit": true,
+    "owner_decisions_are_not_inferred": true,
+    "candidate_projection_authorized": false,
+    "production_projection_authorized": false,
+    "purchase_recommendation_authorized": false,
+    "automatic_model_update_allowed": false
+  }
+}
