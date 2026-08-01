@@ -102,6 +102,7 @@ def main() -> int:
     invalid_status.to_csv(out / "collector_release_date_invalid_status.csv", index=False)
     invalid_dates.to_csv(out / "collector_release_date_invalid_dates.csv", index=False)
 
+    unverified_count = int((~merged["release_date_verification_status"].eq("OFFICIAL_WIZARDS_VERIFIED")).sum())
     blocking = any([
         len(duplicate_registry_ids), len(missing_registry_ids), len(extra_registry_ids),
         len(blank_registry), len(invalid_status), len(invalid_dates), len(unresolved),
@@ -115,7 +116,7 @@ def main() -> int:
         "registry_rows": int(len(registry)),
         "authorized_release_dates": int(merged["release_date_authority_status"].eq("OFFICIAL_RELEASE_DATE_AUTHORIZED").sum()),
         "blank_official_release_dates": int(merged["release_date"].astype(str).str.strip().eq("").sum()),
-        "unverified_release_dates": int(~merged["release_date_verification_status"].eq("OFFICIAL_WIZARDS_VERIFIED").sum()),
+        "unverified_release_dates": unverified_count,
         "unresolved_rows": int(len(unresolved)),
         "duplicate_registry_ids": int(len(duplicate_registry_ids)),
         "missing_registry_ids": int(len(missing_registry_ids)),
