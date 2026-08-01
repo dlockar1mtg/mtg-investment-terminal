@@ -10,6 +10,13 @@ ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "data/operations/collector_long_horizon_historical_feature_panel/candidate_v1_0_0"
 
 
+def read_csv_safe(path: Path) -> pd.DataFrame:
+    try:
+        return pd.read_csv(path, low_memory=False)
+    except (pd.errors.EmptyDataError, OSError, UnicodeDecodeError):
+        return pd.DataFrame()
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--strict", action="store_true")
@@ -25,38 +32,55 @@ def main() -> int:
         if not path.exists():
             failures.append(f"missing_output:{path.name}")
 
-    if not failures:
-        summary = json.loads(summary_path.read_text(encoding="utf-8"))
-        panel = pd.read_csv(panel_path, low_memory=False)
-        coverage = pd.read_csv(coverage_path, low_memory=False)
-        lineage = pd.read_csv(lineage_path, low_memory=False)
+    summary: dict[str, object] = {}
+    panel = pd.DataFrame()
+    coverage = pd.DataFrame()
+    lineage = pd.DataFrame()
+    if summary_path.exists():
+        try:
+            summary = json.loads(summary_path.read_text(encoding="utf-8"))
+        except (json.JSONDecodeError, OSError):
+            failures.append("summary_unreadable")
+    if panel_path.exists():
+        panel = read_csv_safe(panel_path)
+    if coverage_path.exists():
+        coverage = read_csv_safe(coverage_path)
+    if lineage_path.exists():
+        lineage = read_csv_safe(lineage_path)
 
-        if panel.empty:
-            failures.append("feature_panel_empty")
-        if "future_information_used" not in panel or panel["future_information_used"].astype(str).str.lower().eq("true").any():
+    if panel.empty:
+        failures.append("feature_panel_empty")
+    else:
+        if "future_information_used" not in panel.columns:
+            failures.append("future_information_control_missing")
+        elif panel["future_information_used"].astype(str).str.lower().eq("true").any():
             failures.append("future_information_control_failed")
-        if summary.get("current_only_fundamentals_used") is not False:
-            failures.append("current_only_fundamentals_used")
-        if not set(["price_history", "release_registry", "walk_forward_outcomes"]).issubset(set(lineage.get("source_role", []))):
-            failures.append("canonical_lineage_incomplete")
-        required = {
-            "product_age_months", "product_age_route", "return_3_month", "return_6_month", "return_12_month",
-            "cagr_2_year", "cagr_3_year", "since_release_cagr", "collector_category_cagr",
-            "trailing_12_month_volatility", "maximum_12_month_drawdown", "positive_month_rate",
-            "return_persistence", "forecast_extremeness", "data_quality_grade",
-        }
-        if not required.issubset(set(coverage.get("derived_feature", []))):
-            failures.append("feature_coverage_contract_incomplete")
-        for key in [
-            "candidate_methodology_change_authorized", "production_projection_authorized",
-            "purchase_recommendation_authorized", "automatic_model_update_allowed",
-            "technical_freeze_authorized", "uip_acceptance_authorized",
-        ]:
-            if summary.get(key) is not False:
-                failures.append(f"authorization_not_closed:{key}")
+
+    if summary.get("current_only_fundamentals_used") is not False:
+        failures.append("current_only_fundamentals_used")
+    roles = set(lineage["source_role"].astype(str)) if "source_role" in lineage.columns else set()
+    if not {"price_history", "release_registry", "walk_forward_outcomes"}.issubset(roles):
+        failures.append("canonical_lineage_incomplete")
+    required = {
+        "product_age_months", "product_age_route", "return_3_month", "return_6_month", "return_12_month",
+        "cagr_2_year", "cagr_3_year", "since_release_cagr", "collector_category_cagr",
+        "trailing_12_month_volatility", "maximum_12_month_drawdown", "positive_month_rate",
+        "return_persistence", "forecast_extremeness", "data_quality_grade",
+    }
+    covered = set(coverage["derived_feature"].astype(str)) if "derived_feature" in coverage.columns else set()
+    if not required.issubset(covered):
+        failures.append("feature_coverage_contract_incomplete")
+    for key in [
+        "candidate_methodology_change_authorized", "production_projection_authorized",
+        "purchase_recommendation_authorized", "automatic_model_update_allowed",
+        "technical_freeze_authorized", "uip_acceptance_authorized",
+    ]:
+        if summary.get(key) is not False:
+            failures.append(f"authorization_not_closed:{key}")
 
     result = {
         "audit_name": "Collector Long-Horizon Historical Feature Panel Audit",
+        "audit_version": "1.0.1",
         "status": "PASS" if not failures else "FAIL",
         "failure_count": len(failures),
         "failures": failures,
