@@ -49,11 +49,13 @@ def main() -> int:
 
     cfg = json.loads(CONFIG.read_text(encoding="utf-8"))
     recon = ROOT / cfg["inputs"]["reconciliation_root"]
+    evidence = ROOT / cfg["inputs"]["evidence_root"]
     out_dir = ROOT / cfg["output_directory"]
     paths = {
         "approval": ROOT / cfg["inputs"]["approval"],
         "forecasts": recon / "collector_reconciled_candidate_forecasts.csv",
         "peers": recon / "collector_reconciled_peer_contributions.csv",
+        "outcomes": evidence / "collector_retrospective_outcome_diagnostics.csv",
     }
     missing = [f"missing_input:{k}:{v}" for k, v in paths.items() if not v.exists()]
     if missing:
@@ -64,9 +66,12 @@ def main() -> int:
     approval = json.loads(paths["approval"].read_text(encoding="utf-8"))
     forecasts = pd.read_csv(paths["forecasts"], low_memory=False)
     peers = pd.read_csv(paths["peers"], low_memory=False)
+    outcomes = pd.read_csv(paths["outcomes"], low_memory=False)
     pid = "canonical_tcgplayer_product_id"
     forecasts[pid] = forecasts[pid].astype(str).str.replace(r"\.0$", "", regex=True)
+    outcomes[pid] = outcomes[pid].astype(str).str.replace(r"\.0$", "", regex=True)
     peers["target_tcgplayer_product_id"] = peers["target_tcgplayer_product_id"].astype(str).str.replace(r"\.0$", "", regex=True)
+    outcome_map = outcomes.set_index(pid).to_dict("index")
 
     rows = []
     lineage_rows = []
@@ -76,9 +81,7 @@ def main() -> int:
         route = str(row.get("forecast_method_route", ""))
         baseline = num(row.get("base_annual_rate"))
         fundamental = num(row.get("fundamental_adjustment_annual_rate")) or 0.0
-        simple_history = num(row.get("retrospective_simple_return"))
-        if simple_history is None:
-            simple_history = num(row.get("variant_short_history_simple_return"))
+        simple_history = num(outcome_map.get(target, {}).get("simple_return"))
         target_peers = peers[peers["target_tcgplayer_product_id"] == target].copy()
         trimmed = trimmed_frame(target_peers)
         peer_unweighted = unweighted_mean(trimmed)
@@ -104,6 +107,7 @@ def main() -> int:
 
         out.update({
             "candidate_methodology_version": "2.1.0",
+            "candidate_v2_1_simple_history_return": simple_history,
             "candidate_v2_1_peer_trimmed_mean_unweighted": peer_unweighted,
             "candidate_v2_1_peer_trimmed_mean_similarity_weighted_diagnostic": peer_weighted,
             "candidate_v2_1_base_annual_rate": candidate,
@@ -126,6 +130,7 @@ def main() -> int:
                 "peer_count_after_trim": int(len(trimmed)),
                 "peer_trimmed_mean_unweighted": peer_unweighted,
                 "peer_trimmed_mean_similarity_weighted_diagnostic": peer_weighted,
+                "simple_history_return": simple_history,
                 "route_blend_applied_once": True,
                 "reverse_score_diagnostic_only": truthy(row.get("reverse_pair_candidate_used")),
             })
@@ -135,7 +140,6 @@ def main() -> int:
     out_dir.mkdir(parents=True, exist_ok=True)
     result.to_csv(out_dir / "collector_candidate_methodology_v2_1_forecasts.csv", index=False)
     lineage.to_csv(out_dir / "collector_candidate_methodology_v2_1_peer_lineage.csv", index=False)
-
     comparison = result[[pid, "product_name", "forecast_method_route", "base_annual_rate", "candidate_v2_1_base_annual_rate", "candidate_v2_1_weighted_trimmed_amendment_diagnostic_rate", "candidate_v2_1_weighted_trimmed_minus_unweighted", "candidate_v2_1_method_status", "candidate_v2_1_calculation_complete"]].copy()
     comparison.to_csv(out_dir / "collector_candidate_methodology_v2_1_comparison.csv", index=False)
 
