@@ -10,6 +10,13 @@ ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "data/operations/collector_early_lifecycle_breakout_replay/candidate_v1_0_0"
 
 
+def read_csv(path: Path) -> pd.DataFrame:
+    try:
+        return pd.read_csv(path, low_memory=False) if path.exists() else pd.DataFrame()
+    except (OSError, UnicodeDecodeError, pd.errors.EmptyDataError):
+        return pd.DataFrame()
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--strict", action="store_true")
@@ -19,13 +26,30 @@ def main() -> int:
     cases_path = OUT / "collector_early_lifecycle_breakout_replay_cases.csv"
     summary_csv_path = OUT / "collector_early_lifecycle_breakout_replay_summary.csv"
     summary_json_path = OUT / "collector_early_lifecycle_breakout_replay_summary.json"
-    for path in [cases_path, summary_csv_path, summary_json_path]:
+    diagnostics_path = OUT / "collector_early_lifecycle_breakout_replay_schema_diagnostics.csv"
+    for path in [cases_path, summary_csv_path, summary_json_path, diagnostics_path]:
         if not path.exists():
             failures.append(f"missing_output:{path.name}")
 
-    cases = pd.read_csv(cases_path, low_memory=False) if cases_path.exists() else pd.DataFrame()
-    metrics = pd.read_csv(summary_csv_path, low_memory=False) if summary_csv_path.exists() else pd.DataFrame()
-    summary = json.loads(summary_json_path.read_text(encoding="utf-8")) if summary_json_path.exists() else {}
+    cases = read_csv(cases_path)
+    metrics = read_csv(summary_csv_path)
+    diagnostics = read_csv(diagnostics_path)
+    summary: dict[str, object] = {}
+    if summary_json_path.exists():
+        try:
+            summary = json.loads(summary_json_path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            failures.append("summary_unreadable")
+
+    if diagnostics.empty:
+        failures.append("schema_diagnostics_empty")
+    else:
+        required_diagnostics = {
+            "feature_name_column", "feature_cutoff_column", "feature_age_column",
+            "outcome_name_column", "outcome_cutoff_column", "outcome_realized_column",
+        }
+        if not required_diagnostics.issubset(diagnostics.columns):
+            failures.append("schema_diagnostics_fields_missing")
 
     if cases.empty:
         failures.append("replay_cases_empty")
@@ -37,20 +61,21 @@ def main() -> int:
         }
         if not required.issubset(cases.columns):
             failures.append("required_case_fields_missing")
-        if cases["product_key"].astype(str).str.strip().eq("").any():
-            failures.append("blank_product_keys")
-        if cases["future_information_used_in_forecast"].astype(str).str.lower().eq("true").any():
-            failures.append("future_information_detected")
-        if not cases["historical_outcome_used_for_scoring_only"].astype(str).str.lower().eq("true").all():
-            failures.append("outcome_scoring_only_control_failed")
-        allowed = {"LAUNCH_PRICE_DISCOVERY", "INITIAL_SUPPLY_ABSORPTION", "STABILIZATION", "EARLY_ACCUMULATION"}
-        if not set(cases["early_lifecycle_band"]).issubset(allowed):
-            failures.append("invalid_age_band")
+        else:
+            if cases["product_key"].astype(str).str.strip().eq("").any():
+                failures.append("blank_product_keys")
+            if cases["future_information_used_in_forecast"].astype(str).str.lower().eq("true").any():
+                failures.append("future_information_detected")
+            if not cases["historical_outcome_used_for_scoring_only"].astype(str).str.lower().eq("true").all():
+                failures.append("outcome_scoring_only_control_failed")
+            allowed = {"LAUNCH_PRICE_DISCOVERY", "INITIAL_SUPPLY_ABSORPTION", "STABILIZATION", "EARLY_ACCUMULATION"}
+            if not set(cases["early_lifecycle_band"]).issubset(allowed):
+                failures.append("invalid_age_band")
 
     if metrics.empty:
         failures.append("replay_metrics_empty")
     else:
-        if "ALL_EARLY_LIFECYCLE" not in set(metrics["scope"]):
+        if "scope" not in metrics or "ALL_EARLY_LIFECYCLE" not in set(metrics["scope"]):
             failures.append("overall_scope_missing")
         required_metrics = {
             "case_count", "product_count", "cutoff_count", "breakout_count_25",
@@ -64,6 +89,8 @@ def main() -> int:
         if not required_metrics.issubset(metrics.columns):
             failures.append("required_metrics_missing")
 
+    if summary.get("feature_outcome_join_contract") != "AT_CUTOFF_FEATURES_PLUS_VALIDATED_365_OUTCOME":
+        failures.append("feature_outcome_join_contract_missing")
     if summary.get("future_information_used_in_forecast") is not False:
         failures.append("summary_future_information_control_failed")
     if summary.get("historical_outcome_used_for_scoring_only") is not True:
@@ -78,7 +105,7 @@ def main() -> int:
 
     result = {
         "audit_name": "Collector Early-Lifecycle Breakout Replay Audit",
-        "audit_version": "1.0.0",
+        "audit_version": "1.1.0",
         "status": "PASS" if not failures else "FAIL",
         "failure_count": len(failures),
         "failures": failures,
