@@ -1,0 +1,101 @@
+{
+  "policy_name": "Collector Current Authority Policy",
+  "policy_version": "1.0.0",
+  "scope": "English factory-sealed Collector Booster Displays",
+  "language_policy": {
+    "accepted_canonical_values": [
+      "English",
+      "ENGLISH",
+      "English_or_unspecified"
+    ],
+    "accepted_evidence_code": "TCGPLAYER_DEFAULT_ENGLISH_CATALOG_IDENTITY",
+    "foreign_language_markers": [
+      "Japanese",
+      "German",
+      "French",
+      "Italian",
+      "Spanish",
+      "Portuguese",
+      "Korean",
+      "Chinese",
+      "Russian"
+    ],
+    "explicitly_excluded_product_ids": [
+      "628315"
+    ],
+    "rule": "English_or_unspecified is accepted only for an exact canonical TCGplayer product ID with no foreign-language marker and no explicit exclusion."
+  },
+  "configuration_policy": {
+    "required_packaging_class": "SEALED_DISPLAY",
+    "excluded_name_markers": [
+      "Display Case",
+      "Master Case",
+      "Box Case",
+      "Booster Pack",
+      "Sample Pack",
+      "Omega Pack",
+      "Minimal Packaging",
+      "Hanger Pack",
+      "Empty",
+      "Opened",
+      "Damaged",
+      "Resealed"
+    ]
+  },
+  "price_policy": {
+    "required_subtype": "Normal",
+    "required_positive_market_price": true,
+    "do_not_reject_by_absolute_price_level": true,
+    "continuity_review_required": true,
+    "cross_source_review_required": true,
+    "owner_attested_current_prices": [
+      {
+        "tcgplayer_product_id": "484912",
+        "product_name": "Universes Beyond: The Lord of the Rings: Tales of Middle-earth Collector Booster Display",
+        "market_price": 2030.03
+      },
+      {
+        "tcgplayer_product_id": "515906",
+        "product_name": "The Lord of the Rings: Tales of Middle-earth - Special Edition Collector Booster Display",
+        "market_price": 5729.40
+      },
+      {
+        "tcgplayer_product_id": "618893",
+        "product_name": "FINAL FANTASY Collector Booster Display",
+        "market_price": 1780.25
+      },
+      {
+        "tcgplayer_product_id": "523185",
+        "product_name": "Universes Beyond: Fallout Collector Booster Display",
+        "market_price": 1760.06
+      },
+      {
+        "tcgplayer_product_id": "541238",
+        "product_name": "Bloomburrow Collector Booster Display",
+        "market_price": 1069.11
+      },
+      {
+        "tcgplayer_product_id": "516614",
+        "product_name": "The Lost Caverns of Ixalan Collector Booster Display",
+        "market_price": 1002.68
+      }
+    ],
+    "owner_attestation_use": "Plausibility evidence only. It does not replace source retrieval, identity verification, or lineage."
+  },
+  "release_policy": {
+    "states": [
+      "PRESALE",
+      "RELEASED_EARLY_LIFECYCLE",
+      "RELEASED_MATURE",
+      "RELEASE_DATE_UNVERIFIED"
+    ],
+    "mature_after_days": 180,
+    "historical_append_requires_verified_release_date": true,
+    "presale_must_be_isolated": true
+  },
+  "authorization": {
+    "historical_append_authorized": false,
+    "forecasting_resume_authorized": false,
+    "purchase_recommendation_authorized": false
+  }
+}
