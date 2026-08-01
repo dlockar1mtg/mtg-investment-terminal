@@ -67,18 +67,10 @@ def standardize_outcomes(raw: pd.DataFrame) -> tuple[pd.DataFrame, str | None]:
     horizon = choose(raw, ["horizon_days", "forecast_horizon_days"])
     realized = choose(raw, ["realized_return", "actual_return", "outcome_return", "realized_return_365"])
     baseline = choose(raw, [
-        "forecast_return_365_equivalent",
-        "forecast_return_365",
-        "current_forecast_return_365",
-        "baseline_forecast_return_365",
-        "point_forecast_return_365",
-        "predicted_return_365",
-        "forecast_return",
-        "baseline_forecast_return",
-        "current_forecast_return",
-        "shadow_forecast_return",
-        "predicted_return",
-        "point_forecast_return",
+        "forecast_return_365_equivalent", "forecast_return_365", "current_forecast_return_365",
+        "baseline_forecast_return_365", "point_forecast_return_365", "predicted_return_365",
+        "forecast_return", "baseline_forecast_return", "current_forecast_return",
+        "shadow_forecast_return", "predicted_return", "point_forecast_return",
     ])
     if cutoff is None or realized is None or (key is None and name is None):
         return pd.DataFrame(), baseline
@@ -94,40 +86,49 @@ def standardize_outcomes(raw: pd.DataFrame) -> tuple[pd.DataFrame, str | None]:
 
 
 def comparable_predictions(data: pd.DataFrame, minimum: int, maximum: int) -> tuple[pd.DataFrame, pd.DataFrame]:
-    features = [
+    match_features = [
         "product_age_months", "return_3_month", "return_6_month", "trailing_12_month_volatility",
         "maximum_12_month_drawdown", "positive_month_rate", "return_persistence",
     ]
+    peer_signal = "return_12_month"
     details: list[dict[str, object]] = []
     predictions: list[dict[str, object]] = []
     for cutoff, block in data.groupby("decision_cutoff"):
-        matured = block.dropna(subset=["realized_return_365"]).copy()
-        if len(matured) < minimum + 1:
+        evaluation = block.dropna(subset=["realized_return_365"]).copy()
+        available_pool = block.dropna(subset=[peer_signal]).copy()
+        if len(evaluation) < 1 or len(available_pool) < minimum + 1:
             continue
-        med = matured[features].median(numeric_only=True)
-        scale = (matured[features].apply(pd.to_numeric, errors="coerce") - med).abs().mean()
+        med = available_pool[match_features].median(numeric_only=True)
+        scale = (available_pool[match_features].apply(pd.to_numeric, errors="coerce") - med).abs().mean()
         scale = scale.replace(0, np.nan).fillna(1.0)
-        for idx, target in matured.iterrows():
-            pool = matured.drop(index=idx).copy()
-            target_vec = pd.to_numeric(target[features], errors="coerce")
-            z = (pool[features].apply(pd.to_numeric, errors="coerce") - target_vec) / scale
+        for idx, target in evaluation.iterrows():
+            pool = available_pool.drop(index=idx, errors="ignore").copy()
+            if "product_key" in pool.columns:
+                pool = pool[pool["product_key"].astype(str) != str(target.get("product_key", ""))]
+            if len(pool) < minimum:
+                continue
+            target_vec = pd.to_numeric(target[match_features], errors="coerce")
+            z = (pool[match_features].apply(pd.to_numeric, errors="coerce") - target_vec) / scale
             pool["distance"] = np.sqrt((z.fillna(0.0) ** 2).mean(axis=1))
             peers = pool.sort_values("distance").head(maximum)
             if len(peers) < minimum:
                 continue
             weights = 1.0 / (1.0 + peers["distance"])
-            pred = float(np.average(peers["realized_return_365"], weights=weights))
+            comparable_signal = float(np.average(pd.to_numeric(peers[peer_signal], errors="coerce"), weights=weights))
             hist = float(target.get("history_observation_count", 0) or 0)
             route = "BLENDED" if hist >= 9 else "COMPARABLE" if hist >= 6 else "BLOCKED"
-            product_signal = pd.to_numeric(pd.Series([target.get("return_12_month")]), errors="coerce").iloc[0]
+            product_signal = pd.to_numeric(pd.Series([target.get(peer_signal)]), errors="coerce").iloc[0]
+            forecast = comparable_signal
             if route == "BLENDED" and pd.notna(product_signal):
-                pred = 0.4 * float(product_signal) + 0.6 * pred
+                forecast = 0.4 * float(product_signal) + 0.6 * comparable_signal
             predictions.append({
                 "product_key": target["product_key"], "product_name": target["product_name"],
                 "decision_cutoff": cutoff, "forecast_route": route,
-                "comparable_forecast_return_365": pred if route != "BLOCKED" else np.nan,
+                "comparable_forecast_return_365": forecast if route != "BLOCKED" else np.nan,
                 "realized_return_365": target["realized_return_365"],
                 "comparable_count": int(len(peers)),
+                "comparable_signal_source": "PEER_RETURN_12_MONTH_AT_CUTOFF",
+                "peer_future_outcomes_used": False,
                 "uncertainty_multiplier": 1.25 if route == "BLENDED" else 1.6 if route == "COMPARABLE" else np.nan,
                 "evidence_grade": "B_VINTAGE_REPLAY" if route == "BLENDED" else "C_PROXY_PRIOR" if route == "COMPARABLE" else "BLOCKED",
             })
@@ -138,7 +139,8 @@ def comparable_predictions(data: pd.DataFrame, minimum: int, maximum: int) -> tu
                     "comparable_product_key": peer["product_key"], "comparable_product": peer["product_name"],
                     "match_distance": float(peer["distance"]),
                     "comparable_weight": float((1.0 / (1.0 + peer["distance"])) / weights.sum()),
-                    "comparable_realized_return_365": float(peer["realized_return_365"]),
+                    "comparable_available_signal_365": float(peer[peer_signal]),
+                    "peer_future_outcome_used": False,
                 })
     return pd.DataFrame(predictions), pd.DataFrame(details)
 
@@ -215,12 +217,19 @@ def main() -> int:
         merged, cfg["comparable_transfer"]["minimum_comparables"], cfg["comparable_transfer"]["maximum_comparables"]
     ) if not merged.empty else (pd.DataFrame(), pd.DataFrame())
     comp_summary = pd.DataFrame()
+    comparable_leakage_free = bool(
+        not comp_predictions.empty
+        and "peer_future_outcomes_used" in comp_predictions.columns
+        and not comp_predictions["peer_future_outcomes_used"].astype(str).str.lower().eq("true").any()
+    )
     if not comp_predictions.empty:
         rows = []
         for route, block in comp_predictions.groupby("forecast_route"):
             rows.append(metric_rows(block, "comparable_forecast_return_365", f"COMPARABLE_{route}", {"forecast_route": route}))
         rows.append(metric_rows(comp_predictions, "comparable_forecast_return_365", "COMPARABLE_ALL", {"forecast_route": "ALL"}))
         comp_summary = pd.DataFrame(rows)
+    if not comparable_leakage_free:
+        failures.append("comparable_future_outcome_leakage_control_failed")
 
     summary.to_csv(OUT / "collector_365_direct_tournament_summary.csv", index=False)
     predictions.to_csv(OUT / "collector_365_direct_tournament_predictions.csv", index=False)
@@ -234,7 +243,7 @@ def main() -> int:
     if comp_predictions.empty:
         failures.append("comparable_transfer_backtest_empty")
     result = {
-        "audit_name": cfg["program_name"], "audit_version": "1.0.1",
+        "audit_name": cfg["program_name"], "audit_version": "1.0.2",
         "status": "PASS" if not failures else "FAIL",
         "direct_variant_count": int(len(summary)), "direct_prediction_count": int(len(predictions)),
         "direct_winner_count": winner_count, "comparable_prediction_count": int(len(comp_predictions)),
@@ -242,9 +251,11 @@ def main() -> int:
         "current_baseline_source_column": current_baseline_source_column,
         "current_baseline_case_count": current_baseline_case_count,
         "current_baseline_comparable": current_baseline_comparable,
+        "comparable_signal_source": "PEER_RETURN_12_MONTH_AT_CUTOFF",
+        "comparable_leakage_free": comparable_leakage_free,
         "owner_review_required": True,
         "direct_owner_review_eligible": bool(current_baseline_comparable and not failures),
-        "comparable_owner_review_eligible": bool(not comp_predictions.empty),
+        "comparable_owner_review_eligible": bool(comparable_leakage_free and not comp_predictions.empty and not failures),
         "shadow_only": True,
         "direct_method_authorized": False, "comparable_transfer_method_authorized": False,
         "candidate_methodology_change_authorized": False, "production_projection_authorized": False,
