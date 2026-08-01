@@ -1,0 +1,77 @@
+{
+  "program_name": "TCGCSV Collector Admission Policy",
+  "program_version": "1.0.0",
+  "effective_status": "STOP_THE_LINE_ACTIVE",
+  "source_route": "TCGCSV_PUBLIC_DATA",
+  "required_product": {
+    "product_class": "COLLECTOR_BOOSTER",
+    "packaging": "SEALED_DISPLAY",
+    "language": "ENGLISH",
+    "condition": "FACTORY_SEALED_NORMAL_RETAIL",
+    "complete_contents": true
+  },
+  "eligible_name_terms": [
+    "collector booster display",
+    "collector booster box"
+  ],
+  "excluded_name_terms": [
+    "display case",
+    "display master case",
+    "box case",
+    "master case",
+    "booster pack",
+    "sample pack",
+    "omega pack",
+    "minimal packaging",
+    "empty",
+    "opened",
+    "damaged",
+    "resealed",
+    "japanese",
+    "german",
+    "french",
+    "italian",
+    "spanish",
+    "portuguese",
+    "korean",
+    "chinese",
+    "russian"
+  ],
+  "language_policy": {
+    "default_language_inference_forbidden": true,
+    "explicit_english_evidence_required_for_certification": true,
+    "missing_language_evidence_state": "LANGUAGE_UNVERIFIED"
+  },
+  "presale_policy": {
+    "presale_must_be_separate": true,
+    "presale_may_not_enter_mature_history": true,
+    "released_on_missing_must_not_imply_presale": true
+  },
+  "price_selection_policy": {
+    "first_row_selection_forbidden": true,
+    "required_subtype": "Normal",
+    "duplicate_subtype_requires_quarantine": true,
+    "market_price_required_for_candidate": true,
+    "raw_price_row_retention_required": true
+  },
+  "historical_append_policy": {
+    "direct_append_from_fresh_output_forbidden": true,
+    "required_sequence": [
+      "RAW_VAULTED",
+      "IDENTITY_RESOLVED",
+      "CONFIGURATION_ELIGIBLE",
+      "LANGUAGE_VERIFIED",
+      "PRESALE_CLASSIFIED",
+      "PRICE_PLAUSIBILITY_PASSED",
+      "CANDIDATE_APPEND",
+      "CONTINUITY_CERTIFIED",
+      "ATOMIC_PROMOTION"
+    ]
+  },
+  "forecasting_resume_authorized": false,
+  "production_projection_authorized": false,
+  "purchase_recommendation_authorized": false,
+  "automatic_model_update_allowed": false,
+  "technical_freeze_authorized": false,
+  "uip_acceptance_authorized": false
+}
