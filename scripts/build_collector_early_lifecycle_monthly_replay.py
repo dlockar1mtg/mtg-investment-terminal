@@ -5,7 +5,6 @@ import json
 import math
 from pathlib import Path
 
-import numpy as np
 import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -32,6 +31,13 @@ def age_band(age: float) -> str:
     if age <= 12:
         return "STABILIZATION"
     return "EARLY_ACCUMULATION"
+
+
+def month_gap(later: pd.Series, earlier: pd.Timestamp) -> pd.Series:
+    return (
+        (later.dt.year - earlier.year) * 12
+        + (later.dt.month - earlier.month)
+    )
 
 
 def main() -> int:
@@ -66,71 +72,118 @@ def main() -> int:
         if column is None:
             failures.append(f"{label}_unmapped")
 
+    full_history = pd.DataFrame()
+    decision_rows = pd.DataFrame()
     cases = pd.DataFrame()
+    products_with_forward_match: set[str] = set()
+    candidate_decision_count = 0
+    no_forward_match_count = 0
+
     if not failures:
-        work = pd.DataFrame({
+        full_history = pd.DataFrame({
             "product_key": raw[id_col].map(clean_id) if id_col else raw[name_col].astype(str),
             "product_name": raw[name_col].astype(str).str.strip(),
             "observation_date": pd.to_datetime(raw[date_col], errors="coerce"),
             "release_date": pd.to_datetime(raw[release_col], errors="coerce"),
             "market_price": pd.to_numeric(raw[price_col], errors="coerce"),
         }).dropna(subset=["observation_date", "release_date", "market_price"])
-        work = work[work["market_price"] > 0].copy()
-        work = work.sort_values(["product_key", "observation_date"]).drop_duplicates(["product_key", "observation_date"], keep="last")
-        work["product_age_months"] = (
-            (work["observation_date"].dt.year - work["release_date"].dt.year) * 12
-            + (work["observation_date"].dt.month - work["release_date"].dt.month)
+        full_history = full_history[full_history["market_price"] > 0].copy()
+        full_history = (
+            full_history
+            .sort_values(["product_key", "observation_date"])
+            .drop_duplicates(["product_key", "observation_date"], keep="last")
+        )
+        full_history["product_age_months"] = (
+            (full_history["observation_date"].dt.year - full_history["release_date"].dt.year) * 12
+            + (full_history["observation_date"].dt.month - full_history["release_date"].dt.month)
         ).astype(float)
-        work["early_lifecycle_band"] = work["product_age_months"].map(age_band)
-        work = work[work["early_lifecycle_band"] != "OUT_OF_SCOPE"].copy()
+        full_history["early_lifecycle_band"] = full_history["product_age_months"].map(age_band)
+
+        # Only decision rows are restricted to 0-17 months. Full history must remain
+        # available so a decision at month 13-17 can be scored at month 24-30.
+        decision_rows = full_history[
+            full_history["early_lifecycle_band"] != "OUT_OF_SCOPE"
+        ].copy()
+        candidate_decision_count = int(len(decision_rows))
 
         rows: list[dict[str, object]] = []
         min_gap = int(cfg["minimum_forward_gap_months"])
         max_gap = int(cfg["maximum_forward_gap_months"])
-        for product_key, group in work.groupby("product_key", dropna=False):
-            group = group.sort_values("observation_date").reset_index(drop=True)
-            for _, row in group.iterrows():
-                gaps = (
-                    (group["observation_date"].dt.year - row["observation_date"].year) * 12
-                    + (group["observation_date"].dt.month - row["observation_date"].month)
-                )
-                future = group[(gaps >= min_gap) & (gaps <= max_gap)].copy()
-                if future.empty:
-                    continue
-                future["gap_distance"] = (gaps.loc[future.index] - int(cfg["forward_horizon_months"])).abs()
-                target = future.sort_values(["gap_distance", "observation_date"]).iloc[0]
-                realized = float(target["market_price"] / row["market_price"] - 1.0)
-                rows.append({
-                    "product_key": clean_id(product_key),
-                    "product_name": row["product_name"],
-                    "decision_cutoff": row["observation_date"].date().isoformat(),
-                    "release_date": row["release_date"].date().isoformat(),
-                    "product_age_months": int(row["product_age_months"]),
-                    "early_lifecycle_band": row["early_lifecycle_band"],
-                    "current_price_at_cutoff": float(row["market_price"]),
-                    "forward_observation_date": target["observation_date"].date().isoformat(),
-                    "forward_gap_months": int((target["observation_date"].year - row["observation_date"].year) * 12 + (target["observation_date"].month - row["observation_date"].month)),
-                    "forward_price_365": float(target["market_price"]),
-                    "realized_return_365": realized,
-                    "breakout_25": realized >= 0.25,
-                    "breakout_50": realized >= 0.50,
-                    "breakout_70": realized >= 0.70,
-                    "future_information_used_in_features": False,
-                    "forward_price_used_for_scoring_only": True,
-                })
+        target_gap = int(cfg["forward_horizon_months"])
+
+        history_by_product = {
+            str(key): group.sort_values("observation_date").reset_index(drop=True)
+            for key, group in full_history.groupby("product_key", dropna=False)
+        }
+
+        for _, row in decision_rows.sort_values(["product_key", "observation_date"]).iterrows():
+            product_key = str(row["product_key"])
+            group = history_by_product.get(product_key, pd.DataFrame())
+            if group.empty:
+                no_forward_match_count += 1
+                continue
+
+            gaps = month_gap(group["observation_date"], row["observation_date"])
+            future = group[(gaps >= min_gap) & (gaps <= max_gap)].copy()
+            if future.empty:
+                no_forward_match_count += 1
+                continue
+
+            future["forward_gap_months"] = gaps.loc[future.index].astype(int)
+            future["gap_distance"] = (future["forward_gap_months"] - target_gap).abs()
+            target = future.sort_values(["gap_distance", "observation_date"]).iloc[0]
+            realized = float(target["market_price"] / row["market_price"] - 1.0)
+            products_with_forward_match.add(product_key)
+            rows.append({
+                "product_key": clean_id(product_key),
+                "product_name": row["product_name"],
+                "decision_cutoff": row["observation_date"].date().isoformat(),
+                "release_date": row["release_date"].date().isoformat(),
+                "product_age_months": int(row["product_age_months"]),
+                "early_lifecycle_band": row["early_lifecycle_band"],
+                "current_price_at_cutoff": float(row["market_price"]),
+                "forward_observation_date": target["observation_date"].date().isoformat(),
+                "forward_gap_months": int(target["forward_gap_months"]),
+                "forward_price_365": float(target["market_price"]),
+                "realized_return_365": realized,
+                "breakout_25": realized >= 0.25,
+                "breakout_50": realized >= 0.50,
+                "breakout_70": realized >= 0.70,
+                "future_information_used_in_features": False,
+                "forward_price_used_for_scoring_only": True,
+            })
         cases = pd.DataFrame(rows)
 
     if cases.empty:
         failures.append("no_monthly_early_lifecycle_cases")
 
+    case_columns = [
+        "product_key", "product_name", "decision_cutoff", "release_date",
+        "product_age_months", "early_lifecycle_band", "current_price_at_cutoff",
+        "forward_observation_date", "forward_gap_months", "forward_price_365",
+        "realized_return_365", "breakout_25", "breakout_50", "breakout_70",
+        "future_information_used_in_features", "forward_price_used_for_scoring_only",
+    ]
+    if cases.empty:
+        cases = pd.DataFrame(columns=case_columns)
+    else:
+        cases = cases[case_columns].sort_values(["decision_cutoff", "product_name"])
     cases.to_csv(out / "collector_early_lifecycle_monthly_replay_cases.csv", index=False)
+
     diagnostics = pd.DataFrame([{
         "source_rows": int(len(raw)),
+        "valid_full_history_rows": int(len(full_history)),
+        "candidate_early_lifecycle_decision_rows": candidate_decision_count,
+        "scored_case_rows": int(len(cases)),
+        "decision_rows_without_forward_match": no_forward_match_count,
+        "products_with_forward_match": len(products_with_forward_match),
         "name_column": name_col or "UNMAPPED",
         "id_column": id_col or "UNMAPPED",
         "date_column": date_col or "UNMAPPED",
         "release_column": release_col or "UNMAPPED",
         "price_column": price_col or "UNMAPPED",
+        "decision_filter_policy": "AGE_0_TO_17_ONLY",
+        "forward_lookup_policy": "UNFILTERED_FULL_PRODUCT_HISTORY",
     }])
     diagnostics.to_csv(out / "collector_early_lifecycle_monthly_replay_schema_diagnostics.csv", index=False)
 
@@ -143,11 +196,14 @@ def main() -> int:
     }
     result = {
         "audit_name": cfg["program_name"],
-        "audit_version": cfg["program_version"],
+        "audit_version": "1.1.0",
         "case_count": int(len(cases)),
         "product_count": int(cases["product_key"].nunique()) if not cases.empty else 0,
         "cutoff_count": int(cases["decision_cutoff"].nunique()) if not cases.empty else 0,
         "age_band_count": int(cases["early_lifecycle_band"].nunique()) if not cases.empty else 0,
+        "candidate_early_lifecycle_decision_count": candidate_decision_count,
+        "decision_rows_without_forward_match": no_forward_match_count,
+        "forward_lookup_uses_full_product_history": True,
         **outcome_counts,
         "future_information_used_in_features": False,
         "forward_price_used_for_scoring_only": True,
@@ -162,7 +218,9 @@ def main() -> int:
         "failure_count": len(failures),
         "failures": failures,
     }
-    (out / "collector_early_lifecycle_monthly_replay_summary.json").write_text(json.dumps(result, indent=2, sort_keys=True), encoding="utf-8")
+    (out / "collector_early_lifecycle_monthly_replay_summary.json").write_text(
+        json.dumps(result, indent=2, sort_keys=True), encoding="utf-8"
+    )
     print(json.dumps(result, indent=2, sort_keys=True))
     return 1 if args.strict and failures else 0
 
