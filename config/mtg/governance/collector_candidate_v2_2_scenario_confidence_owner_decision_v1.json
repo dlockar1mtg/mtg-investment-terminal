@@ -1,0 +1,54 @@
+{
+  "decision_package_name": "Collector Candidate v2.2 Scenario and Confidence Owner Decision Package",
+  "decision_package_version": "1.0.0",
+  "status": "INACTIVE_OWNER_DECISION_REQUIRED",
+  "inputs": {
+    "scenario_review_root": "data/operations/collector_candidate_v2_2_scenario_confidence_review/candidate_v1_0_0"
+  },
+  "output_directory": "data/operations/collector_candidate_v2_2_scenario_confidence_owner_decision/candidate_v1_0_0",
+  "recommendations": {
+    "COL-SCEN-001": {
+      "topic": "Scenario width methodology",
+      "recommendation": "APPROVE_ROUTE_BOUNDED_EVIDENCE_WIDTH_WITH_95_PERCENT_LOSS_FLOOR",
+      "route_minimum_widths": {
+        "DIRECT_HISTORY_CALIBRATED": 0.10,
+        "COMPARABLE_PRODUCT_ADJUSTED": 0.20,
+        "DIRECT_HISTORY_LIMITED": 0.30,
+        "FUNDAMENTAL_COMPARABLE_HYBRID": 0.35
+      },
+      "route_maximum_widths": {
+        "DIRECT_HISTORY_CALIBRATED": 0.20,
+        "COMPARABLE_PRODUCT_ADJUSTED": 0.45,
+        "DIRECT_HISTORY_LIMITED": 0.75,
+        "FUNDAMENTAL_COMPARABLE_HYBRID": 0.60
+      },
+      "downside_annual_rate_floor": -0.95,
+      "formula": "MAX(route_minimum, retrospective_volatility_if_available, half_methodology_spread), bounded_by_route_maximum_and_loss_floor"
+    },
+    "COL-CONF-001": {
+      "topic": "Confidence methodology",
+      "recommendation": "APPROVE_NORMALIZED_EVIDENCE_CONFIDENCE_0_TO_100",
+      "internal_scale": "0_TO_1",
+      "export_scale": "0_TO_100",
+      "factors": [
+        "route_maturity",
+        "peer_depth",
+        "methodology_sensitivity",
+        "retrospective_volatility",
+        "short_history_status",
+        "reverse_score_status",
+        "peer_concentration_status"
+      ],
+      "reverse_score_confidence_ceiling": 10,
+      "inactive_formula_confidence_ceiling": 15
+    }
+  },
+  "authorization_boundaries": {
+    "scenario_methodology_authorized": false,
+    "confidence_methodology_authorized": false,
+    "candidate_projection_authorized": false,
+    "production_projection_authorized": false,
+    "purchase_recommendation_authorized": false,
+    "automatic_model_update_allowed": false
+  }
+}
