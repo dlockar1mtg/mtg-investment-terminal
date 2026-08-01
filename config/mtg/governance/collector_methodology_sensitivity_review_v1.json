@@ -1,0 +1,29 @@
+{
+  "contract_name": "Collector Methodology Sensitivity Review",
+  "contract_version": "1.0.0",
+  "status": "CANDIDATE_INACTIVE",
+  "inputs": {
+    "reconciliation_root": "data/operations/collector_route_reconciliation/candidate_v1_0_0",
+    "evidence_root": "data/operations/collector_methodology_evidence_review/candidate_v1_0_0"
+  },
+  "output_directory": "data/operations/collector_methodology_sensitivity_review/candidate_v1_0_0",
+  "diagnostic_variants": [
+    "BASELINE_WEIGHTED_MEAN",
+    "PEER_MEDIAN",
+    "PEER_TRIMMED_MEAN_10_PERCENT",
+    "TOP_5_SIMILARITY_WEIGHTED",
+    "EXCLUDE_DOMINANT_PEER",
+    "SHORT_HISTORY_SIMPLE_RETURN",
+    "SHORT_HISTORY_ANNUALIZED_RETURN"
+  ],
+  "rules": {
+    "baseline_candidate_must_remain_unchanged": true,
+    "diagnostic_variants_must_not_replace_baseline": true,
+    "retrospective_inputs_are_diagnostic_only": true,
+    "future_information_prohibited": true,
+    "candidate_projection_authorized": false,
+    "production_projection_authorized": false,
+    "purchase_recommendation_authorized": false,
+    "automatic_model_update_allowed": false
+  }
+}
