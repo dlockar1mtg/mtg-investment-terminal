@@ -1,0 +1,21 @@
+{
+  "name": "Collector Walk-Forward Phase 2C Robustness Review",
+  "version": "1.0.0",
+  "scope": "COLLECTOR_CALIBRATED_HISTORY_SHADOW_ONLY",
+  "source_phase": "collector_walk_forward_phase_2b_benchmark_lab/candidate_v1_0_0",
+  "candidate_variant": "CROSS_SECTIONAL_MEDIAN_BLEND_50",
+  "comparison_variant": "MODEL_CURRENT",
+  "robustness_tests": [
+    "ALL_CASES",
+    "EXCLUDE_HIGHEST_ERROR_PRODUCT",
+    "TRIM_TOP_5_PERCENT_CURRENT_MODEL_ERRORS",
+    "EARLY_CUTOFF_HALF",
+    "LATE_CUTOFF_HALF"
+  ],
+  "minimum_improvement_required": 0.0,
+  "freeze_suspended_pending_walk_forward": true,
+  "candidate_methodology_change_authorized": false,
+  "production_projection_authorized": false,
+  "purchase_recommendation_authorized": false,
+  "automatic_model_update_allowed": false
+}
