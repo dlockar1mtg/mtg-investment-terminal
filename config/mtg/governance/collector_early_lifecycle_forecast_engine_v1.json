@@ -1,0 +1,68 @@
+{
+  "program_name": "Collector Early-Lifecycle Forecast Engine",
+  "program_version": "1.0.0",
+  "primary_class": "COLLECTOR_BOOSTER_DISPLAY",
+  "purpose": "Ensure every Collector product receives a complete governed output while preventing unsupported early-lifecycle point forecasts from appearing certified.",
+  "inputs": {
+    "product_master": "data/product_master/product_master_model_input.csv",
+    "historical_feature_panel": "data/operations/collector_long_horizon_historical_feature_panel/candidate_v1_0_0/collector_long_horizon_decision_feature_panel.csv",
+    "monthly_price_panel": "data/operations/collector_long_horizon_historical_feature_panel/candidate_v1_0_0/collector_long_horizon_monthly_price_panel.csv",
+    "forecast_candidates": [
+      "data/operations/collector_candidate_v2_4_shadow/candidate_v2_4/collector_candidate_v2_4_shadow_predictions.csv",
+      "data/operations/collector_walk_forward_replay_phase_2a/candidate_v1_0_0/collector_walk_forward_phase_2a_scored_outcomes.csv"
+    ]
+  },
+  "statuses": {
+    "PROVISIONAL_365": "Positive-ranking historically supported guarded point forecast with wider uncertainty.",
+    "SCENARIO_ELIGIBLE": "Bear/base/bull analysis is available, but no certified 365-day point forecast is shown.",
+    "BLOCKED": "Insufficient evidence even for a reliable scenario; product remains visible with a reason and next evidence requirement."
+  },
+  "age_bands_months": {
+    "LAUNCH_PRICE_DISCOVERY": [0, 3],
+    "INITIAL_SUPPLY_ABSORPTION": [4, 8],
+    "STABILIZATION": [9, 12],
+    "EARLY_ACCUMULATION": [13, 17],
+    "DEVELOPING": [18, 35],
+    "MATURE": [36, 999]
+  },
+  "minimum_requirements": {
+    "PROVISIONAL_365": {
+      "minimum_history_observations": 9,
+      "minimum_comparables": 3,
+      "requires_90_or_180_signal": true,
+      "requires_positive_validated_route_ranking": true
+    },
+    "SCENARIO_ELIGIBLE": {
+      "minimum_history_observations": 3,
+      "minimum_comparables": 1
+    }
+  },
+  "required_output_fields": [
+    "product_key", "product_name", "release_date", "product_age_months", "early_lifecycle_band",
+    "forecast_status", "forecast_route", "forecast_center_365", "bear_return_365", "base_return_365",
+    "bull_return_365", "forecast_lower_365", "forecast_upper_365", "forecast_90_signal",
+    "forecast_180_signal", "age_aligned_comparable_count", "age_aligned_comparable_group",
+    "release_class", "price_band", "supply_inventory_evidence", "franchise_demand_evidence",
+    "evidence_grade", "confidence_tier", "uncertainty_multiplier", "blocked_reason",
+    "next_evidence_requirement", "next_review_trigger", "source_lineage", "future_information_used"
+  ],
+  "missing_value_policy": {
+    "blank_strings_forbidden": true,
+    "nulls_forbidden": true,
+    "not_available_token": "NOT_AVAILABLE",
+    "not_applicable_token": "NOT_APPLICABLE"
+  },
+  "complete_universe_required": true,
+  "point_forecast_requires_provisional_status": true,
+  "scenario_fields_required_for_every_product": true,
+  "limited_products_may_not_disappear": true,
+  "shadow_only": true,
+  "early_lifecycle_shadow_implementation_authorized": false,
+  "provisional_365_authorized": false,
+  "scenario_output_authorized": false,
+  "production_projection_authorized": false,
+  "purchase_recommendation_authorized": false,
+  "automatic_model_update_allowed": false,
+  "technical_freeze_authorized": false,
+  "uip_acceptance_authorized": false
+}
