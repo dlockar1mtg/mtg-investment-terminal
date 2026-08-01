@@ -1,0 +1,22 @@
+{
+  "contract_name": "Collector Methodology Owner Decision Package",
+  "contract_version": "1.0.0",
+  "status": "CANDIDATE_INACTIVE",
+  "inputs": {
+    "sensitivity_root": "data/operations/collector_methodology_sensitivity_review/candidate_v1_0_0",
+    "evidence_root": "data/operations/collector_methodology_evidence_review/candidate_v1_0_0",
+    "reconciliation_root": "data/operations/collector_route_reconciliation/candidate_v1_0_0"
+  },
+  "output_directory": "data/operations/collector_methodology_owner_decision_package/candidate_v1_0_0",
+  "rules": {
+    "recommendations_are_nonbinding": true,
+    "owner_approval_required_for_activation": true,
+    "baseline_must_remain_unchanged": true,
+    "retrospective_inputs_are_diagnostic_only": true,
+    "future_information_prohibited": true,
+    "candidate_projection_authorized": false,
+    "production_projection_authorized": false,
+    "purchase_recommendation_authorized": false,
+    "automatic_model_update_allowed": false
+  }
+}
