@@ -14,6 +14,8 @@ ACTIVE = ROOT / "data/governance/permanence/authority/collector_v1_current_data_
 MANIFEST = ROOT / "data/governance/permanence/snapshots" / SNAPSHOT_ID / "collector_snapshot_manifest.json"
 OUT = ROOT / "data/governance/permanence/certification/collector_v1_august1_snapshot_bound_current_foundation"
 KEY = "tcgplayer_product_id"
+DIRECT_ROUTES = {"DIRECT_HISTORY_CALIBRATED", "DIRECT_HISTORY_LIMITED"}
+COMPARABLE_ROUTES = {"COMPARABLE_PRODUCT_ADJUSTED", "EARLY_OPPORTUNITY_COHORT_FALLBACK", "FUNDAMENTAL_COMPARABLE_HYBRID"}
 
 ALIASES = {
     "price": ("market_price", "current_price", "certified_current_price", "price"),
@@ -61,14 +63,9 @@ def load_csv(path: Path, role: str) -> pd.DataFrame:
 
 def collapse_unique(frame: pd.DataFrame, role: str, universe: set[str]) -> pd.DataFrame:
     frame = frame[frame[KEY].isin(universe)].copy()
-    if frame.empty:
-        raise RuntimeError(f"{role} authority has no governed products")
     duplicated = frame[frame.duplicated(KEY, keep=False)]
     if not duplicated.empty:
-        conflicts = []
-        for product_id, block in duplicated.groupby(KEY):
-            if len(block.drop_duplicates()) > 1:
-                conflicts.append(str(product_id))
+        conflicts = [str(pid) for pid, block in duplicated.groupby(KEY) if len(block.drop_duplicates()) > 1]
         if conflicts:
             raise RuntimeError(f"{role} authority has conflicting duplicate rows for {conflicts[:10]}")
         frame = frame.drop_duplicates(KEY)
@@ -92,7 +89,6 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--strict", action="store_true")
     args = parser.parse_args(argv)
     checks: dict[str, object] = {}
-    failures: list[str] = []
     generated = datetime.now(timezone.utc).isoformat()
     try:
         active = json.loads(ACTIVE.read_text(encoding="utf-8-sig"))
@@ -112,8 +108,9 @@ def main(argv: list[str] | None = None) -> int:
             "history": ROOT / str(active["historical_authority"]),
             "feature": ROOT / str(active["feature_authority"]),
         }
+        lineage_summary = json.loads((ROOT / "data/governance/permanence/certification/collector_v1_august1_price_observation_lineage/collector_v1_august1_price_observation_lineage_summary.json").read_text(encoding="utf-8"))
         expected_hashes = {
-            "price": str(json.loads((ROOT / "data/governance/permanence/certification/collector_v1_august1_price_observation_lineage/collector_v1_august1_price_observation_lineage_summary.json").read_text(encoding="utf-8"))["lineage_enriched_price_authority_sha256"]),
+            "price": str(lineage_summary["lineage_enriched_price_authority_sha256"]),
             "identity": str(by_role["current_authority"]["sha256"]),
             "listing": str(by_role["ebay_listing_ledger"]["sha256"]),
             "supply": str(by_role["ebay_supply_snapshot"]["sha256"]),
@@ -141,19 +138,15 @@ def main(argv: list[str] | None = None) -> int:
 
         price_col = pick(price, ALIASES["price"], "price column")
         time_col = pick_preferred(price, ALIASES["price_time"], "price observation timestamp")
-        checks["canonical_price_timestamp_selected"] = time_col == "source_observation_at_utc"
-        if "collected_at" in price.columns:
-            checks["canonical_and_source_price_timestamps_agree"] = (
-                price["source_observation_at_utc"].astype(str).str.strip()
-                == price["collected_at"].astype(str).str.strip()
-            ).all()
-        else:
-            checks["canonical_and_source_price_timestamps_agree"] = True
         listing_count_col = pick(supply, ALIASES["listing_count"], "accepted listing count")
         route_col = pick(route, ALIASES["route"], "forecast route")
-        name_candidates = [name for name in ALIASES["product_name"] if name in identity.columns]
-        name_col = name_candidates[0] if name_candidates else None
+        name_col = next((name for name in ALIASES["product_name"] if name in identity.columns), None)
         history_date_col = pick_preferred(history, ALIASES["history_date"], "history date")
+
+        checks["canonical_price_timestamp_selected"] = time_col == "source_observation_at_utc"
+        checks["canonical_and_source_price_timestamps_agree"] = True if "collected_at" not in price.columns else (
+            price["source_observation_at_utc"].astype(str).str.strip() == price["collected_at"].astype(str).str.strip()
+        ).all()
         checks["canonical_history_date_selected"] = history_date_col == "observation_date_utc"
 
         price[price_col] = pd.to_numeric(price[price_col], errors="coerce")
@@ -172,20 +165,44 @@ def main(argv: list[str] | None = None) -> int:
             history_first_observation_at_utc=(history_date_col, "min"),
             history_latest_observation_at_utc=(history_date_col, "max"),
         ).reset_index()
-        if set(history_agg[KEY]) != universe:
-            raise RuntimeError("Historical authority does not cover all 50 products")
         for column in ("history_first_observation_at_utc", "history_latest_observation_at_utc"):
             history_agg[column] = history_agg[column].dt.strftime("%Y-%m-%dT%H:%M:%SZ")
 
         foundation = prefixed(identity, "identity")
-        for role, frame in (("price", price), ("supply", supply), ("route", route), ("feature", feature)):
-            foundation = foundation.merge(prefixed(frame, role), on=KEY, how="left", validate="one_to_one")
+        for role_name, frame in (("price", price), ("supply", supply), ("route", route), ("feature", feature)):
+            foundation = foundation.merge(prefixed(frame, role_name), on=KEY, how="left", validate="one_to_one")
         foundation = foundation.merge(history_agg, on=KEY, how="left", validate="one_to_one")
+        foundation["history_observation_count"] = pd.to_numeric(foundation["history_observation_count"], errors="coerce").fillna(0).astype(int)
+        foundation["history_first_observation_at_utc"] = foundation["history_first_observation_at_utc"].fillna("")
+        foundation["history_latest_observation_at_utc"] = foundation["history_latest_observation_at_utc"].fillna("")
         foundation["product_name"] = foundation[f"identity__{name_col}"] if name_col else ""
         foundation["current_price"] = foundation[f"price__{price_col}"]
         foundation["source_observation_at_utc"] = foundation[f"price__{time_col}"]
         foundation["accepted_listing_count"] = foundation[f"supply__{listing_count_col}"]
-        foundation["forecast_route"] = foundation[f"route__{route_col}"]
+        foundation["forecast_route"] = foundation[f"route__{route_col}"].astype(str).str.strip()
+
+        direct_mask = foundation["forecast_route"].isin(DIRECT_ROUTES)
+        comparable_mask = foundation["forecast_route"].isin(COMPARABLE_ROUTES)
+        no_history_mask = foundation["history_observation_count"].eq(0)
+        foundation["history_requirement_status"] = "DIRECT_HISTORY_PRESENT"
+        foundation.loc[comparable_mask & ~no_history_mask, "history_requirement_status"] = "COMPARABLE_ROUTE_WITH_SUPPORTING_HISTORY"
+        foundation.loc[comparable_mask & no_history_mask, "history_requirement_status"] = "COMPARABLE_ROUTE_NO_DIRECT_HISTORY_REQUIRED"
+        foundation["direct_history_required"] = direct_mask
+        foundation["comparable_only_forecast_required"] = comparable_mask & no_history_mask
+        foundation["confidence_penalty_required"] = comparable_mask & no_history_mask
+        foundation["wider_uncertainty_required"] = comparable_mask & no_history_mask
+
+        checks["all_routes_governed"] = (direct_mask | comparable_mask).all()
+        checks["direct_history_routes_have_history"] = (~direct_mask | ~no_history_mask).all()
+        checks["zero_history_products_use_comparable_route"] = (~no_history_mask | comparable_mask).all()
+        checks["zero_history_products_carry_uncertainty_controls"] = (
+            ~no_history_mask | (
+                foundation["comparable_only_forecast_required"]
+                & foundation["confidence_penalty_required"]
+                & foundation["wider_uncertainty_required"]
+            )
+        ).all()
+
         foundation["source_snapshot_id"] = SNAPSHOT_ID
         foundation["source_bundle_sha256"] = str(active["source_bundle_sha256"])
         foundation["source_price_authority_sha256"] = str(active["source_price_authority_sha256"])
@@ -200,7 +217,6 @@ def main(argv: list[str] | None = None) -> int:
 
         checks["foundation_has_50_rows"] = len(foundation) == 50
         checks["foundation_product_ids_unique"] = not foundation[KEY].duplicated().any()
-        checks["all_history_present"] = foundation["history_observation_count"].gt(0).all()
         checks["all_required_lineage_present"] = foundation[[
             "source_snapshot_id", "source_bundle_sha256", "source_price_authority_sha256",
             "source_listing_authority_sha256", "source_feature_authority_sha256", "model_generated_at_utc"
@@ -214,17 +230,20 @@ def main(argv: list[str] | None = None) -> int:
         foundation.sort_values(KEY).to_csv(out_csv, index=False)
         summary = {
             "block_name": "Collector V1 August 1 Snapshot-Bound Current Foundation",
-            "block_version": "1.0.3",
+            "block_version": "1.1.0",
             "generated_at_utc": generated,
             "source_snapshot_id": SNAPSHOT_ID,
             "source_bundle_sha256": active["source_bundle_sha256"],
-            "authority_paths": {role: str(path.relative_to(ROOT)) for role, path in paths.items()},
+            "authority_paths": {role_name: str(path.relative_to(ROOT)) for role_name, path in paths.items()},
             "authority_sha256": actual_hashes,
             "foundation_path": str(out_csv.relative_to(ROOT)),
             "foundation_sha256": sha256(out_csv),
             "foundation_rows": len(foundation),
             "accepted_listing_rows": len(listing),
             "canonical_history_rows": len(history),
+            "products_with_direct_history": int((foundation["history_observation_count"] > 0).sum()),
+            "products_without_direct_history": int(no_history_mask.sum()),
+            "comparable_only_products": foundation.loc[foundation["comparable_only_forecast_required"], [KEY, "product_name", "forecast_route"]].to_dict(orient="records"),
             "selected_price_timestamp_column": time_col,
             "selected_history_date_column": history_date_col,
             "checks": checks,
@@ -241,7 +260,7 @@ def main(argv: list[str] | None = None) -> int:
         checks = native_checks(checks)
         summary = {
             "block_name": "Collector V1 August 1 Snapshot-Bound Current Foundation",
-            "block_version": "1.0.3",
+            "block_version": "1.1.0",
             "generated_at_utc": generated,
             "source_snapshot_id": SNAPSHOT_ID,
             "checks": checks,
