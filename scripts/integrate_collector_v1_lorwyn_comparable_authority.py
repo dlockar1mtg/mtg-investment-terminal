@@ -11,6 +11,9 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 CONTRACT = ROOT / "config/mtg/standards/collector_lorwyn_comparable_authority_integration_contract_v1.json"
 OUTPUT = ROOT / "data/governance/permanence/certification/collector_v1_lorwyn_comparable_authority_integration"
+OUTPUT_AUTHORITY_NAME = "collector_integrated_comparable_pool_authority.csv"
+OUTPUT_AUDIT_NAME = "collector_lorwyn_supplemental_comparable_integration_audit.csv"
+OUTPUT_SUMMARY_NAME = "collector_lorwyn_comparable_authority_integration_summary.json"
 
 ORIGINAL_FIELDS = [
     "comparable_group_id",
@@ -216,9 +219,12 @@ def main() -> int:
         failures.append("ORIGINAL_COMPARABLE_AUTHORITY_MODIFIED")
 
     OUTPUT.mkdir(parents=True, exist_ok=True)
-    output_authority = ROOT / contract["output_authority"]
+    output_authority = OUTPUT / OUTPUT_AUTHORITY_NAME
+    expected_output_authority = ROOT / contract["output_authority"]
+    if output_authority.resolve() != expected_output_authority.resolve():
+        failures.append("OUTPUT_AUTHORITY_PATH_CONTRACT_MISMATCH")
     write_csv(output_authority, integrated_rows)
-    write_csv(OUTPUT / "collector_lorwyn_supplemental_comparable_integration_audit.csv", supplemental_audit)
+    write_csv(OUTPUT / OUTPUT_AUDIT_NAME, supplemental_audit)
 
     status = contract["expected_status"] if not failures else "FAIL_COLLECTOR_LORWYN_COMPARABLE_AUTHORITY_INTEGRATION"
     summary = {
@@ -244,9 +250,7 @@ def main() -> int:
         "critical_failures": failures,
         "status": status,
     }
-    (OUTPUT / "collector_lorwyn_comparable_authority_integration_summary.json").write_text(
-        json.dumps(summary, indent=2), encoding="utf-8"
-    )
+    (OUTPUT / OUTPUT_SUMMARY_NAME).write_text(json.dumps(summary, indent=2), encoding="utf-8")
     print(json.dumps(summary, indent=2))
     return 0 if not failures else 1
 
