@@ -1,0 +1,27 @@
+{
+  "contract_name": "Collector August 1 Historical Observation Ledger",
+  "contract_version": "1.0.0",
+  "governing_snapshot_id": "collector-20260801T211201Z-7688afbd",
+  "row_level_certification": {
+    "summary_path": "data/governance/permanence/certification/collector_v1_august1_row_level_reconstruction_certification/collector_august1_row_level_reconstruction_certification_summary.json",
+    "required_status": "PASS_COLLECTOR_AUGUST1_ROW_LEVEL_RECONSTRUCTION_CERTIFICATION",
+    "candidate_history_sha256": "bd12f6707ee8bd4f45342df843c22c151296ff6afe36c2b4b2eddbc704dc15dd",
+    "required_rows": 1215,
+    "required_products": 49,
+    "required_dates": 30
+  },
+  "candidate_history_path": "data/governance/permanence/certification/collector_v1_august1_identity_authority_and_reconstruction/collector_august1_reconstructed_history_candidate.csv",
+  "coverage_path": "data/governance/permanence/certification/collector_v1_august1_identity_authority_and_reconstruction/collector_august1_reconstruction_coverage.csv",
+  "required_governed_no_history_products": 1,
+  "required_exception_tcgplayer_product_id": "706142",
+  "authorization": {
+    "historical_observation_ledger_build_authorized": true,
+    "historical_observation_ledger_admission_authorized": true,
+    "historical_coverage_assessment_authorized_after_admission": true,
+    "lifecycle_panel_build_authorized": false,
+    "model_tournament_authorized": false,
+    "production_forecasting_authorized": false,
+    "uip_delivery_authorized": false,
+    "purchase_recommendations_authorized": false
+  }
+}
