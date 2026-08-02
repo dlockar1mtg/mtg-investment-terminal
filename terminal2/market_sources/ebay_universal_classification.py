@@ -146,6 +146,7 @@ def detect_multi_display_quantity(value: object) -> int | None:
     patterns = (
         r"\bcase\s+of\s+(\d+)\b",
         r"\blot\s+of\s+(\d+)\s+(?:collector\s+)?booster\s+(?:boxes|box|displays|display)\b",
+        r"^\s*(\d+)\s*[x×]\s+.*\b(?:collector\s+)?booster\s+(?:boxes|box|displays|display)\b",
         r"\b(\d+)\s*[x×]\s*(?:magic\s+the\s+gathering\s+|magic\s+|mtg\s+)?(?:collector\s+)?booster\s+(?:boxes|box|displays|display)\b",
         r"\b(\d+)\s+(?:collector\s+)?booster\s+(?:boxes|displays)\b",
         r"\b(?:collector\s+)?booster\s+(?:boxes|box|displays|display)\b(?:\s+\w+){0,3}\s*[x×]\s*(\d+)\b",
