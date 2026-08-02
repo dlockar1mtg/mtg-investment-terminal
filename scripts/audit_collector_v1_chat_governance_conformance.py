@@ -27,6 +27,7 @@ ARTIFACTS = [
     "config/mtg/standards/collector_tcgcsv_authority_verification_contract_v1.json",
     "config/mtg/standards/collector_historical_price_recovery_contract_v1.json",
     "config/mtg/standards/collector_governance_locked_preflight_contract_v1.json",
+    "config/mtg/standards/collector_manifest_bound_historical_source_authority_contract_v1.json",
     "scripts/build_collector_v1_evidence_tournament_reconstruction_plan.py",
     "scripts/build_collector_v1_first_year_breakout_reconstruction_plan.py",
     "scripts/audit_collector_v1_historical_feature_availability.py",
@@ -40,6 +41,7 @@ ARTIFACTS = [
     "scripts/verify_collector_v1_tcgcsv_historical_authority.py",
     "scripts/recover_collector_v1_historical_price_authority.py",
     "scripts/run_collector_v1_governance_locked_preflight.py",
+    "scripts/certify_collector_v1_manifest_bound_historical_source_authority.py",
 ]
 
 PROHIBITED_RECOVERY_PATTERNS = [
@@ -48,6 +50,19 @@ PROHIBITED_RECOVERY_PATTERNS = [
     "APPROVED_ROOTS",
     "build_universe(args.universe.resolve())",
     "historical_authority = len(ledger) > 0",
+]
+
+PROHIBITED_SOURCE_AUTHORITY_PATTERNS = [
+    "rglob(\"*.csv\")",
+    "glob(\"*.csv\")",
+    "datetime.now",
+    "historical_observation_ledger_build_authorized\": True",
+    "historical_coverage_assessment_authorized\": True",
+    "lifecycle_panel_build_authorized\": True",
+    "model_tournament_authorized\": True",
+    "production_forecasting_authorized\": True",
+    "uip_delivery_authorized\": True",
+    "purchase_recommendations_authorized\": True",
 ]
 
 
@@ -90,13 +105,34 @@ def main() -> int:
 
     recovery_contract = (ROOT / "config/mtg/standards/collector_historical_price_recovery_contract_v1.json").read_text(encoding="utf-8")
     add(findings, "collector_historical_price_recovery_contract_v1.json", "broad_roots_revoked", "PASS" if '"approved_source_roots": []' in recovery_contract else "FAIL", "CRITICAL", "Broad source roots must remain revoked")
-    add(findings, "collector_historical_price_recovery_contract_v1.json", "recovery_authorization", "PASS" if '"historical_price_recovery_authorized": false' in recovery_contract else "FAIL", "CRITICAL", "Recovery remains blocked until snapshot conformance")
+    add(findings, "collector_historical_price_recovery_contract_v1.json", "recovery_authorization", "PASS" if '"historical_price_recovery_authorized": false' in recovery_contract else "FAIL", "CRITICAL", "Recovery remains blocked until a later explicit contract")
 
     preflight = ROOT / "scripts/run_collector_v1_governance_locked_preflight.py"
     preflight_text = preflight.read_text(encoding="utf-8") if preflight.exists() else ""
-    for token, control in ((SNAPSHOT_ID, "preflight_snapshot_id"), (OPERATING_DATE, "preflight_operating_date"), (TIMEZONE if False else "America/Chicago", "preflight_timezone"), (BUNDLE_SHA, "preflight_bundle_sha"), (str(PRODUCT_COUNT), "preflight_product_count")):
+    for token, control in ((SNAPSHOT_ID, "preflight_snapshot_id"), (OPERATING_DATE, "preflight_operating_date"), ("America/Chicago", "preflight_timezone"), (BUNDLE_SHA, "preflight_bundle_sha"), (str(PRODUCT_COUNT), "preflight_product_count")):
         add(findings, str(preflight.relative_to(ROOT)), control, "PASS" if token in preflight_text else "FAIL", "CRITICAL", "Mandatory preflight binding")
     add(findings, str(preflight.relative_to(ROOT)), "preflight_runs_governance_first", "PASS" if "subprocess.run([sys.executable, str(AUDIT)]" in preflight_text else "FAIL", "CRITICAL", "Governance audit must execute before snapshot resolution")
+
+    authority_contract_path = ROOT / "config/mtg/standards/collector_manifest_bound_historical_source_authority_contract_v1.json"
+    authority_script_path = ROOT / "scripts/certify_collector_v1_manifest_bound_historical_source_authority.py"
+    authority_contract = authority_contract_path.read_text(encoding="utf-8") if authority_contract_path.exists() else ""
+    authority_script = authority_script_path.read_text(encoding="utf-8") if authority_script_path.exists() else ""
+
+    for token, control in ((SNAPSHOT_ID, "source_authority_snapshot_id"), (OPERATING_DATE, "source_authority_operating_date"), (BUNDLE_SHA, "source_authority_bundle_sha"), (str(PRODUCT_COUNT), "source_authority_product_count")):
+        add(findings, str(authority_script_path.relative_to(ROOT)), control, "PASS" if token in authority_script else "FAIL", "CRITICAL", "Manifest-bound source authority must retain August 1 binding")
+    for pattern in PROHIBITED_SOURCE_AUTHORITY_PATTERNS:
+        add(findings, str(authority_script_path.relative_to(ROOT)), f"source_authority_drift:{pattern}", "FAIL" if pattern in authority_script else "PASS", "CRITICAL", "Source authority stage must remain bounded and cannot authorize downstream work")
+    for required_text, control in (
+        ('"open_ended_repository_scan_prohibited": true', "source_authority_open_scan_prohibited"),
+        ('"frozen_manifest_only": true', "source_authority_frozen_manifest_only"),
+        ('"ebay_authoritative_price_prohibited": true', "source_authority_ebay_price_prohibited"),
+        ('"current_snapshot_as_history_prohibited": true', "source_authority_current_as_history_prohibited"),
+        ('"raw_historical_price_authority_certified": false', "source_authority_raw_history_not_certified"),
+        ('"historical_observation_ledger_build_authorized": false', "source_authority_ledger_not_authorized"),
+        ('"model_tournament_authorized": false', "source_authority_models_not_authorized"),
+        ('"purchase_recommendations_authorized": false', "source_authority_purchases_not_authorized"),
+    ):
+        add(findings, str(authority_contract_path.relative_to(ROOT)), control, "PASS" if required_text in authority_contract else "FAIL", "CRITICAL", "Manifest-bound source authority contract boundary")
 
     summary_path = ROOT / "data/governance/permanence/certification/collector_v1_historical_price_recovery/collector_historical_price_recovery_summary.json"
     if summary_path.exists():
