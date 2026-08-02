@@ -12,6 +12,10 @@ SCRIPT = ROOT / "scripts/certify_collector_v1_canonical_identity_lineage.py"
 PROHIBITED_KEYS = {"canonical_product_id", "tcgplayer_product_id", "investment_product_id"}
 
 
+def load_contract() -> dict:
+    return json.loads(CONTRACT.read_text(encoding="utf-8"))
+
+
 def test_governance_package_exists_and_compiles() -> None:
     assert CONTRACT.is_file()
     assert LORWYN_CONTRACT.is_file()
@@ -20,7 +24,7 @@ def test_governance_package_exists_and_compiles() -> None:
 
 
 def test_recertification_contract_has_exact_universe_controls() -> None:
-    contract = json.loads(CONTRACT.read_text(encoding="utf-8"))
+    contract = load_contract()
     assert contract["required_governed_products"] == 50
     assert contract["required_base_forecast_products"] == 48
     assert contract["required_final_forecast_products"] == 49
@@ -32,6 +36,19 @@ def test_recertification_contract_has_exact_universe_controls() -> None:
     assert contract["simulation_count"] == 10000
 
 
+def test_recertification_uses_exact_certified_authority_paths() -> None:
+    contract = load_contract()
+    authorities = contract["authorities"]
+    expected_supply = (
+        "data/governance/permanence/certification/"
+        "collector_v1_august1_current_data_package/"
+        "collector_ebay_product_supply_snapshot.csv"
+    )
+    assert authorities["current_supply"] == expected_supply
+    for relative in authorities.values():
+        assert (ROOT / relative).is_file(), relative
+
+
 def test_product_specific_lorwyn_contract_contains_no_identity_assertions() -> None:
     payload = json.loads(LORWYN_CONTRACT.read_text(encoding="utf-8"))
     lorwyn = payload["lorwyn"]
@@ -41,7 +58,7 @@ def test_product_specific_lorwyn_contract_contains_no_identity_assertions() -> N
 
 
 def test_repository_product_specific_model_contracts_reject_manual_identity_keys() -> None:
-    contract = json.loads(CONTRACT.read_text(encoding="utf-8"))
+    contract = load_contract()
     violations: list[str] = []
     for pattern in contract["product_specific_contract_globs"]:
         for path in ROOT.glob(pattern):
@@ -112,7 +129,7 @@ def test_script_invalidates_bad_outputs_and_builds_complete_lineage() -> None:
 
 
 def test_downstream_authorization_remains_false() -> None:
-    contract = json.loads(CONTRACT.read_text(encoding="utf-8"))
+    contract = load_contract()
     governance = contract["governance"]
     assert governance["production_forecast_authorized"] is False
     assert governance["ranking_authorized"] is False
