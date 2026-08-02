@@ -28,6 +28,23 @@ def pct_rank(series: pd.Series, higher_is_better: bool = True) -> pd.Series:
     return series.rank(pct=True, method="average", ascending=higher_is_better).fillna(0.5)
 
 
+def assign_complete_rank(frame: pd.DataFrame, score_column: str, rank_column: str) -> pd.DataFrame:
+    """Assign a deterministic complete 1..N rank while preserving the original score."""
+    tie_breakers = [
+        score_column,
+        "downside_rank",
+        "long_horizon_rank",
+        "momentum_rank",
+        "scarcity_rank",
+        "liquidity_rank",
+        "tcgplayer_product_id",
+    ]
+    ascending = [False, False, False, False, False, False, True]
+    ordered = frame.sort_values(tie_breakers, ascending=ascending, kind="mergesort").copy()
+    ordered[rank_column] = np.arange(1, len(ordered) + 1, dtype=int)
+    return ordered.sort_index()
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--strict", action="store_true")
@@ -108,7 +125,7 @@ def main() -> int:
         + 0.20 * df["long_horizon_rank"]
         + 0.15 * df["downside_rank"]
     ) * df["confidence_multiplier"]
-    df["analytical_rank"] = df["analytical_score"].rank(method="min", ascending=False).astype(int)
+    df = assign_complete_rank(df, "analytical_score", "analytical_rank")
 
     shock_rows = []
     for shock in PRICE_SHOCKS:
@@ -116,7 +133,7 @@ def main() -> int:
         shocked["shocked_price"] = shocked["current_price"] * (1.0 + shock)
         shocked["margin_3y"] = shocked["max_purchase_price_25pct_3y"] / shocked["shocked_price"] - 1.0
         shocked["shock_score"] = shocked["analytical_score"] + 0.10 * np.tanh(shocked["margin_3y"])
-        shocked["shock_rank"] = shocked["shock_score"].rank(method="min", ascending=False).astype(int)
+        shocked = assign_complete_rank(shocked, "shock_score", "shock_rank")
         for _, row in shocked.iterrows():
             shock_rows.append({"tcgplayer_product_id": row["tcgplayer_product_id"], "price_shock": shock, "shock_rank": row["shock_rank"], "margin_3y": row["margin_3y"]})
     shocks = pd.DataFrame(shock_rows)
@@ -141,13 +158,14 @@ def main() -> int:
     finite_complete = bool(np.isfinite(df[required_numeric].to_numpy(float)).all())
     ids_unique = not df["tcgplayer_product_id"].duplicated().any()
     all_routes_joined = bool(df["route_median_3y"].notna().all() and df["route_median_5y"].notna().all())
-    complete = len(df) == REQUIRED_PRODUCTS and ids_unique and finite_complete and all_routes_joined
+    analytical_rank_complete = sorted(df["analytical_rank"].astype(int).tolist()) == list(range(1, REQUIRED_PRODUCTS + 1))
+    complete = len(df) == REQUIRED_PRODUCTS and ids_unique and finite_complete and all_routes_joined and analytical_rank_complete
 
     df.sort_values("analytical_rank").to_csv(OUT_DIR / "collector_v1_product_level_rankings.csv", index=False)
     shocks.to_csv(OUT_DIR / "collector_v1_product_price_shock_tournament.csv", index=False)
     summary = {
         "block_name": "Collector V1 Product-Level Forecast and Ranking Tournament",
-        "block_version": "1.0.1",
+        "block_version": "1.0.2",
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "products": int(len(df)),
         "routes": df["forecast_method"].value_counts().to_dict(),
@@ -155,7 +173,8 @@ def main() -> int:
         "ranking_stable_products": int(df["ranking_stable"].sum()),
         "preliminary_status_counts": df["preliminary_status"].value_counts().to_dict(),
         "factor_rank_direction_verified": True,
-        "checks": {"foundation_certified": True, "product_count_50": len(df) == 50, "product_ids_unique": ids_unique, "all_routes_joined": all_routes_joined, "all_required_metrics_finite": finite_complete},
+        "deterministic_tie_breaking_enforced": True,
+        "checks": {"foundation_certified": True, "product_count_50": len(df) == 50, "product_ids_unique": ids_unique, "all_routes_joined": all_routes_joined, "all_required_metrics_finite": finite_complete, "analytical_rank_complete_1_to_50": analytical_rank_complete},
         "critical_failures": [],
         "product_level_tournament_ready": bool(complete),
         "analytical_rankings_ready_for_certification": bool(complete),
