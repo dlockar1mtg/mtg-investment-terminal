@@ -12,7 +12,7 @@ import json
 import os
 import subprocess
 import sys
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
 
@@ -59,10 +59,51 @@ def run(command: list[str], env: dict[str, str]) -> dict[str, object]:
 
 def write_summary(payload: dict[str, object]) -> None:
     OUT.mkdir(parents=True, exist_ok=True)
-    (OUT / "collector_ebay_certified_daily_cycle_summary.json").write_text(
-        json.dumps(payload, indent=2, default=str) + "\n", encoding="utf-8"
-    )
+    text = json.dumps(payload, indent=2, default=str) + "\n"
+    (OUT / "collector_ebay_certified_daily_cycle_summary.json").write_text(text, encoding="utf-8")
+    (OUT / "collector_ebay_certified_daily_cycle_project_control.json").write_text(text, encoding="utf-8")
     print(json.dumps(payload, indent=2, default=str))
+
+
+def base_control() -> dict[str, object]:
+    return {
+        "completed": [
+            "Governed 50-product Collector universe and immutable source preservation",
+            "Official release, TCGCSV price/history, MTGJSON structure, and packaging foundations",
+            "precision-v3-universal eBay matching authority and immutable raw-payload evidence",
+            "Identity-complete certified listing ledger and full-universe supply coverage",
+            "Listing-continuity baseline and static scarcity shadow features",
+        ],
+        "still_outstanding": [
+            "Accumulate additional certified daily marketplace snapshots",
+            "Confirm entries, exits, and relists from completed-query comparisons",
+            "Activate supply trend and turnover components only after sufficient history",
+            "Validate and certify Supply Scarcity Index v1",
+            "Certify feature freshness, missingness, and point-in-time leakage controls",
+            "Run governed historical validation and shadow forecast experiments",
+            "Approve purchase recommendations and UIP delivery only after governance gates pass",
+        ],
+        "authorization_state": {
+            "source_preservation": "COMPLETE",
+            "governed_identity": "COMPLETE",
+            "official_release_dates": "COMPLETE",
+            "tcgcsv_pricing_and_history": "COMPLETE",
+            "mtgjson_structure": "COMPLETE_FOR_RELEASED_PRODUCTS",
+            "packaging_normalization": "COMPLETE",
+            "ebay_matching_authority": "PRECISION_V3_UNIVERSAL",
+            "full_universe_supply_snapshot": "CERTIFIED",
+            "listing_continuity": "BASELINE_INITIALIZED",
+            "static_scarcity_baseline": "SHADOW_AVAILABLE",
+            "supply_scarcity_index_v1": "BLOCKED_BY_INSUFFICIENT_DAYS",
+            "feature_certification": "NOT_STARTED",
+            "forecasting": "BLOCKED",
+            "purchase_recommendations": "BLOCKED",
+            "uip_delivery": "BLOCKED",
+        },
+        "forecasting_resume_authorized": False,
+        "purchase_recommendation_authorized": False,
+        "uip_delivery_authorized": False,
+    }
 
 
 def main() -> int:
@@ -71,20 +112,27 @@ def main() -> int:
     previous = read_json(COLLECTION_SUMMARY)
     previous_time = parse_time(previous.get("generated_at"))
     elapsed_hours = ((now - previous_time).total_seconds() / 3600.0) if previous_time else None
+    next_eligible = previous_time + timedelta(hours=args.minimum_hours) if previous_time else None
 
     credentials_present = bool(os.getenv("EBAY_CLIENT_ID", "").strip() and os.getenv("EBAY_CLIENT_SECRET", "").strip())
     interval_ready = previous_time is None or elapsed_hours is None or elapsed_hours >= args.minimum_hours
+    control = base_control()
 
     if not credentials_present:
         summary = {
             "block_name": "Collector eBay Certified Daily Cycle",
-            "block_version": "1.0.0",
+            "block_version": "1.0.1",
             "generated_at": now.isoformat(),
             "credentials_present": False,
             "minimum_hours": args.minimum_hours,
             "previous_collection_at": previous_time.isoformat() if previous_time else "",
             "elapsed_hours": round(elapsed_hours, 4) if elapsed_hours is not None else "",
+            "next_eligible_at": next_eligible.isoformat() if next_eligible else "",
             "live_collection_executed": False,
+            "currently_being_worked_on": ["Prepare the next governed daily eBay collection"],
+            "known_blockers": ["Local eBay credentials are not present for the daily cycle"],
+            "next_large_step": "Set local eBay credentials after the interval gate is satisfied, then run the certified daily cycle",
+            **control,
             "status": "CREDENTIALS_REQUIRED",
         }
         write_summary(summary)
@@ -93,15 +141,19 @@ def main() -> int:
     if not interval_ready and not args.force:
         summary = {
             "block_name": "Collector eBay Certified Daily Cycle",
-            "block_version": "1.0.0",
+            "block_version": "1.0.1",
             "generated_at": now.isoformat(),
             "credentials_present": True,
             "minimum_hours": args.minimum_hours,
             "previous_collection_at": previous_time.isoformat() if previous_time else "",
             "elapsed_hours": round(elapsed_hours, 4) if elapsed_hours is not None else "",
-            "next_eligible_at": (previous_time.timestamp() + args.minimum_hours * 3600) if previous_time else "",
+            "next_eligible_at": next_eligible.isoformat() if next_eligible else "",
             "live_collection_executed": False,
             "force_used": False,
+            "currently_being_worked_on": ["Wait for the governed daily interval before the next live snapshot"],
+            "known_blockers": ["Minimum interval since the prior live collection has not been reached"],
+            "next_large_step": "Run the certified daily cycle at or after next_eligible_at",
+            **control,
             "status": "DAILY_INTERVAL_NOT_REACHED",
         }
         write_summary(summary)
@@ -130,10 +182,11 @@ def main() -> int:
         ROOT / "data/governance/permanence/certification/collector_ebay_supply_continuity/collector_ebay_supply_continuity_summary.json"
     )
     cycle_collection = read_json(COLLECTION_SUMMARY)
+    days = int(continuity.get("certified_snapshot_days", 0) or 0)
 
     summary = {
         "block_name": "Collector eBay Certified Daily Cycle",
-        "block_version": "1.0.0",
+        "block_version": "1.0.1",
         "generated_at": now.isoformat(),
         "credentials_present": True,
         "minimum_hours": args.minimum_hours,
@@ -145,12 +198,22 @@ def main() -> int:
         "cycle_passed": passed,
         "collection_status": cycle_collection.get("status", ""),
         "continuity_status": continuity.get("status", ""),
-        "certified_snapshot_days": continuity.get("certified_snapshot_days", 0),
+        "certified_snapshot_days": days,
         "trend_features_available": continuity.get("trend_features_available", False),
         "full_supply_scarcity_index_authorized": continuity.get("full_supply_scarcity_index_authorized", False),
-        "forecasting_resume_authorized": False,
-        "purchase_recommendation_authorized": False,
-        "uip_delivery_authorized": False,
+        "currently_being_worked_on": [
+            "Review day-over-day listing continuity and accumulate additional certified snapshots"
+            if passed else "Resolve the failed daily-cycle stage before accepting the new snapshot"
+        ],
+        "known_blockers": [
+            "Supply history remains insufficient for full scarcity certification"
+            if passed else "One or more daily-cycle governance stages failed"
+        ],
+        "next_large_step": (
+            "Continue governed daily accumulation and activate trend/turnover only when the continuity summary authorizes it"
+            if passed else "Inspect the first failed step and rerun only after correcting its evidence or logic"
+        ),
+        **control,
         "status": "PASS_COLLECTOR_EBAY_CERTIFIED_DAILY_CYCLE" if passed else "REVIEW_REQUIRED",
     }
     write_summary(summary)
