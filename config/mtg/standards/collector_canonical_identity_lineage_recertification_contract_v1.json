@@ -1,6 +1,6 @@
 {
   "contract_name": "Collector Canonical Identity Enforcement and Full Forecast Lineage Recertification",
-  "contract_version": "1.0.0",
+  "contract_version": "1.0.1",
   "snapshot_id": "collector-20260801T211201Z-7688afbd",
   "required_governed_products": 50,
   "required_base_forecast_products": 48,
@@ -18,7 +18,7 @@
     "release_date": "data/governance/permanence/certification/collector_v1_wizards_release_date_authority/collector_wizards_release_date_authority.csv",
     "historical_observations": "data/governance/permanence/certification/collector_v1_august1_historical_observation_ledger/collector_august1_historical_observation_ledger.csv",
     "comparable_pool": "data/governance/permanence/certification/collector_v1_final_premodel_user_exclusion_resolution/collector_comparable_pool_certification.csv",
-    "current_supply": "data/governance/permanence/certification/collector_v1_current_supply_snapshot_resolution/collector_current_supply_snapshot.csv",
+    "current_supply": "data/governance/permanence/certification/collector_v1_august1_current_data_package/collector_ebay_product_supply_snapshot.csv",
     "base_probabilistic_forecasts": "data/governance/permanence/certification/collector_v1_complete_horizon_probabilistic_forecast/collector_complete_horizon_probabilistic_forecasts.csv",
     "base_coverage_registry": "data/governance/permanence/certification/collector_v1_complete_horizon_probabilistic_forecast/collector_complete_horizon_coverage_registry.csv",
     "early_awareness_truth": "data/governance/permanence/certification/collector_v1_early_awareness_lorwyn_forecast/collector_first_year_breakout_truth_registry.csv",
