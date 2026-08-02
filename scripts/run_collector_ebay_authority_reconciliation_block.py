@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import subprocess
 import sys
 from datetime import datetime, timezone
@@ -33,20 +34,28 @@ def main() -> int:
     command = [sys.executable, "scripts/reconcile_collector_ebay_authority.py"]
     if args.strict:
         command.append("--strict")
-    completed = subprocess.run(command, cwd=ROOT, check=False)
+
+    child_env = os.environ.copy()
+    existing_pythonpath = child_env.get("PYTHONPATH", "").strip()
+    child_env["PYTHONPATH"] = str(ROOT) if not existing_pythonpath else f"{ROOT}{os.pathsep}{existing_pythonpath}"
+
+    completed = subprocess.run(command, cwd=ROOT, env=child_env, check=False)
     result = read_json(OUT / "collector_ebay_authority_reconciliation_summary.json")
 
+    startup_failure = completed.returncode != 0 and not result
     passed = completed.returncode == 0 and str(result.get("status", "")).startswith("PASS_")
     changes = int(result.get("classification_changes", 0) or 0)
     reviews = int(result.get("production_review", 0) or 0)
 
     summary = {
         "block_name": "Collector eBay Authority Reconciliation and Project Control",
-        "block_version": "1.0.0",
+        "block_version": "1.0.1",
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "steps": [{"command": command, "return_code": completed.returncode, "passed": passed}],
         "offline_only": True,
         "quota_calls": 0,
+        "repo_root_added_to_child_pythonpath": True,
+        "startup_failure": startup_failure,
         "reconciliation_passed": passed,
         "production_matcher_version": result.get("production_matcher_version", ""),
         "shadow_rows_replayed": result.get("shadow_rows_replayed", 0),
@@ -62,6 +71,8 @@ def main() -> int:
         "currently_being_worked_on": [
             "Review classification transitions and production REVIEW rows before supply certification"
             if passed and (changes > 0 or reviews > 0)
+            else "Resolve reconciliation startup/import failure"
+            if startup_failure
             else "Resolve reconciliation input or replay failures"
             if not passed
             else "Design the authoritative daily listing ledger and product supply snapshot"
@@ -78,7 +89,9 @@ def main() -> int:
             "Approve purchase recommendations and UIP export only after governance gates pass",
         ],
         "known_blockers": (
-            ["Authority reconciliation did not pass; inspect replay failures and missing prior evidence"]
+            ["Reconciliation process failed before producing its governed summary; inspect the Python startup/import error"]
+            if startup_failure
+            else ["Authority reconciliation did not pass; inspect replay failures and missing prior evidence"]
             if not passed
             else ([f"{changes} classification transitions and {reviews} production REVIEW rows require adjudication"] if changes > 0 or reviews > 0 else ["No eBay authority blocker; daily ledger design remains outstanding"])
         ),
@@ -104,6 +117,8 @@ def main() -> int:
         "next_large_step": (
             "Adjudicate classification transitions, bind production decisions to quantity/seller enrichment, and certify the first daily listing ledger"
             if passed
+            else "Resolve startup/import failure, rerun strict authority reconciliation, then inspect governed replay outputs"
+            if startup_failure
             else "Resolve missing evidence or replay failures, then rerun strict authority reconciliation"
         ),
         "forecasting_resume_authorized": False,
