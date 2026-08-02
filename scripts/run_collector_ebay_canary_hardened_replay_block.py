@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import subprocess
 import sys
 from datetime import datetime, timezone
@@ -14,8 +15,16 @@ CONTROL_PATH = OUTPUT_ROOT / "collector_ebay_canary_hardened_replay_project_cont
 
 
 def run(command: list[str]) -> dict[str, object]:
-    completed = subprocess.run(command, cwd=ROOT, text=True)
-    return {"command": command, "return_code": completed.returncode, "passed": completed.returncode == 0}
+    env = os.environ.copy()
+    current_pythonpath = env.get("PYTHONPATH", "").strip()
+    env["PYTHONPATH"] = str(ROOT) if not current_pythonpath else os.pathsep.join((str(ROOT), current_pythonpath))
+    completed = subprocess.run(command, cwd=ROOT, env=env, text=True)
+    return {
+        "command": command,
+        "return_code": completed.returncode,
+        "passed": completed.returncode == 0,
+        "repo_root_added_to_pythonpath": True,
+    }
 
 
 def main() -> int:
@@ -31,11 +40,12 @@ def main() -> int:
     passed = all(bool(step["passed"]) for step in steps) and bool(replay.get("full_universe_collection_authorized"))
     control = {
         "block_name": "Collector eBay Canary Hardened Replay and Project Control",
-        "block_version": "1.0.0",
+        "block_version": "1.0.1",
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "offline_only": True,
         "quota_calls": 0,
         "steps": steps,
+        "repo_root_added_to_child_pythonpath": True,
         "replay_passed": passed,
         "replayed_rows": replay.get("replayed_rows", 0),
         "year_as_quantity_defects": replay.get("year_as_quantity_defects", -1),
