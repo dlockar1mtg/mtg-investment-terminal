@@ -1,8 +1,27 @@
 from __future__ import annotations
 
-from typing import Any
+import importlib.util
+import sys
+from pathlib import Path
 
-import certify_collector_v1_canonical_identity_lineage as base
+ROOT = Path(__file__).resolve().parents[1]
+BASE_PATH = ROOT / "scripts/certify_collector_v1_canonical_identity_lineage.py"
+
+
+def load_base_module():
+    spec = importlib.util.spec_from_file_location(
+        "collector_canonical_identity_lineage_base",
+        BASE_PATH,
+    )
+    if spec is None or spec.loader is None:
+        raise ImportError(f"Unable to load base certifier from {BASE_PATH}")
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = module
+    spec.loader.exec_module(module)
+    return module
+
+
+base = load_base_module()
 
 
 def governed_identity_fields(
