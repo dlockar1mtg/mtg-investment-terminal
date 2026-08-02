@@ -4,8 +4,6 @@ $ErrorActionPreference = "Stop"
 $ExpectedBranch = "phase-8.2.8a-august1-snapshot-bound-current-product-rebuild"
 $GovernanceContract = "config\mtg\standards\collector_canonical_identity_lineage_recertification_contract_v1.json"
 $CertificationScript = "scripts\certify_collector_v1_canonical_identity_lineage.py"
-$CertificationTest = "tests\test_collector_v1_canonical_identity_lineage_recertification.py"
-$LorwynContractTest = "tests\test_collector_v1_early_awareness_lorwyn_forecast.py"
 $OutputDirectory = "data\governance\permanence\certification\collector_v1_canonical_identity_lineage_recertification"
 $SummaryPath = Join-Path $OutputDirectory "collector_canonical_identity_lineage_recertification_summary.json"
 $SemanticPath = Join-Path $OutputDirectory "collector_lorwyn_pre_simulation_semantic_certification.json"
@@ -14,10 +12,9 @@ $BlockedPath = Join-Path $OutputDirectory "collector_final_authority_bound_block
 $LineagePath = Join-Path $OutputDirectory "collector_final_forecast_source_identity_lineage_manifest.csv"
 $BaseAuditPath = Join-Path $OutputDirectory "collector_base_48_forecast_identity_recertification.csv"
 $EarlyAuditPath = Join-Path $OutputDirectory "collector_early_awareness_identity_recertification.csv"
-$InvalidationPath = Join-Path $OutputDirectory "collector_invalidated_output_ledger.csv"
 $LorwynForecastPath = Join-Path $OutputDirectory "collector_authority_bound_lorwyn_forecasts.csv"
 
-function Fail-Governance {
+function Stop-Governance {
     param([string]$Message, [int]$Code = 1)
     Write-Host ""
     Write-Host "============================================================"
@@ -30,37 +27,42 @@ function Fail-Governance {
     exit $Code
 }
 
+function Assert-Condition {
+    param([bool]$Condition, [string]$Message, [int]$Code)
+    if (-not $Condition) {
+        Stop-Governance -Message $Message -Code $Code
+    }
+}
+
 Write-Host ""
 Write-Host "============================================================"
 Write-Host "COLLECTOR PROJECT STATUS"
 Write-Host "============================================================"
 Write-Host "COMPLETED / CERTIFIED"
-Write-Host "1. Product-specific contracts no longer assert identity."
+Write-Host "1. Product-specific contracts do not assert identity."
 Write-Host "2. Certified authority is the exclusive identity source."
-Write-Host "3. Authority-path existence tests are installed."
+Write-Host "3. The execution runner is committed and syntax-tested."
 Write-Host ""
 Write-Host "CURRENTLY WORKING ON"
 Write-Host "4. Reconcile all 50 governed products."
-Write-Host "5. Recertify 288 base forecast rows."
-Write-Host "6. Recertify early-awareness identity lineage."
-Write-Host "7. Invalidate incorrect derived outputs."
-Write-Host "8. Rebuild Lorwyn after semantic certification."
-Write-Host "9. Close lineage for all 294 final forecasts."
+Write-Host "5. Recertify all 288 base forecasts and early-awareness identities."
+Write-Host "6. Invalidate incorrect derived outputs."
+Write-Host "7. Semantically certify and rebuild Lorwyn."
+Write-Host "8. Close lineage for all 294 final forecasts."
 Write-Host ""
 Write-Host "STILL OUTSTANDING"
-Write-Host "10. Probabilistic calibration."
-Write-Host "11. Final rankings."
-Write-Host "12. Product analysis and purchase authorization."
+Write-Host "9. Probabilistic calibration."
+Write-Host "10. Final rankings and product analysis."
 
 $currentBranch = git branch --show-current
-if ($LASTEXITCODE -ne 0) { Fail-Governance "Git branch could not be read." 801 }
-if ($currentBranch -ne $ExpectedBranch) { Fail-Governance "Expected branch $ExpectedBranch but found $currentBranch." 802 }
+Assert-Condition ($LASTEXITCODE -eq 0) "Git branch could not be read." 821
+Assert-Condition ($currentBranch -eq $ExpectedBranch) "Expected branch $ExpectedBranch but found $currentBranch." 822
 
 $startingStatus = @(git status --porcelain)
-if ($LASTEXITCODE -ne 0) { Fail-Governance "Git status could not be read." 803 }
+Assert-Condition ($LASTEXITCODE -eq 0) "Git status could not be read." 823
 if ($startingStatus.Count -ne 0) {
     $startingStatus | ForEach-Object { Write-Host $_ }
-    Fail-Governance "Working tree is not clean." 804
+    Stop-Governance "Working tree is not clean." 824
 }
 
 Write-Host ""
@@ -68,10 +70,7 @@ Write-Host "============================================================"
 Write-Host "STEP 1 — VERIFY DECLARED AUTHORITIES"
 Write-Host "============================================================"
 
-if (-not (Test-Path $GovernanceContract -PathType Leaf)) {
-    Fail-Governance "Governance contract is missing." 805
-}
-
+Assert-Condition (Test-Path $GovernanceContract -PathType Leaf) "Governance contract is missing." 825
 $governance = Get-Content $GovernanceContract -Raw | ConvertFrom-Json
 $authorityChecks = @()
 foreach ($property in $governance.authorities.PSObject.Properties) {
@@ -89,13 +88,9 @@ foreach ($property in $governance.authorities.PSObject.Properties) {
         rows = $rowCount
     }
 }
-
 $authorityChecks | Format-Table -Wrap -AutoSize
 $missingAuthorities = @($authorityChecks | Where-Object { $_.exists -ne $true })
-if ($missingAuthorities.Count -ne 0) {
-    Fail-Governance "At least one declared authority is missing." 806
-}
-
+Assert-Condition ($missingAuthorities.Count -eq 0) "At least one declared authority is missing." 826
 Write-Host "PASS: Every declared authority exists." -ForegroundColor Green
 
 Write-Host ""
@@ -104,16 +99,16 @@ Write-Host "STEP 2 — RUN GOVERNANCE TESTS"
 Write-Host "============================================================"
 
 python -m py_compile $CertificationScript
-if ($LASTEXITCODE -ne 0) { Fail-Governance "Recertification engine does not compile." 807 }
+Assert-Condition ($LASTEXITCODE -eq 0) "Recertification engine does not compile." 827
 
 python -m pytest `
-    $CertificationTest `
-    $LorwynContractTest `
+    tests\test_collector_v1_canonical_identity_lineage_runner.py `
+    tests\test_collector_v1_canonical_identity_lineage_recertification.py `
+    tests\test_collector_v1_early_awareness_lorwyn_forecast.py `
     tests\test_collector_v1_complete_horizon_probabilistic_forecasts.py `
     tests\test_collector_v1_final_model_output_validation.py `
     -q
-if ($LASTEXITCODE -ne 0) { Fail-Governance "Governance-focused tests failed." 808 }
-
+Assert-Condition ($LASTEXITCODE -eq 0) "Governance-focused tests failed." 828
 Write-Host "PASS: Governance-focused tests passed." -ForegroundColor Green
 
 Write-Host ""
@@ -132,13 +127,12 @@ $requiredOutputs = @(
     $LineagePath,
     $BaseAuditPath,
     $EarlyAuditPath,
-    $InvalidationPath,
     $LorwynForecastPath
 )
 $missingOutputs = @($requiredOutputs | Where-Object { -not (Test-Path $_ -PathType Leaf) })
 if ($missingOutputs.Count -ne 0) {
     $missingOutputs | ForEach-Object { Write-Host $_ -ForegroundColor Red }
-    Fail-Governance "One or more recertification outputs are missing." 809
+    Stop-Governance "One or more recertification outputs are missing." 829
 }
 
 $summary = Get-Content $SummaryPath -Raw | ConvertFrom-Json
@@ -171,43 +165,37 @@ Write-Host "Closed lineage rows:             $($summary.lineage_rows_closed)"
 
 if ($certificationExitCode -ne 0) {
     $summary.critical_failures | ForEach-Object { Write-Host "  $_" -ForegroundColor Yellow }
-    Fail-Governance "Canonical identity and lineage recertification did not pass." $certificationExitCode
+    Stop-Governance "Canonical identity and lineage recertification did not pass." $certificationExitCode
 }
 
 $failedBase = @($baseAuditRows | Where-Object { $_.recertified -ne "True" })
 $failedEarly = @($earlyAuditRows | Where-Object { $_.identity_reconciled -ne "True" })
 $openLineage = @($lineageRows | Where-Object { $_.lineage_closed -ne "True" })
-$uniqueKeys = @($finalRows | ForEach-Object { "$($_.canonical_product_id)|$($_.horizon_days)" } | Select-Object -Unique)
+$keyValues = @($finalRows | ForEach-Object { "$($_.canonical_product_id)|$($_.horizon_days)" })
+$uniqueKeys = @($keyValues | Select-Object -Unique)
 $uniqueProducts = @($finalRows | Select-Object -ExpandProperty canonical_product_id -Unique)
 
-$summaryValid = (
-    $summary.status -eq "PASS_COLLECTOR_CANONICAL_IDENTITY_LINEAGE_RECERTIFICATION" -and
-    $summary.governed_products -eq 50 -and
-    $summary.products_reconciled -eq 50 -and
-    $summary.manual_identity_assertion_violations -eq 0 -and
-    $summary.unknown_identity_rows -eq 0 -and
-    $summary.name_identity_mismatches -eq 0 -and
-    $summary.base_forecast_rows_recertified -eq 288 -and
-    $summary.early_awareness_rows_audited -eq $summary.early_awareness_rows_recertified -and
-    $summary.lorwyn_pre_simulation_semantic_status -eq "PASS_LORWYN_PRE_SIMULATION_SEMANTIC_CERTIFICATION" -and
-    $summary.lorwyn_forecast_rows -eq 6 -and
-    $summary.final_forecast_products -eq 49 -and
-    $summary.final_forecast_rows -eq 294 -and
-    $summary.blocked_rows -eq 6 -and
-    $summary.coverage_rows -eq 300 -and
-    $summary.lineage_rows -eq 294 -and
-    $summary.lineage_rows_closed -eq 294 -and
-    $summary.critical_failures.Count -eq 0 -and
-    $failedBase.Count -eq 0 -and
-    $failedEarly.Count -eq 0 -and
-    $openLineage.Count -eq 0 -and
-    $lorwynRows.Count -eq 6 -and
-    $finalRows.Count -eq 294 -and
-    $uniqueKeys.Count -eq 294 -and
-    $uniqueProducts.Count -eq 49 -and
-    $blockedRows.Count -eq 6
+$checks = @(
+    [pscustomobject]@{ Name = "status"; Passed = ($summary.status -eq "PASS_COLLECTOR_CANONICAL_IDENTITY_LINEAGE_RECERTIFICATION") },
+    [pscustomobject]@{ Name = "governed_products"; Passed = ($summary.governed_products -eq 50) },
+    [pscustomobject]@{ Name = "products_reconciled"; Passed = ($summary.products_reconciled -eq 50) },
+    [pscustomobject]@{ Name = "manual_identity_assertions"; Passed = ($summary.manual_identity_assertion_violations -eq 0) },
+    [pscustomobject]@{ Name = "unknown_identities"; Passed = ($summary.unknown_identity_rows -eq 0) },
+    [pscustomobject]@{ Name = "name_identity_mismatches"; Passed = ($summary.name_identity_mismatches -eq 0) },
+    [pscustomobject]@{ Name = "base_rows"; Passed = ($summary.base_forecast_rows_recertified -eq 288 -and $failedBase.Count -eq 0) },
+    [pscustomobject]@{ Name = "early_awareness"; Passed = ($summary.early_awareness_rows_audited -eq $summary.early_awareness_rows_recertified -and $failedEarly.Count -eq 0) },
+    [pscustomobject]@{ Name = "lorwyn_semantic"; Passed = ($summary.lorwyn_pre_simulation_semantic_status -eq "PASS_LORWYN_PRE_SIMULATION_SEMANTIC_CERTIFICATION") },
+    [pscustomobject]@{ Name = "lorwyn_rows"; Passed = ($summary.lorwyn_forecast_rows -eq 6 -and $lorwynRows.Count -eq 6) },
+    [pscustomobject]@{ Name = "final_universe"; Passed = ($summary.final_forecast_products -eq 49 -and $summary.final_forecast_rows -eq 294 -and $finalRows.Count -eq 294) },
+    [pscustomobject]@{ Name = "blocked_rows"; Passed = ($summary.blocked_rows -eq 6 -and $blockedRows.Count -eq 6) },
+    [pscustomobject]@{ Name = "coverage"; Passed = ($summary.coverage_rows -eq 300) },
+    [pscustomobject]@{ Name = "lineage"; Passed = ($summary.lineage_rows -eq 294 -and $summary.lineage_rows_closed -eq 294 -and $openLineage.Count -eq 0) },
+    [pscustomobject]@{ Name = "unique_keys"; Passed = ($uniqueKeys.Count -eq 294 -and $uniqueProducts.Count -eq 49) },
+    [pscustomobject]@{ Name = "critical_failures"; Passed = ($summary.critical_failures.Count -eq 0) }
 )
-if (-not $summaryValid) { Fail-Governance "Final authority-bound recertification does not reconcile." 810 }
+$checks | Format-Table -AutoSize
+$failedChecks = @($checks | Where-Object { $_.Passed -ne $true })
+Assert-Condition ($failedChecks.Count -eq 0) "Final authority-bound recertification does not reconcile." 830
 
 Write-Host ""
 Write-Host "============================================================"
@@ -229,13 +217,13 @@ Write-Host "============================================================"
 
 $collectorTests = @(Get-ChildItem tests -File -Filter "test_collector_v1*.py" | Select-Object -ExpandProperty FullName)
 python -m pytest $collectorTests -q
-if ($LASTEXITCODE -ne 0) { Fail-Governance "Complete Collector regression suite failed." 811 }
+Assert-Condition ($LASTEXITCODE -eq 0) "Complete Collector regression suite failed." 831
 
 $finalStatus = @(git status --porcelain)
-if ($LASTEXITCODE -ne 0) { Fail-Governance "Final Git status could not be read." 812 }
+Assert-Condition ($LASTEXITCODE -eq 0) "Final Git status could not be read." 832
 if ($finalStatus.Count -ne 0) {
     $finalStatus | ForEach-Object { Write-Host $_ }
-    Fail-Governance "Repository is not clean after recertification." 813
+    Stop-Governance "Repository is not clean after recertification." 833
 }
 
 Write-Host ""
@@ -244,19 +232,18 @@ Write-Host "COLLECTOR PROJECT STATUS AFTER EXECUTION"
 Write-Host "============================================================"
 Write-Host "COMPLETED / CERTIFIED"
 Write-Host "1. All 50 governed products reconciled."
-Write-Host "2. All 288 base forecast rows recertified."
-Write-Host "3. All early-awareness identities recertified."
-Write-Host "4. Incorrect derived outputs invalidated."
-Write-Host "5. Lorwyn rebuilt only after semantic certification."
-Write-Host "6. Final 49-product forecast authority created."
-Write-Host "7. All 294 final forecasts have closed lineage."
+Write-Host "2. All 288 base forecasts and early-awareness identities recertified."
+Write-Host "3. Incorrect outputs invalidated."
+Write-Host "4. Lorwyn rebuilt only after semantic certification."
+Write-Host "5. Final 49-product forecast authority created."
+Write-Host "6. All 294 forecasts have closed lineage."
 Write-Host ""
 Write-Host "CURRENTLY WORKING ON"
-Write-Host "8. Probabilistic calibration and reasonableness review."
+Write-Host "7. Probabilistic calibration and reasonableness review."
 Write-Host ""
 Write-Host "STILL OUTSTANDING"
-Write-Host "9. Final rankings."
-Write-Host "10. Product analysis and purchase authorization."
+Write-Host "8. Final rankings."
+Write-Host "9. Product analysis and purchase authorization."
 Write-Host ""
 Write-Host "OVERALL RESULT: CANONICAL IDENTITY AND LINEAGE RECERTIFIED" -ForegroundColor Green
 Write-Host "RANKING STATUS: BLOCKED" -ForegroundColor Yellow
