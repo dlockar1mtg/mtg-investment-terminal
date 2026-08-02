@@ -1,0 +1,95 @@
+{
+  "contract_name": "Collector First-Year Breakout and Entry-Timing Contract",
+  "contract_version": "1.0.0",
+  "domain_owner": "MTG",
+  "purpose": "Identify recently released Collector Booster boxes while attractive entry opportunity remains, rather than only after most appreciation has occurred.",
+  "lifecycle_window_days": 365,
+  "evaluation_checkpoints_days": [0, 30, 60, 90, 120, 180, 270, 365],
+  "required_backtest_design": {
+    "point_in_time_only": true,
+    "future_information_prohibited": true,
+    "release_age_alignment_required": true,
+    "comparable_selection_as_of_checkpoint_required": true,
+    "supply_demand_features_as_of_checkpoint_required": true,
+    "transaction_cost_adjustment_required": true,
+    "false_positive_measurement_required": true
+  },
+  "breakout_label_policy": {
+    "fixed_single_threshold_prohibited": true,
+    "candidate_definitions_must_compete": true,
+    "candidate_definition_families": [
+      "absolute_first_year_return",
+      "transaction_cost_adjusted_return",
+      "era_relative_percentile",
+      "top_quartile_first_year_performance",
+      "top_decile_first_year_performance",
+      "time_bounded_acceleration"
+    ],
+    "winner_selection": "OUT_OF_SAMPLE_BREAKOUT_DEFINITION_TOURNAMENT"
+  },
+  "required_metrics": [
+    "breakout_recall",
+    "early_entry_precision",
+    "false_positive_rate",
+    "median_signal_lead_days",
+    "first_signal_age_days",
+    "first_signal_price",
+    "best_prior_investable_price",
+    "missed_entry_cost_absolute",
+    "missed_entry_cost_pct",
+    "opportunity_capture_pct",
+    "appreciation_already_realized_pct",
+    "remaining_expected_upside_pct",
+    "late_entry_risk",
+    "top_k_breakout_precision",
+    "downside_rate_among_false_positives"
+  ],
+  "required_states": [
+    "EARLY_UNCONFIRMED",
+    "EARLY_BREAKOUT_CANDIDATE",
+    "EARLY_ACTIONABLE_OPPORTUNITY",
+    "BREAKOUT_CONFIRMING",
+    "LATE_STAGE_MOMENTUM",
+    "OPPORTUNITY_MOSTLY_REALIZED",
+    "OVEREXTENDED",
+    "NO_BREAKOUT_EVIDENCE"
+  ],
+  "required_product_outputs": [
+    "product_age_days",
+    "release_reference_price",
+    "first_observed_investable_price",
+    "current_price",
+    "first_year_breakout_probability",
+    "first_year_breakout_class",
+    "early_opportunity_score",
+    "entry_timing_status",
+    "best_prior_investable_price",
+    "best_prior_investable_date",
+    "price_appreciation_already_realized_pct",
+    "remaining_expected_upside_pct",
+    "missed_entry_cost_pct",
+    "late_entry_risk",
+    "first_signal_price",
+    "first_signal_age_days",
+    "breakout_model_version",
+    "breakout_backtest_recall",
+    "breakout_backtest_precision",
+    "median_historical_signal_lead_days",
+    "selected_comparable_ids",
+    "comparable_similarity_scores",
+    "comparable_first_year_paths"
+  ],
+  "selection_principles": [
+    "Correct eventual winner classification is insufficient if the signal arrives after most appreciation.",
+    "The winning model must identify most historical first-year breakout boxes before the major move.",
+    "Late confirmation must not be represented as early discovery.",
+    "A strong product may still receive OPPORTUNITY_MOSTLY_REALIZED at the current price.",
+    "Forecast accuracy and investment discovery quality must both be measured.",
+    "No fixed model weights are required; candidates compete through out-of-sample replay."
+  ],
+  "authorization": {
+    "lifecycle_panel_reconstruction_authorized": true,
+    "breakout_model_execution_authorized": false,
+    "purchase_recommendations_authorized": false
+  }
+}
