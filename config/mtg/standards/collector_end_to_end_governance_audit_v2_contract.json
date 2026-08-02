@@ -1,0 +1,60 @@
+{
+  "contract_name": "Collector End-to-End Governance and MTG Standards Audit V2",
+  "contract_version": "2.0.0",
+  "snapshot_id": "collector-20260801T211201Z-7688afbd",
+  "required_stage_count": 11,
+  "required_final_counts": {
+    "current_price": 50,
+    "historical_ledger": 1215,
+    "integrated_comparables": 121,
+    "final_forecasts": 294,
+    "forecast_lineage": 294,
+    "blocked_horizons": 6,
+    "coverage_rows": 300,
+    "calibration": 294,
+    "eligibility": 49,
+    "rankings": 49,
+    "purchase_authority": 49
+  },
+  "standard_path": "docs/standards/mtg/MTG_FORECASTING_STANDARD.md",
+  "standard_requirements": [
+    {"control": "explicit_method_or_deferred_reason", "required_text": "Every governed product receives an explicit forecast method or an explicit deferred reason."},
+    {"control": "comparable_method_approved", "required_text": "Comparable-product analysis is an approved forecasting method."},
+    {"control": "insufficient_history_not_automatic_prohibition", "required_text": "Insufficient direct history does not automatically prohibit forecasting."},
+    {"control": "direct_history_quarantine_scope", "required_text": "Direct-history quarantine applies to the historical method and does not automatically reject the product."},
+    {"control": "identity_and_executable_price_fail_closed", "required_text": "Identity and executable-price failures remain fail-closed."},
+    {"control": "forecast_disclosure", "required_text": "Forecast outputs disclose method, evidence, confidence, uncertainty, limitations, source information, and standard version."},
+    {"control": "required_horizons", "required_text": "Required horizons are one, three, and five years."},
+    {"control": "required_scenarios", "required_text": "Required scenarios are downside, base, and upside."},
+    {"control": "forecast_purchase_separation", "required_text": "Forecast generation and purchase authorization remain separate."},
+    {"control": "tests_do_not_replace_semantic_certification", "required_text": "Automated tests are necessary but do not replace production semantic certification."},
+    {"control": "change_control", "required_text": "Changes to methods, weights, thresholds, source hierarchy, product universe, or eligibility rules require approval, a version change, and recertification."}
+  ],
+  "stages": [
+    {"stage": "august1_current_data_package", "directory": "data/governance/permanence/certification/collector_v1_august1_current_data_package", "expected_status": "PASS_COLLECTOR_AUGUST1_CURRENT_DATA_PACKAGE"},
+    {"stage": "historical_observation_ledger", "directory": "data/governance/permanence/certification/collector_v1_august1_historical_observation_ledger", "expected_status": "PASS_COLLECTOR_AUGUST1_HISTORICAL_OBSERVATION_LEDGER"},
+    {"stage": "final_premodel_resolution", "directory": "data/governance/permanence/certification/collector_v1_final_premodel_user_exclusion_resolution", "expected_status": "PASS_COLLECTOR_FINAL_PREMODEL_USER_EXCLUSION_RESOLUTION"},
+    {"stage": "lorwyn_target_specific_comparables", "directory": "data/governance/permanence/certification/collector_v1_lorwyn_target_specific_comparable_certification", "expected_status": "PASS_COLLECTOR_LORWYN_TARGET_SPECIFIC_COMPARABLE_CERTIFICATION"},
+    {"stage": "lorwyn_comparable_integration", "directory": "data/governance/permanence/certification/collector_v1_lorwyn_comparable_authority_integration", "expected_status": "PASS_COLLECTOR_LORWYN_COMPARABLE_AUTHORITY_INTEGRATION"},
+    {"stage": "canonical_identity_lineage_recertification", "directory": "data/governance/permanence/certification/collector_v1_canonical_identity_lineage_recertification", "expected_status": "PASS_COLLECTOR_CANONICAL_IDENTITY_LINEAGE_RECERTIFICATION"},
+    {"stage": "probabilistic_calibration", "directory": "data/governance/permanence/certification/collector_v1_final_probabilistic_calibration", "expected_status": "PASS_COLLECTOR_FINAL_PROBABILISTIC_CALIBRATION_AND_REASONABLENESS_CERTIFICATION"},
+    {"stage": "calibration_review_and_ranking_candidate", "directory": "data/governance/permanence/certification/collector_v1_calibration_review_and_ranking_eligibility", "expected_status": "PASS_COLLECTOR_CALIBRATION_REVIEW_AND_RANKING_ELIGIBILITY_CANDIDATE"},
+    {"stage": "final_ranking_eligibility", "directory": "data/governance/permanence/certification/collector_v1_final_ranking_eligibility", "expected_status": "PASS_COLLECTOR_FINAL_RANKING_ELIGIBILITY_CERTIFICATION"},
+    {"stage": "final_governed_ranking", "directory": "data/governance/permanence/certification/collector_v1_final_governed_ranking", "expected_status": "PASS_COLLECTOR_FINAL_GOVERNED_1_49_RANKING"},
+    {"stage": "purchase_recommendation_certification", "directory": "data/governance/permanence/certification/collector_v1_purchase_recommendation_certification", "expected_status": "PASS_COLLECTOR_PURCHASE_RECOMMENDATION_CERTIFICATION"}
+  ],
+  "final_authorities": {
+    "current_price": "data/governance/permanence/certification/collector_v1_final_premodel_user_exclusion_resolution/collector_final_current_price_authority.csv",
+    "historical_ledger": "data/governance/permanence/certification/collector_v1_august1_historical_observation_ledger/collector_august1_historical_observation_ledger.csv",
+    "integrated_comparables": "data/governance/permanence/certification/collector_v1_lorwyn_comparable_authority_integration/collector_integrated_comparable_pool_authority.csv",
+    "final_forecasts": "data/governance/permanence/certification/collector_v1_canonical_identity_lineage_recertification/collector_final_authority_bound_49_product_forecasts.csv",
+    "forecast_lineage": "data/governance/permanence/certification/collector_v1_canonical_identity_lineage_recertification/collector_final_forecast_source_identity_lineage_manifest.csv",
+    "blocked_horizons": "data/governance/permanence/certification/collector_v1_canonical_identity_lineage_recertification/collector_final_authority_bound_blocked_horizons.csv",
+    "calibration": "data/governance/permanence/certification/collector_v1_final_probabilistic_calibration/collector_final_forecast_row_validation.csv",
+    "eligibility": "data/governance/permanence/certification/collector_v1_final_ranking_eligibility/collector_final_ranking_eligibility_authority.csv",
+    "rankings": "data/governance/permanence/certification/collector_v1_final_governed_ranking/collector_final_governed_1_49_rankings.csv",
+    "purchase_authority": "data/governance/permanence/certification/collector_v1_purchase_recommendation_certification/collector_purchase_recommendation_authority.csv"
+  },
+  "canonical_summary": "data/governance/permanence/certification/collector_v1_canonical_identity_lineage_recertification/collector_canonical_identity_lineage_recertification_summary.json",
+  "expected_status": "PASS_COLLECTOR_END_TO_END_GOVERNANCE_AND_MTG_STANDARDS_AUDIT_V2"
+}
