@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import argparse
 import json
-from datetime import datetime, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -12,6 +11,7 @@ OPERATING_DATE = "2026-08-01"
 TIMEZONE = "America/Chicago"
 SOURCE_BUNDLE_SHA256 = "7688afbd6dfb4483c0a316dad6a2a05458944434a91a3f714568e5f4a10c7890"
 CERTIFIED_PRODUCT_COUNT = 50
+REVOCATION_RECORDED_AT_UTC = "2026-08-02T15:23:00+00:00"
 
 
 def main() -> int:
@@ -22,8 +22,8 @@ def main() -> int:
     OUTPUT.mkdir(parents=True, exist_ok=True)
     summary = {
         "block_name": "Collector V1 Historical Price Recovery and Coverage",
-        "block_version": "1.0.1-revoked",
-        "generated_at_utc": datetime.now(timezone.utc).isoformat(),
+        "block_version": "1.0.2-revoked",
+        "generated_at_utc": REVOCATION_RECORDED_AT_UTC,
         "governing_snapshot_id": SNAPSHOT_ID,
         "governing_operating_date": OPERATING_DATE,
         "governing_timezone": TIMEZONE,
