@@ -1,0 +1,36 @@
+{
+  "contract_name": "Collector Current Supply Snapshot Resolution",
+  "contract_version": "1.0.0",
+  "snapshot_id": "collector-20260801T211201Z-7688afbd",
+  "snapshot_date": "2026-08-01",
+  "required_product_rows": 50,
+  "minimum_identity_coverage": 0.98,
+  "minimum_overlay_feature_coverage": 0.80,
+  "canonical_output_path": "data/governance/permanence/certification/collector_v1_august1_current_data_package/collector_ebay_product_supply_snapshot.csv",
+  "bounded_search_roots": [
+    "data/governance/permanence/certification",
+    "data/operations/mtg_universal_history_completion"
+  ],
+  "required_identity_aliases": [
+    "canonical_product_id",
+    "target_canonical_product_id",
+    "product_id"
+  ],
+  "overlay_feature_alias_groups": {
+    "listing_count": ["accepted_listing_count", "listing_count", "active_listing_count", "total_listings"],
+    "seller_count": ["seller_count", "unique_seller_count", "distinct_sellers"],
+    "seller_concentration": ["seller_concentration", "top_seller_share", "seller_hhi"],
+    "median_listing_price": ["median_listing_price", "ebay_median_price", "median_price"]
+  },
+  "governance": {
+    "bounded_search_only": true,
+    "exactly_one_source_must_be_selected": true,
+    "source_file_must_not_be_modified": true,
+    "canonical_copy_must_preserve_rows": true,
+    "current_supply_demand_post_forecast_only": true,
+    "historical_backtest_use_allowed": false,
+    "point_forecast_rewrite_allowed": false,
+    "purchase_recommendations_authorized": false
+  },
+  "expected_status": "PASS_COLLECTOR_CURRENT_SUPPLY_SNAPSHOT_RESOLUTION"
+}
