@@ -1,0 +1,29 @@
+{
+  "snapshot_id": "collector-YYYYMMDDTHHMMSSZ-1234abcd",
+  "captured_at_utc": "YYYY-MM-DDTHH:MM:SSZ",
+  "maximum_source_observation_at_utc": "YYYY-MM-DDTHH:MM:SSZ",
+  "minimum_source_observation_at_utc": "YYYY-MM-DDTHH:MM:SSZ",
+  "freshness_cutoff_utc": "YYYY-MM-DDTHH:MM:SSZ",
+  "product_count": 50,
+  "source_provider": "REQUIRED_PROVIDER_NAME",
+  "source_files": [
+    {
+      "path": "data/path/to/current_market_snapshot.csv",
+      "sha256": "REQUIRED_SHA256",
+      "role": "current_market_observations"
+    }
+  ],
+  "feature_matrix_sha256": "REQUIRED_SHA256_AFTER_FEATURE_BUILD",
+  "price_date_coverage": {
+    "present": 0,
+    "missing": 50,
+    "within_freshness_window": 0,
+    "carried_forward": 0
+  },
+  "listing_coverage": {
+    "products_with_accepted_listings": 0,
+    "products_with_minimum_depth": 0
+  },
+  "explicit_exclusions": [],
+  "certified_for_model_input": false
+}
