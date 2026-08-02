@@ -22,7 +22,7 @@ def main() -> int:
 
     expanded = pd.read_csv(EXPANDED_DIR / "collector_v1_expanded_tournament_winners.csv")
     limited = pd.read_csv(TARGETED_DIR / "collector_v1_limited_365_route_resolution.csv")
-    cohort = pd.read_csv(COHORT_DIR / "collector_v1_early_cohort_fallback_winner.csv")
+    cohort_metrics = pd.read_csv(COHORT_DIR / "collector_v1_early_cohort_fallback_metrics.csv")
     cohort_cert = json.loads((COHORT_DIR / "collector_v1_early_cohort_fallback_certification.json").read_text(encoding="utf-8"))
 
     promoted = expanded[expanded["promotion_status"] == "PROMOTABLE"].copy()
@@ -43,24 +43,32 @@ def main() -> int:
         "confidence_penalty_required": True,
     }])
 
+    promotable_cohort = cohort_metrics[cohort_metrics["promotable"] == True].copy()
+    if promotable_cohort.empty:
+        raise RuntimeError("No promotable early cohort fallback cell exists.")
+    earliest_age = int(promotable_cohort["age_months"].min())
+    earliest_pool = promotable_cohort[promotable_cohort["age_months"] == earliest_age]
+    cohort = earliest_pool.sort_values("selection_score").iloc[0]
+    strongest_validation = promotable_cohort.sort_values("selection_score").iloc[0]
+
     cohort_row = pd.DataFrame([{
         "tournament_lane": "EARLY_OPPORTUNITY_COHORT_FALLBACK",
         "horizon_days": 365,
         "selection_objective": "EARLY_WINNER_RANKING",
-        "model_variant": str(cohort.iloc[0]["model_variant"]),
-        "promotion_status": str(cohort.iloc[0]["promotion_status"]),
+        "model_variant": str(cohort["model_variant"]),
+        "promotion_status": "PROMOTABLE",
         "resolution_type": "CERTIFIED_COHORT_FALLBACK",
         "resolved_route": "EARLY_OPPORTUNITY_COHORT_FALLBACK",
-        "resolved_model_variant": str(cohort.iloc[0]["model_variant"]),
+        "resolved_model_variant": str(cohort["model_variant"]),
         "confidence_penalty_required": True,
-        "age_months": int(float(cohort.iloc[0]["age_months"])),
-        "rows": int(float(cohort.iloc[0]["rows"])),
-        "mae": float(cohort.iloc[0]["mae"]),
-        "bias": float(cohort.iloc[0]["bias"]),
-        "rank_correlation": float(cohort.iloc[0]["rank_correlation"]),
-        "top_quintile_precision_25pct": float(cohort.iloc[0]["top_quintile_precision_25pct"]),
-        "winner_recall_25pct": float(cohort.iloc[0]["winner_recall_25pct"]),
-        "false_positive_rate": float(cohort.iloc[0]["false_positive_rate"]),
+        "age_months": int(cohort["age_months"]),
+        "rows": int(cohort["rows"]),
+        "mae": float(cohort["mae"]),
+        "bias": float(cohort["bias"]),
+        "rank_correlation": float(cohort["rank_correlation"]),
+        "top_quintile_precision_25pct": float(cohort["top_quintile_precision_25pct"]),
+        "winner_recall_25pct": float(cohort["winner_recall_25pct"]),
+        "false_positive_rate": float(cohort["false_positive_rate"]),
     }])
 
     manifest = pd.concat([promoted, limited_row, cohort_row], ignore_index=True, sort=False)
@@ -69,11 +77,16 @@ def main() -> int:
     unresolved = manifest[~manifest["promotion_status"].isin(["PROMOTABLE", "APPROVED_FAIL_CLOSED_FALLBACK"])]
     summary = {
         "block_name": "Collector V1 Final Short-Horizon Winner Manifest",
-        "block_version": "1.0.0",
+        "block_version": "1.0.1",
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "expanded_promoted_cells": int(len(promoted)),
         "approved_limited_365_fallback_cells": 1,
         "certified_early_cohort_fallback_cells": 1,
+        "actionable_early_cohort_age_months": int(cohort["age_months"]),
+        "actionable_early_cohort_model_variant": str(cohort["model_variant"]),
+        "strongest_validation_age_months": int(strongest_validation["age_months"]),
+        "strongest_validation_model_variant": str(strongest_validation["model_variant"]),
+        "release_day_model_promoted": bool((promotable_cohort["age_months"] == 0).any()),
         "final_manifest_rows": int(len(manifest)),
         "unresolved_rows": int(len(unresolved)),
         "cohort_fallback_certified": bool(cohort_cert.get("early_cohort_fallback_certified")),
