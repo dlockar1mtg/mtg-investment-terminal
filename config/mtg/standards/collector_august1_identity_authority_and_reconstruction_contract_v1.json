@@ -1,6 +1,6 @@
 {
   "contract_name": "Collector August 1 Identity Authority and Reconstruction",
-  "contract_version": "1.0.0",
+  "contract_version": "1.0.1",
   "governing_snapshot": {
     "snapshot_id": "collector-20260801T211201Z-7688afbd",
     "operating_date": "2026-08-01",
@@ -9,7 +9,7 @@
   },
   "identity_authority": {
     "path": "data/governance/permanence/certification/collector_v1_august1_snapshot_bound_current_foundation/collector_v1_august1_snapshot_bound_current_foundation.csv",
-    "sha256": "5c72750645aa15fdaec80d969e566ed79bd6c0b05a00f0400738c03fb0004ee4",
+    "sha256": "8112d885c00cd601d7208f2322d229e7b6b2d4f3ecf5e017528875decdffde77",
     "primary_identity_field": "identity__canonical_product_id",
     "tcgplayer_identity_field": "tcgplayer_product_id",
     "required_rows": 50,
