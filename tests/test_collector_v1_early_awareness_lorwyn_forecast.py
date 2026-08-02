@@ -27,9 +27,18 @@ def test_early_awareness_checkpoints_are_exact() -> None:
     assert c["minimum_recall_at_top5"] == 0.5
 
 
+def test_lorwyn_contract_requests_resolution_without_asserting_identity() -> None:
+    c = load_contract()["lorwyn"]
+    assert c["requested_product_name"] == "Lorwyn Eclipsed - Collector Booster Display"
+    assert c["identity_resolution_authority"] == "collector_final_current_price_authority.csv"
+    assert c["identity_resolution_mode"] == "EXACT_NORMALIZED_NAME_SINGLE_AUTHORITY_ROW"
+    assert "canonical_product_id" not in c
+    assert "tcgplayer_product_id" not in c
+    assert "investment_product_id" not in c
+
+
 def test_lorwyn_has_six_distinct_horizon_methods() -> None:
     c = load_contract()["lorwyn"]
-    assert c["canonical_product_id"] == "MTG-CANON-TCGPLAYER-648650"
     assert c["horizons_days"] == [90, 180, 365, 730, 1095, 1825]
     assert c["simulation_count"] == 10000
     assert len(c["method_ids"]) == 6
@@ -52,6 +61,9 @@ def test_governance_is_fail_closed() -> None:
     assert g["generic_route_return_prohibited"] is True
     assert g["lorwyn_must_have_distinct_method_per_horizon"] is True
     assert g["lorwyn_supply_ambiguity_must_not_block_price_forecast"] is True
+    assert g["product_specific_contract_identity_assertions_prohibited"] is True
+    assert g["identity_must_be_resolved_exclusively_from_certified_authority"] is True
+    assert g["semantic_certification_required_before_simulation"] is True
     assert g["lotr_special_edition_user_exclusion_preserved"] is True
     assert g["production_forecast_authorized"] is False
     assert g["ranking_authorized"] is False
