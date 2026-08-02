@@ -1,0 +1,85 @@
+{
+  "contract_name": "Collector Lorwyn Target-Specific Comparable Certification",
+  "contract_version": "1.0.0",
+  "snapshot_id": "collector-20260801T211201Z-7688afbd",
+  "requested_product_name": "Lorwyn Eclipsed - Collector Booster Display",
+  "identity_resolution_mode": "EXACT_NORMALIZED_NAME_SINGLE_AUTHORITY_ROW",
+  "minimum_comparables": 5,
+  "maximum_comparables": 7,
+  "minimum_similarity_score": 55.0,
+  "minimum_dimension_coverage": 0.8,
+  "minimum_history_observations": 6,
+  "authorities": {
+    "product_and_current_price": "data/governance/permanence/certification/collector_v1_final_premodel_user_exclusion_resolution/collector_final_current_price_authority.csv",
+    "release_date": "data/governance/permanence/certification/collector_v1_wizards_release_date_authority/collector_wizards_release_date_authority.csv",
+    "historical_observations": "data/governance/permanence/certification/collector_v1_august1_historical_observation_ledger/collector_august1_historical_observation_ledger.csv",
+    "current_supply": "data/governance/permanence/certification/collector_v1_august1_current_data_package/collector_ebay_product_supply_snapshot.csv",
+    "existing_comparable_pool": "data/governance/permanence/certification/collector_v1_final_premodel_user_exclusion_resolution/collector_comparable_pool_certification.csv"
+  },
+  "weights": {
+    "product_configuration": 0.1,
+    "franchise_class": 0.1,
+    "premium_content_class": 0.1,
+    "reprint_exposure_class": 0.05,
+    "release_era": 0.1,
+    "lifecycle_stage": 0.1,
+    "price_band": 0.1,
+    "supply_profile": 0.1,
+    "liquidity_profile": 0.1,
+    "historical_behavior": 0.15
+  },
+  "governed_name_proxy_rules": {
+    "universes_beyond_patterns": [
+      "LORD OF THE RINGS",
+      "DOCTOR WHO",
+      "FALLOUT",
+      "ASSASSIN'S CREED",
+      "FINAL FANTASY",
+      "SPIDER-MAN",
+      "MARVEL",
+      "AVATAR",
+      "TEENAGE MUTANT NINJA TURTLES",
+      "THE HOBBIT",
+      "STAR TREK"
+    ],
+    "premium_patterns": [
+      "MASTERS",
+      "MODERN HORIZONS",
+      "COMMANDER LEGENDS",
+      "SPECIAL EDITION"
+    ],
+    "remastered_patterns": ["REMASTERED"],
+    "lower_reprint_exposure_patterns": [
+      "LORD OF THE RINGS",
+      "DOCTOR WHO",
+      "FALLOUT",
+      "ASSASSIN'S CREED",
+      "FINAL FANTASY",
+      "SPIDER-MAN",
+      "MARVEL",
+      "AVATAR",
+      "TEENAGE MUTANT NINJA TURTLES",
+      "THE HOBBIT",
+      "STAR TREK"
+    ]
+  },
+  "rules": {
+    "certified_authority_is_only_identity_source": true,
+    "manual_identity_assertions_prohibited": true,
+    "target_cannot_compare_to_itself": true,
+    "peer_release_must_precede_target_release": true,
+    "peer_must_have_minimum_history": true,
+    "missing_values_are_not_zero_filled": true,
+    "weak_peers_must_not_be_forced": true,
+    "all_candidates_must_be_audited": true,
+    "all_exclusions_must_be_recorded": true,
+    "existing_comparable_authority_must_not_be_modified": true,
+    "current_ebay_prices_prohibited_as_historical_returns": true,
+    "generic_return_pool_prohibited": true,
+    "projection_authorized": false,
+    "production_forecast_authorized": false,
+    "ranking_authorized": false,
+    "purchase_recommendations_authorized": false
+  },
+  "expected_status": "PASS_COLLECTOR_LORWYN_TARGET_SPECIFIC_COMPARABLE_CERTIFICATION"
+}
