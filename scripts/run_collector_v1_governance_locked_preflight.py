@@ -42,9 +42,7 @@ SNAPSHOT_PATH_HINTS = (
     SNAPSHOT_ID.lower(),
 )
 
-GENERATED_OR_NONAUTHORITATIVE_PATH_TERMS = (
-    "/governance/",
-    "/permanence/",
+NONAUTHORITATIVE_PATH_TERMS = (
     "/certification/",
     "/validation/",
     "/tests/",
@@ -55,6 +53,15 @@ GENERATED_OR_NONAUTHORITATIVE_PATH_TERMS = (
     "/backups/",
     "/attempt/",
     "/attempts/",
+)
+
+AUTHORITATIVE_SNAPSHOT_PATH_PREFIX = "/data/governance/permanence/snapshots/"
+REQUIRED_FIFTY_ROW_ROLES = (
+    "live_price_observations",
+    "current_authority",
+    "live_price_candidates",
+    "ebay_supply_snapshot",
+    "feature_matrix",
 )
 
 
@@ -89,15 +96,72 @@ def read_json(path: Path) -> tuple[dict[str, Any] | None, str]:
     return payload, ""
 
 
+def registered_product_count_valid(payload: dict[str, Any]) -> bool:
+    explicit = first_alias_value(payload, IDENTITY_FIELD_ALIASES["certified_product_count"])
+    if explicit is not None:
+        return str(explicit) == str(PRODUCT_COUNT)
+
+    files = payload.get("files")
+    if not isinstance(files, list):
+        return False
+
+    rows_by_role: dict[str, Any] = {}
+    for item in files:
+        if isinstance(item, dict) and item.get("role"):
+            rows_by_role[str(item["role"])] = item.get("rows")
+
+    role_rows_valid = all(
+        str(rows_by_role.get(role, "")) == str(PRODUCT_COUNT)
+        for role in REQUIRED_FIFTY_ROW_ROLES
+    )
+    checks = payload.get("checks")
+    checks_valid = isinstance(checks, dict) and all(
+        checks.get(control) is True
+        for control in (
+            "all_required_authorities_present",
+            "all_registered_artifacts_in_august_1_operating_cycle",
+            "all_required_row_coverage_valid",
+            "all_json_controls_parseable",
+            "no_json_control_reports_explicit_failure",
+            "source_hash_bundle_created",
+        )
+    )
+    critical_failures = payload.get("critical_failures")
+    no_critical_failures = isinstance(critical_failures, list) and not critical_failures
+    status_valid = payload.get("status") == "PASS_COLLECTOR_V1_AUGUST_1_GOVERNED_SNAPSHOT_REGISTRATION"
+    model_input_valid = payload.get("certified_for_model_input") is True
+    purchase_boundary_valid = payload.get("purchase_recommendations_authorized") is False
+
+    return all(
+        (
+            role_rows_valid,
+            checks_valid,
+            no_critical_failures,
+            status_valid,
+            model_input_valid,
+            purchase_boundary_valid,
+        )
+    )
+
+
 def identity_values(payload: dict[str, Any]) -> dict[str, Any | None]:
     return {
-        field: first_alias_value(payload, aliases)
-        for field, aliases in IDENTITY_FIELD_ALIASES.items()
+        "snapshot_id": first_alias_value(payload, IDENTITY_FIELD_ALIASES["snapshot_id"]),
+        "operating_date": first_alias_value(payload, IDENTITY_FIELD_ALIASES["operating_date"]),
+        "timezone": first_alias_value(payload, IDENTITY_FIELD_ALIASES["timezone"]),
+        "source_bundle_sha256": first_alias_value(payload, IDENTITY_FIELD_ALIASES["source_bundle_sha256"]),
+        "certified_product_count": PRODUCT_COUNT if registered_product_count_valid(payload) else None,
     }
 
 
 def path_text(path: Path) -> str:
     return "/" + str(path).replace("\\", "/").lower().lstrip("/")
+
+
+def is_nonauthoritative_path(normalized_path: str) -> bool:
+    if AUTHORITATIVE_SNAPSHOT_PATH_PREFIX in normalized_path:
+        return False
+    return any(term in normalized_path for term in NONAUTHORITATIVE_PATH_TERMS)
 
 
 def adjudicate_manifest(path: Path) -> dict[str, Any]:
@@ -112,7 +176,7 @@ def adjudicate_manifest(path: Path) -> dict[str, Any]:
         "identity_match": False,
         "filename_authority_hint": any(hint in filename for hint in MANIFEST_FILENAME_HINTS),
         "snapshot_path_hint": any(hint in normalized_path for hint in SNAPSHOT_PATH_HINTS),
-        "generated_or_nonauthoritative_path": any(term in normalized_path for term in GENERATED_OR_NONAUTHORITATIVE_PATH_TERMS),
+        "generated_or_nonauthoritative_path": is_nonauthoritative_path(normalized_path),
         "rejection_reasons": "",
     }
 
