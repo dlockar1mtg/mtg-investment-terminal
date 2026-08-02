@@ -1,0 +1,44 @@
+{
+  "contract_name": "Collector Round 3 Final Champion Challenge",
+  "contract_version": "1.0.0",
+  "required_round2_resolution_status": "PASS_COLLECTOR_ADAPTIVE_REFINEMENT_LIMITED_EVIDENCE_RESOLUTION",
+  "required_round1_status": "PASS_COLLECTOR_HORIZON_SPECIFIC_TOURNAMENT_EXECUTION",
+  "expected_status": "PASS_COLLECTOR_ROUND3_FINAL_CHAMPION_CHALLENGE",
+  "required_group_decisions": 8,
+  "preserved_governed_no_winner_groups": 10,
+  "minimum_challenge_rows": 5,
+  "minimum_directional_accuracy": 0.50,
+  "maximum_absolute_bias_ratio": 0.25,
+  "maximum_single_product_error_share": 0.60,
+  "maximum_worst_product_mape_multiple": 3.50,
+  "minimum_relative_mape_improvement_over_baseline": 0.00,
+  "minimum_round2_improvement_for_round2_promotion": 0.02,
+  "baseline_models": {
+    "DIRECT_HISTORY_CALIBRATED": "NAIVE_LAST_VALUE",
+    "DIRECT_HISTORY_LIMITED": "NAIVE_LAST_VALUE",
+    "COMPARABLE_PRODUCT_ADJUSTED": "COMPARABLE_MEDIAN_GROWTH"
+  },
+  "challenge_partitions": [
+    "OUTER_ALL",
+    "LATEST_TIME_STRESS",
+    "PRODUCT_CONCENTRATION_STRESS"
+  ],
+  "allowed_final_decisions": [
+    "PROMOTE_ROUND2_CHAMPION",
+    "PROMOTE_ROUND1_CHAMPION",
+    "RETAIN_NAIVE_BASELINE",
+    "GOVERNED_NO_PRODUCTION_CHAMPION"
+  ],
+  "governance": {
+    "candidate_set_frozen_before_round3": true,
+    "no_new_feature_tuning": true,
+    "independent_per_horizon": true,
+    "independent_per_route": true,
+    "benchmark_challenge_required": true,
+    "product_concentration_challenge_required": true,
+    "latest_time_stress_required": true,
+    "current_only_features_prohibited": true,
+    "production_forecasting_authorized_only_for_certified_champions": true,
+    "purchase_recommendations_authorized": false
+  }
+}
