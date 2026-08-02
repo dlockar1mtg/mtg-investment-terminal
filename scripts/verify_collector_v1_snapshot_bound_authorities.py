@@ -5,6 +5,7 @@ import hashlib
 import json
 from datetime import datetime, timezone
 from pathlib import Path
+from typing import Sequence
 
 ROOT = Path(__file__).resolve().parents[1]
 EXPECTED_SNAPSHOT_ID = "collector-20260801T211201Z-7688afbd"
@@ -51,14 +52,13 @@ def load_manifest() -> dict:
     return json.loads(MANIFEST_PATH.read_text(encoding="utf-8-sig"))
 
 
-def main() -> int:
+def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--strict", action="store_true")
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
 
     generated_at_utc = datetime.now(timezone.utc).isoformat()
     checks: dict[str, bool] = {}
-    failures: list[str] = []
     manifest = load_manifest()
 
     checks["snapshot_id_matches"] = manifest.get("snapshot_id") == EXPECTED_SNAPSHOT_ID
