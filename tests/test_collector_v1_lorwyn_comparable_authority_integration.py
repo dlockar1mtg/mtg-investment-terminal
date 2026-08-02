@@ -69,6 +69,7 @@ def test_script_preserves_original_schema_and_authority() -> None:
     text = SCRIPT.read_text(encoding="utf-8")
     for token in [
         "ORIGINAL_FIELDS",
+        "AUDIT_FIELDS",
         "ORIGINAL_COMPARABLE_AUTHORITY_MODIFIED",
         "SUPPLEMENTAL_ROW_RECONCILIATION_FAILED",
         "DUPLICATE_SUPPLEMENTAL_TARGET_MEMBER_PAIR",
@@ -77,6 +78,18 @@ def test_script_preserves_original_schema_and_authority() -> None:
         "collector_integrated_comparable_pool_authority.csv",
         "collector_lorwyn_supplemental_comparable_integration_audit.csv",
         "collector_lorwyn_comparable_authority_integration_summary.json",
+    ]:
+        assert token in text
+
+
+def test_audit_schema_preserves_reconciliation_controls() -> None:
+    text = SCRIPT.read_text(encoding="utf-8")
+    for token in [
+        '"history_observation_count_reconciled"',
+        '"identity_release_semantic_reconciled"',
+        '"failure_reasons"',
+        "write_csv(output_audit, supplemental_audit, AUDIT_FIELDS)",
+        'extrasaction="raise"',
     ]:
         assert token in text
 
