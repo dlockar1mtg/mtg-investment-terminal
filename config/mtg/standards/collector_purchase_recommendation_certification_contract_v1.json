@@ -1,0 +1,41 @@
+{
+  "contract_name": "Collector Purchase Recommendation Certification",
+  "contract_version": "1.0.0",
+  "snapshot_id": "collector-20260801T211201Z-7688afbd",
+  "required_ranked_products": 49,
+  "primary_horizon_days": 365,
+  "authorities": {
+    "final_rankings": "data/governance/permanence/certification/collector_v1_final_governed_ranking/collector_final_governed_1_49_rankings.csv",
+    "ranking_summary": "data/governance/permanence/certification/collector_v1_final_governed_ranking/collector_final_governed_ranking_summary.json",
+    "final_forecasts": "data/governance/permanence/certification/collector_v1_canonical_identity_lineage_recertification/collector_final_authority_bound_49_product_forecasts.csv",
+    "ranking_eligibility": "data/governance/permanence/certification/collector_v1_final_ranking_eligibility/collector_final_ranking_eligibility_authority.csv",
+    "current_price_authority": "data/governance/permanence/certification/collector_v1_final_premodel_user_exclusion_resolution/collector_final_current_price_authority.csv"
+  },
+  "entry_rules": {
+    "strong_candidate_max_rank": 10,
+    "strong_candidate_min_score": 65.0,
+    "strong_candidate_max_loss_probability": 0.05,
+    "strong_candidate_min_50pct_gain_probability": 0.45,
+    "candidate_max_rank": 15,
+    "candidate_min_score": 58.0,
+    "candidate_max_loss_probability": 0.08,
+    "p25_required_upside_strong": 0.10,
+    "p25_required_upside_candidate": 0.00
+  },
+  "budget_context_bands": [
+    {"label": "UNDER_400", "maximum_price": 400.0},
+    {"label": "400_TO_600", "maximum_price": 600.0},
+    {"label": "600_TO_1000", "maximum_price": 1000.0},
+    {"label": "OVER_1000", "maximum_price": null}
+  ],
+  "rules": {
+    "conditional_products_must_remain_purchase_ineligible": true,
+    "current_price_must_match_certified_authority": true,
+    "p25_entry_ceiling_must_be_used": true,
+    "budget_bands_are_context_not_hard_user_limits": true,
+    "one_box_analysis_only": true,
+    "forecast_values_must_not_be_modified": true,
+    "purchase_recommendations_authorized_only_for_certified_candidates": true
+  },
+  "expected_status": "PASS_COLLECTOR_PURCHASE_RECOMMENDATION_CERTIFICATION"
+}
