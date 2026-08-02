@@ -7,7 +7,7 @@ from scripts import verify_collector_v1_snapshot_bound_authorities as verifier
 
 
 def test_certified_august_1_authorities_verify_fail_closed() -> None:
-    result = verifier.main()
+    result = verifier.main([])
     assert result == 0
 
     output = (
