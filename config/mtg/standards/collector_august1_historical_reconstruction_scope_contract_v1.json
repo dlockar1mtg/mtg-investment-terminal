@@ -1,0 +1,47 @@
+{
+  "contract_name": "Collector August 1 Historical Reconstruction Scope",
+  "contract_version": "1.0.0",
+  "governing_snapshot": {
+    "snapshot_id": "collector-20260801T211201Z-7688afbd",
+    "operating_date": "2026-08-01",
+    "timezone": "America/Chicago",
+    "source_bundle_sha256": "7688afbd6dfb4483c0a316dad6a2a05458944434a91a3f714568e5f4a10c7890",
+    "certified_product_count": 50
+  },
+  "required_inputs": {
+    "provider_reconciliation_status": "PASS_COLLECTOR_AUGUST1_PROVIDER_PACKAGE_RECONCILIATION",
+    "feature_matrix_role": "feature_matrix",
+    "tcgplayer_component_required": true,
+    "ebay_component_required": true,
+    "wizards_release_dates_embedded_in_foundation": true
+  },
+  "required_controls": {
+    "certified_august1_identity_universe_only": true,
+    "older_output_artifact_as_input_prohibited": true,
+    "broad_repository_scan_prohibited": true,
+    "current_snapshot_as_history_prohibited": true,
+    "source_observation_dates_must_be_preserved": true,
+    "recreated_output_requires_provider_route_and_sha256": true,
+    "tcgplayer_market_price_and_ebay_listing_supply_must_remain_separate": true,
+    "ebay_listing_price_cannot_become_authoritative_market_price": true,
+    "release_dates_are_reference_metadata_not_price_history": true
+  },
+  "required_reconstruction_outputs": [
+    "tcgplayer_historical_market_price_candidate.csv",
+    "ebay_historical_listing_supply_candidate.csv",
+    "historical_reconstruction_lineage.json",
+    "historical_reconstruction_manifest.json"
+  ],
+  "authorization": {
+    "historical_reconstruction_scope_certification_authorized": true,
+    "historical_source_reconstruction_authorized": false,
+    "historical_observation_ledger_build_authorized": false,
+    "raw_historical_price_authority_certified": false,
+    "historical_coverage_assessment_authorized": false,
+    "lifecycle_panel_build_authorized": false,
+    "model_tournament_authorized": false,
+    "production_forecasting_authorized": false,
+    "uip_delivery_authorized": false,
+    "purchase_recommendations_authorized": false
+  }
+}
