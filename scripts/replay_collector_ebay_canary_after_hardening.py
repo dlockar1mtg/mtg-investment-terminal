@@ -48,18 +48,77 @@ def product_from_row(row: dict[str, str]) -> CanonicalProduct:
     )
 
 
+def _clean(value: object) -> str:
+    return str(value or "").strip()
+
+
+def build_product_indexes(universe_rows: list[dict[str, str]]) -> tuple[
+    dict[str, CanonicalProduct],
+    dict[str, CanonicalProduct],
+    dict[str, CanonicalProduct],
+]:
+    by_tcgplayer: dict[str, CanonicalProduct] = {}
+    by_canonical_id: dict[str, CanonicalProduct] = {}
+    by_name: dict[str, CanonicalProduct] = {}
+    for row in universe_rows:
+        product = product_from_row(row)
+        if product.tcgplayer_product_id:
+            by_tcgplayer[product.tcgplayer_product_id] = product
+        if product.canonical_product_id:
+            by_canonical_id[product.canonical_product_id] = product
+        if product.canonical_product_name:
+            by_name[product.canonical_product_name.casefold()] = product
+    return by_tcgplayer, by_canonical_id, by_name
+
+
+def resolve_product(
+    listing: dict[str, str],
+    by_tcgplayer: dict[str, CanonicalProduct],
+    by_canonical_id: dict[str, CanonicalProduct],
+    by_name: dict[str, CanonicalProduct],
+) -> tuple[CanonicalProduct | None, str]:
+    tcgplayer_id = _clean(listing.get("tcgplayer_product_id"))
+    if tcgplayer_id and tcgplayer_id in by_tcgplayer:
+        return by_tcgplayer[tcgplayer_id], "TCGPLAYER_PRODUCT_ID"
+
+    canonical_id = _clean(listing.get("canonical_product_id"))
+    if canonical_id and canonical_id in by_canonical_id:
+        return by_canonical_id[canonical_id], "CANONICAL_PRODUCT_ID"
+
+    canonical_name = _clean(listing.get("canonical_product_name"))
+    if canonical_name and canonical_name.casefold() in by_name:
+        return by_name[canonical_name.casefold()], "CANONICAL_PRODUCT_NAME"
+
+    return None, "UNRESOLVED"
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--strict", action="store_true")
     args = parser.parse_args()
 
     listings = read_csv(LISTINGS_PATH)
-    products = {row["tcgplayer_product_id"]: product_from_row(row) for row in read_csv(UNIVERSE_PATH)}
+    universe_rows = read_csv(UNIVERSE_PATH)
+    by_tcgplayer, by_canonical_id, by_name = build_product_indexes(universe_rows)
     observed = datetime.now(timezone.utc).isoformat()
     rows: list[dict[str, object]] = []
+    unresolved_rows: list[dict[str, str]] = []
+    resolution_methods: Counter[str] = Counter()
 
     for old in listings:
-        product = products[old["tcgplayer_product_id"]]
+        product, resolution_method = resolve_product(old, by_tcgplayer, by_canonical_id, by_name)
+        resolution_methods[resolution_method] += 1
+        if product is None:
+            unresolved_rows.append({
+                "ebay_item_id": _clean(old.get("ebay_item_id")),
+                "canonical_product_id": _clean(old.get("canonical_product_id")),
+                "canonical_product_name": _clean(old.get("canonical_product_name")),
+                "tcgplayer_product_id": _clean(old.get("tcgplayer_product_id")),
+                "title": _clean(old.get("title")),
+                "resolution_method": resolution_method,
+            })
+            continue
+
         item = {
             "itemId": old.get("ebay_item_id", ""),
             "title": old.get("title", ""),
@@ -70,6 +129,8 @@ def main() -> int:
         reasons = new.exclusion_reasons
         rows.append({
             **asdict(new),
+            "resolved_tcgplayer_product_id": product.tcgplayer_product_id,
+            "product_resolution_method": resolution_method,
             "prior_match_state": old.get("match_state", ""),
             "classification_transition": f"{old.get('match_state', '')}->{new.match_state}",
             "year_parsed_as_quantity": bool(YEAR_QUANTITY.search(reasons)),
@@ -83,20 +144,25 @@ def main() -> int:
     lotr_accepts = sum(bool(row["lotr_standard_display_accepted"]) for row in rows)
     state_counts = Counter(row["match_state"] for row in rows)
 
+    replay_complete = len(rows) == len(listings) == 601 and not unresolved_rows
     summary = {
         "block_name": "Collector eBay Canary Hardened Matcher Replay",
-        "block_version": "1.0.0",
+        "block_version": "1.0.1",
         "generated_at": observed,
         "offline_only": True,
         "quota_calls": 0,
         "matcher_version": MATCHER_VERSION,
+        "input_listing_rows": len(listings),
         "replayed_rows": len(rows),
+        "unresolved_product_rows": len(unresolved_rows),
+        "product_resolution_methods": dict(sorted(resolution_methods.items())),
         "state_counts": dict(sorted(state_counts.items())),
         "transition_counts": dict(sorted(transitions.items())),
         "year_as_quantity_defects": year_defects,
         "unsafe_accepted_rows": unsafe_accepts,
         "lotr_accepted_rows": lotr_accepts,
-        "full_universe_collection_authorized": len(rows) == 601 and year_defects == 0 and unsafe_accepts == 0 and lotr_accepts >= 10,
+        "replay_complete": replay_complete,
+        "full_universe_collection_authorized": replay_complete and year_defects == 0 and unsafe_accepts == 0 and lotr_accepts >= 10,
     }
     summary["status"] = (
         "PASS_CANARY_HARDENED_REPLAY_FULL_UNIVERSE_READY"
@@ -106,6 +172,7 @@ def main() -> int:
 
     OUTPUT_ROOT.mkdir(parents=True, exist_ok=True)
     write_csv(OUTPUT_ROOT / "collector_ebay_canary_hardened_replay.csv", rows)
+    write_csv(OUTPUT_ROOT / "collector_ebay_canary_hardened_replay_unresolved_products.csv", unresolved_rows)
     (OUTPUT_ROOT / "collector_ebay_canary_hardened_replay_summary.json").write_text(json.dumps(summary, indent=2), encoding="utf-8")
     print(json.dumps(summary, indent=2))
     return 0 if (not args.strict or summary["full_universe_collection_authorized"]) else 1
