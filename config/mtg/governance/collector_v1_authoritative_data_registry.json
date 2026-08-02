@@ -1,0 +1,68 @@
+{
+  "registry_name": "Collector V1 Authoritative Data Registry",
+  "registry_version": "1.0.0",
+  "effective_date": "2026-08-02",
+  "active_universe_policy": "ENGLISH_ONLY_50_PRODUCT_COLLECTOR_DISPLAY_UNIVERSE",
+  "rules": {
+    "all_pipeline_steps_must_resolve_inputs_through_registry": true,
+    "no_recursive_file_discovery_for_authoritative_inputs": true,
+    "no_latest_file_selection_by_timestamp": true,
+    "source_artifacts_are_immutable": true,
+    "derived_modeling_views_must_reference_source_authority": true,
+    "missing_registered_input_is_a_hard_failure": true,
+    "hash_mismatch_is_a_hard_failure": true
+  },
+  "authorities": {
+    "active_universe": {
+      "path": "data/governance/permanence/certification/collector_v1_active_english_universe/collector_v1_active_canonical_routes.csv",
+      "role": "ACTIVE_PRODUCT_UNIVERSE",
+      "grain": "ONE_ROW_PER_ACTIVE_TCGPLAYER_PRODUCT_ID"
+    },
+    "historical_product_certification": {
+      "path": "artifacts/certification/collector_boosters/candidate_v1_0_0/history_certification_display_only_v1_0_0/collector_history_product_certification.csv",
+      "role": "AUTHORITATIVE_HISTORY_ELIGIBILITY_AND_COVERAGE",
+      "grain": "ONE_ROW_PER_CERTIFIED_COLLECTOR_DISPLAY_PRODUCT"
+    },
+    "historical_forecast_eligible": {
+      "path": "artifacts/certification/collector_boosters/candidate_v1_0_0/history_certification_display_only_v1_0_0/collector_history_forecast_eligible.csv",
+      "role": "AUTHORITATIVE_DIRECT_HISTORY_ELIGIBLE_PRODUCTS",
+      "grain": "ONE_ROW_PER_FORECAST_ELIGIBLE_PRODUCT"
+    },
+    "deep_history": {
+      "path": "data/operations/collector_deep_history_recovery/candidate_v1_0_0/collector_deep_history_candidate.csv",
+      "role": "AUTHORITATIVE_DEEP_PRICE_HISTORY_CANDIDATE",
+      "grain": "SOURCE_DEFINED_MULTI_DATE_PRODUCT_HISTORY",
+      "requires_downstream_grain_certification": true
+    },
+    "safe_monthly_history": {
+      "path": "data/governance/permanence/certification/collector_safe_monthly_history/collector_safe_monthly_history_all.csv",
+      "role": "AUTHORITATIVE_SAFE_MONTHLY_MODELING_HISTORY",
+      "grain": "ONE_ROW_PER_PRODUCT_PER_MONTH"
+    },
+    "current_price": {
+      "path": "data/staging/purchase_refresh/2026-07-31/latest_prices.csv",
+      "role": "CURRENT_TCGCSV_PRICE_VINTAGE"
+    },
+    "release_authority": {
+      "path": "data/governance/permanence/certification/collector_v1_active_english_universe/collector_v1_active_release.csv",
+      "role": "OFFICIAL_RELEASE_AUTHORITY"
+    },
+    "structural_authority": {
+      "path": "data/governance/permanence/certification/collector_v1_active_english_universe/collector_v1_active_normalized.csv",
+      "role": "PACKAGING_AND_PRODUCT_STRUCTURE_AUTHORITY"
+    },
+    "comparables": {
+      "path": "data/governance/permanence/certification/collector_v1_active_english_universe/collector_v1_active_comparables.csv",
+      "role": "SELECTED_COMPARABLE_EVIDENCE"
+    },
+    "scarcity_v1": {
+      "path": "data/governance/permanence/certification/collector_v1_active_english_universe/collector_v1_active_scarcity.csv",
+      "role": "CURRENT_SNAPSHOT_SUPPLY_SCARCITY_V1"
+    },
+    "current_feature_matrix": {
+      "path": "data/governance/permanence/certification/collector_v1_feature_matrix/collector_v1_feature_matrix.csv",
+      "role": "DERIVED_CURRENT_FEATURE_MATRIX",
+      "authoritative_for_forecasting": false
+    }
+  }
+}
