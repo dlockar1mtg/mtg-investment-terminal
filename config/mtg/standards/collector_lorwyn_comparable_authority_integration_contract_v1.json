@@ -1,0 +1,38 @@
+{
+  "contract_name": "Collector Lorwyn Supplemental Comparable Authority Integration",
+  "contract_version": "1.0.0",
+  "snapshot_id": "collector-20260801T211201Z-7688afbd",
+  "requested_product_name": "Lorwyn Eclipsed - Collector Booster Display",
+  "required_original_rows": 115,
+  "required_supplemental_rows": 6,
+  "required_integrated_rows": 121,
+  "required_original_targets": 23,
+  "required_integrated_targets": 24,
+  "authorities": {
+    "product_and_current_price": "data/governance/permanence/certification/collector_v1_final_premodel_user_exclusion_resolution/collector_final_current_price_authority.csv",
+    "release_date": "data/governance/permanence/certification/collector_v1_wizards_release_date_authority/collector_wizards_release_date_authority.csv",
+    "historical_observations": "data/governance/permanence/certification/collector_v1_august1_historical_observation_ledger/collector_august1_historical_observation_ledger.csv",
+    "original_comparable_pool": "data/governance/permanence/certification/collector_v1_final_premodel_user_exclusion_resolution/collector_comparable_pool_certification.csv",
+    "supplemental_lorwyn_group": "data/governance/permanence/certification/collector_v1_lorwyn_target_specific_comparable_certification/collector_lorwyn_certified_comparable_group.csv",
+    "supplemental_lorwyn_summary": "data/governance/permanence/certification/collector_v1_lorwyn_target_specific_comparable_certification/collector_lorwyn_comparable_certification_summary.json"
+  },
+  "output_authority": "data/governance/permanence/certification/collector_v1_lorwyn_comparable_authority_integration/collector_integrated_comparable_pool_authority.csv",
+  "rules": {
+    "certified_authority_is_only_identity_source": true,
+    "manual_identity_assertions_prohibited": true,
+    "original_authority_must_remain_byte_identical": true,
+    "supplemental_certification_must_pass": true,
+    "target_and_member_names_must_match_authority": true,
+    "target_and_member_release_dates_must_match_authority": true,
+    "peer_release_must_precede_target_release": true,
+    "supplemental_members_must_have_history": true,
+    "duplicate_target_member_pairs_prohibited": true,
+    "self_comparisons_prohibited": true,
+    "silent_field_substitution_prohibited": true,
+    "projection_authorized": false,
+    "production_forecast_authorized": false,
+    "ranking_authorized": false,
+    "purchase_recommendations_authorized": false
+  },
+  "expected_status": "PASS_COLLECTOR_LORWYN_COMPARABLE_AUTHORITY_INTEGRATION"
+}
