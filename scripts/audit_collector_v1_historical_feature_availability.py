@@ -12,8 +12,8 @@ ROOT = Path(__file__).resolve().parents[1]
 CONTRACT = ROOT / "config/mtg/standards/collector_historical_feature_availability_contract_v1.json"
 OUT = ROOT / "data/governance/permanence/certification/collector_v1_historical_feature_availability"
 SCAN_ROOTS = [ROOT / "data", ROOT / "artifacts", ROOT / "terminal2"]
-DATE_HINTS = ("date", "timestamp", "observed_at", "collected_at", "as_of", "generated_at", "release")
-IDENTITY_HINTS = ("tcgplayer_product_id", "product_id", "investment_product_id", "sku", "name")
+DATE_HINTS = ("observation_date", "observed_at", "collected_at", "as_of_date", "snapshot_date", "price_date", "market_date", "release_date", "date")
+IDENTITY_HINTS = ("tcgplayer_product_id", "product_id", "investment_product_id", "canonical_product_id", "sku")
 FEATURE_FAMILIES = {
     "price": ("price", "market_value", "valuation"),
     "product_identity": ("product_id", "tcgplayer", "product_name", "sku"),
@@ -26,6 +26,53 @@ FEATURE_FAMILIES = {
     "comparable_features": ("comparable", "similarity", "peer"),
     "market_regime": ("regime", "market_index", "macro"),
 }
+
+# Paths and artifact types that are derived outputs, certifications, backups, current views,
+# or delivery products. They may describe historical work but are not raw replay evidence.
+EXCLUDED_PATH_TERMS = (
+    "\\certification\\",
+    "\\delivery\\",
+    "\\terminal_delivery\\",
+    "\\uip_delivery\\",
+    "\\governed_terminal\\",
+    "\\warehouse\\current\\",
+    "\\backups\\",
+    "\\backup_",
+    "\\repair_input\\",
+    "\\weekend_readiness\\",
+    "\\forecasts.csv",
+    "\\recommendations.csv",
+    "\\rankings.csv",
+    "\\dashboard.csv",
+    "summary.json",
+    "certification.json",
+    "manifest.json",
+    "review_queue",
+    "manual_review",
+    "diagnostic",
+    "prediction",
+    "tournament",
+    "forecast",
+    "recommendation",
+    "ranking",
+)
+
+# Source path terms that strongly indicate row-level observations or governed historical panels.
+OBSERVATION_PATH_TERMS = (
+    "history",
+    "historical",
+    "observation",
+    "ledger",
+    "daily_price",
+    "monthly_history",
+    "price_history",
+    "listing_history",
+    "supply_snapshot",
+    "release_date_authority",
+    "source_history",
+    "canonical_daily",
+    "adjudicated_analytical_history",
+)
 
 
 def sha256(path: Path) -> str:
@@ -60,12 +107,12 @@ def inspect_tabular(path: Path) -> tuple[list[str], int | None]:
     suffix = path.suffix.lower()
     try:
         if suffix == ".csv":
-            frame = pd.read_csv(path, nrows=200, dtype=str, encoding="utf-8-sig")
+            frame = pd.read_csv(path, nrows=500, dtype=str, encoding="utf-8-sig")
         elif suffix in {".parquet", ".feather"}:
             frame = pd.read_parquet(path) if suffix == ".parquet" else pd.read_feather(path)
-            frame = frame.head(200)
+            frame = frame.head(500)
         elif suffix == ".xlsx":
-            frame = pd.read_excel(path, nrows=200, dtype=str)
+            frame = pd.read_excel(path, nrows=500, dtype=str)
         else:
             return [], None
         return [str(c) for c in frame.columns], len(frame)
@@ -76,9 +123,8 @@ def inspect_tabular(path: Path) -> tuple[list[str], int | None]:
 def inspect_json(path: Path) -> list[str]:
     try:
         if path.suffix.lower() == ".jsonl":
-            with path.open("r", encoding="utf-8-sig") as handle:
-                first_line = next((line for line in handle if line.strip()), "")
-            payload = json.loads(first_line) if first_line else None
+            first = next((line for line in path.read_text(encoding="utf-8-sig").splitlines() if line.strip()), "")
+            payload = json.loads(first) if first else None
         else:
             payload = json.loads(path.read_text(encoding="utf-8-sig"))
     except Exception:
@@ -90,6 +136,33 @@ def inspect_json(path: Path) -> list[str]:
     return []
 
 
+def first_matching_column(columns: list[str], hints: tuple[str, ...]) -> str:
+    lowered = {str(c).lower(): str(c) for c in columns}
+    for hint in hints:
+        if hint in lowered:
+            return lowered[hint]
+    for column in columns:
+        low = str(column).lower()
+        if any(hint in low for hint in hints):
+            return str(column)
+    return ""
+
+
+def semantic_role(rel: str, columns: list[str], family: str) -> tuple[str, str]:
+    low = rel.lower().replace("/", "\\")
+    if any(term in low for term in EXCLUDED_PATH_TERMS):
+        return "DERIVED_OR_OPERATIONAL_OUTPUT", "derived_or_operational_artifact"
+    if family in {"product_identity", "release_and_age", "structural_product_attributes"}:
+        if any(term in low for term in ("registry", "authority", "product_master", "release_metadata", "metadata")):
+            return "STATIC_AUTHORITY", ""
+    if any(term in low for term in OBSERVATION_PATH_TERMS):
+        return "OBSERVATION_CANDIDATE", ""
+    observation_columns = {"price", "market_price", "market_value", "low_price", "mid_price", "listing_count", "quantity", "supply", "sales_count"}
+    if any(str(c).lower() in observation_columns for c in columns):
+        return "OBSERVATION_CANDIDATE", ""
+    return "UNVERIFIED_SEMANTIC_ROLE", "source_semantics_not_verified"
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--strict", action="store_true")
@@ -97,6 +170,7 @@ def main(argv: list[str] | None = None) -> int:
     OUT.mkdir(parents=True, exist_ok=True)
     contract = json.loads(CONTRACT.read_text(encoding="utf-8-sig"))
     rows: list[dict] = []
+
     for path in candidate_files():
         rel = str(path.relative_to(ROOT))
         columns, sample_rows = inspect_tabular(path)
@@ -106,25 +180,37 @@ def main(argv: list[str] | None = None) -> int:
         family = classify_family(combined)
         if family == "other":
             continue
-        date_field = next((c for c in columns if any(h in c.lower() for h in DATE_HINTS)), "")
-        identity_field = next((c for c in columns if any(h == c.lower() or h in c.lower() for h in IDENTITY_HINTS)), "")
+
+        date_field = first_matching_column(columns, DATE_HINTS)
+        identity_field = first_matching_column(columns, IDENTITY_HINTS)
+        role, role_reason = semantic_role(rel, columns, family)
         static_family = family in {"product_identity", "structural_product_attributes", "release_and_age"}
-        if date_field and identity_field:
-            state = "DIRECT_POINT_IN_TIME"
-            eligible = True
-            reason = ""
-        elif static_family and identity_field:
+
+        if role == "DERIVED_OR_OPERATIONAL_OUTPUT":
+            state = "CURRENT_ONLY"
+            eligible = False
+            reason = role_reason
+        elif role == "STATIC_AUTHORITY" and static_family and identity_field:
             state = "STATIC_KNOWN_BY_CHECKPOINT"
             eligible = True
             reason = ""
-        elif date_field:
+        elif role == "OBSERVATION_CANDIDATE" and date_field and identity_field:
+            state = "DIRECT_POINT_IN_TIME"
+            eligible = True
+            reason = ""
+        elif date_field and not identity_field:
             state = "DATE_UNVERIFIED"
             eligible = False
             reason = "identity_field_not_verified"
-        else:
+        elif identity_field and not date_field:
             state = "DATE_UNVERIFIED"
             eligible = False
             reason = "historical_observation_date_not_verified"
+        else:
+            state = "UNAVAILABLE"
+            eligible = False
+            reason = role_reason or "date_and_identity_not_verified"
+
         rows.append({
             "feature_name": Path(rel).stem,
             "feature_family": family,
@@ -138,8 +224,10 @@ def main(argv: list[str] | None = None) -> int:
             "availability_state": state,
             "replay_eligible": eligible,
             "exclusion_reason": reason,
-            "provenance_notes": f"schema-level audit; sampled_rows={sample_rows if sample_rows is not None else ''}",
+            "semantic_role": role,
+            "provenance_notes": f"schema-and-path audit; sampled_rows={sample_rows if sample_rows is not None else ''}",
         })
+
     ledger = pd.DataFrame(rows)
     ledger_path = OUT / "collector_v1_historical_feature_availability_ledger.csv"
     ledger.to_csv(ledger_path, index=False)
@@ -153,10 +241,17 @@ def main(argv: list[str] | None = None) -> int:
     )
     family_path = OUT / "collector_v1_historical_feature_availability_summary.csv"
     family_summary.to_csv(family_path, index=False)
+
+    current_or_derived_eligible = (
+        ledger[ledger["availability_state"].eq("CURRENT_ONLY") & ledger["replay_eligible"].eq(True)]
+        if not ledger.empty else ledger
+    )
     checks = {
         "contract_present": CONTRACT.is_file(),
         "candidate_sources_found": len(ledger) > 0,
         "required_ledger_fields_present": set(contract["required_ledger_fields"]).issubset(ledger.columns),
+        "semantic_role_recorded": "semantic_role" in ledger.columns,
+        "no_current_or_derived_artifact_replay_eligible": len(current_or_derived_eligible) == 0,
         "no_current_state_backfill_authorized": contract["controls"]["current_state_backfill_prohibited"] is True,
         "historical_zero_fill_prohibited": contract["controls"]["historical_zero_fill_prohibited"] is True,
         "unknown_date_not_point_in_time": contract["controls"]["unknown_date_is_not_point_in_time"] is True,
@@ -165,12 +260,13 @@ def main(argv: list[str] | None = None) -> int:
     failures = [k for k, v in checks.items() if not bool(v)]
     summary = {
         "block_name": "Collector V1 Historical Feature Availability Audit",
-        "block_version": "1.0.1",
+        "block_version": "1.1.0",
         "generated_at_utc": datetime.now(timezone.utc).isoformat(),
         "sources_reviewed": len(ledger),
         "replay_eligible_sources": len(eligible),
         "availability_state_counts": ledger["availability_state"].value_counts().sort_index().to_dict() if not ledger.empty else {},
         "feature_family_counts": ledger["feature_family"].value_counts().sort_index().to_dict() if not ledger.empty else {},
+        "semantic_role_counts": ledger["semantic_role"].value_counts().sort_index().to_dict() if not ledger.empty else {},
         "ledger_path": str(ledger_path.relative_to(ROOT)),
         "ledger_sha256": sha256(ledger_path),
         "family_summary_path": str(family_path.relative_to(ROOT)),
@@ -178,14 +274,13 @@ def main(argv: list[str] | None = None) -> int:
         "checks": checks,
         "critical_failures": failures,
         "feature_availability_audit_certified": not failures,
+        "row_level_temporal_verification_required": True,
         "lifecycle_panel_build_authorized": False,
         "model_tournament_authorized": False,
         "purchase_recommendations_authorized": False,
         "status": "PASS_COLLECTOR_V1_HISTORICAL_FEATURE_AVAILABILITY_AUDIT" if not failures else "FAIL_COLLECTOR_V1_HISTORICAL_FEATURE_AVAILABILITY_AUDIT",
     }
-    (OUT / "collector_v1_historical_feature_availability_audit_summary.json").write_text(
-        json.dumps(summary, indent=2), encoding="utf-8"
-    )
+    (OUT / "collector_v1_historical_feature_availability_audit_summary.json").write_text(json.dumps(summary, indent=2), encoding="utf-8")
     print(json.dumps(summary, indent=2))
     return 0 if not failures else (1 if args.strict else 0)
 
