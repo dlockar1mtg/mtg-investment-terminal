@@ -26,7 +26,7 @@ def main() -> int:
     generated = datetime.now(timezone.utc)
     command = [
         sys.executable,
-        "scripts/adjudicate_collector_ebay_day_one_multi_product_accepts.py",
+        "scripts/run_collector_ebay_day_one_multi_product_adjudication_with_schema_adapter.py",
         "--winner-margin",
         str(args.winner_margin),
     ]
@@ -40,10 +40,12 @@ def main() -> int:
     passed = result.returncode == 0 and summary.get("status") == "PASS_DAY_ONE_MULTI_PRODUCT_ADJUDICATION_BASELINE_PROMOTED"
     project = {
         "block_name": "Collector eBay Day-One Multi-Product Adjudication and Project Control",
-        "block_version": "1.0.0",
+        "block_version": "1.0.1",
         "generated_at": generated.isoformat(),
         "offline_only": True,
         "quota_calls": 0,
+        "schema_adapter_used": True,
+        "immutable_replay_source_mutated": False,
         "steps": [{"command": command, "return_code": result.returncode, "passed": result.returncode == 0}],
         "adjudication_passed": passed,
         "original_accepted_rows": summary.get("original_accepted_rows", 0),
