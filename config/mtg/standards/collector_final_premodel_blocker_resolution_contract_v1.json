@@ -1,11 +1,11 @@
 {
   "contract_name": "Collector Final Pre-Model Blocker Resolution",
-  "contract_version": "1.0.0",
+  "contract_version": "1.0.1",
   "governing_snapshot_id": "collector-20260801T211201Z-7688afbd",
   "required_product_count": 50,
   "required_ledger_rows": 1215,
   "required_anomaly_rows": 12,
-  "required_comparable_route_products": 24,
+  "required_comparable_route_products": 25,
   "minimum_comparables_per_product": 3,
   "maximum_comparables_per_product": 5,
   "minimum_direct_comparable_observations": 12,
@@ -33,7 +33,8 @@
     "presale_segmented_from_post_release": true,
     "method_switch_returns_excluded_from_primary_fit": true,
     "comparable_selection_time_safe": true,
-    "forecast_generation_separate_from_purchase_authorization": true
+    "forecast_generation_separate_from_purchase_authorization": true,
+    "all_non_direct_products_evaluated_for_comparable_routing": true
   },
   "required_upstream_statuses": {
     "wizards_release_date_authority": "PASS_COLLECTOR_WIZARDS_RELEASE_DATE_AUTHORITY",
