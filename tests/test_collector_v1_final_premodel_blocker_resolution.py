@@ -11,7 +11,7 @@ SCRIPT = ROOT / "scripts/certify_collector_v1_final_premodel_blocker_resolution.
 def test_contract_exists_and_is_parseable() -> None:
     payload = json.loads(CONTRACT.read_text(encoding="utf-8"))
     assert payload["contract_name"] == "Collector Final Pre-Model Blocker Resolution"
-    assert payload["contract_version"] == "1.0.0"
+    assert payload["contract_version"] == "1.0.1"
     assert payload["required_product_count"] == 50
     assert payload["required_ledger_rows"] == 1215
     assert payload["required_anomaly_rows"] == 12
@@ -25,6 +25,7 @@ def test_contract_preserves_fail_closed_purchase_separation() -> None:
     assert controls["forecast_generation_separate_from_purchase_authorization"] is True
     assert controls["current_only_features_blocked_from_backtest"] is True
     assert controls["comparable_selection_time_safe"] is True
+    assert controls["insufficient_evidence_may_receive_governed_deferral"] is True
 
 
 def test_contract_supports_mtg_standard_routes() -> None:
