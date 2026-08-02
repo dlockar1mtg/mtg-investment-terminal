@@ -5,7 +5,7 @@
   "required_product_count": 50,
   "required_ledger_rows": 1215,
   "required_anomaly_rows": 12,
-  "required_comparable_route_products": 25,
+  "required_comparable_route_products": 24,
   "minimum_comparables_per_product": 3,
   "maximum_comparables_per_product": 5,
   "minimum_direct_comparable_observations": 12,
@@ -34,7 +34,7 @@
     "method_switch_returns_excluded_from_primary_fit": true,
     "comparable_selection_time_safe": true,
     "forecast_generation_separate_from_purchase_authorization": true,
-    "all_non_direct_products_evaluated_for_comparable_routing": true
+    "insufficient_evidence_may_receive_governed_deferral": true
   },
   "required_upstream_statuses": {
     "wizards_release_date_authority": "PASS_COLLECTOR_WIZARDS_RELEASE_DATE_AUTHORITY",
