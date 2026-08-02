@@ -1,6 +1,6 @@
 {
   "contract_name": "Collector First-Year Breakout and Entry-Timing Contract",
-  "contract_version": "1.0.1",
+  "contract_version": "1.0.2",
   "domain_owner": "MTG",
   "purpose": "Identify recently released Collector Booster boxes while attractive entry opportunity remains, rather than only after most appreciation has occurred.",
   "lifecycle_window_days": 365,
@@ -156,7 +156,10 @@
     "A model using richer current evidence must not claim the same historical validation as a model tested on a narrower replay feature set."
   ],
   "authorization": {
-    "lifecycle_panel_reconstruction_authorized": true,
+    "feature_availability_audit_required_before_panel_build": true,
+    "raw_historical_price_authority_required_before_panel_build": true,
+    "historical_coverage_assessment_required_before_panel_build": true,
+    "lifecycle_panel_reconstruction_authorized": false,
     "breakout_model_execution_authorized": false,
     "purchase_recommendations_authorized": false
   }
