@@ -22,7 +22,11 @@ _FORM_PATTERNS: tuple[tuple[str, tuple[str, ...]], ...] = (
     ("EMPTY_PACKAGING", ("empty box", "box only", "wrapper only", "empty packaging")),
     ("ACCESSORY", ("deck box", "sleeves", "playmat", "binder", "storage box", "display stand")),
     ("SINGLE_CARD", ("single card", "individual card", "one card", "card only")),
-    ("CASE", ("master case", "sealed case", "case of", "factory case")),
+    # Standalone CASE is common in marketplace titles (for example,
+    # "Collector Booster Display CASE Sealed").  The padded phrase avoids
+    # matching words such as showcase while preserving the existing explicit
+    # case variants.
+    ("CASE", ("master case", "sealed case", "case of", "factory case", " case ")),
     ("LOOSE_PACK", ("single pack", "loose pack", "booster pack", "individual pack", "1 pack")),
     ("BOOSTER_DISPLAY", ("booster display", "booster box", "display box")),
     ("COMMANDER_DECK", ("commander deck",)),
@@ -128,7 +132,10 @@ def detect_quantity(value: object) -> int | None:
     patterns = (
         r"\bcase\s+of\s+(\d+)\b",
         r"\blot\s+of\s+(\d+)\b",
-        r"\b(?:x|qty\s*)?(\d+)\s*(?:x\s*)?(?:booster\s+)?(?:boxes|box|displays|display|packs|pack)\b",
+        # Prefix forms: 2x Collector Booster Boxes, 2 x booster displays.
+        r"\b(\d+)\s*[x×]\s*(?:collector\s+)?(?:booster\s+)?(?:boxes|box|displays|display|packs|pack)\b",
+        # Count-before-form variants, including an optional Collector qualifier.
+        r"\b(?:x|qty\s*)?(\d+)\s*(?:x\s*)?(?:collector\s+)?(?:booster\s+)?(?:boxes|box|displays|display|packs|pack)\b",
         r"\b(?:boxes|box|displays|display)\s*[x×]\s*(\d+)\b",
         r"\b[x×](\d+)\b",
     )
