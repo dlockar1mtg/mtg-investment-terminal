@@ -35,6 +35,7 @@ def test_archive_source_and_exception_are_governed() -> None:
     assert source["required_archive_backed_products"] == 49
     assert source["required_no_history_products"] == 1
     assert exception["tcgplayer_product_id"] == "706142"
+    assert exception["classification"] == "LEGITIMATE_POST_ARCHIVE_RELEASE_NO_HISTORY"
     assert exception["release_date"] == "2026-11-13"
     assert exception["release_state"] == "PRESALE"
     assert exception["direct_history_modeling_allowed"] is False
@@ -60,7 +61,6 @@ def test_script_contains_required_fail_closed_controls() -> None:
     text = SCRIPT.read_text(encoding="utf-8")
     required = [
         "PASS_COLLECTOR_AUGUST1_IDENTITY_AUTHORITY_AND_RECONSTRUCTION",
-        "LEGITIMATE_POST_ARCHIVE_RELEASE_NO_HISTORY",
         "CERTIFIED_TCGCSV_ARCHIVE_HISTORY",
         "ARCHIVE_BACKED_PRODUCT_COUNT_MISMATCH",
         "NO_HISTORY_PRODUCT_COUNT_MISMATCH",
