@@ -1,0 +1,37 @@
+{
+  "contract_name": "Collector V1 TCGCSV Historical Authority Verification",
+  "contract_version": "1.0.0",
+  "purpose": "Verify the sole surviving TCGCSV price candidate without confusing a valid current observation with historical replay coverage.",
+  "candidate_path": "data/operations/mtg_marketplace/lanes/tcgcsv_price_observations.csv",
+  "required_checks": {
+    "candidate_hash_verified": true,
+    "required_fields_present": true,
+    "positive_market_prices_only": true,
+    "valid_observation_timestamps_only": true,
+    "source_name_is_tcgcsv": true,
+    "product_identity_resolved": true,
+    "duplicate_product_timestamp_keys_prohibited": true,
+    "future_dated_rows_prohibited": true,
+    "provider_semantics_evidence_required": true,
+    "governed_ledger_reconciliation_required": true,
+    "historical_span_measured": true,
+    "checkpoint_coverage_measured": true
+  },
+  "authority_rules": {
+    "semantic_validity_does_not_imply_historical_coverage": true,
+    "single_day_observations_cannot_authorize_first_year_replay": true,
+    "minimum_distinct_observation_dates_for_90d_replay": 2,
+    "minimum_calendar_span_days_for_90d_replay": 90,
+    "minimum_calendar_span_days_for_180d_replay": 180,
+    "minimum_calendar_span_days_for_365d_replay": 365,
+    "unreconciled_rows_remain_current_production_only": true
+  },
+  "authorization_defaults": {
+    "tcgcsv_provider_semantics_certified": false,
+    "raw_historical_price_authority_certified": false,
+    "historical_coverage_assessment_authorized": false,
+    "lifecycle_panel_build_authorized": false,
+    "model_tournament_authorized": false,
+    "purchase_recommendations_authorized": false
+  }
+}
