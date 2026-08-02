@@ -110,20 +110,34 @@ def detect_completeness(value: object) -> str:
     return "UNSPECIFIED"
 
 
+def _valid_listing_quantity(raw: str) -> int | None:
+    try:
+        quantity = int(raw)
+    except ValueError:
+        return None
+    # Four-digit release years such as 2020 and 2022 were previously parsed as
+    # quantities when they appeared immediately before "booster box". Marketplace
+    # lot quantities above 200 are not actionable display counts and fail closed.
+    if 1900 <= quantity <= 2099 or quantity < 1 or quantity > 200:
+        return None
+    return quantity
+
+
 def detect_quantity(value: object) -> int | None:
     text = str(value or "").lower()
     patterns = (
         r"\bcase\s+of\s+(\d+)\b",
         r"\blot\s+of\s+(\d+)\b",
-        r"\b(\d+)\s+(?:booster\s+)?(?:boxes|box|displays|display|packs|pack)\b",
+        r"\b(?:x|qty\s*)?(\d+)\s*(?:x\s*)?(?:booster\s+)?(?:boxes|box|displays|display|packs|pack)\b",
+        r"\b(?:boxes|box|displays|display)\s*[x×]\s*(\d+)\b",
+        r"\b[x×](\d+)\b",
     )
     for pattern in patterns:
         match = re.search(pattern, text)
         if match:
-            try:
-                return int(match.group(1))
-            except ValueError:
-                return None
+            quantity = _valid_listing_quantity(match.group(1))
+            if quantity is not None:
+                return quantity
     return None
 
 
@@ -187,6 +201,8 @@ def classify_listing_identity(product_name: object, product_class: object, title
             hard.append(f"universal_product_form_conflict:{listing.product_form.lower()}")
         elif listing.product_form == "SEALED_PRODUCT":
             review.append("universal_missing_form_qualifier:booster_display")
+        if listing.quantity is not None and listing.quantity > 1:
+            hard.append("universal_quantity_conflict:multi_display_listing")
 
     if expected_language != "UNSPECIFIED":
         if listing.language == "UNSPECIFIED":
