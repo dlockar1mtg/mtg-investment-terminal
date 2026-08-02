@@ -76,7 +76,17 @@ def main(argv: list[str] | None = None) -> int:
                 "future_information_prohibited": True,
                 "release_age_alignment_required": True,
                 "comparable_selection_as_of_checkpoint_required": True,
-                "supply_demand_as_of_checkpoint_required": True,
+                "feature_availability_ledger_required": True,
+                "unavailable_features_remain_missing": True,
+                "historical_feature_invention_prohibited": True,
+                "historical_zero_fill_prohibited": True,
+                "supply_demand_if_available_at_checkpoint": True,
+                "all_supply_demand_metrics_required_at_checkpoint": False,
+                "compatible_feature_set_model_required": True,
+                "feature_coverage_confidence_adjustment_required": True,
+                "core_replay_lane_required": True,
+                "enhanced_replay_lane_allowed_when_supported": True,
+                "current_production_lane_separate_from_replay_validation": True,
                 "breakout_definition_tournament_required": True,
                 "breakout_model_tournament_required": True,
                 "entry_timing_model_required": True,
@@ -99,6 +109,9 @@ def main(argv: list[str] | None = None) -> int:
     required_metrics = set(contract["required_metrics"])
     required_states = set(contract["required_states"])
     required_outputs = set(contract["required_product_outputs"])
+    availability_policy = contract["historical_evidence_availability_policy"]
+    required_ledger_fields = set(availability_policy["required_feature_ledger_fields"])
+    required_coverage_outputs = set(availability_policy["required_coverage_outputs"])
     checks = {
         "foundation_certified": cert.get("current_foundation_certified") is True,
         "foundation_has_50_products": len(foundation) == 50,
@@ -108,6 +121,19 @@ def main(argv: list[str] | None = None) -> int:
         "all_products_receive_all_checkpoints": bool(matrix.groupby(KEY)["checkpoint_age_days"].nunique().eq(8).all()),
         "point_in_time_replay_required": bool(matrix["point_in_time_replay_required"].all()),
         "future_information_prohibited": bool(matrix["future_information_prohibited"].all()),
+        "feature_availability_ledger_required": bool(matrix["feature_availability_ledger_required"].all()),
+        "unavailable_features_remain_missing": bool(matrix["unavailable_features_remain_missing"].all()),
+        "historical_feature_invention_prohibited": bool(matrix["historical_feature_invention_prohibited"].all()),
+        "historical_zero_fill_prohibited": bool(matrix["historical_zero_fill_prohibited"].all()),
+        "all_supply_demand_metrics_not_required": bool(matrix["all_supply_demand_metrics_required_at_checkpoint"].eq(False).all()),
+        "available_supply_demand_may_be_used": bool(matrix["supply_demand_if_available_at_checkpoint"].all()),
+        "compatible_feature_set_models_required": bool(matrix["compatible_feature_set_model_required"].all()),
+        "feature_coverage_adjustment_required": bool(matrix["feature_coverage_confidence_adjustment_required"].all()),
+        "core_and_enhanced_lanes_separated": bool(
+            matrix["core_replay_lane_required"].all()
+            and matrix["enhanced_replay_lane_allowed_when_supported"].all()
+            and matrix["current_production_lane_separate_from_replay_validation"].all()
+        ),
         "all_rows_require_breakout_tournament": bool(matrix["breakout_model_tournament_required"].all()),
         "all_rows_require_entry_timing": bool(matrix["entry_timing_model_required"].all()),
         "all_rows_require_missed_entry_cost": bool(matrix["missed_entry_cost_required"].all()),
@@ -121,6 +147,7 @@ def main(argv: list[str] | None = None) -> int:
             "breakout_recall", "early_entry_precision", "median_signal_lead_days",
             "missed_entry_cost_pct", "opportunity_capture_pct",
             "appreciation_already_realized_pct", "remaining_expected_upside_pct",
+            "feature_coverage_ratio", "confidence_adjustment_for_feature_coverage",
         }.issubset(required_metrics),
         "late_opportunity_states_present": {
             "LATE_STAGE_MOMENTUM", "OPPORTUNITY_MOSTLY_REALIZED", "OVEREXTENDED"
@@ -128,8 +155,19 @@ def main(argv: list[str] | None = None) -> int:
         "required_current_outputs_present": {
             "first_year_breakout_probability", "early_opportunity_score", "entry_timing_status",
             "missed_entry_cost_pct", "price_appreciation_already_realized_pct",
-            "remaining_expected_upside_pct", "late_entry_risk",
+            "remaining_expected_upside_pct", "late_entry_risk", "feature_coverage_ratio",
+            "supply_demand_coverage_class", "historical_replay_lane",
+            "confidence_adjustment_for_feature_coverage",
         }.issubset(required_outputs),
+        "feature_ledger_contract_complete": {
+            "feature_name", "checkpoint_date", "availability_state", "observation_date",
+            "source_name", "source_sha256", "used_by_model", "exclusion_reason",
+        }.issubset(required_ledger_fields),
+        "coverage_output_contract_complete": {
+            "available_feature_count", "feature_coverage_ratio", "supply_demand_coverage_class",
+            "historical_replay_lane", "feature_missingness_summary",
+            "confidence_adjustment_for_feature_coverage",
+        }.issubset(required_coverage_outputs),
         "fixed_single_breakout_threshold_prohibited": contract["breakout_label_policy"]["fixed_single_threshold_prohibited"] is True,
         "breakout_definitions_compete": contract["breakout_label_policy"]["candidate_definitions_must_compete"] is True,
     }
@@ -137,7 +175,7 @@ def main(argv: list[str] | None = None) -> int:
     passed = not failures
     summary = {
         "block_name": "Collector V1 First-Year Breakout Reconstruction Plan",
-        "block_version": "1.0.0",
+        "block_version": "1.0.1",
         "governing_contract": f"{contract['contract_name']} v{contract['contract_version']}",
         "generated_at_utc": generated,
         "source_snapshot_id": SNAPSHOT_ID,
@@ -151,9 +189,15 @@ def main(argv: list[str] | None = None) -> int:
         "required_metric_count": len(required_metrics),
         "required_state_count": len(required_states),
         "required_product_output_count": len(required_outputs),
+        "required_feature_ledger_field_count": len(required_ledger_fields),
+        "required_coverage_output_count": len(required_coverage_outputs),
+        "historical_supply_demand_policy": "USE_ONLY_WHEN_POINT_IN_TIME_SUPPORTED",
+        "all_supply_demand_metrics_required_for_replay": False,
+        "unavailable_features_are_zero": False,
         "checks": {key: bool(value) for key, value in checks.items()},
         "critical_failures": failures,
         "lifecycle_panel_reconstruction_authorized": passed,
+        "feature_availability_audit_required_before_panel_build": True,
         "breakout_model_execution_authorized": False,
         "purchase_recommendations_authorized": False,
         "status": "PASS_COLLECTOR_V1_FIRST_YEAR_BREAKOUT_RECONSTRUCTION_PLAN" if passed else "FAIL_COLLECTOR_V1_FIRST_YEAR_BREAKOUT_RECONSTRUCTION_PLAN",
