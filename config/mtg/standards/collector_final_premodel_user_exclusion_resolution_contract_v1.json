@@ -1,0 +1,35 @@
+{
+  "contract_name": "Collector Final Pre-Model User Exclusion Resolution",
+  "contract_version": "1.0.0",
+  "governing_snapshot_id": "collector-20260801T211201Z-7688afbd",
+  "required_product_count": 50,
+  "required_ledger_rows": 1215,
+  "required_anomaly_rows": 12,
+  "required_comparable_route_products_evaluated": 24,
+  "required_user_exclusions": 1,
+  "required_certified_comparable_groups": 23,
+  "required_direct_history_calibrated_routes": 21,
+  "required_direct_history_limited_routes": 4,
+  "required_comparable_product_adjusted_routes": 23,
+  "required_forecast_authorized_products": 48,
+  "required_deferred_products": 2,
+  "minimum_comparables_per_certified_group": 3,
+  "maximum_comparables_per_certified_group": 5,
+  "allowed_user_exclusion_reason_codes": [
+    "USER_EXCLUDED_ULTRA_SCARCE_NON_PURCHASE_TARGET"
+  ],
+  "allowed_user_exclusion_route": "DEFERRED_INSUFFICIENT_EVIDENCE",
+  "expected_base_failure": "INSUFFICIENT_COMPARABLES:MTG-CANON-TCGPLAYER-515906:2",
+  "required_excluded_canonical_product_id": "MTG-CANON-TCGPLAYER-515906",
+  "required_controls": {
+    "governed_registry_retention": true,
+    "model_tournament_exclusion": true,
+    "ranking_exclusion": true,
+    "allocation_exclusion": true,
+    "purchase_analysis_blocked": true,
+    "purchase_recommendation_blocked": true,
+    "three_comparable_minimum_not_weakened": true,
+    "forecast_generation_separate_from_purchase_authorization": true
+  },
+  "expected_status": "PASS_COLLECTOR_FINAL_PREMODEL_USER_EXCLUSION_RESOLUTION"
+}
