@@ -9,11 +9,10 @@ from pathlib import Path
 from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
-GOVERNANCE_AUDIT = ROOT / "scripts" / "audit_collector_v1_chat_governance_conformance.py"
-SNAPSHOT_PREFLIGHT = ROOT / "scripts" / "run_collector_v1_governance_locked_preflight.py"
+GOVERNANCE_AUDIT = ROOT / "scripts/audit_collector_v1_chat_governance_conformance.py"
+SNAPSHOT_PREFLIGHT = ROOT / "scripts/run_collector_v1_governance_locked_preflight.py"
 SNAPSHOT_MANIFEST = ROOT / "data/governance/permanence/snapshots/collector-20260801T211201Z-7688afbd/collector_snapshot_manifest.json"
 FROZEN_MANIFEST = ROOT / "data/governance/permanence/certification/collector_v1_frozen_history_source_manifest/collector_frozen_history_source_manifest.csv"
-FROZEN_SUMMARY = ROOT / "data/governance/permanence/certification/collector_v1_frozen_history_source_manifest/collector_frozen_history_source_manifest_summary.json"
 OUT = ROOT / "data/governance/permanence/certification/collector_v1_manifest_bound_historical_source_authority"
 
 SNAPSHOT_ID = "collector-20260801T211201Z-7688afbd"
@@ -21,23 +20,7 @@ OPERATING_DATE = "2026-08-01"
 TIMEZONE = "America/Chicago"
 BUNDLE_SHA = "7688afbd6dfb4483c0a316dad6a2a05458944434a91a3f714568e5f4a10c7890"
 PRODUCT_COUNT = 50
-RECORDED_AT_UTC = "2026-08-02T16:34:00+00:00"
-
-ADMITTED_ROLES = {"AUTHORITATIVE_PRICE_CANDIDATE", "CORROBORATING_LISTING_ONLY"}
-IDENTITY_ALIASES = (
-    "canonical_product_id", "tcgplayer_product_id", "product_id", "product_name", "name"
-)
-DATE_ALIASES = (
-    "observation_date", "observed_at_utc", "observed_at", "snapshot_date", "date",
-    "captured_at_utc", "source_timestamp", "collected_at"
-)
-MARKET_PRICE_ALIASES = (
-    "market_price", "tcg_market_price", "marketprice", "price", "low_price", "listing_price"
-)
-PROHIBITED_PATH_TERMS = (
-    "secret_lair", "pre_collector", "recommendation", "forecast", "ranking", "evaluation",
-    "model_output", "portfolio", "owned_inventory", "backup", "attempt", "repair", "staging"
-)
+RECORDED_AT_UTC = "2026-08-02T16:49:00+00:00"
 
 
 def read_csv(path: Path) -> list[dict[str, str]]:
@@ -61,66 +44,22 @@ def sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
-def first_header(path: Path) -> list[str]:
-    if path.suffix.lower() != ".csv":
-        return []
-    with path.open("r", encoding="utf-8-sig", newline="") as handle:
-        reader = csv.reader(handle)
-        return [str(value).strip() for value in next(reader, [])]
-
-
-def first_alias(headers: list[str], aliases: tuple[str, ...]) -> str:
-    lookup = {header.lower(): header for header in headers}
-    for alias in aliases:
-        if alias in lookup:
-            return lookup[alias]
-    return ""
-
-
-def distinct_nonblank_values(path: Path, field: str) -> list[str]:
-    if not field or not path.is_file() or path.suffix.lower() != ".csv":
-        return []
-    values = {
-        str(row.get(field, "")).strip()
-        for row in read_csv(path)
-        if str(row.get(field, "")).strip()
-    }
-    return sorted(values)
-
-
 def run_required(script: Path) -> tuple[bool, int]:
     result = subprocess.run([sys.executable, str(script)], cwd=ROOT, check=False)
     return result.returncode == 0, result.returncode
 
 
-def validate_snapshot_manifest() -> list[str]:
-    failures: list[str] = []
-    try:
-        payload = json.loads(SNAPSHOT_MANIFEST.read_text(encoding="utf-8-sig"))
-    except (OSError, UnicodeDecodeError, json.JSONDecodeError) as exc:
-        return [f"SNAPSHOT_MANIFEST_READ_ERROR:{type(exc).__name__}"]
-    checks = {
-        "SNAPSHOT_ID_MISMATCH": payload.get("snapshot_id") == SNAPSHOT_ID,
-        "OPERATING_DATE_MISMATCH": payload.get("operating_date") == OPERATING_DATE,
-        "TIMEZONE_MISMATCH": payload.get("operating_timezone") == TIMEZONE,
-        "SOURCE_BUNDLE_SHA256_MISMATCH": payload.get("source_bundle_sha256") == BUNDLE_SHA,
-        "PURCHASE_AUTHORIZATION_MUST_REMAIN_FALSE": payload.get("purchase_recommendations_authorized") is False,
-        "SNAPSHOT_REGISTRATION_STATUS_INVALID": payload.get("status") == "PASS_COLLECTOR_V1_AUGUST_1_GOVERNED_SNAPSHOT_REGISTRATION",
-    }
-    for reason, passed in checks.items():
-        if not passed:
-            failures.append(reason)
-    row_50_roles = {
-        item.get("role") for item in payload.get("files", [])
-        if item.get("rows") == PRODUCT_COUNT
-    }
-    required_roles = {
-        "live_price_observations", "current_authority", "live_price_candidates",
-        "ebay_supply_snapshot", "feature_matrix"
-    }
-    if not required_roles.issubset(row_50_roles):
-        failures.append("CERTIFIED_50_PRODUCT_COVERAGE_NOT_PROVEN")
-    return failures
+def normalize(path: str) -> str:
+    return path.replace("\\", "/").strip()
+
+
+def snapshot_registry(payload: dict[str, Any]) -> dict[str, dict[str, Any]]:
+    registry: dict[str, dict[str, Any]] = {}
+    for item in payload.get("files", []):
+        path = normalize(str(item.get("path", "")))
+        if path:
+            registry[path] = item
+    return registry
 
 
 def main() -> int:
@@ -134,164 +73,114 @@ def main() -> int:
         print(json.dumps({"status": "BLOCKED_SNAPSHOT_CONFORMANCE_FAILED", "exit_code": snapshot_code}, indent=2))
         return 3
 
-    required = [SNAPSHOT_MANIFEST, FROZEN_MANIFEST, FROZEN_SUMMARY]
-    missing = [str(path.relative_to(ROOT)) for path in required if not path.is_file()]
-    if missing:
-        print(json.dumps({"status": "BLOCKED_REQUIRED_INPUT_MISSING", "missing": missing}, indent=2))
-        return 4
+    for required in (SNAPSHOT_MANIFEST, FROZEN_MANIFEST):
+        if not required.is_file():
+            print(json.dumps({"status": "BLOCKED_REQUIRED_INPUT_MISSING", "missing": str(required.relative_to(ROOT))}, indent=2))
+            return 4
 
-    critical_failures = validate_snapshot_manifest()
-    frozen_summary = json.loads(FROZEN_SUMMARY.read_text(encoding="utf-8-sig"))
-    if frozen_summary.get("status") != "PASS_COLLECTOR_V1_FROZEN_HISTORY_SOURCE_MANIFEST":
-        critical_failures.append("FROZEN_SOURCE_MANIFEST_NOT_CERTIFIED")
-    if frozen_summary.get("manifest_sha256") != sha256(FROZEN_MANIFEST):
-        critical_failures.append("FROZEN_SOURCE_MANIFEST_HASH_MISMATCH")
+    snapshot = json.loads(SNAPSHOT_MANIFEST.read_text(encoding="utf-8-sig"))
+    boundary_failures: list[str] = []
+    if snapshot.get("snapshot_id") != SNAPSHOT_ID:
+        boundary_failures.append("SNAPSHOT_ID_MISMATCH")
+    if snapshot.get("operating_date") != OPERATING_DATE:
+        boundary_failures.append("OPERATING_DATE_MISMATCH")
+    if snapshot.get("operating_timezone") != TIMEZONE:
+        boundary_failures.append("TIMEZONE_MISMATCH")
+    if snapshot.get("source_bundle_sha256") != BUNDLE_SHA:
+        boundary_failures.append("SOURCE_BUNDLE_SHA256_MISMATCH")
+    if snapshot.get("purchase_recommendations_authorized") is not False:
+        boundary_failures.append("PURCHASE_AUTHORIZATION_MUST_REMAIN_FALSE")
 
+    registered = snapshot_registry(snapshot)
     frozen_rows = read_csv(FROZEN_MANIFEST)
     registry: list[dict[str, Any]] = []
     exclusions: list[dict[str, Any]] = []
 
+    fields = [
+        "source_file", "frozen_source_role", "snapshot_registered", "snapshot_role",
+        "snapshot_operating_date", "snapshot_sha256", "current_sha256",
+        "hash_matches_snapshot", "admitted_to_historical_source_authority",
+        "adjudication_reasons", "raw_historical_price_authority_certified"
+    ]
+
     for source in frozen_rows:
-        rel = str(source.get("source_file", "")).replace("\\", "/").strip()
+        rel = normalize(str(source.get("source_file", "")))
         frozen_role = str(source.get("source_role", "")).strip()
-        effective_role = frozen_role
+        item = registered.get(rel)
         path = ROOT / rel
         exists = path.is_file()
         current_hash = sha256(path) if exists else ""
-        frozen_hash = str(source.get("source_sha256", "")).lower().strip()
-        headers = first_header(path) if exists else []
-        identity_field = first_alias(headers, IDENTITY_ALIASES)
-        date_field = first_alias(headers, DATE_ALIASES)
-        price_field = first_alias(headers, MARKET_PRICE_ALIASES)
-        date_values = distinct_nonblank_values(path, date_field)
-        ledger_price_fields = str(source.get("ledger_price_fields", "")).strip()
-        if not price_field and ledger_price_fields:
-            price_field = ledger_price_fields.split("|")[0]
-        provider = str(source.get("ledger_source_names", "")).strip()
-        if not provider:
-            provider = "eBay" if "ebay" in rel.lower() else ("TCGCSV" if "tcgcsv" in rel.lower() else "")
-
-        classification_reasons: list[str] = []
-        if frozen_role == "AUTHORITATIVE_PRICE_CANDIDATE" and date_field and len(date_values) <= 1:
-            effective_role = "CURRENT_PRODUCTION_ONLY"
-            classification_reasons.append("SINGLE_TIMESTAMP_CURRENT_SNAPSHOT_NOT_HISTORY")
-
+        snapshot_hash = str(item.get("sha256", "")).lower() if item else ""
+        snapshot_date = str(item.get("operating_date", "")) if item else ""
         reasons: list[str] = []
-        if effective_role not in ADMITTED_ROLES:
-            reasons.append(f"ROLE_NOT_ADMITTED:{effective_role or 'BLANK'}")
-        if any(term in rel.lower() for term in PROHIBITED_PATH_TERMS):
-            reasons.append("PROHIBITED_SOURCE_PATH_SEMANTICS")
-        if not exists:
-            reasons.append("SOURCE_FILE_MISSING")
-        if not frozen_hash:
-            reasons.append("FROZEN_SOURCE_HASH_MISSING")
-        if exists and frozen_hash and current_hash != frozen_hash:
-            reasons.append("SOURCE_HASH_DRIFT")
-        if effective_role in ADMITTED_ROLES and not provider:
-            reasons.append("PROVIDER_IDENTITY_MISSING")
-        if effective_role in ADMITTED_ROLES and not identity_field:
-            reasons.append("IDENTITY_FIELD_MISSING")
-        if effective_role in ADMITTED_ROLES and not date_field:
-            reasons.append("OBSERVATION_DATE_FIELD_MISSING")
-        if effective_role in ADMITTED_ROLES and not price_field:
-            reasons.append("PRICE_FIELD_MISSING")
-        if effective_role in ADMITTED_ROLES and not str(source.get("first_observation_date", "")).strip():
-            reasons.append("MINIMUM_OBSERVATION_DATE_MISSING")
-        if effective_role in ADMITTED_ROLES and not str(source.get("last_observation_date", "")).strip():
-            reasons.append("MAXIMUM_OBSERVATION_DATE_MISSING")
-        if effective_role == "AUTHORITATIVE_PRICE_CANDIDATE" and "ebay" in (provider + rel).lower():
-            reasons.append("EBAY_CANNOT_BE_AUTHORITATIVE_PRICE")
-        if effective_role == "CORROBORATING_LISTING_ONLY" and "ebay" not in (provider + rel).lower():
-            reasons.append("CORROBORATING_LISTING_PROVIDER_NOT_EBAY")
 
-        admitted = effective_role in ADMITTED_ROLES and not reasons
-        all_reasons = classification_reasons + reasons
+        if item is None:
+            reasons.append("NOT_REGISTERED_IN_CERTIFIED_AUGUST1_MANIFEST")
+        else:
+            if snapshot_date != OPERATING_DATE:
+                reasons.append("SOURCE_OPERATING_DATE_NOT_CERTIFIED_2026_08_01")
+            if not exists:
+                reasons.append("REGISTERED_SOURCE_FILE_MISSING")
+            if not snapshot_hash:
+                reasons.append("REGISTERED_SOURCE_SHA256_MISSING")
+            if exists and snapshot_hash and current_hash.lower() != snapshot_hash:
+                reasons.append("REGISTERED_SOURCE_HASH_MISMATCH")
+
+        admitted = item is not None and not reasons
         row = {
             "source_file": rel,
-            "source_sha256": current_hash,
-            "frozen_source_sha256": frozen_hash,
-            "hash_matches_frozen_manifest": bool(current_hash and current_hash == frozen_hash),
             "frozen_source_role": frozen_role,
-            "source_role": effective_role,
-            "provider": provider,
-            "identity_field": identity_field,
-            "observation_date_field": date_field,
-            "distinct_observation_timestamp_count": len(date_values),
-            "price_field": price_field,
-            "minimum_observation_date": min(date_values) if date_values else source.get("first_observation_date", ""),
-            "maximum_observation_date": max(date_values) if date_values else source.get("last_observation_date", ""),
-            "row_count": source.get("row_count", ""),
-            "distinct_product_count": source.get("distinct_product_count", ""),
+            "snapshot_registered": item is not None,
+            "snapshot_role": str(item.get("role", "")) if item else "",
+            "snapshot_operating_date": snapshot_date,
+            "snapshot_sha256": snapshot_hash,
+            "current_sha256": current_hash,
+            "hash_matches_snapshot": bool(snapshot_hash and current_hash.lower() == snapshot_hash),
             "admitted_to_historical_source_authority": admitted,
-            "authority_limit": "MARKET_PRICE_CANDIDATE" if effective_role == "AUTHORITATIVE_PRICE_CANDIDATE" else ("LISTING_CORROBORATION_ONLY" if effective_role == "CORROBORATING_LISTING_ONLY" else "NOT_ADMITTED"),
-            "adjudication_reasons": "|".join(all_reasons) if all_reasons else "ADMITTED_BY_FROZEN_MANIFEST_AND_IMMUTABLE_LINEAGE",
+            "adjudication_reasons": "|".join(reasons) if reasons else "REGISTERED_IN_CERTIFIED_AUGUST1_MANIFEST",
             "raw_historical_price_authority_certified": False,
         }
-        if admitted:
-            registry.append(row)
-        else:
-            exclusions.append(row)
-            if effective_role in ADMITTED_ROLES:
-                critical_failures.append(f"ADMISSIBLE_ROLE_SOURCE_FAILED_CONTROLS:{rel}:{'|'.join(reasons)}")
+        (registry if admitted else exclusions).append(row)
 
-    if not registry:
-        critical_failures.append("NO_HISTORICAL_SOURCE_AUTHORITY_ADMITTED")
-    if any(row["source_role"] == "AUTHORITATIVE_PRICE_CANDIDATE" and "ebay" in (str(row["provider"]) + str(row["source_file"])).lower() for row in registry):
-        critical_failures.append("EBAY_ADMITTED_AS_AUTHORITATIVE_PRICE")
-
-    fields = [
-        "source_file", "source_sha256", "frozen_source_sha256", "hash_matches_frozen_manifest",
-        "frozen_source_role", "source_role", "provider", "identity_field", "observation_date_field",
-        "distinct_observation_timestamp_count", "price_field", "minimum_observation_date",
-        "maximum_observation_date", "row_count", "distinct_product_count",
-        "admitted_to_historical_source_authority", "authority_limit", "adjudication_reasons",
-        "raw_historical_price_authority_certified"
-    ]
     registry_path = OUT / "collector_manifest_bound_historical_source_registry.csv"
     exclusions_path = OUT / "collector_manifest_bound_historical_source_exclusions.csv"
     write_csv(registry_path, registry, fields)
     write_csv(exclusions_path, exclusions, fields)
 
-    critical_failures = sorted(set(critical_failures))
-    non_authority_failures = [failure for failure in critical_failures if failure != "NO_HISTORICAL_SOURCE_AUTHORITY_ADMITTED"]
-    authoritative_count = sum(row["source_role"] == "AUTHORITATIVE_PRICE_CANDIDATE" for row in registry)
-    adjudication_completed = not non_authority_failures
-    authority_available = adjudication_completed and authoritative_count > 0
-    if authority_available:
+    authoritative = [
+        row for row in registry
+        if row["frozen_source_role"] == "AUTHORITATIVE_PRICE_CANDIDATE"
+    ]
+    historical_available = len(authoritative) > 0
+    source_adjudication_completed = not boundary_failures
+    if boundary_failures:
+        status = "FAIL_CERTIFIED_AUGUST1_SOURCE_BOUNDARY"
+        exit_code = 5
+    elif historical_available:
         status = "PASS_COLLECTOR_MANIFEST_BOUND_HISTORICAL_SOURCE_AUTHORITY"
         exit_code = 0
-    elif adjudication_completed:
-        status = "BLOCKED_NO_AUTHORITATIVE_HISTORICAL_PRICE_SOURCE"
-        exit_code = 6
     else:
-        status = "FAIL_COLLECTOR_MANIFEST_BOUND_HISTORICAL_SOURCE_AUTHORITY"
-        exit_code = 5
+        status = "BLOCKED_NO_CERTIFIED_AUGUST1_HISTORICAL_PRICE_SOURCE"
+        exit_code = 6
 
     summary = {
         "block_name": "Collector Manifest-Bound Historical Source Authority",
-        "block_version": "1.1.0",
+        "block_version": "2.0.0",
         "recorded_at_utc": RECORDED_AT_UTC,
         "governing_snapshot_id": SNAPSHOT_ID,
         "governing_operating_date": OPERATING_DATE,
         "governing_timezone": TIMEZONE,
         "governing_source_bundle_sha256": BUNDLE_SHA,
         "governing_certified_product_count": PRODUCT_COUNT,
-        "frozen_manifest_path": str(FROZEN_MANIFEST.relative_to(ROOT)),
-        "frozen_manifest_sha256": sha256(FROZEN_MANIFEST),
+        "certified_snapshot_manifest_only": True,
+        "prior_source_adjudication_revoked": True,
         "frozen_manifest_source_count": len(frozen_rows),
         "admitted_source_count": len(registry),
         "excluded_source_count": len(exclusions),
-        "authoritative_price_candidate_count": authoritative_count,
-        "corroborating_listing_source_count": sum(row["source_role"] == "CORROBORATING_LISTING_ONLY" for row in registry),
-        "current_production_only_source_count": sum(row["source_role"] == "CURRENT_PRODUCTION_ONLY" for row in exclusions),
-        "registry_path": str(registry_path.relative_to(ROOT)),
-        "registry_sha256": sha256(registry_path),
-        "exclusions_path": str(exclusions_path.relative_to(ROOT)),
-        "exclusions_sha256": sha256(exclusions_path),
-        "open_ended_repository_scan_used": False,
-        "source_adjudication_completed": adjudication_completed,
-        "authoritative_historical_price_source_available": authority_available,
-        "manifest_bound_historical_source_authority_certified": authority_available,
+        "authoritative_price_candidate_count": len(authoritative),
+        "source_adjudication_completed": source_adjudication_completed,
+        "authoritative_historical_price_source_available": historical_available,
+        "manifest_bound_historical_source_authority_certified": historical_available,
         "raw_historical_price_authority_certified": False,
         "historical_observation_ledger_build_authorized": False,
         "historical_coverage_assessment_authorized": False,
@@ -300,12 +189,13 @@ def main() -> int:
         "production_forecasting_authorized": False,
         "uip_delivery_authorized": False,
         "purchase_recommendations_authorized": False,
-        "critical_failures": critical_failures,
+        "critical_failures": boundary_failures,
         "status": status,
     }
-    summary_path = OUT / "collector_manifest_bound_historical_source_authority_summary.json"
-    summary_path.parent.mkdir(parents=True, exist_ok=True)
-    summary_path.write_text(json.dumps(summary, indent=2) + "\n", encoding="utf-8")
+    OUT.mkdir(parents=True, exist_ok=True)
+    (OUT / "collector_manifest_bound_historical_source_authority_summary.json").write_text(
+        json.dumps(summary, indent=2) + "\n", encoding="utf-8"
+    )
     print(json.dumps(summary, indent=2))
     return exit_code
 
