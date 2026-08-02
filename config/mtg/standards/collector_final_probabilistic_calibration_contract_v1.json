@@ -1,0 +1,55 @@
+{
+  "contract_name": "Collector Final Probabilistic Calibration and Reasonableness Certification",
+  "contract_version": "1.0.0",
+  "snapshot_id": "collector-20260801T211201Z-7688afbd",
+  "required_forecast_products": 49,
+  "required_forecast_rows": 294,
+  "required_lineage_rows": 294,
+  "required_horizons_days": [90, 180, 365, 730, 1095, 1825],
+  "authorities": {
+    "final_forecasts": "data/governance/permanence/certification/collector_v1_canonical_identity_lineage_recertification/collector_final_authority_bound_49_product_forecasts.csv",
+    "forecast_lineage": "data/governance/permanence/certification/collector_v1_canonical_identity_lineage_recertification/collector_final_forecast_source_identity_lineage_manifest.csv",
+    "historical_observations": "data/governance/permanence/certification/collector_v1_august1_historical_observation_ledger/collector_august1_historical_observation_ledger.csv",
+    "current_price_authority": "data/governance/permanence/certification/collector_v1_final_premodel_user_exclusion_resolution/collector_final_current_price_authority.csv",
+    "canonical_summary": "data/governance/permanence/certification/collector_v1_canonical_identity_lineage_recertification/collector_canonical_identity_lineage_recertification_summary.json"
+  },
+  "historical_validation": {
+    "forward_window_tolerance_days": 45,
+    "minimum_windows_calibrated": 8,
+    "minimum_windows_limited": 3,
+    "minimum_group_outcomes_for_metric": 10
+  },
+  "reasonableness_thresholds": {
+    "maximum_90_day_median_return": 1.5,
+    "maximum_180_day_median_return": 2.0,
+    "maximum_365_day_median_return": 4.0,
+    "maximum_730_day_median_return": 8.0,
+    "maximum_1095_day_median_return": 12.0,
+    "maximum_1825_day_median_return": 20.0,
+    "maximum_probability_jump_between_adjacent_horizons": 0.45,
+    "maximum_median_return_jump_between_adjacent_horizons": 3.0,
+    "minimum_interval_width_growth_ratio": 0.75,
+    "extreme_interval_width_return": 25.0
+  },
+  "allowed_row_statuses": [
+    "CALIBRATED",
+    "CALIBRATED_WITH_LIMITATIONS",
+    "REASONABLENESS_REVIEW_REQUIRED",
+    "INSUFFICIENT_REALIZED_VALIDATION",
+    "BLOCKED"
+  ],
+  "rules": {
+    "forecast_values_must_not_be_modified": true,
+    "identity_and_current_price_must_reconcile": true,
+    "quantiles_must_be_ordered": true,
+    "probabilities_must_be_bounded": true,
+    "prices_must_be_positive_and_finite": true,
+    "lineage_must_be_closed": true,
+    "duplicate_product_horizon_keys_prohibited": true,
+    "insufficient_realized_validation_must_be_explicit": true,
+    "reasonableness_flags_do_not_silently_change_forecasts": true,
+    "ranking_authorized": false,
+    "purchase_recommendations_authorized": false
+  },
+  "expected_status": "PASS_COLLECTOR_FINAL_PROBABILISTIC_CALIBRATION_AND_REASONABLENESS_CERTIFICATION"
+}
