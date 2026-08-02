@@ -20,14 +20,45 @@ def write_manifest(
     *,
     product_count: int = PRODUCT_COUNT,
     bundle_sha: str = BUNDLE_SHA,
+    registered_schema: bool = False,
 ) -> None:
-    payload = {
-        "snapshot_id": SNAPSHOT_ID,
-        "operating_date": OPERATING_DATE,
-        "timezone": TIMEZONE,
-        "source_bundle_sha256": bundle_sha,
-        "certified_product_count": product_count,
-    }
+    if registered_schema:
+        payload = {
+            "snapshot_id": SNAPSHOT_ID,
+            "operating_date": OPERATING_DATE,
+            "operating_timezone": TIMEZONE,
+            "source_bundle_sha256": bundle_sha,
+            "files": [
+                {"role": role, "rows": product_count}
+                for role in (
+                    "live_price_observations",
+                    "current_authority",
+                    "live_price_candidates",
+                    "ebay_supply_snapshot",
+                    "feature_matrix",
+                )
+            ],
+            "checks": {
+                "all_required_authorities_present": True,
+                "all_registered_artifacts_in_august_1_operating_cycle": True,
+                "all_required_row_coverage_valid": True,
+                "all_json_controls_parseable": True,
+                "no_json_control_reports_explicit_failure": True,
+                "source_hash_bundle_created": True,
+            },
+            "critical_failures": [],
+            "certified_for_model_input": True,
+            "purchase_recommendations_authorized": False,
+            "status": "PASS_COLLECTOR_V1_AUGUST_1_GOVERNED_SNAPSHOT_REGISTRATION",
+        }
+    else:
+        payload = {
+            "snapshot_id": SNAPSHOT_ID,
+            "operating_date": OPERATING_DATE,
+            "timezone": TIMEZONE,
+            "source_bundle_sha256": bundle_sha,
+            "certified_product_count": product_count,
+        }
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(payload), encoding="utf-8")
 
@@ -42,6 +73,34 @@ def test_exact_snapshot_manifest_is_resolved(tmp_path: Path) -> None:
     valid, reasons, _ = validate_manifest(matches[0])
     assert valid is True
     assert reasons == []
+
+
+def test_registered_snapshot_schema_is_authoritative(tmp_path: Path) -> None:
+    manifest = (
+        tmp_path
+        / "data"
+        / "governance"
+        / "permanence"
+        / "snapshots"
+        / SNAPSHOT_ID
+        / "collector_snapshot_manifest.json"
+    )
+    write_manifest(manifest, registered_schema=True)
+    adjudication = adjudicate_manifest(manifest.resolve())
+    assert adjudication["identity_match"] is True
+    assert adjudication["generated_or_nonauthoritative_path"] is False
+    assert adjudication["candidate_role"] == "AUTHORITATIVE_SNAPSHOT_MANIFEST"
+    valid, reasons, _ = validate_manifest(manifest.resolve())
+    assert valid is True
+    assert reasons == []
+
+
+def test_registered_snapshot_schema_requires_all_fifty_row_roles(tmp_path: Path) -> None:
+    wrong = tmp_path / "snapshots" / "2026-08-01" / "snapshot_manifest.json"
+    write_manifest(wrong, product_count=49, registered_schema=True)
+    adjudication = adjudicate_manifest(wrong.resolve())
+    assert adjudication["candidate_role"] == "REJECTED"
+    assert "CERTIFIED_PRODUCT_COUNT_MISMATCH" in adjudication["rejection_reasons"]
 
 
 def test_missing_or_incorrect_snapshot_identity_fails_closed(tmp_path: Path) -> None:
