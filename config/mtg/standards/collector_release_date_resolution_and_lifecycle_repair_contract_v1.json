@@ -1,0 +1,31 @@
+{
+  "contract_name": "Collector Release-Date Resolution and Lifecycle Repair",
+  "contract_version": "1.0.0",
+  "governing_snapshot_id": "collector-20260801T211201Z-7688afbd",
+  "required_product_count": 50,
+  "required_ledger_rows": 1215,
+  "release_date_source_precedence": [
+    "foundation.identity__raw_released_on",
+    "foundation.identity__released_on",
+    "foundation.identity__official_release_date",
+    "foundation.release_date",
+    "foundation.released_on",
+    "premodel.release_date"
+  ],
+  "lifecycle_bands": {
+    "PRESALE": [-3650, -1],
+    "RELEASE_MONTH": [0, 30],
+    "EARLY_POST_RELEASE": [31, 180],
+    "DEVELOPING": [181, 365],
+    "ESTABLISHED": [366, 36500]
+  },
+  "governance_rules": {
+    "no_invented_release_dates": true,
+    "one_release_date_per_canonical_product": true,
+    "every_ledger_row_requires_classification": true,
+    "unresolved_release_dates_fail_closed": true,
+    "model_tournament_authorized": false,
+    "production_forecasting_authorized": false,
+    "purchase_recommendations_authorized": false
+  }
+}
