@@ -1,6 +1,6 @@
 {
   "contract_name": "Collector Early-Awareness Backtest and Lorwyn Standalone Forecast Authorization",
-  "contract_version": "1.0.0",
+  "contract_version": "1.0.1",
   "snapshot_id": "collector-20260801T211201Z-7688afbd",
   "early_awareness": {
     "checkpoint_days": [30, 60, 90, 120, 180],
@@ -16,8 +16,8 @@
     "minimum_median_lead_days": 120
   },
   "lorwyn": {
-    "canonical_product_id": "MTG-CANON-TCGPLAYER-648650",
-    "tcgplayer_product_id": "648650",
+    "canonical_product_id": "MTG-CANON-TCGPLAYER-656322",
+    "tcgplayer_product_id": "656322",
     "product_name": "Lorwyn Eclipsed - Collector Booster Display",
     "horizons_days": [90, 180, 365, 730, 1095, 1825],
     "simulation_count": 10000,
@@ -43,6 +43,8 @@
     "generic_route_return_prohibited": true,
     "lorwyn_must_have_distinct_method_per_horizon": true,
     "lorwyn_supply_ambiguity_must_not_block_price_forecast": true,
+    "lorwyn_identity_must_match_current_product_authority": true,
+    "lorwyn_identity_must_not_collide_with_existing_forecast_product": true,
     "lotr_special_edition_user_exclusion_preserved": true,
     "production_forecast_authorized": false,
     "ranking_authorized": false,
