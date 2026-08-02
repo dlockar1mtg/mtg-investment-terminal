@@ -1,6 +1,6 @@
 {
   "contract_name": "Collector First-Year Breakout and Entry-Timing Contract",
-  "contract_version": "1.0.0",
+  "contract_version": "1.0.1",
   "domain_owner": "MTG",
   "purpose": "Identify recently released Collector Booster boxes while attractive entry opportunity remains, rather than only after most appreciation has occurred.",
   "lifecycle_window_days": 365,
@@ -10,9 +10,67 @@
     "future_information_prohibited": true,
     "release_age_alignment_required": true,
     "comparable_selection_as_of_checkpoint_required": true,
-    "supply_demand_features_as_of_checkpoint_required": true,
     "transaction_cost_adjustment_required": true,
-    "false_positive_measurement_required": true
+    "false_positive_measurement_required": true,
+    "feature_availability_ledger_required": true,
+    "unavailable_features_must_remain_missing": true,
+    "historical_feature_invention_prohibited": true,
+    "historical_zero_fill_prohibited": true,
+    "model_candidates_must_match_available_feature_set": true,
+    "confidence_must_reflect_feature_coverage": true
+  },
+  "historical_evidence_availability_policy": {
+    "principle": "A feature may be used in a historical replay only when its value and observation timestamp can be supported for that checkpoint.",
+    "availability_states": [
+      "DIRECT_POINT_IN_TIME_OBSERVED",
+      "DERIVED_FROM_POINT_IN_TIME_OBSERVED",
+      "PERIOD_PROXY_AVAILABLE_AT_CHECKPOINT",
+      "STRUCTURAL_STATIC_ATTRIBUTE",
+      "UNAVAILABLE_AT_CHECKPOINT",
+      "SOURCE_NOT_YET_OPERATING",
+      "OBSERVATION_TIMESTAMP_UNVERIFIED"
+    ],
+    "eligible_states_for_model_input": [
+      "DIRECT_POINT_IN_TIME_OBSERVED",
+      "DERIVED_FROM_POINT_IN_TIME_OBSERVED",
+      "PERIOD_PROXY_AVAILABLE_AT_CHECKPOINT",
+      "STRUCTURAL_STATIC_ATTRIBUTE"
+    ],
+    "prohibited_interpretations": [
+      "UNAVAILABLE_AT_CHECKPOINT must not be treated as zero.",
+      "SOURCE_NOT_YET_OPERATING must not be treated as no supply or no demand.",
+      "OBSERVATION_TIMESTAMP_UNVERIFIED must not be used as point-in-time evidence.",
+      "Current marketplace observations must not be backfilled into historical checkpoints."
+    ],
+    "required_feature_ledger_fields": [
+      "feature_name",
+      "feature_family",
+      "checkpoint_date",
+      "availability_state",
+      "observation_date",
+      "source_name",
+      "source_artifact_id",
+      "source_sha256",
+      "derivation_method",
+      "used_by_model",
+      "exclusion_reason"
+    ],
+    "model_lane_policy": {
+      "core_replay_lane": "Uses only features broadly and credibly available across historical checkpoints.",
+      "enhanced_replay_lane": "Uses additional point-in-time supply-demand evidence where supported.",
+      "current_production_lane": "May use the full certified current feature set, but must not claim historical validation for features absent from replay history.",
+      "selection_rule": "Candidate models compete only within compatible evidence-availability cohorts; broader-feature models must prove incremental value on checkpoints where those features exist."
+    },
+    "required_coverage_outputs": [
+      "available_feature_count",
+      "eligible_supply_feature_count",
+      "eligible_demand_feature_count",
+      "feature_coverage_ratio",
+      "supply_demand_coverage_class",
+      "historical_replay_lane",
+      "feature_missingness_summary",
+      "confidence_adjustment_for_feature_coverage"
+    ]
   },
   "breakout_label_policy": {
     "fixed_single_threshold_prohibited": true,
@@ -42,7 +100,9 @@
     "remaining_expected_upside_pct",
     "late_entry_risk",
     "top_k_breakout_precision",
-    "downside_rate_among_false_positives"
+    "downside_rate_among_false_positives",
+    "feature_coverage_ratio",
+    "confidence_adjustment_for_feature_coverage"
   ],
   "required_states": [
     "EARLY_UNCONFIRMED",
@@ -77,7 +137,13 @@
     "median_historical_signal_lead_days",
     "selected_comparable_ids",
     "comparable_similarity_scores",
-    "comparable_first_year_paths"
+    "comparable_first_year_paths",
+    "available_feature_count",
+    "feature_coverage_ratio",
+    "supply_demand_coverage_class",
+    "historical_replay_lane",
+    "feature_missingness_summary",
+    "confidence_adjustment_for_feature_coverage"
   ],
   "selection_principles": [
     "Correct eventual winner classification is insufficient if the signal arrives after most appreciation.",
@@ -85,7 +151,9 @@
     "Late confirmation must not be represented as early discovery.",
     "A strong product may still receive OPPORTUNITY_MOSTLY_REALIZED at the current price.",
     "Forecast accuracy and investment discovery quality must both be measured.",
-    "No fixed model weights are required; candidates compete through out-of-sample replay."
+    "No fixed model weights are required; candidates compete through out-of-sample replay.",
+    "Unavailable historical supply-demand evidence must reduce feature coverage, not become invented values.",
+    "A model using richer current evidence must not claim the same historical validation as a model tested on a narrower replay feature set."
   ],
   "authorization": {
     "lifecycle_panel_reconstruction_authorized": true,
