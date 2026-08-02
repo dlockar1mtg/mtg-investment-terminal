@@ -32,6 +32,8 @@ def test_explicit_multi_display_quantity_is_detected() -> None:
     assert detect_quantity("2x Collector Booster Boxes") == 2
     assert detect_multi_display_quantity("Collector Booster Box X2") == 2
     assert detect_multi_display_quantity("2x Collector Booster Boxes") == 2
+    assert detect_multi_display_quantity("2 x Magic the Gathering Marvel Super Heroes Collector Booster Box") == 2
+    assert detect_multi_display_quantity("2 × MTG Collector Booster Box") == 2
 
 
 def test_retail_pack_count_is_not_multi_display_quantity() -> None:
@@ -60,5 +62,11 @@ def test_lotr_japanese_remains_not_accepted() -> None:
 
 def test_multi_display_listing_rejected() -> None:
     result = match("MTG Lord of the Rings Tales of Middle-earth Collector Booster Box Sealed X2")
+    assert result.match_state == "REJECTED"
+    assert "universal_quantity_conflict:multi_display_listing" in result.exclusion_reasons
+
+
+def test_spaced_multi_display_listing_rejected() -> None:
+    result = match("2 x Magic the Gathering Lord of the Rings Collector Booster Box Sealed")
     assert result.match_state == "REJECTED"
     assert "universal_quantity_conflict:multi_display_listing" in result.exclusion_reasons
