@@ -35,6 +35,81 @@ def pick_column(frame: pd.DataFrame, candidates: tuple[str, ...]) -> str:
     raise RuntimeError(f"None of the required columns exist: {candidates}")
 
 
+def _authority_score(path: Path) -> tuple[int, str]:
+    value = str(path).replace("\\", "/").lower()
+    score = 0
+    for token, weight in (
+        ("governance/permanence/certification", 100),
+        ("collector", 40),
+        ("authority", 30),
+        ("universe", 25),
+        ("packaging", 20),
+        ("release", 10),
+    ):
+        if token in value:
+            score += weight
+    for token, weight in (
+        ("ebay_full_universe_acquisition", -200),
+        ("canary", -100),
+        ("historical", -50),
+        ("listing", -40),
+        ("review", -40),
+    ):
+        if token in value:
+            score += weight
+    return score, value
+
+
+def resolve_authority(requested: Path) -> tuple[Path | None, list[dict[str, object]]]:
+    if requested.is_file():
+        return requested.resolve(), [{"path": str(requested.resolve()), "selection": "EXPLICIT_PATH"}]
+
+    candidates: list[dict[str, object]] = []
+    search_roots = (
+        ROOT / "data/governance/permanence/certification",
+        ROOT / "data/validation",
+        ROOT / "data",
+    )
+    seen: set[Path] = set()
+    for search_root in search_roots:
+        if not search_root.is_dir():
+            continue
+        for path in search_root.rglob("*.csv"):
+            resolved = path.resolve()
+            if resolved in seen or OUT.resolve() in resolved.parents:
+                continue
+            seen.add(resolved)
+            try:
+                frame = pd.read_csv(resolved, dtype=str, encoding="utf-8-sig", nrows=500).fillna("")
+            except Exception:
+                continue
+            id_candidates = [column for column in ("tcgplayer_product_id", "product_id") if column in frame.columns]
+            name_candidates = [column for column in ("governed_box_name", "box_name", "product_name", "name") if column in frame.columns]
+            if not id_candidates or not name_candidates:
+                continue
+            id_col = id_candidates[0]
+            name_col = name_candidates[0]
+            ids = frame[id_col].map(norm_id)
+            usable = frame.loc[ids.ne("") & frame[name_col].astype(str).str.strip().ne("")].copy()
+            unique_ids = usable[id_col].map(norm_id).nunique()
+            if unique_ids != 50:
+                continue
+            score, sortable_path = _authority_score(resolved)
+            candidates.append({
+                "path": str(resolved),
+                "id_column": id_col,
+                "name_column": name_col,
+                "unique_product_ids": int(unique_ids),
+                "score": score,
+                "sortable_path": sortable_path,
+            })
+
+    if not candidates:
+        return None, []
+    candidates.sort(key=lambda row: (-int(row["score"]), str(row["sortable_path"])))
+    return Path(str(candidates[0]["path"])), candidates
+
+
 def parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(description="Run governed 50-product Collector eBay acquisition certification")
     p.add_argument("--authority", type=Path, default=AUTHORITY)
@@ -50,18 +125,24 @@ def main() -> int:
     out.mkdir(parents=True, exist_ok=True)
     generated = datetime.now(timezone.utc)
 
-    missing = [str(path) for path in (args.authority, REPLAY_SUMMARY) if not path.is_file()]
+    authority_path, authority_candidates = resolve_authority(args.authority)
+    missing = [str(REPLAY_SUMMARY)] if not REPLAY_SUMMARY.is_file() else []
+    if authority_path is None:
+        missing.append(str(args.authority))
     credentials_ready = bool(os.getenv("EBAY_CLIENT_ID", "").strip() and os.getenv("EBAY_CLIENT_SECRET", "").strip())
     replay = json.loads(REPLAY_SUMMARY.read_text(encoding="utf-8")) if REPLAY_SUMMARY.is_file() else {}
     one_run_authorized = bool(replay.get("full_universe_collection_authorized"))
     if missing or not credentials_ready or not one_run_authorized:
         summary = {
             "block_name": "Collector eBay Full-Universe Acquisition Certification",
-            "block_version": "1.0.0",
+            "block_version": "1.0.1",
             "generated_at": generated.isoformat(),
             "missing_inputs": missing,
             "credentials_ready": credentials_ready,
             "hardened_replay_authorized_one_run": one_run_authorized,
+            "authority_requested": str(args.authority),
+            "authority_selected": str(authority_path) if authority_path else "",
+            "authority_candidates": authority_candidates,
             "live_collection_executed": False,
             "status": "REQUIRED_INPUT_CREDENTIAL_OR_AUTHORIZATION_MISSING",
         }
@@ -69,13 +150,13 @@ def main() -> int:
         print(json.dumps(summary, indent=2))
         return 1 if args.strict else 0
 
-    authority = pd.read_csv(args.authority, dtype=str, encoding="utf-8-sig").fillna("")
+    authority = pd.read_csv(authority_path, dtype=str, encoding="utf-8-sig").fillna("")
     id_col = pick_column(authority, ("tcgplayer_product_id", "product_id"))
-    name_col = pick_column(authority, ("governed_box_name", "product_name", "name"))
+    name_col = pick_column(authority, ("governed_box_name", "box_name", "product_name", "name"))
     authority[id_col] = authority[id_col].map(norm_id)
-    authority = authority[authority[id_col].ne("")].drop_duplicates(id_col).copy()
+    authority = authority[authority[id_col].ne("") & authority[name_col].astype(str).str.strip().ne("")].drop_duplicates(id_col).copy()
     if len(authority) != 50:
-        raise RuntimeError(f"Expected exactly 50 governed Collector products; found {len(authority)}")
+        raise RuntimeError(f"Expected exactly 50 governed Collector products; found {len(authority)} in {authority_path}")
 
     target_map = out / "collector_ebay_full_universe_product_map.csv"
     pd.DataFrame({
@@ -166,9 +247,12 @@ def main() -> int:
     acquisition_recall_certified = structural_pass and not ceiling_products
     summary = {
         "block_name": "Collector eBay Full-Universe Acquisition Certification",
-        "block_version": "1.0.0",
+        "block_version": "1.0.1",
         "generated_at": generated.isoformat(),
         "live_collection_executed": True,
+        "authority_requested": str(args.authority),
+        "authority_selected": str(authority_path),
+        "authority_candidates": authority_candidates,
         "governed_products": len(authority),
         "coverage_rows": len(coverage),
         "queries_used": run_summary.get("queries_used", 0),
