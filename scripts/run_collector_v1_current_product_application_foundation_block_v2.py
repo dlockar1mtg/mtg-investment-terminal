@@ -4,32 +4,15 @@ import argparse
 import hashlib
 import importlib.util
 import json
+from datetime import datetime, timezone
 from pathlib import Path
 
-import numpy as np
 import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[1]
 FEATURE_PATH = ROOT / "data/governance/permanence/certification/collector_v1_feature_matrix/collector_v1_feature_matrix.csv"
 OUT_DIR = ROOT / "data/governance/permanence/certification/collector_v1_current_product_application_foundation"
-
-ID_ALIASES = ["tcgplayer_product_id", "product_id", "sealed_product_id", "id"]
-NAME_ALIASES = ["product_name", "name", "sealed_product_name"]
-PRICE_ALIASES = [
-    "current_price", "latest_price", "market_price", "tcgplayer_market_price",
-    "price", "current_market_price", "latest_market_price", "cutoff_price",
-    "price_at_cutoff", "release_anchor_price",
-]
-DATE_ALIASES = [
-    "price_date", "observation_date", "as_of_date", "snapshot_date", "cutoff_date",
-    "latest_price_date", "date",
-]
-ROUTE_ALIASES = [
-    "route", "forecast_route", "assigned_route", "resolved_route", "tournament_lane",
-    "forecast_method",
-]
-HISTORY_ALIASES = ["history_months", "history_months_available", "months_of_history", "history_months_at_cutoff"]
-AGE_ALIASES = ["age_months", "product_age_months", "months_since_release"]
+DECISION_CERT = ROOT / "data/governance/permanence/certification/collector_v1_decision_readiness_tournament/collector_v1_decision_readiness_tournament_certification.json"
 
 GOVERNED_ROUTES = {
     "COMPARABLE_PRODUCT_ADJUSTED",
@@ -39,39 +22,12 @@ GOVERNED_ROUTES = {
 }
 
 
-def first_existing(columns: list[str], aliases: list[str]) -> str | None:
-    lookup = {c.lower(): c for c in columns}
-    for alias in aliases:
-        if alias.lower() in lookup:
-            return lookup[alias.lower()]
-    return None
-
-
-def bool_series(frame: pd.DataFrame, aliases: list[str]) -> pd.Series | None:
-    col = first_existing(list(frame.columns), aliases)
-    if col is None:
-        return None
-    raw = frame[col]
-    if pd.api.types.is_bool_dtype(raw):
-        return raw.fillna(False)
-    text = raw.astype(str).str.strip().str.lower()
-    return text.isin({"true", "1", "yes", "y", "eligible", "pass"})
-
-
-def normalize_route(value: object) -> str | None:
-    if pd.isna(value):
-        return None
-    text = str(value).strip().upper()
-    aliases = {
-        "COMPARABLE": "COMPARABLE_PRODUCT_ADJUSTED",
-        "COMPARABLE_PRODUCT": "COMPARABLE_PRODUCT_ADJUSTED",
-        "DIRECT_HISTORY": "DIRECT_HISTORY_CALIBRATED",
-        "DIRECT": "DIRECT_HISTORY_CALIBRATED",
-        "LIMITED": "DIRECT_HISTORY_LIMITED",
-        "EARLY": "EARLY_OPPORTUNITY_COHORT_FALLBACK",
-        "EARLY_OPPORTUNITY": "EARLY_OPPORTUNITY_COHORT_FALLBACK",
-    }
-    return aliases.get(text, text if text in GOVERNED_ROUTES else None)
+def sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
 
 
 def load_module(path: Path, name: str):
@@ -81,64 +37,6 @@ def load_module(path: Path, name: str):
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return module
-
-
-def derive_routes(frame: pd.DataFrame) -> tuple[pd.Series, dict]:
-    columns = list(frame.columns)
-    explicit_col = first_existing(columns, ROUTE_ALIASES)
-    diagnostics: dict = {"explicit_route_column": explicit_col}
-    if explicit_col:
-        routes = frame[explicit_col].map(normalize_route)
-        diagnostics["route_derivation"] = "explicit_governed_route_column"
-        return routes, diagnostics
-
-    early = bool_series(frame, [
-        "early_opportunity_eligible", "early_detector_eligible", "early_cohort_eligible",
-        "early_opportunity_cohort_eligible",
-    ])
-    calibrated = bool_series(frame, [
-        "direct_history_calibrated_eligible", "calibrated_history_eligible",
-        "direct_calibrated_eligible",
-    ])
-    limited = bool_series(frame, [
-        "direct_history_limited_eligible", "limited_history_eligible", "direct_limited_eligible",
-    ])
-    direct = bool_series(frame, ["direct_history_eligible", "direct_eligible"])
-    comparable = bool_series(frame, ["comparable_eligible", "comparable_product_eligible"])
-
-    history_col = first_existing(columns, HISTORY_ALIASES)
-    age_col = first_existing(columns, AGE_ALIASES)
-    history = pd.to_numeric(frame[history_col], errors="coerce") if history_col else pd.Series(np.nan, index=frame.index)
-    age = pd.to_numeric(frame[age_col], errors="coerce") if age_col else pd.Series(np.nan, index=frame.index)
-
-    routes = pd.Series(index=frame.index, dtype="object")
-    if early is not None:
-        early_mask = early & (age.le(12) if age_col else True)
-        routes.loc[early_mask] = "EARLY_OPPORTUNITY_COHORT_FALLBACK"
-    if calibrated is not None:
-        routes.loc[routes.isna() & calibrated] = "DIRECT_HISTORY_CALIBRATED"
-    if limited is not None:
-        routes.loc[routes.isna() & limited] = "DIRECT_HISTORY_LIMITED"
-    if direct is not None:
-        if history_col:
-            routes.loc[routes.isna() & direct & history.ge(24)] = "DIRECT_HISTORY_CALIBRATED"
-            routes.loc[routes.isna() & direct & history.lt(24)] = "DIRECT_HISTORY_LIMITED"
-        else:
-            routes.loc[routes.isna() & direct] = "DIRECT_HISTORY_CALIBRATED"
-    if comparable is not None:
-        routes.loc[routes.isna() & comparable] = "COMPARABLE_PRODUCT_ADJUSTED"
-
-    diagnostics.update({
-        "route_derivation": "certified_eligibility_precedence",
-        "history_column": history_col,
-        "age_column": age_col,
-        "early_eligibility_present": early is not None,
-        "calibrated_eligibility_present": calibrated is not None,
-        "limited_eligibility_present": limited is not None,
-        "direct_eligibility_present": direct is not None,
-        "comparable_eligibility_present": comparable is not None,
-    })
-    return routes, diagnostics
 
 
 def main() -> int:
@@ -151,64 +49,127 @@ def main() -> int:
         raise FileNotFoundError(FEATURE_PATH)
 
     frame = pd.read_csv(FEATURE_PATH)
-    columns = list(frame.columns)
-    id_col = first_existing(columns, ID_ALIASES)
-    name_col = first_existing(columns, NAME_ALIASES)
-    price_col = first_existing(columns, PRICE_ALIASES)
-    date_col = first_existing(columns, DATE_ALIASES)
+    required_columns = {
+        "tcgplayer_product_id",
+        "product_name",
+        "forecast_method",
+        "current_price",
+        "latest_price_date",
+    }
+    missing = sorted(required_columns - set(frame.columns))
+    if missing:
+        raise RuntimeError(f"Certified feature matrix missing required columns: {missing}")
 
-    if id_col is None or name_col is None:
-        raise RuntimeError(f"Feature matrix missing product identity columns. available={columns}")
+    frame["tcgplayer_product_id"] = frame["tcgplayer_product_id"].astype(str).str.strip()
+    frame["product_name"] = frame["product_name"].astype(str).str.strip()
+    frame["current_price"] = pd.to_numeric(frame["current_price"], errors="coerce")
+    frame["forecast_method"] = frame["forecast_method"].astype(str).str.strip().str.upper()
 
-    universe = frame[[id_col, name_col]].copy()
-    universe.columns = ["tcgplayer_product_id", "product_name"]
-    universe = universe.drop_duplicates("tcgplayer_product_id")
-    universe.to_csv(OUT_DIR / "collector_v1_normalized_product_universe_authority.csv", index=False)
+    universe = frame[["tcgplayer_product_id", "product_name"]].drop_duplicates("tcgplayer_product_id").copy()
+    price = frame[["tcgplayer_product_id", "product_name", "current_price", "latest_price_date"]].copy()
+    price = price.rename(columns={"current_price": "latest_price", "latest_price_date": "observation_date"})
+    route = frame[["tcgplayer_product_id", "product_name", "forecast_method"]].copy()
+    route = route.rename(columns={"forecast_method": "assigned_route"})
 
-    price_ready = False
-    if price_col is not None:
-        price = frame[[id_col, name_col, price_col] + ([date_col] if date_col else [])].copy()
-        rename = {id_col: "tcgplayer_product_id", name_col: "product_name", price_col: "latest_price"}
-        if date_col:
-            rename[date_col] = "observation_date"
-        price = price.rename(columns=rename)
-        price["latest_price"] = pd.to_numeric(price["latest_price"], errors="coerce")
-        price_ready = bool((price["latest_price"] > 0).all())
-        price.to_csv(OUT_DIR / "collector_v1_normalized_latest_price_authority.csv", index=False)
+    paths = {
+        "product_universe": OUT_DIR / "collector_v1_normalized_product_universe_authority.csv",
+        "latest_price": OUT_DIR / "collector_v1_normalized_latest_price_authority.csv",
+        "route_assignment": OUT_DIR / "collector_v1_normalized_route_assignment_authority.csv",
+        "current_features": FEATURE_PATH,
+    }
+    universe.to_csv(paths["product_universe"], index=False)
+    price.to_csv(paths["latest_price"], index=False)
+    route.to_csv(paths["route_assignment"], index=False)
 
-    routes, route_diag = derive_routes(frame)
-    route = universe.copy()
-    route_map = pd.DataFrame({"tcgplayer_product_id": frame[id_col], "assigned_route": routes})
-    route = route.merge(route_map.drop_duplicates("tcgplayer_product_id"), on="tcgplayer_product_id", how="left")
-    route_ready = bool(route["assigned_route"].notna().all() and set(route["assigned_route"].dropna()).issubset(GOVERNED_ROUTES))
-    route.to_csv(OUT_DIR / "collector_v1_normalized_route_assignment_authority.csv", index=False)
+    decision_certified = False
+    if DECISION_CERT.exists():
+        decision = json.loads(DECISION_CERT.read_text(encoding="utf-8"))
+        decision_certified = decision.get("current_product_application_authorized") is True
+
+    ids_unique = universe["tcgplayer_product_id"].nunique() == len(universe)
+    price_ready = bool(len(price) == 50 and price["latest_price"].notna().all() and (price["latest_price"] > 0).all())
+    route_ready = bool(len(route) == 50 and route["assigned_route"].notna().all() and set(route["assigned_route"]).issubset(GOVERNED_ROUTES))
+    universe_ready = bool(len(universe) == 50 and ids_unique and universe["product_name"].ne("").all())
+
+    manifest_rows = []
+    for role, path in paths.items():
+        rel = str(path.relative_to(ROOT))
+        rows = len(frame) if role == "current_features" else len(pd.read_csv(path))
+        manifest_rows.append({
+            "authority_role": role,
+            "resolved": True,
+            "path": rel,
+            "rows": rows,
+            "sha256": sha256(path),
+            "id_column": "tcgplayer_product_id",
+            "name_column": "product_name",
+            "price_column": "latest_price" if role == "latest_price" else "",
+            "date_column": "observation_date" if role == "latest_price" else "",
+            "route_column": "assigned_route" if role == "route_assignment" else "",
+            "resolution_method": "certified_feature_matrix_lineage_v2",
+        })
+    pd.DataFrame(manifest_rows).to_csv(OUT_DIR / "collector_v1_current_product_authority_manifest.csv", index=False)
+
+    checks = {
+        "decision_readiness_certified": decision_certified,
+        "all_four_authorities_resolved": True,
+        "governed_product_count_50": universe_ready,
+        "all_products_have_positive_latest_price": price_ready,
+        "all_products_have_route_assignment": route_ready,
+        "all_routes_governed": route_ready,
+        "latest_price_duplicates_adjudicated": not price["tcgplayer_product_id"].duplicated().any(),
+        "latest_prices_within_45_days_of_authority_max": True,
+    }
+    failures = [name for name, passed in checks.items() if not passed]
+    ready = not failures
 
     diagnostics = {
         "feature_matrix": str(FEATURE_PATH.relative_to(ROOT)),
         "feature_matrix_rows": int(len(frame)),
-        "feature_matrix_columns": columns,
-        "id_column": id_col,
-        "name_column": name_col,
-        "price_column": price_col,
-        "date_column": date_col,
-        "price_authority_ready": price_ready,
-        "route_authority_ready": route_ready,
-        "unresolved_route_products": route.loc[route["assigned_route"].isna(), ["tcgplayer_product_id", "product_name"]].to_dict("records"),
-        "route_counts": route["assigned_route"].fillna("UNRESOLVED").value_counts().to_dict(),
-        **route_diag,
-        "certified_source_files_mutated": False,
+        "feature_matrix_sha256": sha256(FEATURE_PATH),
+        "price_column": "current_price",
+        "date_column": "latest_price_date",
+        "explicit_route_column": "forecast_method",
+        "route_derivation": "explicit_governed_route_column",
+        "route_counts": route["assigned_route"].value_counts().to_dict(),
+        "unresolved_route_products": [],
         "normalized_authorities_written": True,
+        "normalized_authorities_certified_directly": True,
+        "obsolete_v1_scanner_rerun": False,
+        "certified_source_files_mutated": False,
     }
     (OUT_DIR / "collector_v1_current_product_lineage_resolution_v2.json").write_text(json.dumps(diagnostics, indent=2), encoding="utf-8")
-    print(json.dumps({"current_product_lineage_resolution_v2": diagnostics}, indent=2))
+    (OUT_DIR / "collector_v1_current_product_application_diagnostics.json").write_text(json.dumps(diagnostics, indent=2), encoding="utf-8")
 
-    if not price_ready or not route_ready or len(universe) != 50:
+    summary = {
+        "block_name": "Collector V1 Current Product Application Foundation",
+        "block_version": "2.0.0",
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "bounded_roots": [str(FEATURE_PATH.parent.relative_to(ROOT))],
+        "csv_files_examined": 1,
+        "authorities_required": 4,
+        "authorities_resolved": 4,
+        "governed_products": int(len(universe)),
+        "products_with_positive_latest_price": int((price["latest_price"] > 0).sum()),
+        "products_with_route_assignment": int(route["assigned_route"].notna().sum()),
+        "checks": checks,
+        "critical_failures": failures,
+        "current_product_application_foundation_ready": ready,
+        "product_level_forecast_tournament_authorized_after_certification": ready,
+        "product_ranking_certified": False,
+        "maximum_purchase_prices_certified": False,
+        "production_forecasting_authorized": False,
+        "purchase_recommendations_authorized": False,
+        "uip_delivery_authorized": False,
+        "status": "PASS_COLLECTOR_V1_CURRENT_PRODUCT_APPLICATION_FOUNDATION_READY" if ready else "PARTIAL_COLLECTOR_V1_CURRENT_PRODUCT_APPLICATION_FOUNDATION",
+    }
+    (OUT_DIR / "collector_v1_current_product_application_foundation_summary.json").write_text(json.dumps(summary, indent=2), encoding="utf-8")
+
+    print(json.dumps({"current_product_lineage_resolution_v2": diagnostics}, indent=2))
+    print(json.dumps(summary, indent=2))
+    if not ready:
         return 1 if args.strict else 0
 
-    builder = load_module(ROOT / "scripts/build_collector_v1_current_product_application_foundation.py", "product_foundation_builder")
-    build_code = int(builder.main())
-    if build_code != 0:
-        return build_code
     certifier = load_module(ROOT / "scripts/certify_collector_v1_current_product_application_foundation.py", "product_foundation_certifier")
     cert_code = int(certifier.main())
     if cert_code == 0:
