@@ -1,0 +1,87 @@
+{
+  "contract_name": "Collector V1 Long-Horizon Simulation and Scenario Contract",
+  "contract_version": "1.0.0",
+  "effective_date": "2026-08-02",
+  "purpose": "Produce governed 3-year and 5-year outputs only after endpoint-route tournament winners and calibration are certified.",
+  "required_horizons_days": [1095, 1825],
+  "prerequisite_certifications": [
+    "collector_v1_authoritative_feature_foundation_certification.json",
+    "collector_v1_model_tournament_contract_certification.json",
+    "collector_v1_endpoint_route_tournament_certification.json",
+    "collector_v1_uncertainty_calibration_certification.json"
+  ],
+  "required_inputs": [
+    "current authoritative price",
+    "certified endpoint-route winner",
+    "historical return distribution",
+    "route-specific residual distribution",
+    "prediction interval calibration",
+    "comparable peer outcomes when direct history is insufficient",
+    "Supply Scarcity Index V1A",
+    "current listing evidence",
+    "release age",
+    "liquidity and data-quality indicators"
+  ],
+  "simulation_methods": [
+    "BOOTSTRAPPED_MONTHLY_RETURN_PATHS",
+    "BLOCK_BOOTSTRAP_RETURN_PATHS",
+    "REGIME_CONDITIONED_MONTE_CARLO",
+    "PARAMETRIC_LOG_RETURN_MONTE_CARLO",
+    "COMPARABLE_MATURITY_CURVE_SIMULATION",
+    "MEAN_REVERTING_LONG_HORIZON_SCENARIOS",
+    "ENSEMBLED_LONG_HORIZON_SIMULATION"
+  ],
+  "minimum_simulations_per_product_horizon": 10000,
+  "required_scenarios": ["CONSERVATIVE", "BASE", "UPSIDE"],
+  "required_outputs": [
+    "expected_price",
+    "median_price",
+    "p10_price",
+    "p25_price",
+    "p75_price",
+    "p90_price",
+    "expected_return",
+    "median_return",
+    "probability_of_loss",
+    "probability_of_25_percent_gain",
+    "probability_of_50_percent_gain",
+    "maximum_drawdown_distribution",
+    "simulation_confidence",
+    "projection_classification",
+    "model_and_comparable_lineage"
+  ],
+  "projection_classifications": {
+    "directly_supported": "LONG_HORIZON_DIRECTLY_CALIBRATED",
+    "comparable_supported": "LONG_HORIZON_COMPARABLE_CALIBRATED",
+    "scenario_only": "LONG_HORIZON_SCENARIO_NOT_DIRECTLY_BACKTESTED"
+  },
+  "fallback_policy": {
+    "direct_history_insufficient": "USE_CERTIFIED_COMPARABLE_TRANSFER_WITH_WIDER_UNCERTAINTY",
+    "comparable_support_insufficient": "SCENARIO_ONLY_AND_PURCHASE_BLOCKED",
+    "no_calibrated_shorter_horizon_winner": "HARD_FAILURE"
+  },
+  "anti_overconfidence_rules": {
+    "uncertainty_must_widen_with_horizon": true,
+    "no_single_path_output": true,
+    "no_purchase_authorization_from_mean_only": true,
+    "positive_expected_return_does_not_override_high_loss_probability": true,
+    "scenario_only_outputs_cannot_be_labeled_backtested": true
+  },
+  "investment_decision_requirements": [
+    "lower-bound expected return",
+    "probability of loss",
+    "prediction interval width",
+    "liquidity",
+    "current supply and demand evidence",
+    "model confidence",
+    "comparable quality",
+    "portfolio concentration",
+    "maximum purchase price"
+  ],
+  "authorization": {
+    "simulation_engine_authorized_after_prerequisites": true,
+    "production_forecasting_authorized": false,
+    "purchase_recommendations_authorized": false,
+    "uip_delivery_authorized": false
+  }
+}
