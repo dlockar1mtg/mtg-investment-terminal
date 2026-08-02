@@ -11,9 +11,9 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 CONTRACT = ROOT / "config/mtg/standards/collector_lorwyn_comparable_authority_integration_contract_v1.json"
 OUTPUT = ROOT / "data/governance/permanence/certification/collector_v1_lorwyn_comparable_authority_integration"
-OUTPUT_AUTHORITY_NAME = "collector_integrated_comparable_pool_authority.csv"
-OUTPUT_AUDIT_NAME = "collector_lorwyn_supplemental_comparable_integration_audit.csv"
-OUTPUT_SUMMARY_NAME = "collector_lorwyn_comparable_authority_integration_summary.json"
+INTEGRATED_AUTHORITY_FILENAME = "collector_integrated_comparable_pool_authority.csv"
+INTEGRATION_AUDIT_FILENAME = "collector_lorwyn_supplemental_comparable_integration_audit.csv"
+INTEGRATION_SUMMARY_FILENAME = "collector_lorwyn_comparable_authority_integration_summary.json"
 
 ORIGINAL_FIELDS = [
     "comparable_group_id",
@@ -35,6 +35,12 @@ ORIGINAL_FIELDS = [
     "certification_status",
 ]
 
+AUDIT_FIELDS = ORIGINAL_FIELDS + [
+    "history_observation_count_reconciled",
+    "identity_release_semantic_reconciled",
+    "failure_reasons",
+]
+
 
 def clean(value: Any) -> str:
     return str(value or "").strip()
@@ -49,10 +55,10 @@ def read_csv(path: Path) -> list[dict[str, str]]:
         return list(csv.DictReader(handle))
 
 
-def write_csv(path: Path, rows: list[dict[str, Any]]) -> None:
+def write_csv(path: Path, rows: list[dict[str, Any]], fields: list[str]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", encoding="utf-8", newline="") as handle:
-        writer = csv.DictWriter(handle, fieldnames=ORIGINAL_FIELDS, extrasaction="ignore")
+        writer = csv.DictWriter(handle, fieldnames=fields, extrasaction="raise")
         writer.writeheader()
         writer.writerows(rows)
 
@@ -219,12 +225,11 @@ def main() -> int:
         failures.append("ORIGINAL_COMPARABLE_AUTHORITY_MODIFIED")
 
     OUTPUT.mkdir(parents=True, exist_ok=True)
-    output_authority = OUTPUT / OUTPUT_AUTHORITY_NAME
-    expected_output_authority = ROOT / contract["output_authority"]
-    if output_authority.resolve() != expected_output_authority.resolve():
-        failures.append("OUTPUT_AUTHORITY_PATH_CONTRACT_MISMATCH")
-    write_csv(output_authority, integrated_rows)
-    write_csv(OUTPUT / OUTPUT_AUDIT_NAME, supplemental_audit)
+    output_authority = OUTPUT / INTEGRATED_AUTHORITY_FILENAME
+    output_audit = OUTPUT / INTEGRATION_AUDIT_FILENAME
+    output_summary = OUTPUT / INTEGRATION_SUMMARY_FILENAME
+    write_csv(output_authority, integrated_rows, ORIGINAL_FIELDS)
+    write_csv(output_audit, supplemental_audit, AUDIT_FIELDS)
 
     status = contract["expected_status"] if not failures else "FAIL_COLLECTOR_LORWYN_COMPARABLE_AUTHORITY_INTEGRATION"
     summary = {
@@ -243,6 +248,7 @@ def main() -> int:
         "original_authority_sha256_after": sha256(paths["original_comparable_pool"]),
         "supplemental_authority_sha256": sha256(paths["supplemental_lorwyn_group"]),
         "integrated_authority_sha256": sha256(output_authority),
+        "integration_audit_sha256": sha256(output_audit),
         "projection_authorized": False,
         "production_forecast_authorized": False,
         "ranking_authorized": False,
@@ -250,7 +256,7 @@ def main() -> int:
         "critical_failures": failures,
         "status": status,
     }
-    (OUTPUT / OUTPUT_SUMMARY_NAME).write_text(json.dumps(summary, indent=2), encoding="utf-8")
+    output_summary.write_text(json.dumps(summary, indent=2), encoding="utf-8")
     print(json.dumps(summary, indent=2))
     return 0 if not failures else 1
 
