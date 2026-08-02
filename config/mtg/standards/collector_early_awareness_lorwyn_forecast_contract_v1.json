@@ -1,0 +1,52 @@
+{
+  "contract_name": "Collector Early-Awareness Backtest and Lorwyn Standalone Forecast Authorization",
+  "contract_version": "1.0.0",
+  "snapshot_id": "collector-20260801T211201Z-7688afbd",
+  "early_awareness": {
+    "checkpoint_days": [30, 60, 90, 120, 180],
+    "truth_horizon_days": 365,
+    "future_match_tolerance_days": 45,
+    "absolute_breakout_return_floor": 0.5,
+    "cross_product_breakout_quantile": 0.75,
+    "minimum_truth_products": 8,
+    "minimum_breakout_products": 2,
+    "selection_cutoffs": [3, 5, 10],
+    "minimum_precision_lift_over_random": 0.05,
+    "minimum_recall_at_top5": 0.5,
+    "minimum_median_lead_days": 120
+  },
+  "lorwyn": {
+    "canonical_product_id": "MTG-CANON-TCGPLAYER-648650",
+    "tcgplayer_product_id": "648650",
+    "product_name": "Lorwyn Eclipsed - Collector Booster Display",
+    "horizons_days": [90, 180, 365, 730, 1095, 1825],
+    "simulation_count": 10000,
+    "minimum_comparable_products": 5,
+    "maximum_comparable_products": 12,
+    "supply_status": "EBAY_SUPPLY_IDENTITY_AMBIGUOUS",
+    "supply_overlay_status": "SUPPLY_OVERLAY_DEFERRED_IDENTITY_AMBIGUITY",
+    "forecast_status": "FORECAST_AUTHORIZED_WITH_ELEVATED_UNCERTAINTY",
+    "method_ids": {
+      "90": "LORWYN_EARLY_RELEASE_SHORT_HORIZON_MC",
+      "180": "LORWYN_EARLY_RELEASE_MEDIUM_HORIZON_MC",
+      "365": "LORWYN_FIRST_YEAR_BREAKOUT_PROBABILITY_MC",
+      "730": "LORWYN_TWO_YEAR_HIERARCHICAL_MC",
+      "1095": "LORWYN_THREE_YEAR_REGIME_DAMPED_MC",
+      "1825": "LORWYN_FIVE_YEAR_REGIME_DAMPED_MC"
+    }
+  },
+  "governance": {
+    "strict_temporal_cutoffs_required": true,
+    "future_observations_prohibited": true,
+    "current_ebay_data_in_early_awareness_prohibited": true,
+    "current_ebay_data_in_lorwyn_forecast_prohibited": true,
+    "generic_route_return_prohibited": true,
+    "lorwyn_must_have_distinct_method_per_horizon": true,
+    "lorwyn_supply_ambiguity_must_not_block_price_forecast": true,
+    "lotr_special_edition_user_exclusion_preserved": true,
+    "production_forecast_authorized": false,
+    "ranking_authorized": false,
+    "purchase_recommendations_authorized": false
+  },
+  "expected_status": "PASS_COLLECTOR_EARLY_AWARENESS_AND_LORWYN_FORECAST_AUTHORIZATION"
+}
