@@ -1,0 +1,58 @@
+{
+  "contract_name": "Collector TCGplayer History Lineage and Reproducibility",
+  "contract_version": "1.0.0",
+  "governing_snapshot": {
+    "snapshot_id": "collector-20260801T211201Z-7688afbd",
+    "operating_date": "2026-08-01",
+    "timezone": "America/Chicago",
+    "source_bundle_sha256": "7688afbd6dfb4483c0a316dad6a2a05458944434a91a3f714568e5f4a10c7890",
+    "certified_product_count": 50
+  },
+  "supersession": {
+    "supersedes_two_provider_historical_price_reconstruction_requirement": true,
+    "tcgplayer_historical_market_price_authority_candidate": true,
+    "ebay_historical_market_price_reconstruction_required": false,
+    "ebay_role": "CERTIFIED_SUPPLY_DEMAND_LIQUIDITY_BASELINE",
+    "second_ebay_api_snapshot_requires_separate_governed_collection": true
+  },
+  "bounded_targets": [
+    "data/operations/mtg_universal_history_ledger/universal_mtg_daily_consolidated_ledger.csv",
+    "data/staging/purchase_refresh/2026-07-31/collector_history_rebuilt/product_master_model_input.csv",
+    "scripts/build_canonical_governed_history.py",
+    "scripts/certify_collector_booster_history.py",
+    "scripts/run_collector_history_semantic_gate.py"
+  ],
+  "candidate_classifications": [
+    "CERTIFIABLE_EXISTING_TCGPLAYER_HISTORY",
+    "REPRODUCIBLE_TCGPLAYER_HISTORY_SOURCE",
+    "DERIVED_ONLY_NOT_AUTHORITY",
+    "STALE_OUTPUT_NOT_PERMITTED",
+    "IDENTITY_MISMATCH",
+    "UNRESOLVED_LINEAGE"
+  ],
+  "required_controls": {
+    "bounded_read_only_audit": true,
+    "broad_repository_scan_prohibited": true,
+    "archived_helper_execution_prohibited": true,
+    "older_output_artifact_as_authority_prohibited": true,
+    "current_snapshot_as_history_prohibited": true,
+    "source_observation_dates_required": true,
+    "tcgplayer_market_price_semantics_required": true,
+    "ebay_listing_price_as_market_price_prohibited": true,
+    "certified_august1_50_product_identity_mapping_required": true,
+    "sha256_required_for_all_inspected_files": true,
+    "reproducibility_requires_active_code_and_identified_upstream_sources": true
+  },
+  "authorization": {
+    "lineage_and_reproducibility_audit_authorized": true,
+    "historical_reconstruction_execution_authorized": false,
+    "historical_observation_ledger_build_authorized": false,
+    "raw_historical_price_authority_certified": false,
+    "historical_coverage_assessment_authorized": false,
+    "lifecycle_panel_build_authorized": false,
+    "model_tournament_authorized": false,
+    "production_forecasting_authorized": false,
+    "uip_delivery_authorized": false,
+    "purchase_recommendations_authorized": false
+  }
+}
