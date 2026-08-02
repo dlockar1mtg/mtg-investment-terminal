@@ -1,0 +1,55 @@
+{
+  "policy_name": "collector_supply_scarcity_index",
+  "policy_version": "1.0.0",
+  "lane": "COLLECTOR_BOOSTER",
+  "purpose": "Cross-sectional point-in-time observable marketplace supply scarcity feature",
+  "input_authority": "collector_ebay_day_one_product_supply_snapshot.csv",
+  "continuity_required": false,
+  "future_continuity_role": "OPTIONAL_V2_TEMPORAL_ENHANCEMENT",
+  "score_range": [0, 100],
+  "components": {
+    "accepted_listing_scarcity": {
+      "weight": 0.50,
+      "direction": "LOWER_IS_SCARCER",
+      "method": "inverse_percentile_rank"
+    },
+    "observable_seller_scarcity": {
+      "weight": 0.30,
+      "direction": "LOWER_IS_SCARCER",
+      "method": "inverse_percentile_rank"
+    },
+    "review_friction": {
+      "weight": 0.10,
+      "direction": "HIGHER_INCREASES_UNCERTAINTY_NOT_SCARCITY",
+      "method": "uncertainty_penalty"
+    },
+    "ambiguity_friction": {
+      "weight": 0.10,
+      "direction": "HIGHER_INCREASES_UNCERTAINTY_NOT_SCARCITY",
+      "method": "uncertainty_penalty"
+    }
+  },
+  "zero_accepted_listing_rule": {
+    "scarcity_score": 100,
+    "confidence_cap": 0.60,
+    "interpretation": "OBSERVED_ZERO_WITHIN_CERTIFIED_ACQUISITION_CONTRACT"
+  },
+  "confidence": {
+    "base": 1.0,
+    "review_row_penalty_per_ratio_point": 0.35,
+    "ambiguity_row_penalty_per_ratio_point": 0.45,
+    "minimum": 0.25,
+    "maximum": 1.0
+  },
+  "prohibited_claims": [
+    "official print run",
+    "true total market supply",
+    "unique buyer count",
+    "proof that no listing exists anywhere on eBay"
+  ],
+  "forecast_usage": {
+    "authorized_for_experiments": true,
+    "production_use_requires_backtesting": true,
+    "purchase_recommendations_authorized": false
+  }
+}
