@@ -109,7 +109,9 @@ def test_multiple_raw_matches_can_resolve_to_one_authoritative_manifest(tmp_path
     ]
     assert len(matches) == 2
     assert len(authority) == 1
-    assert authority[0]["candidate_path"].endswith("snapshots/2026-08-01/snapshot_manifest.json")
+    assert Path(authority[0]["candidate_path"]).as_posix().endswith(
+        "snapshots/2026-08-01/snapshot_manifest.json"
+    )
 
 
 def test_two_true_authoritative_manifests_remain_ambiguous(tmp_path: Path) -> None:
