@@ -4,7 +4,6 @@ import argparse
 import csv
 import hashlib
 import json
-from collections import Counter
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -14,7 +13,17 @@ MANIFEST = ROOT / "data/governance/permanence/snapshots" / SNAPSHOT_ID / "collec
 OUT = ROOT / "data/governance/permanence/certification/collector_v1_august1_price_observation_lineage"
 KEYS = ("investment_product_id", "product_id", "collector_product_id", "canonical_product_id", "tcgplayer_product_id", "tcgcsv_product_id")
 PRICES = ("current_price", "market_price", "certified_current_price", "price")
-TIMES = ("source_observation_at_utc", "observed_at_utc", "observation_at_utc", "observation_date", "latest_price_date", "captured_at_utc", "retrieved_at_utc")
+TIMES = (
+    "source_observation_at_utc",
+    "observed_at_utc",
+    "observation_at_utc",
+    "observation_date",
+    "latest_price_date",
+    "captured_at_utc",
+    "retrieved_at_utc",
+    "collected_at",
+    "collected_at_utc",
+)
 
 
 def sha256(path: Path) -> str:
@@ -106,12 +115,13 @@ def main(argv: list[str] | None = None) -> int:
         out_csv = OUT / "collector_v1_august1_lineage_enriched_price_authority.csv"
         with out_csv.open("w", encoding="utf-8", newline="") as f:
             writer = csv.DictWriter(f, fieldnames=list(output_rows[0]))
-            writer.writeheader(); writer.writerows(output_rows)
+            writer.writeheader()
+            writer.writerows(output_rows)
         failures = [k for k, v in checks.items() if not v]
         passed = not failures
         summary = {
             "block_name": "Collector V1 August 1 Price Observation Lineage Reconciliation",
-            "block_version": "1.0.0",
+            "block_version": "1.0.1",
             "generated_at_utc": generated,
             "source_snapshot_id": SNAPSHOT_ID,
             "source_bundle_sha256": manifest.get("source_bundle_sha256"),
@@ -132,7 +142,7 @@ def main(argv: list[str] | None = None) -> int:
         passed = False
         summary = {
             "block_name": "Collector V1 August 1 Price Observation Lineage Reconciliation",
-            "block_version": "1.0.0",
+            "block_version": "1.0.1",
             "generated_at_utc": datetime.now(timezone.utc).isoformat(),
             "source_snapshot_id": SNAPSHOT_ID,
             "checks": checks,
