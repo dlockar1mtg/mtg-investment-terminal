@@ -32,16 +32,24 @@ def main() -> int:
         winner = pd.read_csv(winner_path)
 
     checks = [
-        ("coverage reaches at least 30 products", int(summary.get("eligible_products", 0)) >= 30), f"eligible_products={summary.get('eligible_products')}") ,
-        ("peer features are not required", summary.get("peer_features_required") is False, f"value={summary.get('peer_features_required')}") ,
-        ("leave-one-product-out enforced", summary.get("leave_one_product_out_enforced") is True, f"value={summary.get('leave_one_product_out_enforced')}") ,
-        ("feature cutoff enforced", summary.get("feature_cutoff_enforced") is True, f"value={summary.get('feature_cutoff_enforced')}") ,
-        ("candidate metrics exist", not metrics.empty, f"rows={len(metrics)}") ,
-        ("winner exists", len(winner) == 1, f"rows={len(winner)}") ,
-        ("winner meets unchanged gates", bool(not winner.empty and str(winner.iloc[0].get("promotion_status")) == "PROMOTABLE"), f"status={winner.iloc[0].get('promotion_status') if not winner.empty else None}") ,
-        ("fallback resolved", summary.get("early_cohort_fallback_resolved") is True, f"value={summary.get('early_cohort_fallback_resolved')}") ,
-        ("production remains blocked", summary.get("production_forecasting_authorized") is False, f"value={summary.get('production_forecasting_authorized')}") ,
-        ("purchase recommendations remain blocked", summary.get("purchase_recommendations_authorized") is False, f"value={summary.get('purchase_recommendations_authorized')}") ,
+        ("coverage reaches at least 30 products", int(summary.get("eligible_products", 0)) >= 30, f"eligible_products={summary.get('eligible_products')}"),
+        ("peer features are not required", summary.get("peer_features_required") is False, f"value={summary.get('peer_features_required')}"),
+        ("leave-one-product-out enforced", summary.get("leave_one_product_out_enforced") is True, f"value={summary.get('leave_one_product_out_enforced')}"),
+        ("feature cutoff enforced", summary.get("feature_cutoff_enforced") is True, f"value={summary.get('feature_cutoff_enforced')}"),
+        ("candidate metrics exist", not metrics.empty, f"rows={len(metrics)}"),
+        ("winner exists", len(winner) == 1, f"rows={len(winner)}"),
+        (
+            "winner meets unchanged gates",
+            bool(not winner.empty and str(winner.iloc[0].get("promotion_status")) == "PROMOTABLE"),
+            f"status={winner.iloc[0].get('promotion_status') if not winner.empty else None}",
+        ),
+        ("fallback resolved", summary.get("early_cohort_fallback_resolved") is True, f"value={summary.get('early_cohort_fallback_resolved')}"),
+        ("production remains blocked", summary.get("production_forecasting_authorized") is False, f"value={summary.get('production_forecasting_authorized')}"),
+        (
+            "purchase recommendations remain blocked",
+            summary.get("purchase_recommendations_authorized") is False,
+            f"value={summary.get('purchase_recommendations_authorized')}",
+        ),
     ]
     for name, passed, details in checks:
         if not passed:
@@ -50,7 +58,7 @@ def main() -> int:
     certified = not failures
     result = {
         "block_name": "Collector V1 Early Cohort Fallback Tournament Certification",
-        "block_version": "1.0.0",
+        "block_version": "1.0.1",
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "total_checks": len(checks),
         "passed_checks": len(checks) - len(failures),
