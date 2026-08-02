@@ -1,0 +1,45 @@
+{
+  "contract_name": "Collector Historical Source Scope and Lineage Contract",
+  "contract_version": "1.0.0",
+  "domain_owner": "MTG",
+  "purpose": "Reduce row-level eligible sources to Collector Booster Box evidence with explicit lineage and one canonical representative per duplicate family.",
+  "required_scope": "collector_booster_box",
+  "prohibited_scopes": [
+    "secret_lair",
+    "pre_collector_booster_box",
+    "general_mtg",
+    "current_only_snapshot",
+    "repair_copy",
+    "backup_copy"
+  ],
+  "required_output_fields": [
+    "source_path",
+    "source_sha256",
+    "feature_family",
+    "collector_scope_state",
+    "lineage_family_id",
+    "canonical_source_path",
+    "duplicate_family_size",
+    "canonical_representative",
+    "scope_eligible",
+    "lineage_eligible",
+    "panel_candidate",
+    "exclusion_reason"
+  ],
+  "controls": {
+    "collector_registry_binding_required": true,
+    "secret_lair_excluded": true,
+    "pre_collector_excluded": true,
+    "general_mtg_without_collector_binding_excluded": true,
+    "repair_and_backup_copies_noncanonical": true,
+    "identical_hashes_collapsed": true,
+    "one_canonical_source_per_lineage_family": true,
+    "source_path_alone_does_not_prove_collector_scope": true
+  },
+  "authorization": {
+    "source_scope_lineage_adjudication_authorized": true,
+    "lifecycle_panel_build_authorized": false,
+    "model_tournament_authorized": false,
+    "purchase_recommendations_authorized": false
+  }
+}
