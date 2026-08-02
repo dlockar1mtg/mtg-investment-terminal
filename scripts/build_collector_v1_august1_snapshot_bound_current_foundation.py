@@ -21,7 +21,7 @@ ALIASES = {
     "listing_count": ("accepted_listing_count", "listing_count", "active_listing_count"),
     "route": ("forecast_method", "forecast_route", "resolved_route", "route", "tournament_lane"),
     "product_name": ("product_name", "canonical_product_name", "name"),
-    "history_date": ("observation_date", "date", "price_date", "as_of_date", "timestamp"),
+    "history_date": ("observation_date_utc", "observation_date", "date", "price_date", "snapshot_date", "as_of_date", "observed_at", "timestamp"),
 }
 
 
@@ -83,11 +83,15 @@ def prefixed(frame: pd.DataFrame, role: str) -> pd.DataFrame:
     return frame.rename(columns={column: f"{role}__{column}" for column in frame.columns if column != KEY})
 
 
+def native_checks(checks: dict[str, object]) -> dict[str, bool]:
+    return {name: bool(value) for name, value in checks.items()}
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--strict", action="store_true")
     args = parser.parse_args(argv)
-    checks: dict[str, bool] = {}
+    checks: dict[str, object] = {}
     failures: list[str] = []
     generated = datetime.now(timezone.utc).isoformat()
     try:
@@ -139,24 +143,25 @@ def main(argv: list[str] | None = None) -> int:
         time_col = pick_preferred(price, ALIASES["price_time"], "price observation timestamp")
         checks["canonical_price_timestamp_selected"] = time_col == "source_observation_at_utc"
         if "collected_at" in price.columns:
-            checks["canonical_and_source_price_timestamps_agree"] = bool((
+            checks["canonical_and_source_price_timestamps_agree"] = (
                 price["source_observation_at_utc"].astype(str).str.strip()
                 == price["collected_at"].astype(str).str.strip()
-            ).all())
+            ).all()
         else:
             checks["canonical_and_source_price_timestamps_agree"] = True
         listing_count_col = pick(supply, ALIASES["listing_count"], "accepted listing count")
         route_col = pick(route, ALIASES["route"], "forecast route")
         name_candidates = [name for name in ALIASES["product_name"] if name in identity.columns]
         name_col = name_candidates[0] if name_candidates else None
-        history_date_col = pick(history, ALIASES["history_date"], "history date")
+        history_date_col = pick_preferred(history, ALIASES["history_date"], "history date")
+        checks["canonical_history_date_selected"] = history_date_col == "observation_date_utc"
 
         price[price_col] = pd.to_numeric(price[price_col], errors="coerce")
         supply[listing_count_col] = pd.to_numeric(supply[listing_count_col], errors="coerce")
-        checks["all_prices_positive"] = bool(price[price_col].notna().all() and price[price_col].gt(0).all())
-        checks["all_price_timestamps_present"] = bool(price[time_col].astype(str).str.strip().ne("").all())
-        checks["all_listing_counts_nonnegative"] = bool(supply[listing_count_col].notna().all() and supply[listing_count_col].ge(0).all())
-        checks["all_routes_present"] = bool(route[route_col].astype(str).str.strip().ne("").all())
+        checks["all_prices_positive"] = price[price_col].notna().all() and price[price_col].gt(0).all()
+        checks["all_price_timestamps_present"] = price[time_col].astype(str).str.strip().ne("").all()
+        checks["all_listing_counts_nonnegative"] = supply[listing_count_col].notna().all() and supply[listing_count_col].ge(0).all()
+        checks["all_routes_present"] = route[route_col].astype(str).str.strip().ne("").all()
         checks["accepted_listing_ledger_reconciles"] = int(supply[listing_count_col].sum()) == len(listing)
 
         history[history_date_col] = pd.to_datetime(history[history_date_col], errors="coerce", utc=True)
@@ -195,21 +200,21 @@ def main(argv: list[str] | None = None) -> int:
 
         checks["foundation_has_50_rows"] = len(foundation) == 50
         checks["foundation_product_ids_unique"] = not foundation[KEY].duplicated().any()
-        checks["all_history_present"] = bool(foundation["history_observation_count"].gt(0).all())
-        checks["all_required_lineage_present"] = bool(foundation[[
+        checks["all_history_present"] = foundation["history_observation_count"].gt(0).all()
+        checks["all_required_lineage_present"] = foundation[[
             "source_snapshot_id", "source_bundle_sha256", "source_price_authority_sha256",
             "source_listing_authority_sha256", "source_feature_authority_sha256", "model_generated_at_utc"
-        ]].astype(str).apply(lambda col: col.str.strip().ne("").all()).all())
+        ]].astype(str).apply(lambda col: col.str.strip().ne("").all()).all()
 
-        checks = {name: bool(value) for name, value in checks.items()}
-        failures = [name for name, passed in checks.items() if not passed]
+        checks = native_checks(checks)
+        failures = [name for name, passed_check in checks.items() if not passed_check]
         passed = not failures
         OUT.mkdir(parents=True, exist_ok=True)
         out_csv = OUT / "collector_v1_august1_snapshot_bound_current_foundation.csv"
         foundation.sort_values(KEY).to_csv(out_csv, index=False)
         summary = {
             "block_name": "Collector V1 August 1 Snapshot-Bound Current Foundation",
-            "block_version": "1.0.2",
+            "block_version": "1.0.3",
             "generated_at_utc": generated,
             "source_snapshot_id": SNAPSHOT_ID,
             "source_bundle_sha256": active["source_bundle_sha256"],
@@ -221,6 +226,7 @@ def main(argv: list[str] | None = None) -> int:
             "accepted_listing_rows": len(listing),
             "canonical_history_rows": len(history),
             "selected_price_timestamp_column": time_col,
+            "selected_history_date_column": history_date_col,
             "checks": checks,
             "critical_failures": failures,
             "current_foundation_certified_input_ready": passed,
@@ -232,10 +238,10 @@ def main(argv: list[str] | None = None) -> int:
         }
     except Exception as exc:
         passed = False
-        checks = {name: bool(value) for name, value in checks.items()}
+        checks = native_checks(checks)
         summary = {
             "block_name": "Collector V1 August 1 Snapshot-Bound Current Foundation",
-            "block_version": "1.0.2",
+            "block_version": "1.0.3",
             "generated_at_utc": generated,
             "source_snapshot_id": SNAPSHOT_ID,
             "checks": checks,
