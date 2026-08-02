@@ -9,7 +9,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 EXPECTED_BRANCH = "phase-8.2.8a-august1-snapshot-bound-current-product-rebuild"
 CONTRACT = ROOT / "config/mtg/standards/collector_canonical_identity_lineage_recertification_contract_v1.json"
-CERTIFIER = ROOT / "scripts/certify_collector_v1_canonical_identity_lineage.py"
+CERTIFIER = ROOT / "scripts/certify_collector_v1_canonical_identity_lineage_v2.py"
 OUTPUT = ROOT / "data/governance/permanence/certification/collector_v1_canonical_identity_lineage_recertification"
 SUMMARY = OUTPUT / "collector_canonical_identity_lineage_recertification_summary.json"
 FINAL_FORECASTS = OUTPUT / "collector_final_authority_bound_49_product_forecasts.csv"
@@ -22,13 +22,7 @@ SEMANTIC = OUTPUT / "collector_lorwyn_pre_simulation_semantic_certification.json
 
 
 def run(args: list[str], *, capture: bool = False) -> subprocess.CompletedProcess[str]:
-    completed = subprocess.run(
-        args,
-        cwd=ROOT,
-        text=True,
-        capture_output=capture,
-        check=False,
-    )
+    completed = subprocess.run(args, cwd=ROOT, text=True, capture_output=capture, check=False)
     if capture:
         if completed.stdout:
             print(completed.stdout, end="")
@@ -60,7 +54,7 @@ def main() -> int:
     print("COMPLETED / CERTIFIED")
     print("1. Product-specific contracts no longer assert identity.")
     print("2. Certified authority is the exclusive identity source.")
-    print("3. Authority-path existence tests are installed.")
+    print("3. Authority schemas are explicitly preflighted.")
     print("\nCURRENTLY WORKING ON")
     print("4. Reconcile all 50 governed products.")
     print("5. Recertify 288 base forecast rows.")
@@ -81,7 +75,7 @@ def main() -> int:
         return fail("Working tree is not clean.", 902)
 
     if not CONTRACT.is_file() or not CERTIFIER.is_file():
-        return fail("Governance contract or certifier is missing.", 903)
+        return fail("Governance contract or v2 certifier is missing.", 903)
     contract = json.loads(CONTRACT.read_text(encoding="utf-8"))
     missing_authorities = [
         f"{name}:{relative}"
@@ -96,6 +90,8 @@ def main() -> int:
         sys.executable,
         "-m",
         "pytest",
+        "tests/test_collector_v1_authority_schema_preflight.py",
+        "tests/test_collector_v1_canonical_identity_lineage_v2.py",
         "tests/test_collector_v1_canonical_identity_lineage_recertification.py",
         "tests/test_collector_v1_early_awareness_lorwyn_forecast.py",
         "tests/test_collector_v1_complete_horizon_probabilistic_forecasts.py",
