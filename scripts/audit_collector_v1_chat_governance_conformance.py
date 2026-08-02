@@ -26,6 +26,7 @@ ARTIFACTS = [
     "config/mtg/standards/collector_frozen_history_source_manifest_contract_v1.json",
     "config/mtg/standards/collector_tcgcsv_authority_verification_contract_v1.json",
     "config/mtg/standards/collector_historical_price_recovery_contract_v1.json",
+    "config/mtg/standards/collector_governance_locked_preflight_contract_v1.json",
     "scripts/build_collector_v1_evidence_tournament_reconstruction_plan.py",
     "scripts/build_collector_v1_first_year_breakout_reconstruction_plan.py",
     "scripts/audit_collector_v1_historical_feature_availability.py",
@@ -38,6 +39,7 @@ ARTIFACTS = [
     "scripts/build_collector_v1_frozen_history_source_manifest.py",
     "scripts/verify_collector_v1_tcgcsv_historical_authority.py",
     "scripts/recover_collector_v1_historical_price_authority.py",
+    "scripts/run_collector_v1_governance_locked_preflight.py",
 ]
 
 PROHIBITED_RECOVERY_PATTERNS = [
@@ -85,6 +87,16 @@ def main() -> int:
         add(findings, str(recovery.relative_to(ROOT)), f"recovery_drift:{pattern}", "FAIL" if pattern in recovery_text else "PASS", "CRITICAL", "Recovery must be August-1 snapshot-bound and fail closed")
     for token, control in ((SNAPSHOT_ID, "snapshot_id"), (OPERATING_DATE, "operating_date"), (BUNDLE_SHA, "bundle_sha"), (str(PRODUCT_COUNT), "product_count")):
         add(findings, str(recovery.relative_to(ROOT)), control, "PASS" if token in recovery_text else "FAIL", "CRITICAL", "Mandatory August 1 binding")
+
+    recovery_contract = (ROOT / "config/mtg/standards/collector_historical_price_recovery_contract_v1.json").read_text(encoding="utf-8")
+    add(findings, "collector_historical_price_recovery_contract_v1.json", "broad_roots_revoked", "PASS" if '"approved_source_roots": []' in recovery_contract else "FAIL", "CRITICAL", "Broad source roots must remain revoked")
+    add(findings, "collector_historical_price_recovery_contract_v1.json", "recovery_authorization", "PASS" if '"historical_price_recovery_authorized": false' in recovery_contract else "FAIL", "CRITICAL", "Recovery remains blocked until snapshot conformance")
+
+    preflight = ROOT / "scripts/run_collector_v1_governance_locked_preflight.py"
+    preflight_text = preflight.read_text(encoding="utf-8") if preflight.exists() else ""
+    for token, control in ((SNAPSHOT_ID, "preflight_snapshot_id"), (OPERATING_DATE, "preflight_operating_date"), (TIMEZONE if False else "America/Chicago", "preflight_timezone"), (BUNDLE_SHA, "preflight_bundle_sha"), (str(PRODUCT_COUNT), "preflight_product_count")):
+        add(findings, str(preflight.relative_to(ROOT)), control, "PASS" if token in preflight_text else "FAIL", "CRITICAL", "Mandatory preflight binding")
+    add(findings, str(preflight.relative_to(ROOT)), "preflight_runs_governance_first", "PASS" if "subprocess.run([sys.executable, str(AUDIT)]" in preflight_text else "FAIL", "CRITICAL", "Governance audit must execute before snapshot resolution")
 
     summary_path = ROOT / "data/governance/permanence/certification/collector_v1_historical_price_recovery/collector_historical_price_recovery_summary.json"
     if summary_path.exists():
