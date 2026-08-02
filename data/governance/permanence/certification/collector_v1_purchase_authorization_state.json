@@ -1,0 +1,19 @@
+{
+  "state_version": "1.0.0",
+  "effective_at_utc": "2026-08-02T05:05:00Z",
+  "purchase_recommendations_authorized": false,
+  "maximum_purchase_prices_purchase_authorized": false,
+  "previously_authorized_product_count": 6,
+  "suspension_reason": "The downstream pipeline was rerun on August 2, 2026, but the current-price authority contained older July 22 and July 27 source observations. End-to-end snapshot identity and lineage were not enforced when the recommendations were generated.",
+  "reinstatement_requirements": [
+    "A new immutable current-market snapshot is captured and certified.",
+    "The snapshot manifest contains provider provenance, source observation timestamps, file hashes, price-date coverage, and listing coverage.",
+    "The feature matrix is rebuilt exclusively from the certified snapshot for all current-state fields.",
+    "Every downstream summary contains the same source_snapshot_id and matching source hashes.",
+    "The end-to-end snapshot and lineage certification passes in strict mode.",
+    "Individual products pass freshness, listing-depth, forecast, and recommendation-stability gates."
+  ],
+  "production_forecasting_authorized": false,
+  "uip_delivery_authorized": false,
+  "status": "SUSPENDED_PENDING_FRESH_SNAPSHOT_AND_LINEAGE_CERTIFICATION"
+}
