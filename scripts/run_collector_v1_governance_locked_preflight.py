@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import csv
 import json
 import subprocess
 import sys
@@ -18,19 +19,137 @@ BUNDLE_SHA = "7688afbd6dfb4483c0a316dad6a2a05458944434a91a3f714568e5f4a10c7890"
 PRODUCT_COUNT = 50
 MAX_TEXT_BYTES = 10 * 1024 * 1024
 
+IDENTITY_FIELD_ALIASES = {
+    "snapshot_id": ("snapshot_id", "package_id"),
+    "operating_date": ("operating_date", "snapshot_date", "as_of_date"),
+    "timezone": ("timezone", "operating_timezone"),
+    "source_bundle_sha256": ("source_bundle_sha256", "bundle_sha256", "sha256"),
+    "certified_product_count": ("certified_product_count", "product_count", "governed_product_count"),
+}
 
-def flatten(value: Any) -> list[str]:
-    values: list[str] = []
+MANIFEST_FILENAME_HINTS = (
+    "snapshot_manifest",
+    "package_manifest",
+    "package_summary",
+    "source_manifest",
+)
+
+SNAPSHOT_PATH_HINTS = (
+    "20260801",
+    "2026-08-01",
+    "august_1",
+    "august1",
+    SNAPSHOT_ID.lower(),
+)
+
+GENERATED_OR_NONAUTHORITATIVE_PATH_TERMS = (
+    "/governance/",
+    "/permanence/",
+    "/certification/",
+    "/validation/",
+    "/tests/",
+    "/test/",
+    "/reports/",
+    "/report/",
+    "/backup/",
+    "/backups/",
+    "/attempt/",
+    "/attempts/",
+)
+
+
+def nested_values(value: Any, key: str) -> list[Any]:
+    found: list[Any] = []
     if isinstance(value, dict):
-        for key, item in value.items():
-            values.append(str(key))
-            values.extend(flatten(item))
+        for current_key, item in value.items():
+            if str(current_key).lower() == key.lower():
+                found.append(item)
+            found.extend(nested_values(item, key))
     elif isinstance(value, list):
         for item in value:
-            values.extend(flatten(item))
-    elif value is not None:
-        values.append(str(value))
-    return values
+            found.extend(nested_values(item, key))
+    return found
+
+
+def first_alias_value(payload: dict[str, Any], aliases: tuple[str, ...]) -> Any | None:
+    for alias in aliases:
+        values = nested_values(payload, alias)
+        if values:
+            return values[0]
+    return None
+
+
+def read_json(path: Path) -> tuple[dict[str, Any] | None, str]:
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8-sig"))
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError) as exc:
+        return None, f"READ_OR_PARSE_ERROR:{type(exc).__name__}"
+    if not isinstance(payload, dict):
+        return None, "TOP_LEVEL_JSON_NOT_OBJECT"
+    return payload, ""
+
+
+def identity_values(payload: dict[str, Any]) -> dict[str, Any | None]:
+    return {
+        field: first_alias_value(payload, aliases)
+        for field, aliases in IDENTITY_FIELD_ALIASES.items()
+    }
+
+
+def path_text(path: Path) -> str:
+    return "/" + str(path).replace("\\", "/").lower().lstrip("/")
+
+
+def adjudicate_manifest(path: Path) -> dict[str, Any]:
+    relative = str(path.relative_to(ROOT)) if path.is_relative_to(ROOT) else str(path)
+    normalized_path = path_text(path)
+    filename = path.name.lower()
+    payload, read_error = read_json(path)
+
+    row: dict[str, Any] = {
+        "candidate_path": relative,
+        "candidate_role": "REJECTED",
+        "identity_match": False,
+        "filename_authority_hint": any(hint in filename for hint in MANIFEST_FILENAME_HINTS),
+        "snapshot_path_hint": any(hint in normalized_path for hint in SNAPSHOT_PATH_HINTS),
+        "generated_or_nonauthoritative_path": any(term in normalized_path for term in GENERATED_OR_NONAUTHORITATIVE_PATH_TERMS),
+        "rejection_reasons": "",
+    }
+
+    reasons: list[str] = []
+    if read_error:
+        reasons.append(read_error)
+        row["rejection_reasons"] = "|".join(reasons)
+        return row
+
+    assert payload is not None
+    values = identity_values(payload)
+    identity_checks = {
+        "SNAPSHOT_ID_MISMATCH": str(values["snapshot_id"] or "") == SNAPSHOT_ID,
+        "OPERATING_DATE_MISMATCH": str(values["operating_date"] or "")[:10] == OPERATING_DATE,
+        "TIMEZONE_MISMATCH": str(values["timezone"] or "") == TIMEZONE,
+        "SOURCE_BUNDLE_SHA256_MISMATCH": str(values["source_bundle_sha256"] or "").lower() == BUNDLE_SHA,
+        "CERTIFIED_PRODUCT_COUNT_MISMATCH": str(values["certified_product_count"] or "") == str(PRODUCT_COUNT),
+    }
+    for reason, passed in identity_checks.items():
+        if not passed:
+            reasons.append(reason)
+
+    row["identity_match"] = not reasons
+    if not row["filename_authority_hint"]:
+        reasons.append("FILENAME_NOT_MANIFEST_AUTHORITY")
+    if not row["snapshot_path_hint"]:
+        reasons.append("PATH_NOT_BOUND_TO_AUGUST_1_SNAPSHOT")
+    if row["generated_or_nonauthoritative_path"]:
+        reasons.append("GENERATED_OR_NONAUTHORITATIVE_COPY")
+
+    if not reasons:
+        row["candidate_role"] = "AUTHORITATIVE_SNAPSHOT_MANIFEST"
+    elif row["identity_match"]:
+        row["candidate_role"] = "IDENTITY_COPY_NOT_AUTHORITATIVE"
+
+    row["rejection_reasons"] = "|".join(reasons)
+    return row
 
 
 def candidate_manifests(search_root: Path) -> list[Path]:
@@ -50,36 +169,45 @@ def candidate_manifests(search_root: Path) -> list[Path]:
 
 
 def validate_manifest(path: Path) -> tuple[bool, list[str], dict[str, Any] | None]:
+    payload, read_error = read_json(path)
+    if read_error:
+        return False, [read_error], payload
+    assert payload is not None
+    values = identity_values(payload)
     reasons: list[str] = []
-    try:
-        payload = json.loads(path.read_text(encoding="utf-8-sig"))
-    except (OSError, UnicodeDecodeError, json.JSONDecodeError) as exc:
-        return False, [f"MANIFEST_READ_OR_PARSE_ERROR:{type(exc).__name__}"], None
-
-    flattened = flatten(payload)
-    joined = "\n".join(flattened)
-    required = {
-        "SNAPSHOT_ID_MISMATCH": SNAPSHOT_ID,
-        "OPERATING_DATE_MISMATCH": OPERATING_DATE,
-        "TIMEZONE_MISMATCH": TIMEZONE,
-        "SOURCE_BUNDLE_SHA256_MISMATCH": BUNDLE_SHA,
+    checks = {
+        "SNAPSHOT_ID_MISMATCH": str(values["snapshot_id"] or "") == SNAPSHOT_ID,
+        "OPERATING_DATE_MISMATCH": str(values["operating_date"] or "")[:10] == OPERATING_DATE,
+        "TIMEZONE_MISMATCH": str(values["timezone"] or "") == TIMEZONE,
+        "SOURCE_BUNDLE_SHA256_MISMATCH": str(values["source_bundle_sha256"] or "").lower() == BUNDLE_SHA,
+        "CERTIFIED_PRODUCT_COUNT_MISMATCH": str(values["certified_product_count"] or "") == str(PRODUCT_COUNT),
     }
-    for reason, expected in required.items():
-        if expected not in joined:
+    for reason, passed in checks.items():
+        if not passed:
             reasons.append(reason)
-
-    numeric_values = {value for value in flattened if value.isdigit()}
-    if str(PRODUCT_COUNT) not in numeric_values:
-        reasons.append("CERTIFIED_PRODUCT_COUNT_MISMATCH")
-
     return not reasons, reasons, payload
 
 
-def write_summary(output_root: Path, summary: dict[str, Any]) -> None:
+def write_outputs(output_root: Path, summary: dict[str, Any], candidates: list[dict[str, Any]]) -> None:
     output_root.mkdir(parents=True, exist_ok=True)
     (output_root / "collector_governance_locked_preflight_summary.json").write_text(
         json.dumps(summary, indent=2), encoding="utf-8"
     )
+    fields = [
+        "candidate_path",
+        "candidate_role",
+        "identity_match",
+        "filename_authority_hint",
+        "snapshot_path_hint",
+        "generated_or_nonauthoritative_path",
+        "rejection_reasons",
+    ]
+    with (output_root / "collector_snapshot_manifest_candidate_adjudication.csv").open(
+        "w", encoding="utf-8", newline=""
+    ) as handle:
+        writer = csv.DictWriter(handle, fieldnames=fields)
+        writer.writeheader()
+        writer.writerows(candidates)
 
 
 def main() -> int:
@@ -99,6 +227,7 @@ def main() -> int:
         "snapshot_manifest_resolved": False,
         "snapshot_manifest_path": "",
         "snapshot_manifest_match_count": 0,
+        "authoritative_snapshot_manifest_count": 0,
         "snapshot_identity_verified": False,
         "historical_price_recovery_authorized": False,
         "historical_coverage_measurement_authorized": False,
@@ -113,34 +242,46 @@ def main() -> int:
     if audit.returncode != 0:
         summary["status"] = "BLOCKED_GOVERNANCE_CONFORMANCE_FAILED"
         summary["failure_reasons"] = [f"GOVERNANCE_AUDIT_EXIT_CODE_{audit.returncode}"]
-        write_summary(args.output_root.resolve(), summary)
+        write_outputs(args.output_root.resolve(), summary, [])
         print(json.dumps(summary, indent=2))
         return 2
     summary["governance_audit_passed"] = True
 
-    manifests = candidate_manifests(args.search_root.resolve())
-    summary["snapshot_manifest_match_count"] = len(manifests)
-    if len(manifests) != 1:
-        summary["status"] = "BLOCKED_SNAPSHOT_MANIFEST_NOT_RESOLVED" if not manifests else "BLOCKED_MULTIPLE_SNAPSHOT_MANIFESTS"
+    raw_matches = candidate_manifests(args.search_root.resolve())
+    candidates = [adjudicate_manifest(path) for path in raw_matches]
+    authoritative = [
+        row for row in candidates
+        if row["candidate_role"] == "AUTHORITATIVE_SNAPSHOT_MANIFEST"
+    ]
+    summary["snapshot_manifest_match_count"] = len(raw_matches)
+    summary["authoritative_snapshot_manifest_count"] = len(authoritative)
+
+    if len(authoritative) != 1:
+        summary["status"] = (
+            "BLOCKED_SNAPSHOT_MANIFEST_NOT_RESOLVED"
+            if not authoritative
+            else "BLOCKED_MULTIPLE_AUTHORITATIVE_SNAPSHOT_MANIFESTS"
+        )
         summary["failure_reasons"] = [summary["status"]]
-        write_summary(args.output_root.resolve(), summary)
+        write_outputs(args.output_root.resolve(), summary, candidates)
         print(json.dumps(summary, indent=2))
         return 3
 
-    manifest = manifests[0]
+    manifest_path_text = authoritative[0]["candidate_path"]
+    manifest = ROOT / manifest_path_text
     summary["snapshot_manifest_resolved"] = True
-    summary["snapshot_manifest_path"] = str(manifest.relative_to(ROOT)) if manifest.is_relative_to(ROOT) else str(manifest)
+    summary["snapshot_manifest_path"] = manifest_path_text
     valid, reasons, _ = validate_manifest(manifest)
     if not valid:
         summary["status"] = "BLOCKED_SNAPSHOT_IDENTITY_MISMATCH"
         summary["failure_reasons"] = reasons
-        write_summary(args.output_root.resolve(), summary)
+        write_outputs(args.output_root.resolve(), summary, candidates)
         print(json.dumps(summary, indent=2))
         return 4
 
     summary["snapshot_identity_verified"] = True
     summary["status"] = "PASS_COLLECTOR_AUGUST_1_SNAPSHOT_CONFORMANCE"
-    write_summary(args.output_root.resolve(), summary)
+    write_outputs(args.output_root.resolve(), summary, candidates)
     print(json.dumps(summary, indent=2))
     return 0
 
