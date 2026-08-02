@@ -40,6 +40,13 @@ def pick(frame: pd.DataFrame, names: tuple[str, ...], label: str) -> str:
     return found[0]
 
 
+def pick_preferred(frame: pd.DataFrame, names: tuple[str, ...], label: str) -> str:
+    for name in names:
+        if name in frame.columns:
+            return name
+    raise RuntimeError(f"Expected at least one {label}; found []")
+
+
 def load_csv(path: Path, role: str) -> pd.DataFrame:
     if not path.is_file():
         raise FileNotFoundError(f"Missing {role} authority: {path}")
@@ -129,7 +136,15 @@ def main(argv: list[str] | None = None) -> int:
         history = history[history[KEY].isin(universe)].copy()
 
         price_col = pick(price, ALIASES["price"], "price column")
-        time_col = pick(price, ALIASES["price_time"], "price observation timestamp")
+        time_col = pick_preferred(price, ALIASES["price_time"], "price observation timestamp")
+        checks["canonical_price_timestamp_selected"] = time_col == "source_observation_at_utc"
+        if "collected_at" in price.columns:
+            checks["canonical_and_source_price_timestamps_agree"] = (
+                price["source_observation_at_utc"].astype(str).str.strip()
+                == price["collected_at"].astype(str).str.strip()
+            ).all()
+        else:
+            checks["canonical_and_source_price_timestamps_agree"] = True
         listing_count_col = pick(supply, ALIASES["listing_count"], "accepted listing count")
         route_col = pick(route, ALIASES["route"], "forecast route")
         name_candidates = [name for name in ALIASES["product_name"] if name in identity.columns]
@@ -193,7 +208,7 @@ def main(argv: list[str] | None = None) -> int:
         foundation.sort_values(KEY).to_csv(out_csv, index=False)
         summary = {
             "block_name": "Collector V1 August 1 Snapshot-Bound Current Foundation",
-            "block_version": "1.0.0",
+            "block_version": "1.0.1",
             "generated_at_utc": generated,
             "source_snapshot_id": SNAPSHOT_ID,
             "source_bundle_sha256": active["source_bundle_sha256"],
@@ -204,6 +219,7 @@ def main(argv: list[str] | None = None) -> int:
             "foundation_rows": len(foundation),
             "accepted_listing_rows": len(listing),
             "canonical_history_rows": len(history),
+            "selected_price_timestamp_column": time_col,
             "checks": checks,
             "critical_failures": failures,
             "current_foundation_certified_input_ready": passed,
@@ -217,7 +233,7 @@ def main(argv: list[str] | None = None) -> int:
         passed = False
         summary = {
             "block_name": "Collector V1 August 1 Snapshot-Bound Current Foundation",
-            "block_version": "1.0.0",
+            "block_version": "1.0.1",
             "generated_at_utc": generated,
             "source_snapshot_id": SNAPSHOT_ID,
             "checks": checks,
