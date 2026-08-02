@@ -1,0 +1,42 @@
+{
+  "contract_name": "Collector Wizards Official Release-Date Authority",
+  "contract_version": "1.0.0",
+  "governing_snapshot_id": "collector-20260801T211201Z-7688afbd",
+  "required_product_count": 50,
+  "required_missing_evidence_rows": 27,
+  "required_ledger_rows": 1215,
+  "official_domain": "magic.wizards.com",
+  "date_precedence": [
+    "SKU_SPECIFIC_TABLETOP_RELEASE",
+    "SET_SPECIFIC_GLOBAL_TABLETOP_RELEASE",
+    "SET_SPECIFIC_NORTH_AMERICA_PHYSICAL_RELEASE",
+    "OFFICIAL_PRODUCT_PAGE",
+    "OFFICIAL_RELEASE_NOTES",
+    "OFFICIAL_PRODUCT_ARCHIVE"
+  ],
+  "geographic_policy": {
+    "operating_market": "United States",
+    "ikoria_exception": "Use 2020-05-15 North America physical release rather than the earlier Asia release."
+  },
+  "lifecycle_bands": {
+    "PRESALE": [-10000, -1],
+    "RELEASE_MONTH": [0, 30],
+    "EARLY_POST_RELEASE": [31, 180],
+    "DEVELOPING": [181, 365],
+    "ESTABLISHED": [366, 10000]
+  },
+  "required_outputs": [
+    "collector_wizards_release_date_evidence_certification.csv",
+    "collector_wizards_release_date_authority.csv",
+    "collector_lifecycle_panel_final_candidate.csv",
+    "collector_wizards_release_date_authority_summary.json"
+  ],
+  "authorization_policy": {
+    "release_date_authority_certified": "true only when all 50 products resolve to exactly one governed date",
+    "lifecycle_panel_build_authorized": "true only when all 1215 ledger rows classify",
+    "model_tournament_authorized": false,
+    "production_forecasting_authorized": false,
+    "uip_delivery_authorized": false,
+    "purchase_recommendations_authorized": false
+  }
+}
