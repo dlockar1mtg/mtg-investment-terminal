@@ -20,6 +20,7 @@ UNIVERSE_PATH = SOURCE_ROOT / "collector_ebay_canary_universe.csv"
 LOTR_ID = "484912"
 YEAR_QUANTITY = re.compile(r"universal_quantity:(?:19|20)\d{2}(?:\||$)")
 UNSAFE_TITLE = re.compile(r"(?:\bcase\b|\bmaster case\b|\b[x×]\s*[2-9]\b|\b[2-9]\s*[x×]\b|\b[2-9]\s+(?:boxes|displays)\b)", re.I)
+LOTR_EXCLUDED_STANDARD = re.compile(r"\b(?:case|japanese|jpn|jp\s+version)\b", re.I)
 
 
 def read_csv(path: Path) -> list[dict[str, str]]:
@@ -127,6 +128,11 @@ def main() -> int:
         }
         new = identity_match_listing(product, item, "OFFLINE-HARDENED-REPLAY", observed)
         reasons = new.exclusion_reasons
+        is_lotr_standard_candidate = (
+            product.tcgplayer_product_id == LOTR_ID
+            and old.get("match_state", "") == "REVIEW"
+            and not LOTR_EXCLUDED_STANDARD.search(new.title)
+        )
         rows.append({
             **asdict(new),
             "resolved_tcgplayer_product_id": product.tcgplayer_product_id,
@@ -135,19 +141,31 @@ def main() -> int:
             "classification_transition": f"{old.get('match_state', '')}->{new.match_state}",
             "year_parsed_as_quantity": bool(YEAR_QUANTITY.search(reasons)),
             "unsafe_title_accepted": bool(UNSAFE_TITLE.search(new.title)) and new.match_state == "ACCEPTED",
-            "lotr_standard_display_accepted": product.tcgplayer_product_id == LOTR_ID and new.match_state == "ACCEPTED",
+            "lotr_standard_candidate": is_lotr_standard_candidate,
+            "lotr_standard_safe": is_lotr_standard_candidate and new.match_state in {"ACCEPTED", "REVIEW"},
+            "lotr_standard_rejected": is_lotr_standard_candidate and new.match_state == "REJECTED",
+            "lotr_standard_accepted": is_lotr_standard_candidate and new.match_state == "ACCEPTED",
         })
 
     transitions = Counter(row["classification_transition"] for row in rows)
     year_defects = sum(bool(row["year_parsed_as_quantity"]) for row in rows)
     unsafe_accepts = sum(bool(row["unsafe_title_accepted"]) for row in rows)
-    lotr_accepts = sum(bool(row["lotr_standard_display_accepted"]) for row in rows)
+    lotr_standard_rows = sum(bool(row["lotr_standard_candidate"]) for row in rows)
+    lotr_standard_safe_rows = sum(bool(row["lotr_standard_safe"]) for row in rows)
+    lotr_standard_rejected_rows = sum(bool(row["lotr_standard_rejected"]) for row in rows)
+    lotr_accepted_rows = sum(bool(row["lotr_standard_accepted"]) for row in rows)
     state_counts = Counter(row["match_state"] for row in rows)
 
     replay_complete = len(rows) == len(listings) == 601 and not unresolved_rows
+    lotr_alias_gate_passed = (
+        lotr_standard_rows >= 10
+        and lotr_standard_safe_rows == lotr_standard_rows
+        and lotr_standard_rejected_rows == 0
+        and lotr_accepted_rows >= 5
+    )
     summary = {
         "block_name": "Collector eBay Canary Hardened Matcher Replay",
-        "block_version": "1.0.1",
+        "block_version": "1.0.2",
         "generated_at": observed,
         "offline_only": True,
         "quota_calls": 0,
@@ -160,9 +178,18 @@ def main() -> int:
         "transition_counts": dict(sorted(transitions.items())),
         "year_as_quantity_defects": year_defects,
         "unsafe_accepted_rows": unsafe_accepts,
-        "lotr_accepted_rows": lotr_accepts,
+        "lotr_standard_candidate_rows": lotr_standard_rows,
+        "lotr_standard_safe_rows": lotr_standard_safe_rows,
+        "lotr_standard_rejected_rows": lotr_standard_rejected_rows,
+        "lotr_accepted_rows": lotr_accepted_rows,
+        "lotr_alias_gate_passed": lotr_alias_gate_passed,
         "replay_complete": replay_complete,
-        "full_universe_collection_authorized": replay_complete and year_defects == 0 and unsafe_accepts == 0 and lotr_accepts >= 10,
+        "full_universe_collection_authorized": (
+            replay_complete
+            and year_defects == 0
+            and unsafe_accepts == 0
+            and lotr_alias_gate_passed
+        ),
     }
     summary["status"] = (
         "PASS_CANARY_HARDENED_REPLAY_FULL_UNIVERSE_READY"
