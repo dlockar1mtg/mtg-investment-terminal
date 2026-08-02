@@ -3,7 +3,6 @@ from __future__ import annotations
 import argparse
 import csv
 import json
-from datetime import datetime, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -12,6 +11,7 @@ SNAPSHOT_ID = "collector-20260801T211201Z-7688afbd"
 OPERATING_DATE = "2026-08-01"
 BUNDLE_SHA = "7688afbd6dfb4483c0a316dad6a2a05458944434a91a3f714568e5f4a10c7890"
 PRODUCT_COUNT = 50
+AUDIT_RECORDED_AT_UTC = "2026-08-02T15:23:01+00:00"
 
 ARTIFACTS = [
     "config/mtg/standards/collector_evidence_tournament_contract_v1.json",
@@ -55,8 +55,8 @@ def add(rows, artifact, control, status, severity, detail):
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--strict", action="store_true")
-    args = parser.parse_args()
+    parser.add_argument("--strict", action="store_true", help="Retained for compatibility; audit is always fail-closed.")
+    parser.parse_args()
     findings = []
 
     for rel in ARTIFACTS:
@@ -72,18 +72,18 @@ def main() -> int:
             add(findings, rel, "model_authorization", "FAIL", "CRITICAL", "Unauthorized model tournament flag")
 
     first_year = (ROOT / "config/mtg/standards/collector_first_year_breakout_entry_timing_contract_v1.json").read_text(encoding="utf-8")
-    add(findings, "collector_first_year_breakout_entry_timing_contract_v1.json", "checkpoints", "PASS" if all(str(x) in first_year for x in (0,30,60,90,120,180,270,365)) else "FAIL", "CRITICAL", "Governed first-year checkpoints")
+    add(findings, "collector_first_year_breakout_entry_timing_contract_v1.json", "checkpoints", "PASS" if all(str(x) in first_year for x in (0, 30, 60, 90, 120, 180, 270, 365)) else "FAIL", "CRITICAL", "Governed first-year checkpoints")
     add(findings, "collector_first_year_breakout_entry_timing_contract_v1.json", "panel_authorization", "PASS" if '"lifecycle_panel_reconstruction_authorized": false' in first_year else "FAIL", "CRITICAL", "Panel must remain unauthorized")
 
     tournament = (ROOT / "config/mtg/standards/collector_evidence_tournament_contract_v1.json").read_text(encoding="utf-8")
-    for horizon in (90,180,365,1095,1825):
+    for horizon in (90, 180, 365, 1095, 1825):
         add(findings, "collector_evidence_tournament_contract_v1.json", f"horizon_{horizon}", "PASS" if str(horizon) in tournament else "FAIL", "CRITICAL", "Required governed horizon")
 
     recovery = ROOT / "scripts/recover_collector_v1_historical_price_authority.py"
     recovery_text = recovery.read_text(encoding="utf-8") if recovery.exists() else ""
     for pattern in PROHIBITED_RECOVERY_PATTERNS:
         add(findings, str(recovery.relative_to(ROOT)), f"recovery_drift:{pattern}", "FAIL" if pattern in recovery_text else "PASS", "CRITICAL", "Recovery must be August-1 snapshot-bound and fail closed")
-    for token, control in ((SNAPSHOT_ID,"snapshot_id"),(OPERATING_DATE,"operating_date"),(BUNDLE_SHA,"bundle_sha"), (str(PRODUCT_COUNT),"product_count")):
+    for token, control in ((SNAPSHOT_ID, "snapshot_id"), (OPERATING_DATE, "operating_date"), (BUNDLE_SHA, "bundle_sha"), (str(PRODUCT_COUNT), "product_count")):
         add(findings, str(recovery.relative_to(ROOT)), control, "PASS" if token in recovery_text else "FAIL", "CRITICAL", "Mandatory August 1 binding")
 
     summary_path = ROOT / "data/governance/permanence/certification/collector_v1_historical_price_recovery/collector_historical_price_recovery_summary.json"
@@ -96,11 +96,13 @@ def main() -> int:
     OUT.mkdir(parents=True, exist_ok=True)
     csv_path = OUT / "collector_chat_governance_conformance_findings.csv"
     with csv_path.open("w", encoding="utf-8", newline="") as handle:
-        writer = csv.DictWriter(handle, fieldnames=["artifact","control","status","severity","detail"])
-        writer.writeheader(); writer.writerows(findings)
+        writer = csv.DictWriter(handle, fieldnames=["artifact", "control", "status", "severity", "detail"])
+        writer.writeheader()
+        writer.writerows(findings)
+
     summary = {
         "block_name": "Collector Chat Governance Conformance Audit",
-        "generated_at_utc": datetime.now(timezone.utc).isoformat(),
+        "generated_at_utc": AUDIT_RECORDED_AT_UTC,
         "governing_snapshot_id": SNAPSHOT_ID,
         "governing_operating_date": OPERATING_DATE,
         "governing_source_bundle_sha256": BUNDLE_SHA,
@@ -117,7 +119,7 @@ def main() -> int:
     }
     (OUT / "collector_chat_governance_conformance_summary.json").write_text(json.dumps(summary, indent=2), encoding="utf-8")
     print(json.dumps(summary, indent=2))
-    return 2 if args.strict and failures else 0
+    return 2 if failures else 0
 
 
 if __name__ == "__main__":
