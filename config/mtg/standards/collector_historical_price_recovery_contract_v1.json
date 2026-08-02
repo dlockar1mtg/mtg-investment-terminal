@@ -1,0 +1,46 @@
+{
+  "contract_name": "Collector Historical Price Recovery and Coverage Contract",
+  "contract_version": "1.0.0",
+  "domain_owner": "MTG",
+  "purpose": "Recover a governed, immutable, Collector Booster-only historical price ledger and measure first-year checkpoint coverage in one fail-closed stage.",
+  "approved_source_roots": [
+    "data/operations/mtg_universal_history_ledger",
+    "data/history",
+    "data/archive",
+    "data/vault",
+    "data/operations/mtg_data_vault"
+  ],
+  "required_checkpoints_days": [0, 30, 60, 90, 120, 180, 270, 365],
+  "required_controls": {
+    "collector_only": true,
+    "point_in_time_only": true,
+    "future_information_prohibited": true,
+    "current_snapshot_backfill_prohibited": true,
+    "secret_lair_prohibited": true,
+    "pre_collector_prohibited": true,
+    "ebay_listing_price_as_authority_prohibited": true,
+    "derived_value_as_observation_prohibited": true,
+    "source_sha256_required": true,
+    "provider_identity_required": true,
+    "observation_timestamp_required": true,
+    "positive_price_required": true,
+    "duplicate_collapse_required": true,
+    "open_ended_repository_scan_prohibited": true,
+    "no_new_coverage_thresholds": true
+  },
+  "required_outputs": [
+    "collector_historical_price_recovery_source_inventory.csv",
+    "collector_historical_price_replay_ledger_candidate.csv",
+    "collector_historical_price_recovery_exclusions.csv",
+    "collector_historical_checkpoint_coverage.csv",
+    "collector_historical_price_recovery_summary.json"
+  ],
+  "authorization": {
+    "historical_price_recovery_authorized": true,
+    "historical_coverage_measurement_authorized": true,
+    "raw_historical_price_authority_certified": false,
+    "lifecycle_panel_build_authorized": false,
+    "model_tournament_authorized": false,
+    "purchase_recommendations_authorized": false
+  }
+}
