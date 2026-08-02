@@ -1,0 +1,64 @@
+{
+  "contract_name": "Collector Historical Feature Availability Contract",
+  "contract_version": "1.0.0",
+  "domain_owner": "MTG",
+  "purpose": "Determine which historical features can legitimately support point-in-time Collector Booster replay before lifecycle-panel construction.",
+  "candidate_feature_families": [
+    "price",
+    "product_identity",
+    "release_and_age",
+    "structural_product_attributes",
+    "supply",
+    "demand",
+    "listing_market",
+    "liquidity",
+    "comparable_features",
+    "market_regime"
+  ],
+  "availability_states": [
+    "DIRECT_POINT_IN_TIME",
+    "DERIVED_POINT_IN_TIME",
+    "STATIC_KNOWN_BY_CHECKPOINT",
+    "PERIOD_PROXY_AVAILABLE_THEN",
+    "CURRENT_ONLY",
+    "DATE_UNVERIFIED",
+    "UNAVAILABLE"
+  ],
+  "replay_eligible_states": [
+    "DIRECT_POINT_IN_TIME",
+    "DERIVED_POINT_IN_TIME",
+    "STATIC_KNOWN_BY_CHECKPOINT",
+    "PERIOD_PROXY_AVAILABLE_THEN"
+  ],
+  "required_ledger_fields": [
+    "feature_name",
+    "feature_family",
+    "source_path",
+    "source_sha256",
+    "source_format",
+    "date_field",
+    "identity_field",
+    "minimum_observation_date",
+    "maximum_observation_date",
+    "availability_state",
+    "replay_eligible",
+    "exclusion_reason",
+    "provenance_notes"
+  ],
+  "controls": {
+    "future_information_prohibited": true,
+    "historical_zero_fill_prohibited": true,
+    "current_state_backfill_prohibited": true,
+    "unknown_date_is_not_point_in_time": true,
+    "missing_feature_is_not_negative_evidence": true,
+    "current_production_features_may_exceed_replay_features": true,
+    "feature_coverage_must_be_reported": true,
+    "panel_build_requires_completed_availability_audit": true
+  },
+  "authorization": {
+    "feature_availability_audit_authorized": true,
+    "lifecycle_panel_build_authorized": false,
+    "model_tournament_authorized": false,
+    "purchase_recommendations_authorized": false
+  }
+}
