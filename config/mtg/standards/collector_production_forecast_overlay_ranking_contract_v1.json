@@ -1,0 +1,42 @@
+{
+  "contract_name": "Collector Production Forecast, Uncertainty, Supply-Demand Overlay, and Ranking",
+  "contract_version": "1.0.0",
+  "required_round3_status": "PASS_COLLECTOR_ROUND3_FINAL_CHAMPION_CHALLENGE",
+  "expected_status": "PASS_COLLECTOR_PRODUCTION_FORECAST_OVERLAY_RANKING",
+  "snapshot_id": "collector-20260801T211201Z-7688afbd",
+  "snapshot_date": "2026-08-01",
+  "required_product_rows": 50,
+  "required_certified_champion_groups": 6,
+  "required_preserved_no_winner_groups": 10,
+  "uncertainty": {
+    "minimum_relative_half_width": 0.08,
+    "mape_multiplier": 1.65,
+    "blocked_group_interval_allowed": false
+  },
+  "overlay": {
+    "minimum_feature_coverage": 0.80,
+    "maximum_absolute_conviction_adjustment": 0.15,
+    "point_forecast_rewrite_allowed": false,
+    "historical_backtest_use_allowed": false,
+    "neutral_when_missing": true
+  },
+  "ranking": {
+    "forecast_return_weight": 0.40,
+    "downside_weight": 0.20,
+    "validation_weight": 0.15,
+    "early_opportunity_weight": 0.15,
+    "supply_demand_weight": 0.10,
+    "rank_blocked_products": false,
+    "purchase_authorization_allowed": false
+  },
+  "governance": {
+    "forecast_only_certified_horizon_route_groups": true,
+    "preserve_user_exclusions": true,
+    "preserve_governed_deferrals": true,
+    "current_supply_demand_post_forecast_only": true,
+    "current_supply_demand_cannot_create_forecast": true,
+    "uncertainty_required_for_every_forecast": true,
+    "ranking_requires_at_least_one_certified_forecast": true,
+    "purchase_recommendations_authorized": false
+  }
+}
