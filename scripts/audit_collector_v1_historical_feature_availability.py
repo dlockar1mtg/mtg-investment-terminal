@@ -75,7 +75,12 @@ def inspect_tabular(path: Path) -> tuple[list[str], int | None]:
 
 def inspect_json(path: Path) -> list[str]:
     try:
-        payload = json.loads(path.read_text(encoding="utf-8-sig"))
+        if path.suffix.lower() == ".jsonl":
+            with path.open("r", encoding="utf-8-sig") as handle:
+                first_line = next((line for line in handle if line.strip()), "")
+            payload = json.loads(first_line) if first_line else None
+        else:
+            payload = json.loads(path.read_text(encoding="utf-8-sig"))
     except Exception:
         return []
     if isinstance(payload, dict):
@@ -140,8 +145,12 @@ def main(argv: list[str] | None = None) -> int:
     ledger.to_csv(ledger_path, index=False)
     eligible = ledger[ledger["replay_eligible"].eq(True)] if not ledger.empty else ledger
     family_summary = (
-        ledger.groupby(["feature_family", "availability_state"], dropna=False).size().reset_index(name="source_count")
-        if not ledger.empty else pd.DataFrame(columns=["feature_family", "availability_state", "source_count"])
+        ledger.groupby(["feature_family", "availability_state"], dropna=False)
+        .size()
+        .reset_index(name="source_count")
+        if not ledger.empty
+        else pd.DataFrame(columns=["feature_family", "availability_state", "source_count"])
+    )
     family_path = OUT / "collector_v1_historical_feature_availability_summary.csv"
     family_summary.to_csv(family_path, index=False)
     checks = {
@@ -156,7 +165,7 @@ def main(argv: list[str] | None = None) -> int:
     failures = [k for k, v in checks.items() if not bool(v)]
     summary = {
         "block_name": "Collector V1 Historical Feature Availability Audit",
-        "block_version": "1.0.0",
+        "block_version": "1.0.1",
         "generated_at_utc": datetime.now(timezone.utc).isoformat(),
         "sources_reviewed": len(ledger),
         "replay_eligible_sources": len(eligible),
@@ -174,7 +183,9 @@ def main(argv: list[str] | None = None) -> int:
         "purchase_recommendations_authorized": False,
         "status": "PASS_COLLECTOR_V1_HISTORICAL_FEATURE_AVAILABILITY_AUDIT" if not failures else "FAIL_COLLECTOR_V1_HISTORICAL_FEATURE_AVAILABILITY_AUDIT",
     }
-    (OUT / "collector_v1_historical_feature_availability_audit_summary.json").write_text(json.dumps(summary, indent=2), encoding="utf-8")
+    (OUT / "collector_v1_historical_feature_availability_audit_summary.json").write_text(
+        json.dumps(summary, indent=2), encoding="utf-8"
+    )
     print(json.dumps(summary, indent=2))
     return 0 if not failures else (1 if args.strict else 0)
 
