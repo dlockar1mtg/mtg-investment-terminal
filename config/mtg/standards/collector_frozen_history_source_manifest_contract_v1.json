@@ -1,0 +1,64 @@
+{
+  "contract_name": "Collector Frozen Historical Source Manifest",
+  "contract_version": "1.0.0",
+  "purpose": "Replace open-ended repository scanning with an immutable, Collector-only, semantically adjudicated source manifest before historical replay construction.",
+  "inputs": {
+    "reproducibility_inventory": "data/governance/permanence/certification/collector_v1_history_foundation_reproducibility/collector_history_foundation_contributing_source_inventory.csv",
+    "universal_history_ledger": "data/operations/mtg_universal_history_ledger/universal_mtg_historical_observation_ledger.csv"
+  },
+  "source_roles": [
+    "AUTHORITATIVE_PRICE_CANDIDATE",
+    "CORROBORATING_LISTING_ONLY",
+    "FALLBACK_LOW_PRICE_ONLY",
+    "CURRENT_PRODUCTION_ONLY",
+    "REVIEW_REQUIRED",
+    "EXCLUDED_OUT_OF_SCOPE",
+    "EXCLUDED_DERIVED_OR_OPERATIONAL"
+  ],
+  "mandatory_exclusions": [
+    "Secret Lair sources",
+    "pre-Collector Booster sources",
+    "recommendations, forecasts, rankings, evaluations, and model outputs",
+    "portfolio and owned-inventory values",
+    "manual-review and coverage files without market observations",
+    "backup, attempt, reclassification, repair, archive-copy, and promotion-copy artifacts",
+    "rows without a verifiable observation date",
+    "derived valuation fields"
+  ],
+  "authority_rules": {
+    "tcgcsv_or_tcgplayer_market_price_with_observation_date": "AUTHORITATIVE_PRICE_CANDIDATE",
+    "ebay_listing_or_asking_price": "CORROBORATING_LISTING_ONLY",
+    "low_price_without_market_price": "FALLBACK_LOW_PRICE_ONLY",
+    "current_snapshot": "CURRENT_PRODUCTION_ONLY",
+    "unknown_or_ambiguous_semantics": "REVIEW_REQUIRED"
+  },
+  "freeze_requirements": [
+    "source path",
+    "source SHA-256",
+    "source role",
+    "identity field",
+    "date field",
+    "price field",
+    "minimum observation date",
+    "maximum observation date",
+    "row count",
+    "distinct product count",
+    "inclusion or exclusion reason"
+  ],
+  "prohibitions": {
+    "open_ended_repository_scan_for_replay": true,
+    "secret_lair_in_collector_manifest": true,
+    "ebay_as_authoritative_market_price": true,
+    "derived_values_as_historical_observations": true,
+    "silent_source_substitution": true,
+    "automatic_downstream_authorization": true
+  },
+  "authorization": {
+    "source_manifest_build_authorized": true,
+    "raw_historical_price_authority_certified": false,
+    "historical_coverage_assessment_authorized": false,
+    "lifecycle_panel_build_authorized": false,
+    "model_tournament_authorized": false,
+    "purchase_recommendations_authorized": false
+  }
+}
