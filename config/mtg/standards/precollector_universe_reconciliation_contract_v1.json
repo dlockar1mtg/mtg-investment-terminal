@@ -1,0 +1,58 @@
+{
+  "contract_id": "precollector_universe_reconciliation_contract_v1",
+  "contract_version": "1.0.0",
+  "status": "EVIDENCE_RECONCILIATION_AUTHORIZED",
+  "governed_lane": "precollector_booster_boxes",
+  "scope_authority": "config/mtg/governance/precollector_booster_product_scope_owner_decision_v1.json",
+  "candidate_universe_contract": "config/mtg/standards/precollector_candidate_universe_inventory_contract_v1.json",
+  "canonical_standard": "docs/standards/mtg/MTG_FORECASTING_STANDARD.md",
+  "purpose": "Reconcile the certified August 1 candidate universe against a fresh TCGCSV Magic catalog pull and official Wizards product archive evidence without changing downstream authorization.",
+  "sources": {
+    "certified_august1_products": "data/operations/mtg_source_discovery/tcgcsv_snapshots/20260801T211201Z/tcgcsv_magic_products.csv",
+    "certified_august1_sha256": "81d4c05429874f836ce32cb674e53f30b252721b5acb4a6b01763f646cd979ba",
+    "tcgcsv_base_url": "https://tcgcsv.com/tcgplayer",
+    "tcgcsv_magic_category_id": 1,
+    "tcgcsv_request_delay_seconds": 0.15,
+    "wizards_archive_url": "https://magic.wizards.com/en/products/card-set-archive",
+    "wizards_products_url": "https://magic.wizards.com/en/products",
+    "user_agent": "UIP-MTG-PreCollector-Reconciliation/1.0"
+  },
+  "required_outputs": [
+    "precollector_existing_candidate_review.csv",
+    "precollector_fresh_tcgcsv_products.csv",
+    "precollector_tcgcsv_snapshot_delta.csv",
+    "precollector_wizards_release_authority.csv",
+    "precollector_product_release_crosswalk.csv",
+    "precollector_missing_from_august1.csv",
+    "precollector_missing_from_fresh_tcg.csv",
+    "precollector_release_date_conflicts.csv",
+    "precollector_format_conflicts.csv",
+    "precollector_duplicate_asset_review.csv",
+    "precollector_reconciled_candidate_universe.csv",
+    "precollector_universe_reconciliation_summary.json",
+    "precollector_universe_reconciliation_manifest.json"
+  ],
+  "allowed_reconciliation_statuses": [
+    "CANONICAL_INCLUDED",
+    "EXCLUDED_SCOPE",
+    "DUPLICATE_LISTING",
+    "REQUIRES_IDENTITY_REVIEW",
+    "REQUIRES_RELEASE_DATE_REVIEW",
+    "REQUIRES_FORMAT_REVIEW",
+    "REQUIRES_COLLECTOR_OPTION_REVIEW",
+    "SOURCE_CONFLICT"
+  ],
+  "controls": {
+    "fresh_sources_may_replace_certified_universe_automatically": false,
+    "unmatched_wizards_release_date_may_be_guessed": false,
+    "source_conflicts_may_be_silently_resolved": false,
+    "raw_evidence_hashes_required": true,
+    "row_level_source_lineage_required": true,
+    "forecast_generation_authorized": false,
+    "ranking_execution_authorized": false,
+    "purchase_recommendation_authorized": false,
+    "automatic_purchase_execution_authorized": false
+  },
+  "next_stage_if_certified": "OWNER_REVIEW_OF_RECONCILED_UNIVERSE_AND_SOURCE_HIERARCHY",
+  "change_control": "Changes require owner approval, version change, targeted governance tests, full regression, and recertification."
+}
