@@ -16,8 +16,6 @@ HISTORICAL_CONTRACT_PATH = ROOT / "config/mtg/standards/precollector_historical_
 HISTORICAL_BUILDER = ROOT / "scripts/build_precollector_historical_price_authority_review.py"
 HISTORICAL_DIR = ROOT / "artifacts/precollector/historical_price_authority_review"
 OUTPUT_DIR = ROOT / "artifacts/precollector/supply_liquidity_authority"
-COLLECTOR_SUPPLY = ROOT / "data/governance/permanence/certification/collector_ebay_day_one_supply_baseline/collector_ebay_day_one_product_supply_snapshot.csv"
-COLLECTOR_LEDGER = ROOT / "data/governance/permanence/certification/collector_ebay_day_one_supply_baseline/collector_ebay_day_one_accepted_listing_ledger.csv"
 
 
 def load_json(path: Path) -> dict:
@@ -38,8 +36,8 @@ def run(command: list[str]) -> None:
         raise RuntimeError(f"SUBPROCESS_FAILED:{completed.returncode}:{' '.join(command)}")
 
 
-def normalized_ids(frame: pd.DataFrame, column: str) -> pd.Series:
-    return frame[column].fillna("").astype(str).str.strip()
+def normalize(series: pd.Series) -> pd.Series:
+    return series.fillna("").astype(str).str.strip()
 
 
 def main() -> int:
@@ -52,130 +50,165 @@ def main() -> int:
     run([sys.executable, str(HISTORICAL_BUILDER)])
 
     eligibility_path = HISTORICAL_DIR / historical_contract["outputs"]["model_eligibility_csv"]
-    required_paths = [eligibility_path, COLLECTOR_SUPPLY, COLLECTOR_LEDGER]
+    coverage_path = ROOT / contract["live_coverage_source"]
+    listing_path = ROOT / contract["live_listing_source"]
+    live_summary_path = ROOT / contract["live_summary_source"]
+    required_paths = [eligibility_path, coverage_path, listing_path, live_summary_path]
     missing = [str(path.relative_to(ROOT)) for path in required_paths if not path.is_file()]
     if missing:
         raise RuntimeError(f"SUPPLY_LIQUIDITY_INPUT_MISSING:{missing}")
 
     eligibility = pd.read_csv(eligibility_path, dtype=str).fillna("")
-    supply = pd.read_csv(COLLECTOR_SUPPLY, low_memory=False)
-    ledger = pd.read_csv(COLLECTOR_LEDGER, low_memory=False)
+    coverage = pd.read_csv(coverage_path, dtype=str).fillna("")
+    listings = pd.read_csv(listing_path, dtype=str).fillna("")
+    live_summary = load_json(live_summary_path)
 
     if len(eligibility) != int(contract["expected_product_count"]):
         raise RuntimeError(f"ELIGIBILITY_COUNT_DRIFT:{len(eligibility)}")
     candidate_count = int(eligibility["model_input_status"].eq("MODEL_INPUT_CANDIDATE").sum())
     if candidate_count != int(contract["expected_model_input_candidate_count"]):
         raise RuntimeError(f"MODEL_INPUT_CANDIDATE_COUNT_DRIFT:{candidate_count}")
-    if len(supply) != int(contract["collector_supply_snapshot_expected_rows"]):
-        raise RuntimeError(f"COLLECTOR_SUPPLY_ROW_COUNT_DRIFT:{len(supply)}")
-    if len(ledger) != int(contract["collector_accepted_listing_ledger_expected_rows"]):
-        raise RuntimeError(f"COLLECTOR_LEDGER_ROW_COUNT_DRIFT:{len(ledger)}")
+    if len(coverage) != int(contract["expected_live_collection_product_count"]):
+        raise RuntimeError(f"LIVE_COVERAGE_PRODUCT_COUNT_DRIFT:{len(coverage)}")
+    if len(listings) != int(contract["expected_live_listing_rows"]):
+        raise RuntimeError(f"LIVE_LISTING_ROW_COUNT_DRIFT:{len(listings)}")
 
-    required_supply_columns = {
+    expected_summary = {
+        "products": int(contract["expected_live_collection_product_count"]),
+        "listing_rows": int(contract["expected_live_listing_rows"]),
+        "accepted_rows": int(contract["expected_live_accepted_rows"]),
+        "review_rows": int(contract["expected_live_review_rows"]),
+        "rejected_rows": int(contract["expected_live_rejected_rows"]),
+    }
+    for key, expected in expected_summary.items():
+        if int(live_summary.get(key, -1)) != expected:
+            raise RuntimeError(f"LIVE_SUMMARY_COUNT_DRIFT:{key}:{live_summary.get(key)}")
+    if live_summary.get("aborted_early") is not False:
+        raise RuntimeError("LIVE_COLLECTION_ABORTED_EARLY")
+    if live_summary.get("missing_tcgplayer_product_ids"):
+        raise RuntimeError("LIVE_COLLECTION_MISSING_PRODUCT_IDS")
+    if live_summary.get("matcher_fail_closed") is not True:
+        raise RuntimeError("LIVE_MATCHER_NOT_FAIL_CLOSED")
+
+    required_coverage_columns = {
         "canonical_product_id",
         "tcgplayer_product_id",
-        "product_name",
+        "canonical_product_name",
         "accepted_listing_count",
-        "median_listing_price",
-        "supply_observation_date",
+        "review_listing_count",
+        "rejected_listing_count",
+        "median_accepted_landed_price",
+        "lowest_accepted_landed_price",
+        "accepted_seller_count",
+        "coverage_state",
+        "source_error",
     }
-    missing_supply_columns = sorted(required_supply_columns - set(supply.columns))
-    if missing_supply_columns:
-        raise RuntimeError(f"COLLECTOR_SUPPLY_SCHEMA_DRIFT:{missing_supply_columns}")
+    missing_columns = sorted(required_coverage_columns - set(coverage.columns))
+    if missing_columns:
+        raise RuntimeError(f"LIVE_SUPPLY_SCHEMA_DRIFT:{missing_columns}")
 
-    eligibility["canonical_product_id"] = normalized_ids(eligibility, "canonical_product_id")
-    supply["canonical_product_id"] = normalized_ids(supply, "canonical_product_id")
-    if eligibility["canonical_product_id"].duplicated().any():
-        raise RuntimeError("DUPLICATE_PRECOLLECTOR_CANONICAL_PRODUCT_ID")
-    if supply["canonical_product_id"].duplicated().any():
-        raise RuntimeError("DUPLICATE_COLLECTOR_SUPPLY_CANONICAL_PRODUCT_ID")
+    eligibility["tcgplayer_product_id"] = normalize(eligibility["tcgplayer_product_id"])
+    coverage["tcgplayer_product_id"] = normalize(coverage["tcgplayer_product_id"])
+    if eligibility["tcgplayer_product_id"].duplicated().any():
+        raise RuntimeError("DUPLICATE_ELIGIBILITY_TCGPLAYER_PRODUCT_ID")
+    if coverage["tcgplayer_product_id"].duplicated().any():
+        raise RuntimeError("DUPLICATE_LIVE_COVERAGE_TCGPLAYER_PRODUCT_ID")
 
-    supply["accepted_listing_count"] = pd.to_numeric(supply["accepted_listing_count"], errors="coerce")
-    supply["median_listing_price"] = pd.to_numeric(supply["median_listing_price"], errors="coerce")
-    supply["supply_observation_date"] = pd.to_datetime(supply["supply_observation_date"], errors="coerce").dt.date
-    invalid_supply = supply[
-        supply["accepted_listing_count"].isna()
-        | supply["median_listing_price"].isna()
-        | supply["supply_observation_date"].isna()
-    ]
-    if not invalid_supply.empty:
-        raise RuntimeError(f"INVALID_COLLECTOR_SUPPLY_ROWS:{len(invalid_supply)}")
+    for column in [
+        "accepted_listing_count",
+        "review_listing_count",
+        "rejected_listing_count",
+        "median_accepted_landed_price",
+        "lowest_accepted_landed_price",
+        "accepted_seller_count",
+    ]:
+        coverage[column] = pd.to_numeric(coverage[column], errors="coerce")
 
-    expected_date = date.fromisoformat(contract["collector_supply_observation_date"])
-    if set(supply["supply_observation_date"]) != {expected_date}:
-        raise RuntimeError("COLLECTOR_SUPPLY_OBSERVATION_DATE_DRIFT")
-    age_days = (date.today() - expected_date).days
+    if coverage[["accepted_listing_count", "review_listing_count", "rejected_listing_count", "accepted_seller_count"]].isna().any().any():
+        raise RuntimeError("INVALID_LIVE_SUPPLY_COUNT_VALUES")
+
+    observed = datetime.fromisoformat(str(live_summary["observed_at_utc"]).replace("Z", "+00:00"))
+    observed_date = observed.date()
+    expected_date = date.fromisoformat(contract["live_supply_observation_date"])
+    if observed_date != expected_date:
+        raise RuntimeError("LIVE_SUPPLY_OBSERVATION_DATE_DRIFT")
+    age_days = (date.today() - observed_date).days
     if age_days < 0:
         raise RuntimeError("FUTURE_SUPPLY_OBSERVATION_DATE")
+    if age_days > int(contract["maximum_supply_age_days"]):
+        raise RuntimeError(f"STALE_LIVE_SUPPLY_EVIDENCE:{age_days}")
 
-    supply_subset = supply[[
-        "canonical_product_id",
+    coverage_subset = coverage[[
         "tcgplayer_product_id",
-        "product_name",
+        "canonical_product_name",
         "accepted_listing_count",
-        "distinct_seller_count" if "distinct_seller_count" in supply.columns else "canonical_product_id",
-        "seller_concentration" if "seller_concentration" in supply.columns else "canonical_product_id",
-        "median_listing_price",
-        "listing_price_dispersion" if "listing_price_dispersion" in supply.columns else "canonical_product_id",
-        "supply_category" if "supply_category" in supply.columns else "canonical_product_id",
-        "supply_observation_date",
-        "source_snapshot_id" if "source_snapshot_id" in supply.columns else "canonical_product_id",
-    ]].copy()
-    supply_subset = supply_subset.loc[:, ~supply_subset.columns.duplicated()]
-    supply_subset = supply_subset.rename(columns={
-        "product_name": "collector_supply_product_name",
-        "tcgplayer_product_id": "collector_supply_tcgplayer_product_id",
-    })
+        "review_listing_count",
+        "rejected_listing_count",
+        "median_accepted_landed_price",
+        "lowest_accepted_landed_price",
+        "accepted_seller_count",
+        "coverage_state",
+        "source_error",
+    ]].rename(columns={"canonical_product_name": "live_supply_product_name"})
 
     review = eligibility.merge(
-        supply_subset,
-        on="canonical_product_id",
+        coverage_subset,
+        on="tcgplayer_product_id",
         how="left",
         validate="one_to_one",
-        indicator="collector_supply_join",
+        indicator="live_supply_join",
     )
-    review["collector_supply_identity_match"] = review["collector_supply_join"].eq("both")
+    review["live_supply_identity_match"] = review["live_supply_join"].eq("both")
     review["supply_evidence_age_days"] = age_days
 
-    listing_count = pd.to_numeric(review.get("accepted_listing_count"), errors="coerce").fillna(0)
-    median_price = pd.to_numeric(review.get("median_listing_price"), errors="coerce").fillna(0)
-    fresh = age_days <= int(contract["maximum_supply_age_days"])
+    accepted = pd.to_numeric(review["accepted_listing_count"], errors="coerce").fillna(0)
+    sellers = pd.to_numeric(review["accepted_seller_count"], errors="coerce").fillna(0)
+    median_price = pd.to_numeric(review["median_accepted_landed_price"], errors="coerce").fillna(0)
+    source_clear = normalize(review["source_error"]).eq("")
+    strong = review["coverage_state"].eq(contract["required_coverage_state"])
+
     supply_ok = (
-        review["collector_supply_identity_match"]
-        & listing_count.ge(int(contract["minimum_accepted_listing_count"]))
+        review["live_supply_identity_match"]
+        & accepted.ge(int(contract["minimum_accepted_listing_count"]))
+        & sellers.ge(int(contract["minimum_accepted_seller_count"]))
         & median_price.ge(float(contract["minimum_positive_median_listing_price"]))
-        & fresh
+        & source_clear
+        & strong
     )
     review["supply_liquidity_status"] = supply_ok.map({
         True: "SUPPLY_LIQUIDITY_AUTHORIZED",
         False: "SUPPLY_LIQUIDITY_BLOCKED",
     })
 
-    reasons: list[str] = []
-    final_status: list[str] = []
+    blocking_reasons: list[str] = []
+    adjusted_status: list[str] = []
     for _, row in review.iterrows():
-        row_reasons: list[str] = []
+        reasons: list[str] = []
         if row["model_input_status"] != "MODEL_INPUT_CANDIDATE":
-            row_reasons.append("CURRENT_AND_HISTORY_AUTHORITY_REQUIRED")
-        if not bool(row["collector_supply_identity_match"]):
-            row_reasons.append("PRECOLLECTOR_SUPPLY_EVIDENCE_REQUIRED")
+            reasons.append("CURRENT_AND_HISTORY_AUTHORITY_REQUIRED")
+        if not bool(row["live_supply_identity_match"]):
+            reasons.append("PRECOLLECTOR_LIVE_SUPPLY_EVIDENCE_REQUIRED")
         else:
             if float(row.get("accepted_listing_count") or 0) < int(contract["minimum_accepted_listing_count"]):
-                row_reasons.append("POSITIVE_ACCEPTED_LISTING_COUNT_REQUIRED")
-            if float(row.get("median_listing_price") or 0) < float(contract["minimum_positive_median_listing_price"]):
-                row_reasons.append("POSITIVE_MEDIAN_LISTING_PRICE_REQUIRED")
-            if not fresh:
-                row_reasons.append("FRESH_SUPPLY_EVIDENCE_REQUIRED")
-        reasons.append(";".join(row_reasons))
-        final_status.append(
+                reasons.append("MINIMUM_ACCEPTED_LISTINGS_REQUIRED")
+            if float(row.get("accepted_seller_count") or 0) < int(contract["minimum_accepted_seller_count"]):
+                reasons.append("MINIMUM_DISTINCT_SELLERS_REQUIRED")
+            if float(row.get("median_accepted_landed_price") or 0) < float(contract["minimum_positive_median_listing_price"]):
+                reasons.append("POSITIVE_MEDIAN_LANDED_PRICE_REQUIRED")
+            if str(row.get("coverage_state") or "") != contract["required_coverage_state"]:
+                reasons.append("STRONG_MATCH_COVERAGE_REQUIRED")
+            if str(row.get("source_error") or "").strip():
+                reasons.append("SOURCE_ERROR_PRESENT")
+        blocking_reasons.append(";".join(reasons))
+        adjusted_status.append(
             "SUPPLY_ADJUSTED_MODEL_INPUT_CANDIDATE"
             if row["model_input_status"] == "MODEL_INPUT_CANDIDATE"
             and row["supply_liquidity_status"] == "SUPPLY_LIQUIDITY_AUTHORIZED"
             else "SUPPLY_ADJUSTED_MODEL_INPUT_BLOCKED"
         )
 
-    review["supply_liquidity_blocking_reasons"] = reasons
-    review["supply_adjusted_model_input_status"] = final_status
+    review["supply_liquidity_blocking_reasons"] = blocking_reasons
+    review["supply_adjusted_model_input_status"] = adjusted_status
     review["forecast_authorized"] = False
     review["ranking_authorized"] = False
     review["purchase_recommendation_authorized"] = False
@@ -183,15 +216,15 @@ def main() -> int:
 
     authority = review[review["supply_liquidity_status"].eq("SUPPLY_LIQUIDITY_AUTHORIZED")].copy()
     blocked = review[review["supply_liquidity_status"].eq("SUPPLY_LIQUIDITY_BLOCKED")].copy()
-    overlap = review[review["collector_supply_identity_match"]].copy()
-    candidate_supply_authorized = int(
+    source_coverage = review[review["live_supply_identity_match"]].copy()
+    candidate_authorized = int(
         review["supply_adjusted_model_input_status"].eq("SUPPLY_ADJUSTED_MODEL_INPUT_CANDIDATE").sum()
     )
-    candidate_supply_blocked = candidate_count - candidate_supply_authorized
+    candidate_blocked = candidate_count - candidate_authorized
     next_stage = (
-        contract["next_stage_if_full_candidate_coverage"]
-        if candidate_supply_blocked == 0
-        else contract["next_stage_if_incomplete_candidate_coverage"]
+        contract["next_stage_if_any_candidate_authorized"]
+        if candidate_authorized > 0
+        else contract["next_stage_if_no_candidate_authorized"]
     )
 
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
@@ -199,24 +232,27 @@ def main() -> int:
     authority_path = OUTPUT_DIR / outputs["authority_csv"]
     eligibility_output = OUTPUT_DIR / outputs["model_eligibility_csv"]
     blocked_path = OUTPUT_DIR / outputs["blocked_products_csv"]
-    overlap_path = OUTPUT_DIR / outputs["source_overlap_csv"]
+    coverage_output = OUTPUT_DIR / outputs["source_coverage_csv"]
     authority.to_csv(authority_path, index=False)
     review.to_csv(eligibility_output, index=False)
     blocked.to_csv(blocked_path, index=False)
-    overlap.to_csv(overlap_path, index=False)
+    source_coverage.to_csv(coverage_output, index=False)
 
     summary = {
         "certification_status": "PASS_PRECOLLECTOR_SUPPLY_LIQUIDITY_AUTHORITY_BUILD",
         "generated_at_utc": datetime.now(timezone.utc).isoformat(),
         "canonical_product_rows": len(review),
         "model_input_candidate_rows": candidate_count,
-        "collector_supply_source_rows": len(supply),
-        "collector_accepted_listing_rows": len(ledger),
-        "collector_supply_identity_overlap_rows": int(review["collector_supply_identity_match"].sum()),
+        "live_supply_product_rows": len(coverage),
+        "live_listing_rows": len(listings),
+        "live_accepted_listing_rows": int(live_summary["accepted_rows"]),
+        "live_review_listing_rows": int(live_summary["review_rows"]),
+        "live_rejected_listing_rows": int(live_summary["rejected_rows"]),
+        "live_supply_identity_overlap_rows": int(review["live_supply_identity_match"].sum()),
         "supply_liquidity_authorized_rows": len(authority),
         "supply_liquidity_blocked_rows": len(blocked),
-        "supply_adjusted_model_input_candidate_rows": candidate_supply_authorized,
-        "supply_adjusted_model_input_blocked_rows": candidate_supply_blocked,
+        "supply_adjusted_model_input_candidate_rows": candidate_authorized,
+        "supply_adjusted_model_input_blocked_rows": candidate_blocked,
         "supply_evidence_age_days": age_days,
         "next_stage": next_stage,
         "historical_append_authorized": False,
@@ -232,28 +268,31 @@ def main() -> int:
         "contract_sha256": sha256_file(CONTRACT_PATH),
         "historical_contract_sha256": sha256_file(HISTORICAL_CONTRACT_PATH),
         "historical_eligibility_sha256": sha256_file(eligibility_path),
-        "collector_supply_snapshot_sha256": sha256_file(COLLECTOR_SUPPLY),
-        "collector_accepted_listing_ledger_sha256": sha256_file(COLLECTOR_LEDGER),
+        "live_coverage_sha256": sha256_file(coverage_path),
+        "live_listing_sha256": sha256_file(listing_path),
+        "live_summary_sha256": sha256_file(live_summary_path),
         "authority_sha256": sha256_file(authority_path),
         "model_eligibility_sha256": sha256_file(eligibility_output),
         "blocked_products_sha256": sha256_file(blocked_path),
-        "source_overlap_sha256": sha256_file(overlap_path),
+        "source_coverage_sha256": sha256_file(coverage_output),
         "cross_lane_identity_borrowing_detected": False,
     }
     (OUTPUT_DIR / outputs["manifest_json"]).write_text(
-        json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+        json.dumps(manifest, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
     )
 
     print("PASS_PRECOLLECTOR_SUPPLY_LIQUIDITY_AUTHORITY_BUILD")
     print(f"CANONICAL_PRODUCT_ROWS={len(review)}")
     print(f"MODEL_INPUT_CANDIDATE_ROWS={candidate_count}")
-    print(f"COLLECTOR_SUPPLY_SOURCE_ROWS={len(supply)}")
-    print(f"COLLECTOR_ACCEPTED_LISTING_ROWS={len(ledger)}")
-    print(f"COLLECTOR_SUPPLY_IDENTITY_OVERLAP_ROWS={summary['collector_supply_identity_overlap_rows']}")
+    print(f"LIVE_SUPPLY_PRODUCT_ROWS={len(coverage)}")
+    print(f"LIVE_LISTING_ROWS={len(listings)}")
+    print(f"LIVE_ACCEPTED_LISTING_ROWS={live_summary['accepted_rows']}")
+    print(f"LIVE_SUPPLY_IDENTITY_OVERLAP_ROWS={summary['live_supply_identity_overlap_rows']}")
     print(f"SUPPLY_LIQUIDITY_AUTHORIZED_ROWS={len(authority)}")
     print(f"SUPPLY_LIQUIDITY_BLOCKED_ROWS={len(blocked)}")
-    print(f"SUPPLY_ADJUSTED_MODEL_INPUT_CANDIDATE_ROWS={candidate_supply_authorized}")
-    print(f"SUPPLY_ADJUSTED_MODEL_INPUT_BLOCKED_ROWS={candidate_supply_blocked}")
+    print(f"SUPPLY_ADJUSTED_MODEL_INPUT_CANDIDATE_ROWS={candidate_authorized}")
+    print(f"SUPPLY_ADJUSTED_MODEL_INPUT_BLOCKED_ROWS={candidate_blocked}")
     print(f"NEXT_STAGE={next_stage}")
     print("HISTORICAL_APPEND_AUTHORIZED=FALSE")
     print("FORECAST_AUTHORIZED=FALSE")
