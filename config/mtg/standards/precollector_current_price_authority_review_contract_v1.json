@@ -1,0 +1,26 @@
+{
+  "contract_id": "precollector_current_price_authority_review_v1",
+  "contract_version": "1.0.0",
+  "expected_product_count": 124,
+  "minimum_authority_candidate_count": 1,
+  "accepted_candidate_status": "CURRENT_PRICE_AUTHORITY_CANDIDATE",
+  "accepted_selection_status": "NORMAL_SUBTYPE_UNIQUE",
+  "accepted_admission_status": "PRICE_CANDIDATE",
+  "maximum_observation_age_hours": 24,
+  "outputs": {
+    "authorized_csv": "precollector_current_price_authority_v1.csv",
+    "blocked_csv": "precollector_current_price_blocked_v1.csv",
+    "blocker_summary_csv": "precollector_current_price_blocker_summary_v1.csv",
+    "summary_json": "precollector_current_price_authority_review_summary_v1.json",
+    "manifest_json": "precollector_current_price_authority_review_manifest_v1.json"
+  },
+  "next_stage_if_certified": "PRECOLLECTOR_HISTORICAL_PRICE_AUTHORITY",
+  "controls": {
+    "blocked_products_admitted": false,
+    "historical_append_authorized": false,
+    "forecast_generation_authorized": false,
+    "ranking_execution_authorized": false,
+    "purchase_recommendation_authorized": false,
+    "automatic_purchase_execution_authorized": false
+  }
+}
