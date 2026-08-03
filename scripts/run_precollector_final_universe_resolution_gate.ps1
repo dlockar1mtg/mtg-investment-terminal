@@ -5,8 +5,8 @@ Set-StrictMode -Version Latest
 
 $RepositoryRoot = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
 $ExpectedBranch = "phase-8.3-precollector-scope-governance"
-$OutputDirectory = Join-Path $RepositoryRoot "artifacts\precollector\final_universe_resolution"
-$ArtifactsRoot = Join-Path $RepositoryRoot "artifacts"
+$PreCollectorArtifactsRoot = Join-Path $RepositoryRoot "artifacts\precollector"
+$OutputDirectory = Join-Path $PreCollectorArtifactsRoot "final_universe_resolution"
 $ExportZip = Join-Path $env:TEMP "MTG_PreCollector_Final_Universe_Owner_Review.zip"
 
 function Invoke-GovernedStep {
@@ -50,8 +50,12 @@ if ($localCommit -ne $remoteCommit) {
 }
 Write-Host "PASS_GITHUB_COMMIT_BINDING=$localCommit" -ForegroundColor Green
 
-if (Test-Path $ArtifactsRoot) { Remove-Item $ArtifactsRoot -Recurse -Force }
-if (Test-Path $ExportZip) { Remove-Item $ExportZip -Force }
+if (Test-Path $PreCollectorArtifactsRoot) {
+    Remove-Item $PreCollectorArtifactsRoot -Recurse -Force
+}
+if (Test-Path $ExportZip) {
+    Remove-Item $ExportZip -Force
+}
 
 Invoke-GovernedStep -Name "Scope governance and MTG-standard audit" -Action {
     python .\scripts\audit_precollector_scope_governance.py
@@ -68,7 +72,7 @@ Invoke-GovernedStep -Name "Final universe resolution governance tests" -Action {
 }
 
 Invoke-GovernedStep -Name "Build final owner-review universe resolution" -Action {
-    python .\scripts\build_precollector_final_universe_resolution_v3.py
+    python .\scripts\build_precollector_final_universe_resolution_v4.py
 }
 
 $SummaryPath = Join-Path $OutputDirectory "precollector_final_universe_resolution_summary.json"
@@ -131,7 +135,7 @@ Write-Host "PASS_FINAL_UNIVERSE_OWNER_REVIEW_EXPORT" -ForegroundColor Green
 Write-Host "REVIEW_ZIP=$ExportZip"
 Write-Host "REVIEW_ZIP_SHA256=$zipHash"
 
-Remove-Item $ArtifactsRoot -Recurse -Force
+Remove-Item $PreCollectorArtifactsRoot -Recurse -Force
 Assert-CleanTree
 
 Write-Host "`nCERTIFIED_PASS_PRECOLLECTOR_FINAL_UNIVERSE_RESOLUTION_GATE" -ForegroundColor Green
