@@ -1,0 +1,44 @@
+{
+  "contract_id": "precollector_canonical_universe_freeze_contract_v1",
+  "contract_version": "1.0.0",
+  "status": "OWNER_APPROVED_FREEZE_CANDIDATE_ONLY",
+  "required_input": {
+    "builder": "scripts/build_precollector_final_universe_resolution_v7.py",
+    "owner_approval": "config/mtg/governance/precollector_canonical_universe_owner_approval_v1.json",
+    "expected_product_count": 124,
+    "expected_fresh_exclusion_count": 80,
+    "expected_unresolved_count": 0
+  },
+  "canonical_columns": [
+    "canonical_product_id",
+    "governed_asset_key",
+    "product_name",
+    "release_name",
+    "governed_release_date",
+    "release_date_authority",
+    "language",
+    "configuration",
+    "scope_status",
+    "owner_approval_id"
+  ],
+  "controls": {
+    "unique_canonical_product_id": true,
+    "unique_governed_asset_key": true,
+    "english_only": true,
+    "individual_factory_sealed_booster_box_only": true,
+    "blank_release_dates_allowed": false,
+    "draft_play_collector_products_allowed": false,
+    "forecast_generation_authorized": false,
+    "ranking_execution_authorized": false,
+    "purchase_recommendation_authorized": false,
+    "automatic_purchase_execution_authorized": false
+  },
+  "outputs": {
+    "canonical_universe_csv": "precollector_canonical_product_universe_v1.csv",
+    "excluded_reconciliation_csv": "precollector_canonical_freeze_exclusions_v1.csv",
+    "freeze_summary_json": "precollector_canonical_universe_freeze_summary_v1.json",
+    "freeze_manifest_json": "precollector_canonical_universe_freeze_manifest_v1.json",
+    "owner_approval_json": "precollector_canonical_universe_owner_approval_v1.json"
+  },
+  "next_stage_if_certified": "PRECOLLECTOR_CURRENT_PRICE_AUTHORITY"
+}
