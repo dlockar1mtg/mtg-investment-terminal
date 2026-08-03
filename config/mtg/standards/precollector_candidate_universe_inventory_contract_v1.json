@@ -1,0 +1,84 @@
+{
+  "contract_id": "precollector_candidate_universe_inventory_contract_v1",
+  "contract_version": "1.0.0",
+  "status": "OWNER_SCOPE_BOUND_CANDIDATE_UNIVERSE_BUILD_AUTHORIZED",
+  "governed_lane": "precollector_booster_boxes",
+  "scope_authority": "config/mtg/governance/precollector_booster_product_scope_owner_decision_v1.json",
+  "canonical_standard": "docs/standards/mtg/MTG_FORECASTING_STANDARD.md",
+  "purpose": "Build a row-level candidate universe from preserved TCGCSV product evidence without authorizing forecasts, rankings, or purchases.",
+  "source_discovery": {
+    "roots": [
+      "data/governance/permanence",
+      "data_vault",
+      "data",
+      "raw_data"
+    ],
+    "product_source_minimum_rows": 1000,
+    "required_product_semantics": [
+      "product identifier",
+      "product name",
+      "group or release identifier"
+    ],
+    "selection_rule": "Choose the highest-scoring preserved local source; fail closed on no source or an unresolved tie."
+  },
+  "classification": {
+    "included_status": "INCLUDED_CANDIDATE",
+    "excluded_status": "EXCLUDED_SCOPE",
+    "review_status": "UNRESOLVED_REVIEW",
+    "required_inclusion_conditions": [
+      "English-language classification",
+      "complete booster box product",
+      "factory-sealed product class",
+      "not Collector Booster",
+      "not Draft Booster",
+      "not Play Booster",
+      "associated release has no Collector Booster option"
+    ],
+    "required_explicit_exclusion_reasons": [
+      "COLLECTOR_BOOSTER_PRODUCT",
+      "DRAFT_BOOSTER_PRODUCT",
+      "PLAY_BOOSTER_PRODUCT",
+      "RELEASE_HAS_COLLECTOR_OPTION",
+      "FOREIGN_LANGUAGE_PRODUCT",
+      "NOT_COMPLETE_BOOSTER_BOX",
+      "DAMAGED_OR_OPENED_PRODUCT"
+    ],
+    "fail_closed_fields": [
+      "canonical_product_id",
+      "product_name",
+      "release_or_group_id",
+      "booster_format",
+      "language",
+      "full_booster_box_indicator",
+      "collector_option_indicator",
+      "initial_inclusion_status",
+      "classification_reason",
+      "source_reference"
+    ]
+  },
+  "outputs": {
+    "directory": "artifacts/precollector/candidate_universe",
+    "inventory_csv": "precollector_candidate_universe_inventory.csv",
+    "included_csv": "precollector_included_candidate_universe.csv",
+    "excluded_csv": "precollector_excluded_candidate_universe.csv",
+    "review_csv": "precollector_unresolved_review_queue.csv",
+    "summary_json": "precollector_candidate_universe_summary.json",
+    "source_manifest_json": "precollector_candidate_universe_source_manifest.json"
+  },
+  "certification_controls": {
+    "duplicate_canonical_product_ids_allowed": false,
+    "blank_classification_reasons_allowed": false,
+    "included_collector_products_allowed": false,
+    "included_draft_products_allowed": false,
+    "included_play_products_allowed": false,
+    "included_foreign_language_products_allowed": false,
+    "included_products_from_collector_option_releases_allowed": false,
+    "unresolved_products_forecast_eligible": false,
+    "forecast_generation_authorized": false,
+    "ranking_execution_authorized": false,
+    "purchase_recommendation_authorized": false,
+    "automatic_purchase_execution_authorized": false
+  },
+  "next_stage_if_certified": "OWNER_REVIEW_AND_SOURCE_HIERARCHY_DECISION",
+  "change_control": "Changes require owner approval, contract version change, governance tests, full regression, and recertification."
+}
