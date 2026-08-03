@@ -1,0 +1,25 @@
+{
+  "contract_id": "precollector_historical_price_evidence_inventory_v1",
+  "contract_version": "1.0.0",
+  "canonical_universe_sha256": "db5eee09b3fa4d02766734aab6c5f65d324bb49c77744f82ecd95f6f7ea7395e",
+  "expected_product_count": 124,
+  "scan_roots": ["data", "data_vault", "artifacts", "docs"],
+  "excluded_path_markers": ["artifacts/precollector", ".git", "__pycache__"],
+  "accepted_identity_columns": ["canonical_product_id", "tcgplayer_product_id", "product_id", "productId"],
+  "accepted_date_columns": ["observation_date", "observed_at", "collected_at", "source_timestamp", "date", "timestamp"],
+  "accepted_price_columns": ["market_price", "marketPrice", "price", "low_price", "mid_price"],
+  "minimum_positive_rows_for_candidate": 2,
+  "outputs": {
+    "inventory_csv": "precollector_historical_evidence_file_inventory_v1.csv",
+    "candidate_sources_csv": "precollector_historical_evidence_candidate_sources_v1.csv",
+    "product_coverage_csv": "precollector_historical_product_coverage_v1.csv",
+    "summary_json": "precollector_historical_price_evidence_inventory_summary_v1.json",
+    "manifest_json": "precollector_historical_price_evidence_inventory_manifest_v1.json"
+  },
+  "next_stage_if_certified": "PRECOLLECTOR_HISTORICAL_SOURCE_ADJUDICATION",
+  "historical_append_authorized": false,
+  "forecast_generation_authorized": false,
+  "ranking_execution_authorized": false,
+  "purchase_recommendation_authorized": false,
+  "automatic_purchase_execution_authorized": false
+}
