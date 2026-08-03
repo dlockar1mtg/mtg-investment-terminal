@@ -5,6 +5,7 @@ import json
 import shutil
 import subprocess
 import sys
+import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -12,6 +13,8 @@ import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[1]
 CONTRACT_PATH = ROOT / "config/mtg/standards/precollector_historical_price_authority_review_contract_v1.json"
+HISTORY_CONTRACT_PATH = ROOT / "config/mtg/standards/precollector_canonical_historical_price_contract_v1.json"
+CURRENT_CONTRACT_PATH = ROOT / "config/mtg/standards/precollector_current_price_authority_review_contract_v1.json"
 HISTORY_BUILDER = ROOT / "scripts/build_precollector_canonical_historical_prices.py"
 CURRENT_REVIEW_BUILDER = ROOT / "scripts/build_precollector_current_price_authority_review.py"
 FREEZE_DIR = ROOT / "artifacts/precollector/canonical_universe_freeze"
@@ -38,19 +41,40 @@ def run(command: list[str]) -> None:
         raise RuntimeError(f"SUBPROCESS_FAILED:{completed.returncode}:{' '.join(command)}")
 
 
+def rebuild_upstream_authorities() -> None:
+    """Rebuild current and historical authorities without allowing either builder's cleanup to erase the other."""
+    run([sys.executable, str(CURRENT_REVIEW_BUILDER)])
+    if not CURRENT_DIR.is_dir():
+        raise RuntimeError("CURRENT_PRICE_REVIEW_OUTPUT_DIRECTORY_MISSING")
+
+    with tempfile.TemporaryDirectory(prefix="precollector-current-authority-") as temp_name:
+        staged_current = Path(temp_name) / "current_price_authority_review"
+        shutil.copytree(CURRENT_DIR, staged_current)
+
+        run([sys.executable, str(HISTORY_BUILDER)])
+        if not HISTORY_DIR.is_dir():
+            raise RuntimeError("CANONICAL_HISTORY_OUTPUT_DIRECTORY_MISSING")
+
+        CURRENT_DIR.parent.mkdir(parents=True, exist_ok=True)
+        if CURRENT_DIR.exists():
+            shutil.rmtree(CURRENT_DIR)
+        shutil.copytree(staged_current, CURRENT_DIR)
+
+
 def main() -> int:
     contract = load_json(CONTRACT_PATH)
+    history_contract = load_json(HISTORY_CONTRACT_PATH)
+    current_contract = load_json(CURRENT_CONTRACT_PATH)
     precollector_root = ROOT / "artifacts/precollector"
     if precollector_root.exists():
         shutil.rmtree(precollector_root)
 
-    run([sys.executable, str(HISTORY_BUILDER)])
-    run([sys.executable, str(CURRENT_REVIEW_BUILDER)])
+    rebuild_upstream_authorities()
 
     canonical_path = FREEZE_DIR / "precollector_canonical_product_universe_v1.csv"
-    history_path = HISTORY_DIR / "precollector_canonical_historical_prices_v1.csv"
-    current_authority_path = CURRENT_DIR / "precollector_current_price_authority_v1.csv"
-    current_blocked_path = CURRENT_DIR / "precollector_current_price_blocked_products_v1.csv"
+    history_path = HISTORY_DIR / history_contract["outputs"]["canonical_history_csv"]
+    current_authority_path = CURRENT_DIR / current_contract["outputs"]["authorized_csv"]
+    current_blocked_path = CURRENT_DIR / current_contract["outputs"]["blocked_csv"]
 
     required_paths = [canonical_path, history_path, current_authority_path, current_blocked_path]
     missing = [str(path.relative_to(ROOT)) for path in required_paths if not path.is_file()]
@@ -82,6 +106,7 @@ def main() -> int:
     if not future_rows.empty:
         raise RuntimeError(f"FUTURE_HISTORICAL_ROWS:{len(future_rows)}")
 
+    history = history.sort_values(["canonical_product_id", "observation_timestamp"], kind="stable")
     authority = history.groupby("canonical_product_id", as_index=False).agg(
         historical_rows=("historical_price", "size"),
         distinct_observation_dates=("observation_timestamp", "nunique"),
@@ -197,6 +222,8 @@ def main() -> int:
     summary_path.write_text(json.dumps(summary, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     manifest = {
         "contract_sha256": sha256_file(CONTRACT_PATH),
+        "history_contract_sha256": sha256_file(HISTORY_CONTRACT_PATH),
+        "current_contract_sha256": sha256_file(CURRENT_CONTRACT_PATH),
         "canonical_universe_sha256": sha256_file(canonical_path),
         "canonical_history_sha256": sha256_file(history_path),
         "current_price_authority_sha256": sha256_file(current_authority_path),
