@@ -41,26 +41,6 @@ def run(command: list[str]) -> None:
         raise RuntimeError(f"SUBPROCESS_FAILED:{completed.returncode}:{' '.join(command)}")
 
 
-def rebuild_upstream_authorities() -> None:
-    """Rebuild current and historical authorities without allowing either builder's cleanup to erase the other."""
-    run([sys.executable, str(CURRENT_REVIEW_BUILDER)])
-    if not CURRENT_DIR.is_dir():
-        raise RuntimeError("CURRENT_PRICE_REVIEW_OUTPUT_DIRECTORY_MISSING")
-
-    with tempfile.TemporaryDirectory(prefix="precollector-current-authority-") as temp_name:
-        staged_current = Path(temp_name) / "current_price_authority_review"
-        shutil.copytree(CURRENT_DIR, staged_current)
-
-        run([sys.executable, str(HISTORY_BUILDER)])
-        if not HISTORY_DIR.is_dir():
-            raise RuntimeError("CANONICAL_HISTORY_OUTPUT_DIRECTORY_MISSING")
-
-        CURRENT_DIR.parent.mkdir(parents=True, exist_ok=True)
-        if CURRENT_DIR.exists():
-            shutil.rmtree(CURRENT_DIR)
-        shutil.copytree(staged_current, CURRENT_DIR)
-
-
 def main() -> int:
     contract = load_json(CONTRACT_PATH)
     history_contract = load_json(HISTORY_CONTRACT_PATH)
@@ -69,7 +49,20 @@ def main() -> int:
     if precollector_root.exists():
         shutil.rmtree(precollector_root)
 
-    rebuild_upstream_authorities()
+    with tempfile.TemporaryDirectory(prefix="precollector_current_authority_") as temp_dir_text:
+        temp_dir = Path(temp_dir_text)
+        run([sys.executable, str(CURRENT_REVIEW_BUILDER)])
+        current_authorized_name = current_contract["outputs"]["authorized_csv"]
+        current_blocked_name = current_contract["outputs"]["blocked_csv"]
+        staged_authorized = temp_dir / current_authorized_name
+        staged_blocked = temp_dir / current_blocked_name
+        shutil.copy2(CURRENT_DIR / current_authorized_name, staged_authorized)
+        shutil.copy2(CURRENT_DIR / current_blocked_name, staged_blocked)
+
+        run([sys.executable, str(HISTORY_BUILDER)])
+        CURRENT_DIR.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(staged_authorized, CURRENT_DIR / current_authorized_name)
+        shutil.copy2(staged_blocked, CURRENT_DIR / current_blocked_name)
 
     canonical_path = FREEZE_DIR / "precollector_canonical_product_universe_v1.csv"
     history_path = HISTORY_DIR / history_contract["outputs"]["canonical_history_csv"]
@@ -92,6 +85,16 @@ def main() -> int:
         raise RuntimeError(f"CANONICAL_COUNT_DRIFT:{len(canonical)}")
     if len(history) != int(contract["expected_canonical_historical_rows"]):
         raise RuntimeError(f"CANONICAL_HISTORY_ROW_COUNT_DRIFT:{len(history)}")
+
+    required_history_columns = {
+        "canonical_product_id",
+        "observation_timestamp",
+        "canonical_historical_price",
+    }
+    missing_history_columns = sorted(required_history_columns - set(history.columns))
+    if missing_history_columns:
+        raise RuntimeError(f"CANONICAL_HISTORY_SCHEMA_DRIFT:{missing_history_columns}")
+    history = history.rename(columns={"canonical_historical_price": "historical_price"})
 
     history["observation_timestamp"] = pd.to_datetime(history["observation_timestamp"], utc=True, errors="coerce")
     history["historical_price"] = pd.to_numeric(history["historical_price"], errors="coerce")
