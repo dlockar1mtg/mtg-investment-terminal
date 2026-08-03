@@ -33,12 +33,15 @@ def test_contract_is_fail_closed_and_counts_are_bound():
 
 def test_builder_uses_certified_collector_sources_without_cross_lane_borrowing():
     text = SCRIPT_PATH.read_text(encoding="utf-8")
+    contract = json.loads(CONTRACT_PATH.read_text(encoding="utf-8"))
     assert "collector_ebay_day_one_product_supply_snapshot.csv" in text
     assert "collector_ebay_day_one_accepted_listing_ledger.csv" in text
     assert "collector_supply_identity_match" in text
     assert "PRECOLLECTOR_SUPPLY_EVIDENCE_REQUIRED" in text
     assert "cross_lane_identity_borrowing_detected" in text
-    assert "PRECOLLECTOR_LIVE_SUPPLY_COLLECTION" in text
+    assert 'contract["next_stage_if_incomplete_candidate_coverage"]' in text
+    assert contract["next_stage_if_incomplete_candidate_coverage"] == "PRECOLLECTOR_LIVE_SUPPLY_COLLECTION"
+    assert contract["next_stage_if_complete_candidate_coverage"] == "PRECOLLECTOR_COMPARABLE_PRODUCT_TAXONOMY"
 
 
 def test_builder_preserves_governed_candidate_ceiling_and_downstream_blocks():
