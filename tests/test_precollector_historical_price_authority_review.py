@@ -6,6 +6,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 CONTRACT_PATH = ROOT / "config/mtg/standards/precollector_historical_price_authority_review_contract_v1.json"
+HISTORY_CONTRACT_PATH = ROOT / "config/mtg/standards/precollector_canonical_historical_price_contract_v1.json"
+CURRENT_CONTRACT_PATH = ROOT / "config/mtg/standards/precollector_current_price_authority_review_contract_v1.json"
 SCRIPT_PATH = ROOT / "scripts/build_precollector_historical_price_authority_review.py"
 GATE_PATH = ROOT / "scripts/run_precollector_historical_price_authority_review_gate.ps1"
 
@@ -34,12 +36,20 @@ def test_contract_exists_and_is_fail_closed():
 
 def test_builder_declares_governed_inputs_and_outputs():
     text = SCRIPT_PATH.read_text(encoding="utf-8")
+    history_contract = json.loads(HISTORY_CONTRACT_PATH.read_text(encoding="utf-8"))
+    current_contract = json.loads(CURRENT_CONTRACT_PATH.read_text(encoding="utf-8"))
+
     assert "build_precollector_canonical_historical_prices.py" in text
     assert "build_precollector_current_price_authority_review.py" in text
     assert "precollector_canonical_product_universe_v1.csv" in text
-    assert "precollector_canonical_historical_prices_v1.csv" in text
-    assert "precollector_current_price_authority_v1.csv" in text
-    assert "precollector_current_price_blocked_products_v1.csv" in text
+    assert "HISTORY_CONTRACT_PATH" in text
+    assert "CURRENT_CONTRACT_PATH" in text
+    assert 'history_contract["outputs"]["canonical_history_csv"]' in text
+    assert 'current_contract["outputs"]["authorized_csv"]' in text
+    assert 'current_contract["outputs"]["blocked_csv"]' in text
+    assert history_contract["outputs"]["canonical_history_csv"] == "precollector_canonical_historical_prices_v1.csv"
+    assert current_contract["outputs"]["authorized_csv"] == "precollector_current_price_authority_v1.csv"
+    assert current_contract["outputs"]["blocked_csv"] == "precollector_current_price_blocked_v1.csv"
     assert "MODEL_INPUT_CANDIDATE" in text
     assert "CURRENT_AND_HISTORY_AUTHORIZED" in text
     assert "CURRENT_ONLY" in text
