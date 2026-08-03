@@ -1,0 +1,28 @@
+{
+  "contract_id": "precollector_current_price_evidence_contract_v1",
+  "contract_version": "1.0.0",
+  "canonical_universe_sha256": "db5eee09b3fa4d02766734aab6c5f65d324bb49c77744f82ecd95f6f7ea7395e",
+  "expected_product_count": 124,
+  "source_snapshot": "data/operations/mtg_source_discovery/tcgcsv_snapshots/20260801T211201Z/tcgcsv_magic_products.csv",
+  "required_identity_fields": ["canonical_product_id", "governed_asset_key", "product_name", "release_name"],
+  "accepted_price_fields": ["marketPrice", "lowPrice", "midPrice", "highPrice", "directLowPrice", "listedMedianPrice"],
+  "candidate_rule": {
+    "identity_match_required": true,
+    "positive_price_required": true,
+    "source_product_id_required": true
+  },
+  "outputs": {
+    "all_evidence_csv": "precollector_current_price_evidence_all_v1.csv",
+    "candidate_csv": "precollector_current_price_candidates_v1.csv",
+    "blocked_csv": "precollector_current_price_blocked_v1.csv",
+    "coverage_csv": "precollector_current_price_coverage_v1.csv",
+    "summary_json": "precollector_current_price_evidence_summary_v1.json",
+    "manifest_json": "precollector_current_price_evidence_manifest_v1.json"
+  },
+  "next_stage_if_certified": "PRECOLLECTOR_LIVE_CURRENT_PRICE_COLLECTION",
+  "historical_append_authorized": false,
+  "forecast_generation_authorized": false,
+  "ranking_execution_authorized": false,
+  "purchase_recommendation_authorized": false,
+  "automatic_purchase_execution_authorized": false
+}
