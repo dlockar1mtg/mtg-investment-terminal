@@ -23,7 +23,7 @@ $Commit = (git rev-parse HEAD).Trim()
 Write-Host "PASS_GITHUB_COMMIT_BINDING=$Commit"
 
 Invoke-GovernedStep "Scope governance and MTG-standard audit" {
-    python .\scripts\certify_precollector_scope_governance.py
+    python .\scripts\audit_precollector_scope_governance.py
 }
 
 Invoke-GovernedStep "Canonical historical price tests" {
