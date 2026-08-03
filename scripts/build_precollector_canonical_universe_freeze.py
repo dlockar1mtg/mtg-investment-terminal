@@ -75,19 +75,23 @@ def validate(canonical: pd.DataFrame, exclusions: pd.DataFrame, contract: dict, 
         raise RuntimeError("OWNER_APPROVAL_DECISION_MISSING")
     if int(approval.get("approved_product_count", -1)) != expected:
         raise RuntimeError("OWNER_APPROVAL_COUNT_DRIFT")
+
+    # Identity violations are more fundamental than aggregate count drift and
+    # must be surfaced first so fail-closed diagnostics remain deterministic.
+    if "canonical_product_id" in canonical.columns and canonical["canonical_product_id"].duplicated().any():
+        raise RuntimeError("DUPLICATE_CANONICAL_PRODUCT_ID")
+    if "governed_asset_key" in canonical.columns and canonical["governed_asset_key"].duplicated().any():
+        raise RuntimeError("DUPLICATE_GOVERNED_ASSET_KEY")
     if len(canonical) != expected:
         raise RuntimeError(f"CANONICAL_COUNT_DRIFT: {len(canonical)}")
-    if canonical["canonical_product_id"].duplicated().any():
-        raise RuntimeError("DUPLICATE_CANONICAL_PRODUCT_ID")
-    if canonical["governed_asset_key"].duplicated().any():
-        raise RuntimeError("DUPLICATE_GOVERNED_ASSET_KEY")
+
     for column in contract["canonical_columns"]:
         if column not in canonical.columns:
             raise RuntimeError(f"CANONICAL_COLUMN_MISSING: {column}")
         if canonical[column].fillna("").astype(str).str.strip().eq("").any():
             raise RuntimeError(f"BLANK_CANONICAL_FIELD: {column}")
     names = canonical["product_name"].str.casefold()
-    prohibited = names.str.contains(r"\b(draft|play|collector) booster\b|\bcase\b", regex=True)
+    prohibited = names.str.contains(r"\b(?:draft|play|collector) booster\b|\bcase\b", regex=True)
     if prohibited.any():
         raise RuntimeError("PROHIBITED_PRODUCT_IN_CANONICAL_UNIVERSE")
     if len(exclusions) != int(contract["required_input"]["expected_fresh_exclusion_count"]):
