@@ -5,6 +5,7 @@ import json
 import shutil
 import subprocess
 import sys
+import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -13,6 +14,7 @@ import pandas as pd
 ROOT = Path(__file__).resolve().parents[1]
 CONTRACT_PATH = ROOT / "config/mtg/standards/precollector_live_supply_collection_contract_v1.json"
 HISTORICAL_AUTHORITY_BUILDER = ROOT / "scripts/build_precollector_historical_price_authority_review.py"
+CURRENT_PRICE_AUTHORITY_BUILDER = ROOT / "scripts/build_precollector_current_price_authority_review.py"
 EBAY_RUNNER = ROOT / "scripts/run_daily_ebay_collection.py"
 OUTPUT_DIR = ROOT / "artifacts/precollector/live_supply_collection"
 
@@ -41,14 +43,32 @@ def main() -> int:
     if precollector_root.exists():
         shutil.rmtree(precollector_root)
 
-    run([sys.executable, str(HISTORICAL_AUTHORITY_BUILDER)])
-
     source_map = ROOT / contract["product_map_source"]
     eligibility_path = ROOT / contract["eligibility_source"]
-    if not source_map.is_file():
-        raise RuntimeError(f"PRECOLLECTOR_PRODUCT_MAP_MISSING:{source_map.relative_to(ROOT)}")
-    if not eligibility_path.is_file():
-        raise RuntimeError(f"PRECOLLECTOR_ELIGIBILITY_MISSING:{eligibility_path.relative_to(ROOT)}")
+
+    # The historical-authority builder creates the governed eligibility matrix but
+    # its upstream history rebuild removes the live current-price product map.
+    # Stage the eligibility output, rebuild the current-price lane to recreate the
+    # governed product map, and then restore eligibility for the targeted eBay run.
+    with tempfile.TemporaryDirectory(prefix="precollector_live_supply_") as temp_dir_text:
+        temp_dir = Path(temp_dir_text)
+
+        run([sys.executable, str(HISTORICAL_AUTHORITY_BUILDER)])
+        if not eligibility_path.is_file():
+            raise RuntimeError(
+                f"PRECOLLECTOR_ELIGIBILITY_MISSING:{eligibility_path.relative_to(ROOT)}"
+            )
+        staged_eligibility = temp_dir / eligibility_path.name
+        shutil.copy2(eligibility_path, staged_eligibility)
+
+        run([sys.executable, str(CURRENT_PRICE_AUTHORITY_BUILDER)])
+        if not source_map.is_file():
+            raise RuntimeError(
+                f"PRECOLLECTOR_PRODUCT_MAP_MISSING:{source_map.relative_to(ROOT)}"
+            )
+
+        eligibility_path.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(staged_eligibility, eligibility_path)
 
     product_map = pd.read_csv(source_map, dtype=str).fillna("")
     eligibility = pd.read_csv(eligibility_path, dtype=str).fillna("")
