@@ -56,6 +56,9 @@ if ($Summary.certification_status -ne "PASS_PRECOLLECTOR_LIVE_SUPPLY_COLLECTION_
 if ([int]$Summary.target_product_rows -ne 94) {
     throw "GOVERNED_RUN_FAILED: expected 94 targeted products"
 }
+if ([int]$Summary.limit_per_product -ne 200) {
+    throw "GOVERNED_RUN_FAILED: expected 200-result acquisition depth per product"
+}
 if ($Summary.live_api_called -ne $true) {
     throw "GOVERNED_RUN_FAILED: live eBay API was not called"
 }
@@ -86,6 +89,11 @@ $ZipHash = (Get-FileHash $ZipPath -Algorithm SHA256).Hash.ToLowerInvariant()
 Write-Host "PASS_PRECOLLECTOR_LIVE_SUPPLY_COLLECTION_EXPORT"
 Write-Host "LIVE_SUPPLY_ZIP=$ZipPath"
 Write-Host "LIVE_SUPPLY_ZIP_SHA256=$ZipHash"
+
+$GeneratedArtifacts = Join-Path $Root "artifacts\precollector"
+if (Test-Path $GeneratedArtifacts) {
+    Remove-Item $GeneratedArtifacts -Recurse -Force
+}
 
 Assert-CleanTree
 Write-Host "`nCERTIFIED_PASS_PRECOLLECTOR_LIVE_SUPPLY_COLLECTION_GATE" -ForegroundColor Green
