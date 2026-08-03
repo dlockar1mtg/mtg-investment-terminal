@@ -1,0 +1,24 @@
+{
+  "contract_id": "precollector_canonical_historical_price_v1",
+  "contract_version": "1.0.0",
+  "canonical_universe_sha256": "db5eee09b3fa4d02766734aab6c5f65d324bb49c77744f82ecd95f6f7ea7395e",
+  "expected_product_count": 124,
+  "expected_admissible_source_count": 2,
+  "minimum_rows_per_product": 2,
+  "minimum_distinct_dates_per_product": 2,
+  "duplicate_resolution_policy": "SOURCE_PATH_ASCENDING_THEN_LAST_ROW",
+  "outputs": {
+    "canonical_history_csv": "precollector_canonical_historical_prices_v1.csv",
+    "conflicts_csv": "precollector_historical_duplicate_conflicts_v1.csv",
+    "coverage_csv": "precollector_canonical_historical_coverage_v1.csv",
+    "missing_products_csv": "precollector_products_without_admissible_history_v1.csv",
+    "summary_json": "precollector_canonical_historical_price_summary_v1.json",
+    "manifest_json": "precollector_canonical_historical_price_manifest_v1.json"
+  },
+  "next_stage_if_certified": "PRECOLLECTOR_HISTORICAL_PRICE_AUTHORITY_REVIEW",
+  "historical_append_authorized": false,
+  "forecast_generation_authorized": false,
+  "ranking_execution_authorized": false,
+  "purchase_recommendation_authorized": false,
+  "automatic_purchase_execution_authorized": false
+}
