@@ -1,0 +1,35 @@
+{
+  "workflow_id": "mtg_github_first_governed_execution_workflow_v1",
+  "version": "1.0.0",
+  "status": "OWNER_APPROVED_WORKFLOW",
+  "approved_on": "2026-08-02",
+  "repository": "dlockar1mtg/mtg-investment-terminal",
+  "required_sequence": [
+    "assistant_reviews_governance_and_current_authorities",
+    "assistant_creates_or_updates_files_in_github_branch",
+    "user_fetches_and_pulls_branch",
+    "user_runs_one_committed_fail_closed_powershell_runner",
+    "user_returns_complete_output",
+    "assistant_reviews_results_before_authorizing_next_stage"
+  ],
+  "mandatory_controls": {
+    "github_first_changes": true,
+    "single_copy_run_powershell_entrypoint": true,
+    "targeted_governance_tests_required": true,
+    "mtg_standard_conformance_tests_required": true,
+    "relevant_regression_tests_required": true,
+    "full_suite_required_before_certification_or_merge": true,
+    "fail_closed_on_any_error": true,
+    "phase_advancement_requires_all_gates_pass": true,
+    "forecast_ranking_purchase_separation_required": true,
+    "automatic_execution_default": false,
+    "standards_drift_tolerance": "ZERO"
+  },
+  "runner_rules": {
+    "interactive_powershell_exit_forbidden": true,
+    "throw_on_failure": true,
+    "final_pass_message_only_after_all_checks": true,
+    "complete_console_output_must_be_preserved": true
+  },
+  "change_control": "Any weakening, bypass, removal, or reordering of mandatory controls requires owner approval, version change, and recertification."
+}
