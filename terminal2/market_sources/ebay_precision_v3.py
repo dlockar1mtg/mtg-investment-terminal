@@ -10,6 +10,21 @@ from terminal2.market_sources.ebay_universal_classification import classify_list
 
 MATCHER_VERSION = "precision-v3-universal"
 
+_GOVERNED_PRODUCT_ALIASES: dict[str, str] = {
+    # The governed name includes the franchise prefix "Universes Beyond:" while
+    # marketplace titles normally begin with "Lord of the Rings" or "LOTR".
+    # Removing only that nonessential prefix preserves the exact set subtitle and
+    # Collector Booster display identity while avoiding false token-coverage REVIEW.
+    "484912": "Lord of the Rings Tales of Middle-earth Collector Booster Display",
+}
+
+
+def _normalized_product_for_matching(product: base.CanonicalProduct) -> base.CanonicalProduct:
+    alias = _GOVERNED_PRODUCT_ALIASES.get(str(product.tcgplayer_product_id or "").strip())
+    if not alias:
+        return product
+    return replace(product, canonical_product_name=alias)
+
 
 def identity_match_listing(
     product: base.CanonicalProduct,
@@ -17,15 +32,19 @@ def identity_match_listing(
     run_id: str,
     observed: str,
 ) -> base.MatchResult:
-    """Apply the certified precision-v2 matcher, then a downgrade-only universal policy.
+    """Apply precision-v2, governed aliases, then downgrade-only universal policy."""
 
-    The universal layer never upgrades a precision-v2 result. It adds normalized
-    language, form, condition, completeness, and quantity diagnostics and only
-    downgrades when the listing contains an explicit conflict or material missing
-    qualifier.
-    """
+    matching_product = _normalized_product_for_matching(product)
+    result = precision_v2_match_listing(matching_product, item, run_id, observed)
+    if matching_product is not product:
+        alias_reasons = [value for value in result.exclusion_reasons.split("|") if value]
+        alias_reasons.append("governed_product_alias_applied")
+        result = replace(
+            result,
+            canonical_product_name=product.canonical_product_name,
+            exclusion_reasons="|".join(dict.fromkeys(alias_reasons)),
+        )
 
-    result = precision_v2_match_listing(product, item, run_id, observed)
     policy = classify_listing_identity(
         product.canonical_product_name,
         product.product_class,
@@ -51,6 +70,7 @@ def identity_match_listing(
 
     return replace(
         result,
+        canonical_product_name=product.canonical_product_name,
         match_state=state,
         match_score=round(score, 4),
         exclusion_reasons="|".join(dict.fromkeys(reasons)),

@@ -1,0 +1,48 @@
+{
+  "review_name": "Collector Candidate v2.4 Confidence and Decision Owner Review",
+  "review_version": "1.0.0",
+  "confidence_recommendations": {
+    "90_day": {
+      "method": "PRIOR_PRODUCT_MAE_PLUS_FORECAST_EXTREMENESS",
+      "recommended_structure": "TWO_TIER_STANDARD_LOW",
+      "low_confidence_rule": "BOTTOM_PROSPECTIVE_RELIABILITY_TERCILE",
+      "aggregate_ordering_pass": true,
+      "cutoff_low_worse_than_high_rate": 1.0,
+      "cutoff_full_three_tier_ordering_rate": 0.5
+    },
+    "180_day": {
+      "method": "PRIOR_PRODUCT_MAE_PLUS_FORECAST_EXTREMENESS",
+      "recommended_structure": "TWO_TIER_STANDARD_LOW",
+      "low_confidence_rule": "BOTTOM_PROSPECTIVE_RELIABILITY_TERCILE",
+      "aggregate_ordering_pass": true,
+      "cutoff_low_worse_than_high_rate": 1.0,
+      "cutoff_full_three_tier_ordering_rate": 0.5,
+      "maturity_limitation": "ONLY_FOUR_ELIGIBLE_CUTOFFS"
+    },
+    "365_day": {
+      "recommended_structure": "REMAIN_UNCERTIFIED"
+    }
+  },
+  "decision_state_recommendations": {
+    "90_day": {
+      "lower_quantile": 0.4,
+      "upper_quantile": 0.6,
+      "aggregate_ordinal_ordering_pass": true,
+      "recommended_status": "ELIGIBLE_FOR_OWNER_SHADOW_REVIEW"
+    },
+    "180_day": {
+      "recommended_status": "REMAIN_UNCERTIFIED_NO_THRESHOLD_PASSED"
+    },
+    "365_day": {
+      "recommended_status": "REMAIN_UNCERTIFIED_INSUFFICIENT_PROSPECTIVE_EVIDENCE"
+    }
+  },
+  "prospective_confidence_method_authorized": false,
+  "decision_state_method_authorized": false,
+  "candidate_methodology_change_authorized": false,
+  "production_projection_authorized": false,
+  "purchase_recommendation_authorized": false,
+  "automatic_model_update_allowed": false,
+  "technical_freeze_authorized": false,
+  "uip_acceptance_authorized": false
+}

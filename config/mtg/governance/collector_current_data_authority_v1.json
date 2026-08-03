@@ -1,0 +1,63 @@
+{
+  "authority_name": "Collector Booster Current Data Authority",
+  "authority_version": "1.0.0",
+  "lane": "COLLECTOR_BOOSTER",
+  "status": "BLOCKED_PENDING_APPROVED_EXECUTABLE_PRICE_ADAPTER",
+  "approval_authority": "Devon Lockard",
+  "governing_documents": [
+    "docs/standards/mtg/MTG_FORECASTING_STANDARD.md",
+    "docs/standards/mtg/lanes/COLLECTOR_BOOSTER_METHOD_SPECIFICATION.md",
+    "config/mtg/standards/mtg_forecasting_standard_v1.json",
+    "config/mtg/standards/mtg_active_code_registry_v1.json",
+    "config/mtg/evidence/collector_evidence_source_map_v1.json",
+    "config/mtg/evidence/collector_evidence_contract_v1.json"
+  ],
+  "current_documented_source": {
+    "path": "data/staging/purchase_refresh/2026-07-31/collector_history_rebuilt/product_master_model_input.csv",
+    "documented_status": "CANDIDATE_GOVERNED_PROXY_SOURCE",
+    "authorized_for_current_price": false,
+    "authorized_for_purchase_recommendations": false,
+    "reason": "The committed evidence source map labels this file as a candidate governed proxy source and explicitly keeps purchase recommendation authorization false."
+  },
+  "required_authority_before_activation": {
+    "approved_market_provider": null,
+    "approved_adapter_path": null,
+    "approved_execution_command": null,
+    "approved_raw_snapshot_path_pattern": null,
+    "approved_normalized_price_authority_path_pattern": null,
+    "approved_listing_authority_path_pattern": null,
+    "approved_observation_timestamp_field": "source_observation_at_utc",
+    "approved_retrieval_timestamp_field": "retrieved_at_utc",
+    "executable_price_freshness_hours": 24,
+    "high_priority_purchase_candidate_freshness_hours": 12,
+    "inventory_depth_freshness_hours": 24
+  },
+  "activation_requirements": [
+    "Devon explicitly approves the market provider and retrieval method.",
+    "The adapter is committed and listed in the active-code registry.",
+    "The adapter preserves provider, product identifier, price, shipping, quantity, observed timestamp, retrieved timestamp, region, currency, language, condition, and source status.",
+    "A failed source is reported as failure and never converted to zero listings or no market change.",
+    "Raw observations are stored immutably before normalization.",
+    "The normalized price and listing authorities are generated from the same snapshot ID.",
+    "The snapshot passes source, freshness, coverage, identity, hash, and lineage certification.",
+    "Every downstream stage is listed in the active-code registry and consumes the certified snapshot explicitly.",
+    "End-to-end lineage certification passes before recommendation publication."
+  ],
+  "prohibited_behaviors": [
+    "Use a candidate proxy source as an executable current-price authority.",
+    "Use a downstream generated timestamp as a market observation timestamp.",
+    "Select a source because it is the newest matching file.",
+    "Forward-fill or carry forward current prices without an explicit ineligible status.",
+    "Run unregistered model or recommendation scripts as authoritative production steps.",
+    "Publish rankings, maximum purchase prices, or recommendations before authority activation."
+  ],
+  "current_authorization": {
+    "fresh_snapshot_capture_authorized": false,
+    "current_state_feature_build_authorized": false,
+    "forecast_rebuild_authorized": false,
+    "ranking_rebuild_authorized": false,
+    "purchase_recommendations_authorized": false,
+    "maximum_purchase_prices_authorized": false,
+    "uip_delivery_authorized": false
+  }
+}

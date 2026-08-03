@@ -1,0 +1,40 @@
+{
+  "contract_name": "Collector End-to-End Governance Exact Evidence Binding",
+  "contract_version": "1.0.0",
+  "snapshot_id": "collector-20260801T211201Z-7688afbd",
+  "source_bundle_sha256": "7688afbd6dfb4483c0a316dad6a2a05458944434a91a3f714568e5f4a10c7890",
+  "v2_summary": "data/governance/permanence/certification/collector_v1_end_to_end_governance_audit_v2/collector_end_to_end_governance_audit_summary.json",
+  "evidence_files": [
+    "data/governance/permanence/certification/collector_v1_august_1_snapshot_registration/collector_v1_august_1_snapshot_registration_summary.json",
+    "data/governance/permanence/certification/collector_v1_snapshot_bound_authority_verification/collector_v1_snapshot_bound_authority_verification_summary.json"
+  ],
+  "required_v2_counts": {
+    "stages_audited": 11,
+    "stages_passed": 10,
+    "json_and_csv_parse_failures": 0,
+    "declared_hashes_checked": 21,
+    "declared_hashes_reconciled_to_audited_inventory": 21,
+    "standard_requirements_reviewed": 11,
+    "standard_requirements_documented": 11,
+    "conditional_products_purchase_authorized": 0,
+    "forecast_values_modified_in_purchase_authority": 0
+  },
+  "required_v2_critical_failure": "STAGE_SUMMARY_STATUS_RESOLUTION_FAILED:august1_current_data_package:0",
+  "required_final_authority_counts": {
+    "current_price": 50,
+    "historical_ledger": 1215,
+    "integrated_comparables": 121,
+    "final_forecasts": 294,
+    "forecast_lineage": 294,
+    "blocked_horizons": 6,
+    "calibration": 294,
+    "eligibility": 49,
+    "rankings": 49,
+    "purchase_authority": 49,
+    "coverage_rows": 300
+  },
+  "certification_flag_aliases": ["certified_for_model_input", "model_input_certified"],
+  "rebuild_authorization_aliases": ["model_rebuild_authorized", "rebuild_authorized"],
+  "source_hash_aliases": ["source_bundle_sha256", "source_sha256", "bundle_sha256"],
+  "expected_status": "PASS_COLLECTOR_END_TO_END_GOVERNANCE_EXACT_EVIDENCE_BINDING"
+}

@@ -1,0 +1,45 @@
+{
+  "contract_name": "Collector Final Pre-Model Blocker Resolution",
+  "contract_version": "1.0.1",
+  "governing_snapshot_id": "collector-20260801T211201Z-7688afbd",
+  "required_product_count": 50,
+  "required_ledger_rows": 1215,
+  "required_anomaly_rows": 12,
+  "required_comparable_route_products": 24,
+  "minimum_comparables_per_product": 3,
+  "maximum_comparables_per_product": 5,
+  "minimum_direct_comparable_observations": 12,
+  "large_price_ratio_limit": 6.0,
+  "allowed_final_routes": [
+    "DIRECT_HISTORY_CALIBRATED",
+    "DIRECT_HISTORY_LIMITED",
+    "COMPARABLE_PRODUCT_ADJUSTED",
+    "FUNDAMENTAL_COMPARABLE_HYBRID",
+    "DEFERRED_IDENTITY",
+    "DEFERRED_MISSING_PRICE",
+    "DEFERRED_INSUFFICIENT_EVIDENCE"
+  ],
+  "anomaly_disposition_policy": {
+    "EXTREME_MONTHLY_RETURN": "RETAIN_WITH_ROBUST_SENSITIVITY",
+    "SELECTION_METHOD_SWITCH": "EXCLUDE_TRANSITION_RETURN_FROM_PRIMARY_FIT",
+    "PRE_RELEASE_HISTORY": "PRESALE_SEGMENT_ONLY",
+    "PRICE_FLATLINE_RUN": "RETAIN_WITH_STALENESS_SENSITIVITY",
+    "CURRENT_TO_HISTORY_GAP": "REVIEW_CURRENT_ANCHOR_BEFORE_FORECAST"
+  },
+  "required_controls": {
+    "current_only_features_blocked_from_backtest": true,
+    "survivorship_claim_scope_limited": true,
+    "ebay_supply_used_only_as_current_overlay": true,
+    "presale_segmented_from_post_release": true,
+    "method_switch_returns_excluded_from_primary_fit": true,
+    "comparable_selection_time_safe": true,
+    "forecast_generation_separate_from_purchase_authorization": true,
+    "insufficient_evidence_may_receive_governed_deferral": true
+  },
+  "required_upstream_statuses": {
+    "wizards_release_date_authority": "PASS_COLLECTOR_WIZARDS_RELEASE_DATE_AUTHORITY",
+    "historical_ledger": "PASS_COLLECTOR_AUGUST1_HISTORICAL_OBSERVATION_LEDGER",
+    "premodel_audit": "PASS_COLLECTOR_PREMODEL_REASONABLENESS_AUDIT_COMPLETED"
+  },
+  "expected_status": "PASS_COLLECTOR_FINAL_PREMODEL_DATA_AND_ROUTING_CERTIFICATION"
+}

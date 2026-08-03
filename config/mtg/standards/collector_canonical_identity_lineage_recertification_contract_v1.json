@@ -1,0 +1,61 @@
+{
+  "contract_name": "Collector Canonical Identity Enforcement and Full Forecast Lineage Recertification",
+  "contract_version": "1.0.2",
+  "snapshot_id": "collector-20260801T211201Z-7688afbd",
+  "required_governed_products": 50,
+  "required_base_forecast_products": 48,
+  "required_final_forecast_products": 49,
+  "required_horizons_days": [90, 180, 365, 730, 1095, 1825],
+  "required_base_forecast_rows": 288,
+  "required_final_forecast_rows": 294,
+  "required_blocked_rows": 6,
+  "required_coverage_rows": 300,
+  "simulation_count": 10000,
+  "requested_lorwyn_product_name": "Lorwyn Eclipsed - Collector Booster Display",
+  "user_excluded_product_name_contains": "Special Edition Collector Booster Display",
+  "authorities": {
+    "product_and_current_price": "data/governance/permanence/certification/collector_v1_final_premodel_user_exclusion_resolution/collector_final_current_price_authority.csv",
+    "release_date": "data/governance/permanence/certification/collector_v1_wizards_release_date_authority/collector_wizards_release_date_authority.csv",
+    "historical_observations": "data/governance/permanence/certification/collector_v1_august1_historical_observation_ledger/collector_august1_historical_observation_ledger.csv",
+    "comparable_pool": "data/governance/permanence/certification/collector_v1_lorwyn_comparable_authority_integration/collector_integrated_comparable_pool_authority.csv",
+    "current_supply": "data/governance/permanence/certification/collector_v1_august1_current_data_package/collector_ebay_product_supply_snapshot.csv",
+    "base_probabilistic_forecasts": "data/governance/permanence/certification/collector_v1_complete_horizon_probabilistic_forecast/collector_complete_horizon_probabilistic_forecasts.csv",
+    "base_coverage_registry": "data/governance/permanence/certification/collector_v1_complete_horizon_probabilistic_forecast/collector_complete_horizon_coverage_registry.csv",
+    "early_awareness_truth": "data/governance/permanence/certification/collector_v1_early_awareness_lorwyn_forecast/collector_first_year_breakout_truth_registry.csv",
+    "early_awareness_predictions": "data/governance/permanence/certification/collector_v1_early_awareness_lorwyn_forecast/collector_early_awareness_checkpoint_predictions.csv"
+  },
+  "invalidated_outputs": [
+    "data/governance/permanence/certification/collector_v1_early_awareness_lorwyn_forecast/collector_lorwyn_standalone_probabilistic_forecasts.csv",
+    "data/governance/permanence/certification/collector_v1_final_model_output_validation/collector_final_integrated_49_product_forecasts.csv",
+    "data/governance/permanence/certification/collector_v1_final_model_output_validation/collector_final_forecast_reasonableness_review.csv",
+    "data/governance/permanence/certification/collector_v1_final_model_output_validation/collector_final_model_output_validation_summary.json"
+  ],
+  "product_specific_contract_globs": [
+    "config/mtg/standards/*forecast*contract*.json",
+    "config/mtg/standards/*model*contract*.json"
+  ],
+  "prohibited_identity_keys": [
+    "canonical_product_id",
+    "tcgplayer_product_id",
+    "investment_product_id"
+  ],
+  "governance": {
+    "certified_authority_is_only_identity_source": true,
+    "contract_identity_assertions_prohibited": true,
+    "name_id_price_semantic_reconciliation_required": true,
+    "all_50_products_reconciled_across_authoritative_datasets": true,
+    "base_48_forecasts_must_be_recertified": true,
+    "early_awareness_identity_lineage_must_be_recertified": true,
+    "incorrect_outputs_must_be_invalidated_before_rebuild": true,
+    "lorwyn_identity_resolved_from_authority_only": true,
+    "semantic_certification_required_before_simulation": true,
+    "silent_source_substitution_prohibited": true,
+    "target_specific_certified_comparables_required": true,
+    "integrated_comparable_authority_required": true,
+    "lineage_manifest_required_for_every_final_forecast_row": true,
+    "production_forecast_authorized": false,
+    "ranking_authorized": false,
+    "purchase_recommendations_authorized": false
+  },
+  "expected_status": "PASS_COLLECTOR_CANONICAL_IDENTITY_LINEAGE_RECERTIFICATION"
+}

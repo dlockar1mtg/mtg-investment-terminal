@@ -1,0 +1,19 @@
+{
+  "review_name": "Collector Leakage-Safe Walk-Forward Replay Foundation",
+  "review_version": "1.0.0",
+  "status": "DEVELOPMENT_AND_TESTING_ONLY",
+  "candidate_version_under_test": "2.3.0",
+  "freeze_suspended_pending_walk_forward": true,
+  "decision_frequency": "MONTH_END",
+  "minimum_history_days": 30,
+  "outcome_horizons_days": [90, 180, 365],
+  "maximum_outcome_date_slippage_days": 31,
+  "required_point_in_time_rule": "Every model input must have an observation or knowledge date on or before the historical decision cutoff.",
+  "future_information_prohibited": true,
+  "today_candidate_outputs_prohibited_as_historical_inputs": true,
+  "retrospective_results_must_be_labeled": true,
+  "production_projection_authorized": false,
+  "purchase_recommendation_authorized": false,
+  "automatic_model_update_allowed": false,
+  "output_directory": "data/operations/collector_walk_forward_replay_foundation/candidate_v1_0_0"
+}

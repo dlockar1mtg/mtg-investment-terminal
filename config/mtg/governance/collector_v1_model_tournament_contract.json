@@ -1,0 +1,120 @@
+{
+  "contract_name": "Collector V1 Endpoint-Specific Model Tournament",
+  "contract_version": "1.0.0",
+  "effective_date": "2026-08-02",
+  "active_universe_policy": "ENGLISH_ONLY_50_PRODUCT_COLLECTOR_DISPLAY_UNIVERSE",
+  "required_endpoints_days": [90, 180, 365, 1095, 1825],
+  "endpoint_roles": {
+    "90": "SHORT_TERM_DECISION_SUPPORT",
+    "180": "MEDIUM_TERM_DECISION_SUPPORT",
+    "365": "ONE_YEAR_DECISION_SUPPORT",
+    "1095": "PRIMARY_THREE_YEAR_INVESTMENT_HORIZON",
+    "1825": "FIVE_YEAR_SCENARIO_HORIZON"
+  },
+  "routing_policy": {
+    "DIRECT_HISTORY_CALIBRATED": "run direct-history, pooled-history, regularized, robust, ensemble, and scarcity variants",
+    "DIRECT_HISTORY_LIMITED": "run shrinkage, pooled, comparable-assisted, robust, ensemble, and scarcity variants",
+    "COMPARABLE_PRODUCT_ADJUSTED": "run equal-peer, similarity-weighted, age-adjusted, price-level-adjusted, robust peer median, ensemble, and scarcity variants",
+    "no_direct_history_policy": "use governed comparable peers and peer outcome transfer; never fabricate direct history",
+    "no_realized_endpoint_policy": "use validated shorter-horizon compounding plus comparable endpoint transfer and classify as scenario, not historically validated forecast"
+  },
+  "required_model_families": [
+    "LAST_VALUE",
+    "DRIFT",
+    "LOG_DRIFT",
+    "MEAN_REVERSION",
+    "ROBUST_TREND",
+    "EXPONENTIAL_SMOOTHING",
+    "RIDGE_REGRESSION",
+    "HUBER_REGRESSION",
+    "RANDOM_FOREST",
+    "GRADIENT_BOOSTING",
+    "PEER_MEDIAN_RETURN",
+    "PEER_WEIGHTED_RETURN",
+    "AGE_ADJUSTED_PEER_RETURN",
+    "ROUTE_ENSEMBLE",
+    "GLOBAL_ENSEMBLE"
+  ],
+  "required_feature_variants": [
+    "PRICE_ONLY",
+    "PRICE_PLUS_MOMENTUM",
+    "PRICE_PLUS_VOLATILITY",
+    "PRICE_PLUS_SCARCITY_V1A",
+    "PRICE_PLUS_DEMAND_SUPPLY",
+    "PRICE_PLUS_COMPARABLES",
+    "FULL_AUTHORIZED_FEATURE_SET"
+  ],
+  "required_validation": {
+    "time_ordered_cutoffs": true,
+    "anti_leakage": true,
+    "rolling_origin": true,
+    "route_specific_evaluation": true,
+    "endpoint_specific_evaluation": true,
+    "product_level_holdout": true,
+    "minimum_sample_policy": "fail closed or downgrade to scenario when endpoint sample is insufficient",
+    "metrics": [
+      "MAE",
+      "MAPE",
+      "MEDIAN_APE",
+      "SMAPE",
+      "RMSE",
+      "BIAS",
+      "DIRECTIONAL_ACCURACY",
+      "INTERVAL_COVERAGE",
+      "DOWNSIDE_ERROR",
+      "RANK_CORRELATION"
+    ]
+  },
+  "winner_selection": {
+    "selection_grain": ["forecast_method", "horizon_days"],
+    "primary_metric": "SMAPE",
+    "secondary_metrics": ["MAE", "BIAS_ABS", "DIRECTIONAL_ACCURACY", "INTERVAL_COVERAGE"],
+    "stability_requirement": "winner must remain competitive across rolling cutoffs and product holdouts",
+    "scarcity_requirement": "scarcity variant retained only when it improves endpoint-route validation or downside-risk calibration",
+    "ensemble_policy": "ensemble may win only when out-of-sample metrics improve and no component leakage exists",
+    "no_single_global_winner": true
+  },
+  "long_horizon_policy": {
+    "1095": {
+      "historical_validation_required_when_available": true,
+      "fallback": "validated shorter-horizon compounding plus comparable transfer",
+      "label_when_no_realized_targets": "THREE_YEAR_COMPARABLE_CALIBRATED_PROJECTION"
+    },
+    "1825": {
+      "historical_validation_required_when_available": true,
+      "fallback": "scenario ensemble using validated one-year dynamics, comparable maturity curves, and uncertainty widening",
+      "label_when_no_realized_targets": "FIVE_YEAR_SCENARIO_NOT_DIRECTLY_BACKTESTED"
+    }
+  },
+  "investment_decision_policy": {
+    "ranking_inputs": [
+      "EXPECTED_RETURN",
+      "LOWER_INTERVAL_RETURN",
+      "DOWNSIDE_RISK",
+      "MODEL_CONFIDENCE",
+      "LIQUIDITY",
+      "SCARCITY_V1A",
+      "DATA_FRESHNESS",
+      "PRESALE_STATUS",
+      "CURRENT_PRICE_QUALITY"
+    ],
+    "purchase_authorization_requires": [
+      "endpoint-route tournament winner",
+      "calibrated interval",
+      "current price quality pass",
+      "liquidity pass",
+      "data freshness pass",
+      "portfolio constraint pass",
+      "maximum purchase price"
+    ]
+  },
+  "fail_closed_rules": {
+    "missing_tournament_artifact": "BLOCK",
+    "missing_endpoint_winner": "BLOCK_ENDPOINT",
+    "insufficient_validation_samples": "DOWNGRADE_TO_SCENARIO_OR_BLOCK",
+    "interval_undercoverage": "BLOCK_PRODUCTION",
+    "unresolved_comparable_identity": "BLOCK_PRODUCT",
+    "source_hash_mismatch": "BLOCK_ALL",
+    "purchase_without_certified_model": "PROHIBITED"
+  }
+}

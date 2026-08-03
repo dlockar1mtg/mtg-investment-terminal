@@ -1,0 +1,50 @@
+{
+  "program_name": "MTG Preservation Migration and Registry Population",
+  "program_version": "1.0.0",
+  "scope": "Collector Booster data permanence foundation",
+  "source_roots": [
+    "data",
+    "data_sources",
+    "inputs",
+    "exports",
+    "artifacts"
+  ],
+  "excluded_source_roots": [
+    "data_vault",
+    "data/governance/permanence",
+    "data/certified",
+    "data/candidate",
+    "data/model_runs"
+  ],
+  "vault_root": "data_vault/raw/mtg/collector_booster",
+  "manifest_root": "data_vault/manifests/mtg/collector_booster",
+  "registry_path": "data/governance/permanence/registry/dataset_registry.csv",
+  "lineage_path": "data/governance/permanence/lineage/dataset_lineage.csv",
+  "classification_path": "data/governance/permanence/registry/existing_dataset_classification.csv",
+  "orphan_report_path": "data/governance/permanence/lineage/orphan_dataset_report.csv",
+  "summary_path": "data/governance/permanence/certification/preservation_migration_summary.json",
+  "copy_only": true,
+  "move_forbidden": true,
+  "delete_forbidden": true,
+  "overwrite_forbidden": true,
+  "hash_verification_required": true,
+  "existing_ingestion_reuse_only_when_hash_identical": true,
+  "dataset_states": [
+    "RAW",
+    "CANDIDATE",
+    "QUARANTINED",
+    "CERTIFIED",
+    "SUPERSEDED",
+    "INVALIDATED",
+    "ARCHIVED",
+    "UNVERIFIED"
+  ],
+  "default_existing_dataset_state": "UNVERIFIED",
+  "forecast_output_default_state": "INVALIDATED",
+  "forecasting_resume_authorized": false,
+  "production_projection_authorized": false,
+  "purchase_recommendation_authorized": false,
+  "automatic_model_update_allowed": false,
+  "technical_freeze_authorized": false,
+  "uip_acceptance_authorized": false
+}

@@ -1,0 +1,16 @@
+{
+  "audit_name": "Collector Walk-Forward Phase 2E Regime Calibration",
+  "audit_version": "1.0.0",
+  "training_window_cutoffs": [0, 2, 3, 4, 6],
+  "blend_weights": [1.0, 0.75, 0.6, 0.5, 0.4, 0.25, 0.0],
+  "minimum_training_cases": 50,
+  "minimum_training_cutoffs": 2,
+  "residual_lower_quantile": 0.16,
+  "residual_upper_quantile": 0.84,
+  "shadow_only": true,
+  "candidate_methodology_change_authorized": false,
+  "production_projection_authorized": false,
+  "purchase_recommendation_authorized": false,
+  "automatic_model_update_allowed": false,
+  "freeze_suspended_pending_walk_forward": true
+}

@@ -1,0 +1,99 @@
+{
+  "contract_name": "Collector V1 Completion Contract",
+  "contract_version": "1.0.0",
+  "effective_date": "2026-08-02",
+  "scope": "English-language sealed Collector Booster products only",
+  "fail_closed": true,
+  "required_sequence": [
+    "AUTHORITATIVE_DEPENDENCY_REGISTRY",
+    "AUTHORITATIVE_FEATURE_REBUILD",
+    "SOURCE_TO_FEATURE_LINEAGE",
+    "DATA_COHERENCE_AND_COVERAGE",
+    "ROUTE_RECONCILIATION",
+    "CUTOFF_EXPERIMENT_DATASETS",
+    "HISTORICAL_BACKTESTING",
+    "SCARCITY_ABLATION",
+    "UNCERTAINTY_CALIBRATION",
+    "MODEL_SELECTION",
+    "CURRENT_FORECAST_TABLES",
+    "PURCHASE_ELIGIBILITY",
+    "UIP_EXPORT"
+  ],
+  "required_gates": {
+    "authoritative_dependency_registry": {
+      "required": true,
+      "pass_status": "PASS_COLLECTOR_V1_AUTHORITATIVE_DATA_REGISTRY_CERTIFIED"
+    },
+    "authoritative_feature_rebuild": {
+      "required": true,
+      "minimum_active_products": 50,
+      "foreign_language_rows": 0,
+      "must_use_registry": true
+    },
+    "source_to_feature_lineage": {
+      "required": true,
+      "required_for_every_feature": true,
+      "hash_registered_inputs": true
+    },
+    "data_sufficiency": {
+      "required": true,
+      "released_products_must_have_valid_method_path": true,
+      "comparable_routes_require_joined_peer_evidence": true,
+      "direct_history_routes_require_registered_history_support": true,
+      "structural_features_must_use_registered_authority": true
+    },
+    "forecast_validation": {
+      "required": true,
+      "required_metrics": [
+        "MAE",
+        "MAPE",
+        "MEDIAN_ABSOLUTE_PERCENTAGE_ERROR",
+        "RMSE",
+        "BIAS",
+        "DIRECTIONAL_ACCURACY",
+        "PREDICTION_INTERVAL_COVERAGE",
+        "ELIGIBLE_PRODUCT_COVERAGE"
+      ],
+      "anti_leakage_required": true,
+      "horizon_specific_required": true
+    },
+    "scarcity_ablation": {
+      "required": true,
+      "variants": [
+        "NO_SCARCITY",
+        "SUPPLY_SCARCITY_INDEX_V1",
+        "SUPPLY_SCARCITY_INDEX_V1A_NO_SELLER_COMPONENT"
+      ]
+    },
+    "production_authorization": {
+      "required": true,
+      "default": false,
+      "may_be_true_only_after_all_prior_gates_pass": true
+    },
+    "purchase_authorization": {
+      "required": true,
+      "default": false,
+      "may_be_true_only_after_production_forecasting_passes": true
+    },
+    "uip_export_authorization": {
+      "required": true,
+      "default": false,
+      "may_be_true_only_after_purchase_eligibility_contract_passes": true
+    }
+  },
+  "prohibited_behaviors": [
+    "RECURSIVE_DISCOVERY_FOR_AUTHORITATIVE_SELECTION",
+    "LATEST_FILE_SELECTION_BY_TIMESTAMP",
+    "SILENT_INPUT_FALLBACK",
+    "UNREGISTERED_FEATURE_SOURCE",
+    "MISSING_VALUE_IMPUTATION_WITHOUT_POLICY",
+    "FORECAST_READINESS_FROM_STRUCTURAL_CERTIFICATION_ALONE",
+    "PURCHASE_AUTHORIZATION_BEFORE_VALIDATION"
+  ],
+  "future_v2_only": [
+    "Repeated eBay observations",
+    "Listing persistence and observational entry/exit",
+    "Temporal seller-count changes",
+    "Supply Scarcity Index V2"
+  ]
+}

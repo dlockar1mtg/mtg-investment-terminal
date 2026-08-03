@@ -1,0 +1,44 @@
+{
+  "contract_name": "Collector Adaptive Round 2 Refinement Execution",
+  "contract_version": "1.0.0",
+  "required_architecture_status": "PASS_COLLECTOR_ADAPTIVE_TOURNAMENT_REFINEMENT_ARCHITECTURE",
+  "required_round1_status": "PASS_COLLECTOR_HORIZON_SPECIFIC_TOURNAMENT_EXECUTION",
+  "expected_status": "PASS_COLLECTOR_ADAPTIVE_REFINEMENT_EXECUTION",
+  "required_refinement_groups": 8,
+  "required_candidate_rows": 2000,
+  "finalists_per_group": 5,
+  "minimum_discovery_rows_per_candidate": 10,
+  "minimum_champion_rows_per_finalist": 5,
+  "outer_product_holdout_modulus": 5,
+  "outer_product_holdout_remainder": 0,
+  "outer_latest_date_fraction": 0.20,
+  "multiple_testing_penalty": 0.012,
+  "complexity_penalty_per_active_component": 0.002,
+  "minimum_relative_mape_improvement_for_champion": 0.02,
+  "minimum_directional_accuracy": 0.50,
+  "maximum_absolute_bias_ratio": 0.20,
+  "365_day_objective_weights": {
+    "mape": 0.35,
+    "directional_accuracy": 0.15,
+    "major_grower_recall": 0.20,
+    "major_grower_precision": 0.15,
+    "early_detection_rate": 0.15
+  },
+  "standard_objective_weights": {
+    "mape": 0.70,
+    "directional_accuracy": 0.20,
+    "bias": 0.10
+  },
+  "governance": {
+    "independent_per_horizon": true,
+    "independent_per_route": true,
+    "discovery_and_champion_evidence_separate": true,
+    "product_group_holdout_required": true,
+    "latest_time_holdout_required": true,
+    "round1_champion_must_be_challenged": true,
+    "naive_baseline_must_be_challenged": true,
+    "current_only_features_prohibited": true,
+    "production_forecasting_authorized": false,
+    "purchase_recommendations_authorized": false
+  }
+}

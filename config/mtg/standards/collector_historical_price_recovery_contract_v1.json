@@ -1,0 +1,48 @@
+{
+  "contract_name": "Collector Historical Price Recovery and Coverage Contract",
+  "contract_version": "1.0.1-revoked",
+  "domain_owner": "MTG",
+  "purpose": "Preserve the historical-recovery requirements while revoking the unbound implementation. No replacement recovery may run until the certified August 1 snapshot conformance gate passes.",
+  "governing_snapshot": {
+    "snapshot_id": "collector-20260801T211201Z-7688afbd",
+    "operating_date": "2026-08-01",
+    "timezone": "America/Chicago",
+    "source_bundle_sha256": "7688afbd6dfb4483c0a316dad6a2a05458944434a91a3f714568e5f4a10c7890",
+    "certified_product_count": 50
+  },
+  "approved_source_roots": [],
+  "required_checkpoints_days": [0, 30, 60, 90, 120, 180, 270, 365],
+  "required_controls": {
+    "collector_only": true,
+    "point_in_time_only": true,
+    "certified_snapshot_must_load_first": true,
+    "snapshot_id_verification_required": true,
+    "source_bundle_sha256_verification_required": true,
+    "certified_50_product_universe_required": true,
+    "operating_date_must_not_use_runtime_clock": true,
+    "release_date_required_for_lifecycle_math": true,
+    "manifest_bound_sources_only": true,
+    "future_information_prohibited": true,
+    "current_snapshot_backfill_prohibited": true,
+    "secret_lair_prohibited": true,
+    "pre_collector_prohibited": true,
+    "ebay_listing_price_as_authority_prohibited": true,
+    "derived_value_as_observation_prohibited": true,
+    "source_sha256_required": true,
+    "provider_identity_required": true,
+    "observation_timestamp_required": true,
+    "positive_price_required": true,
+    "duplicate_collapse_required": true,
+    "open_ended_repository_scan_prohibited": true,
+    "no_new_coverage_thresholds": true
+  },
+  "authorization": {
+    "historical_price_recovery_authorized": false,
+    "historical_coverage_measurement_authorized": false,
+    "raw_historical_price_authority_certified": false,
+    "lifecycle_panel_build_authorized": false,
+    "model_tournament_authorized": false,
+    "purchase_recommendations_authorized": false,
+    "blocking_gate": "PASS_COLLECTOR_AUGUST_1_SNAPSHOT_CONFORMANCE"
+  }
+}

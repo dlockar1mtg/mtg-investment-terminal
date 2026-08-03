@@ -1,0 +1,45 @@
+{
+  "contract_name": "Collector August 1 Provider Package Reconciliation",
+  "contract_version": "1.0.0",
+  "purpose": "Reconcile the exact TCGplayer/TCGCSV, Wizards, eBay, and Collector files registered by the certified August 1 snapshot before any historical reconstruction or ledger build.",
+  "governing_snapshot": {
+    "snapshot_id": "collector-20260801T211201Z-7688afbd",
+    "operating_date": "2026-08-01",
+    "timezone": "America/Chicago",
+    "source_bundle_sha256": "7688afbd6dfb4483c0a316dad6a2a05458944434a91a3f714568e5f4a10c7890",
+    "certified_product_count": 50
+  },
+  "provider_domains": ["TCGPLAYER_TCGCSV", "WIZARDS", "EBAY", "COLLECTOR_FOUNDATION"],
+  "required_controls": {
+    "snapshot_manifest_is_only_discovery_authority": true,
+    "exact_registered_path_required": true,
+    "exact_registered_sha256_required": true,
+    "source_artifact_certified_on_august_1_required": true,
+    "historical_rows_inside_august_1_artifact_allowed": true,
+    "older_uncertified_artifact_prohibited": true,
+    "broad_repository_scan_prohibited": true,
+    "silent_source_substitution_prohibited": true,
+    "current_snapshot_as_historical_series_prohibited": true,
+    "reconstruction_requires_separate_certification": true
+  },
+  "required_outputs": [
+    "registered file inventory",
+    "provider coverage summary",
+    "schema and date-range inspection",
+    "historical-content classification",
+    "missing-component register",
+    "reconstruction requirement register"
+  ],
+  "authorization": {
+    "provider_package_reconciliation_authorized": true,
+    "historical_source_reconstruction_authorized": false,
+    "historical_observation_ledger_build_authorized": false,
+    "raw_historical_price_authority_certified": false,
+    "historical_coverage_assessment_authorized": false,
+    "lifecycle_panel_build_authorized": false,
+    "model_tournament_authorized": false,
+    "production_forecasting_authorized": false,
+    "uip_delivery_authorized": false,
+    "purchase_recommendations_authorized": false
+  }
+}

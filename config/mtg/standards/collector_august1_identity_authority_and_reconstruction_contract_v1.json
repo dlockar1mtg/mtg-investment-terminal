@@ -1,0 +1,52 @@
+{
+  "contract_name": "Collector August 1 Identity Authority and Reconstruction",
+  "contract_version": "1.0.1",
+  "governing_snapshot": {
+    "snapshot_id": "collector-20260801T211201Z-7688afbd",
+    "operating_date": "2026-08-01",
+    "timezone": "America/Chicago",
+    "certified_product_count": 50
+  },
+  "identity_authority": {
+    "path": "data/governance/permanence/certification/collector_v1_august1_snapshot_bound_current_foundation/collector_v1_august1_snapshot_bound_current_foundation.csv",
+    "sha256": "8112d885c00cd601d7208f2322d229e7b6b2d4f3ecf5e017528875decdffde77",
+    "primary_identity_field": "identity__canonical_product_id",
+    "tcgplayer_identity_field": "tcgplayer_product_id",
+    "required_rows": 50,
+    "required_unique_primary_identities": 50,
+    "required_unique_tcgplayer_ids": 50
+  },
+  "certified_archive_source": {
+    "path": "data/operations/mtg_universal_history_completion/archive/universal_tcgcsv_monthly_archive_observations.csv",
+    "sha256": "479bb921ddd020a02606b407d660f9017cdc45d187b55dc9c0d933383a063819",
+    "required_archive_backed_products": 49,
+    "required_no_history_products": 1,
+    "archive_endpoint": "2026-07-01"
+  },
+  "governed_exception": {
+    "tcgplayer_product_id": "706142",
+    "canonical_product_name": "Star Trek - Collector Booster Display",
+    "release_date": "2026-11-13",
+    "release_state": "PRESALE",
+    "classification": "LEGITIMATE_POST_ARCHIVE_RELEASE_NO_HISTORY",
+    "required_forecast_route": "COMPARABLE_PRODUCT_ADJUSTED",
+    "direct_history_modeling_allowed": false
+  },
+  "required_outputs": [
+    "collector_august1_identity_authority.csv",
+    "collector_august1_reconstructed_history_candidate.csv",
+    "collector_august1_reconstruction_coverage.csv",
+    "collector_august1_identity_authority_and_reconstruction_summary.json"
+  ],
+  "authorization": {
+    "identity_authority_certification_authorized": true,
+    "governed_reconstruction_execution_authorized": true,
+    "historical_observation_ledger_build_authorized": false,
+    "historical_coverage_assessment_authorized": false,
+    "lifecycle_panel_build_authorized": false,
+    "model_tournament_authorized": false,
+    "production_forecasting_authorized": false,
+    "uip_delivery_authorized": false,
+    "purchase_recommendations_authorized": false
+  }
+}

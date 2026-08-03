@@ -1,0 +1,68 @@
+{
+  "program_name": "Collector 365-Day Direct and Comparable Transfer Tournament",
+  "program_version": "1.0.0",
+  "primary_class": "COLLECTOR_BOOSTER_DISPLAY",
+  "inputs": {
+    "decision_feature_panel": "data/operations/collector_long_horizon_historical_feature_panel/candidate_v1_0_0/collector_long_horizon_decision_feature_panel.csv",
+    "monthly_price_panel": "data/operations/collector_long_horizon_historical_feature_panel/candidate_v1_0_0/collector_long_horizon_monthly_price_panel.csv",
+    "walk_forward_outcomes": "data/operations/collector_walk_forward_replay_phase_2a/candidate_v1_0_0/collector_walk_forward_phase_2a_scored_outcomes.csv"
+  },
+  "direct_tournament": {
+    "horizon_days": 365,
+    "product_weights": [0.25, 0.4, 0.5, 0.6, 0.75],
+    "mean_reversion_strengths": [0.25, 0.4, 0.5, 0.6, 0.75],
+    "volatility_penalties": [0.0, 0.1, 0.2],
+    "drawdown_penalties": [0.0, 0.1, 0.2],
+    "persistence_adjustments": [0.0, 0.05, 0.1],
+    "minimum_history_months": 12,
+    "minimum_cutoffs": 3
+  },
+  "comparable_transfer": {
+    "history_truncation_months": [6, 9, 12],
+    "minimum_comparables": 3,
+    "maximum_comparables": 8,
+    "matching_features": [
+      "product_age_months",
+      "return_3_month",
+      "return_6_month",
+      "trailing_12_month_volatility",
+      "maximum_12_month_drawdown",
+      "positive_month_rate",
+      "return_persistence"
+    ],
+    "route_rules": {
+      "DIRECT": "history_observation_count >= 12 and matured_365_outcome_available",
+      "BLENDED": "history_observation_count >= 9 and comparable_count >= 3",
+      "COMPARABLE": "history_observation_count >= 6 and comparable_count >= 3",
+      "BLOCKED": "otherwise"
+    },
+    "uncertainty_multipliers": {
+      "DIRECT": 1.0,
+      "BLENDED": 1.25,
+      "COMPARABLE": 1.6,
+      "BLOCKED": null
+    }
+  },
+  "required_metrics": [
+    "mae",
+    "median_absolute_error",
+    "signed_bias",
+    "direction_accuracy",
+    "rank_correlation",
+    "top_bottom_spread",
+    "cutoff_stability",
+    "age_route_stability",
+    "data_quality_stability",
+    "outlier_dependence"
+  ],
+  "owner_review_required": true,
+  "shadow_only": true,
+  "direct_method_authorized": false,
+  "comparable_transfer_method_authorized": false,
+  "candidate_methodology_change_authorized": false,
+  "production_projection_authorized": false,
+  "purchase_recommendation_authorized": false,
+  "automatic_model_update_allowed": false,
+  "technical_freeze_authorized": false,
+  "uip_acceptance_authorized": false
+}

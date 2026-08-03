@@ -1,0 +1,26 @@
+{
+  "policy_name": "Collector V1 English-Language Investment Eligibility",
+  "policy_version": "1.0.0",
+  "effective_date": "2026-08-02",
+  "default_language_eligibility": "ENGLISH_ONLY",
+  "foreign_language_products_eligible": false,
+  "excluded_products": [
+    {
+      "investment_product_id": "TCGCSV-24219-628315",
+      "tcgplayer_product_id": "628315",
+      "reason_code": "FOREIGN_LANGUAGE_PRODUCT_OUTSIDE_INVESTMENT_MANDATE",
+      "disposition": "EXCLUDE_FROM_ACTIVE_COLLECTOR_UNIVERSE",
+      "historical_source_retention": "PRESERVE_FOR_AUDIT_ONLY",
+      "forecast_eligible": false,
+      "purchase_eligible": false,
+      "uip_export_eligible": false
+    }
+  ],
+  "governance_rules": {
+    "active_universe_must_exclude_listed_products": true,
+    "no_missing_value_imputation_for_excluded_products": true,
+    "historical_source_records_may_remain_for_audit": true,
+    "all_regenerated_v1_outputs_must_apply_policy": true,
+    "new_foreign_language_products_default_to_excluded": true
+  }
+}

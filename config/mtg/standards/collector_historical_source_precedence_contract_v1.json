@@ -1,0 +1,30 @@
+{
+  "contract_name": "Collector V1 Historical Source Precedence",
+  "contract_version": "1.0.0",
+  "scope": "collector_booster_boxes_only",
+  "source_roles": [
+    "AUTHORITATIVE_OBSERVATION",
+    "CORROBORATING_OBSERVATION",
+    "FALLBACK_ONLY",
+    "STATIC_IDENTITY_AUTHORITY",
+    "EXCLUDED_OPERATIONAL_OR_PORTFOLIO"
+  ],
+  "required_controls": {
+    "portfolio_positions_not_price_history": true,
+    "current_snapshots_not_historical_authority": true,
+    "listing_rows_not_aggregated_price_history": true,
+    "same_product_date_conflicts_resolved_by_precedence": true,
+    "raw_observation_preferred_over_derived_or_summary": true,
+    "source_hash_and_lineage_required": true,
+    "historical_coverage_measured_before_panel_build": true,
+    "first_year_checkpoint_coverage_measured": true,
+    "no_manual_value_overrides": true
+  },
+  "checkpoint_days": [0, 30, 60, 90, 120, 180, 270, 365],
+  "authorization": {
+    "precedence_registry_build_authorized": true,
+    "lifecycle_panel_build_authorized": false,
+    "model_tournament_authorized": false,
+    "purchase_recommendations_authorized": false
+  }
+}

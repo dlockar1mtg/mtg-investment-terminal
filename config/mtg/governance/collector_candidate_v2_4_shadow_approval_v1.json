@@ -1,0 +1,29 @@
+{
+  "approval_name": "Collector Candidate v2.4 Shadow Implementation Approval",
+  "approval_version": "1.0.0",
+  "approved_at": "2026-08-01",
+  "approved_changes": {
+    "90_day_point_forecast": "RETAIN_CURRENT",
+    "90_day_interval": {
+      "method": "SYMMETRIC_CONFORMAL",
+      "target_coverage": 0.68,
+      "training_window": "EXPANDING",
+      "median_bias_shrinkage": 0.5
+    },
+    "180_day_point_forecast": {
+      "product_weight": 0.75,
+      "collector_cutoff_median_weight": 0.25,
+      "training_window": "LAST_2_MATURED_CUTOFFS",
+      "bias_correction": 0.0
+    },
+    "365_day_methodology": "RETAIN_CURRENT"
+  },
+  "shadow_implementation_authorized": true,
+  "candidate_methodology_change_authorized": false,
+  "production_projection_authorized": false,
+  "purchase_recommendation_authorized": false,
+  "automatic_model_update_allowed": false,
+  "technical_freeze_authorized": false,
+  "uip_acceptance_authorized": false,
+  "freeze_suspended_pending_walk_forward": true
+}

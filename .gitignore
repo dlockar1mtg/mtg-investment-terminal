@@ -68,6 +68,15 @@ auth.json
 *.bz2
 
 # ------------------------------------------------------------
+# Permanent local data vault and generated permanence state
+# ------------------------------------------------------------
+# The vault is append-only evidence storage and is backed up outside ordinary Git.
+# Governance code/config remains tracked; generated objects, registries, manifests,
+# inventories, certifications, and restore-test outputs remain local/runtime data.
+data_vault/
+data/governance/permanence/
+
+# ------------------------------------------------------------
 # Runtime / generated data
 # ------------------------------------------------------------
 
@@ -192,6 +201,9 @@ data/terminal2/secret_lair_archive/
 data/validation/phase_10/production_readiness/
 # Phase 10.5R external discovery raw snapshots
 data/staging/phase_10/external_discovery/tcgcsv/tcgcsv_magic_products_*.csv
+data/staging/phase_10/external_discovery/tcgcsv/tcgcsv_magic_groups_*.csv
+data/validation/phase_10/external_discovery/tcgcsv/tcgcsv_snapshot_audit_*.csv
+data/validation/phase_10/external_discovery/tcgcsv/tcgcsv_snapshot_manifest_*.json
 data/validation/phase_10/external_discovery/tcgcsv/tcgcsv_products_not_in_existing_registry.csv
 
 # Phase 10 Secret Lair local holdings and generated production artifacts

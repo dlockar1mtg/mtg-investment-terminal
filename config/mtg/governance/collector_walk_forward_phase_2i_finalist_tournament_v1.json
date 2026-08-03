@@ -1,0 +1,27 @@
+{
+  "audit_name": "Collector Walk-Forward Phase 2I Calibrated-History Finalist Tournament",
+  "audit_version": "1.0.0",
+  "training_window_cutoffs": [0, 2, 3, 4, 6],
+  "product_weights": [1.0, 0.9, 0.75, 0.6, 0.5, 0.4, 0.25, 0.0],
+  "bias_shrinkage_factors": [0.0, 0.25, 0.5, 0.75, 1.0],
+  "target_coverages": [0.5, 0.68, 0.8],
+  "minimum_training_cases": 50,
+  "minimum_training_cutoffs": 2,
+  "coverage_tolerance": 0.05,
+  "stability_penalty_weight": 0.15,
+  "coverage_penalty_weight": 1.0,
+  "tail_imbalance_penalty_weight": 0.5,
+  "robustness_slices": [
+    "FULL_SAMPLE",
+    "EARLY_HALF",
+    "LATE_HALF",
+    "EXCLUDE_WORST_PRODUCT",
+    "TRIM_TOP_5_PERCENT_CURRENT_ERRORS"
+  ],
+  "shadow_only": true,
+  "candidate_methodology_change_authorized": false,
+  "production_projection_authorized": false,
+  "purchase_recommendation_authorized": false,
+  "automatic_model_update_allowed": false,
+  "freeze_suspended_pending_walk_forward": true
+}

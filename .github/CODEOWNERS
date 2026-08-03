@@ -1,0 +1,16 @@
+# MTG investment terminal ownership
+#
+# All changes require review by the repository owner. Certified pipeline,
+# standards, governance, production, and delivery paths are explicitly listed
+# so GitHub branch protection can require CODEOWNER approval.
+
+* @dlockar1
+
+/config/mtg/ @dlockar1
+/data/governance/mtg/ @dlockar1
+/docs/standards/mtg/ @dlockar1
+/scripts/ @dlockar1
+/models/ @dlockar1
+/terminal2/ @dlockar1
+/tests/ @dlockar1
+/.github/ @dlockar1

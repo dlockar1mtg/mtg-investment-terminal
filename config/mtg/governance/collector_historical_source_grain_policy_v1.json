@@ -1,0 +1,45 @@
+{
+  "policy_name": "Collector Historical Source Grain Policy",
+  "policy_version": "1.0.0",
+  "scope": "Dynamic English factory-sealed Collector Booster Display history",
+  "principles": {
+    "monthly_market_history_must_be_one_value_per_product_month": true,
+    "listing_rows_must_not_be_selected_as_monthly_market_price": true,
+    "listing_rows_are_preserved_as_supply_liquidity_evidence": true,
+    "arbitrary_first_row_selection_prohibited": true,
+    "source_grain_must_be_proven_before_precedence": true,
+    "presale_observations_isolated": true,
+    "missing_values_never_zero_filled": true,
+    "historical_append_authorized": false,
+    "forecasting_resume_authorized": false,
+    "purchase_recommendation_authorized": false
+  },
+  "known_source_roles": [
+    {
+      "path": "data/operations/mtg_universal_history_completion/archive/universal_tcgcsv_monthly_archive_observations.csv",
+      "expected_role": "MONTHLY_MARKET_HISTORY_CANDIDATE"
+    },
+    {
+      "path": "data/operations/mtg_universal_history_ledger/universal_mtg_historical_observation_ledger.csv",
+      "expected_role": "MIXED_OR_LISTING_EVIDENCE_REVIEW"
+    },
+    {
+      "path": "data/operations/mtg_history_foundation/universal_mtg_price_history.csv",
+      "expected_role": "MIXED_OR_LISTING_EVIDENCE_REVIEW"
+    },
+    {
+      "path": "data/operations/mtg_universal_history_ledger/universal_mtg_daily_consolidated_ledger.csv",
+      "expected_role": "NON_PRICE_LEDGER_REVIEW"
+    },
+    {
+      "path": "artifacts/certification/collector_boosters/candidate_v1_0_0/certification_inputs/universal_mtg_daily_consolidated_ledger.csv",
+      "expected_role": "NON_PRICE_LEDGER_REVIEW"
+    }
+  ],
+  "monthly_market_price_columns": ["market_price", "monthly_market_price", "selected_market_price", "close", "price"],
+  "listing_price_columns": ["listing_price", "asking_price", "item_price", "total_price", "price"],
+  "source_metadata_columns": ["source", "source_name", "source_type", "provider", "marketplace", "observation_type", "listing_id", "seller", "url", "source_url"],
+  "safe_monthly_panel_inputs": [
+    "data/operations/mtg_universal_history_completion/archive/universal_tcgcsv_monthly_archive_observations.csv"
+  ]
+}

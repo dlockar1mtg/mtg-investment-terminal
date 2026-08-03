@@ -1,0 +1,143 @@
+{
+  "matrix_name": "Collector Numeric Methodology Authority Matrix",
+  "matrix_version": "1.0.0",
+  "methodology_changed": false,
+  "projection_authorized": false,
+  "purchase_recommendation_authorized": false,
+  "owner_approval_status": "NOT_REQUESTED",
+  "status_definitions": {
+    "FULLY_DEFINED_BY_STANDARD": "The standard defines the requirement and the implementation may conform without a new methodological decision.",
+    "PARTIALLY_DEFINED_BY_STANDARD": "The standard requires the concept or output but does not define the complete numeric calculation.",
+    "OWNER_APPROVED": "A specific owner-approved governance artifact defines the behavior.",
+    "NOT_DEFINED_OWNER_DECISION_REQUIRED": "The standard does not define the numeric behavior. It must remain inactive until explicitly approved.",
+    "NON_METHODOLOGICAL": "Operational behavior that does not determine forecast values or investment recommendations."
+  },
+  "requirements": [
+    {
+      "requirement_id": "COL-NUM-001",
+      "requirement": "Explicit forecast method or deferral for every governed product",
+      "authority_status": "FULLY_DEFINED_BY_STANDARD",
+      "source": "config/mtg/standards/mtg_forecasting_standard_v1.json",
+      "implementation_state": "ACTIVE"
+    },
+    {
+      "requirement_id": "COL-NUM-002",
+      "requirement": "Collector supported method routes",
+      "authority_status": "FULLY_DEFINED_BY_STANDARD",
+      "source": "config/mtg/standards/mtg_forecasting_standard_v1.json",
+      "implementation_state": "ACTIVE"
+    },
+    {
+      "requirement_id": "COL-NUM-003",
+      "requirement": "One-, three-, and five-year forecast horizons",
+      "authority_status": "FULLY_DEFINED_BY_STANDARD",
+      "source": "config/mtg/standards/mtg_forecasting_standard_v1.json",
+      "implementation_state": "REQUIRED_OUTPUT"
+    },
+    {
+      "requirement_id": "COL-NUM-004",
+      "requirement": "Downside, base, and upside scenarios",
+      "authority_status": "FULLY_DEFINED_BY_STANDARD",
+      "source": "config/mtg/standards/mtg_forecasting_standard_v1.json",
+      "implementation_state": "REQUIRED_OUTPUT"
+    },
+    {
+      "requirement_id": "COL-NUM-005",
+      "requirement": "Comparable selection factors and disclosures",
+      "authority_status": "FULLY_DEFINED_BY_STANDARD",
+      "source": "docs/standards/mtg/lanes/COLLECTOR_BOOSTER_METHOD_SPECIFICATION.md",
+      "implementation_state": "ACTIVE"
+    },
+    {
+      "requirement_id": "COL-NUM-006",
+      "requirement": "Japanese FINAL FANTASY hybrid route",
+      "authority_status": "OWNER_APPROVED",
+      "source": "data/governance/mtg/collector_comparables/collector_japanese_edition_hybrid_override_v1.json",
+      "implementation_state": "ACTIVE"
+    },
+    {
+      "requirement_id": "COL-NUM-007",
+      "requirement": "Direct-history calibrated forecast equation",
+      "authority_status": "NOT_DEFINED_OWNER_DECISION_REQUIRED",
+      "source": "No complete equation in canonical standard",
+      "implementation_state": "INACTIVE"
+    },
+    {
+      "requirement_id": "COL-NUM-008",
+      "requirement": "Direct-history limited forecast equation",
+      "authority_status": "NOT_DEFINED_OWNER_DECISION_REQUIRED",
+      "source": "Standard requires reduced confidence and wider uncertainty but does not define the numeric calculation",
+      "implementation_state": "INACTIVE"
+    },
+    {
+      "requirement_id": "COL-NUM-009",
+      "requirement": "Comparable-product adjusted forecast equation",
+      "authority_status": "NOT_DEFINED_OWNER_DECISION_REQUIRED",
+      "source": "Standard approves comparable evidence but does not define aggregation, weighting, or adjustment equations",
+      "implementation_state": "INACTIVE"
+    },
+    {
+      "requirement_id": "COL-NUM-010",
+      "requirement": "Fundamental-comparable hybrid forecast equation",
+      "authority_status": "PARTIALLY_DEFINED_BY_STANDARD",
+      "source": "Approved hybrid route exists, but numeric fundamental and comparable weights are not defined",
+      "implementation_state": "INACTIVE"
+    },
+    {
+      "requirement_id": "COL-NUM-011",
+      "requirement": "Direct-history, comparable, and fundamental weights",
+      "authority_status": "NOT_DEFINED_OWNER_DECISION_REQUIRED",
+      "source": "Required output fields exist, but numeric weights are not specified",
+      "implementation_state": "INACTIVE"
+    },
+    {
+      "requirement_id": "COL-NUM-012",
+      "requirement": "Scenario construction and uncertainty-width equation",
+      "authority_status": "NOT_DEFINED_OWNER_DECISION_REQUIRED",
+      "source": "Scenario names and uncertainty disclosure are required, but the equations are not specified",
+      "implementation_state": "INACTIVE"
+    },
+    {
+      "requirement_id": "COL-NUM-013",
+      "requirement": "Confidence score equation and class thresholds",
+      "authority_status": "NOT_DEFINED_OWNER_DECISION_REQUIRED",
+      "source": "Confidence must reflect evidence used, but formula and class thresholds are not specified",
+      "implementation_state": "INACTIVE"
+    },
+    {
+      "requirement_id": "COL-NUM-014",
+      "requirement": "Supply, demand, liquidity, and reprint adjustment equations",
+      "authority_status": "PARTIALLY_DEFINED_BY_STANDARD",
+      "source": "Factors are required for evidence and comparable selection, but forecast adjustment equations are not specified",
+      "implementation_state": "INACTIVE"
+    },
+    {
+      "requirement_id": "COL-NUM-015",
+      "requirement": "Forecast caps, floors, anchors, and growth limits",
+      "authority_status": "NOT_DEFINED_OWNER_DECISION_REQUIRED",
+      "source": "No canonical numeric caps, floors, anchors, or limits are specified",
+      "implementation_state": "INACTIVE"
+    },
+    {
+      "requirement_id": "COL-NUM-016",
+      "requirement": "Price freshness and observation-count numeric thresholds",
+      "authority_status": "NOT_DEFINED_OWNER_DECISION_REQUIRED",
+      "source": "Identity and current price must fail closed, but numeric age and observation thresholds are not specified",
+      "implementation_state": "INACTIVE"
+    },
+    {
+      "requirement_id": "COL-NUM-017",
+      "requirement": "Purchase-analysis equation and decision thresholds",
+      "authority_status": "NOT_DEFINED_OWNER_DECISION_REQUIRED",
+      "source": "Purchase authorization is separated from forecasting, but purchase equations and thresholds are not specified",
+      "implementation_state": "INACTIVE"
+    },
+    {
+      "requirement_id": "COL-NUM-018",
+      "requirement": "Forecast and purchase authorization remain false pending certification and owner approval",
+      "authority_status": "FULLY_DEFINED_BY_STANDARD",
+      "source": "config/mtg/standards/mtg_forecasting_standard_v1.json",
+      "implementation_state": "ACTIVE"
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "contract_name": "Collector History Foundation Lineage Contract",
+  "contract_version": "1.0.0",
+  "target_history_path": "data/operations/mtg_history_foundation/universal_mtg_price_history.csv",
+  "canonical_builder_path": "scripts/build_collector_v1_canonical_inputs.py",
+  "required_controls": [
+    "identify_all_code_references_to_target_history",
+    "identify_writer_or_generation_references",
+    "inventory_candidate_upstream_observation_sources",
+    "verify_product_identity_field",
+    "verify_observation_date_field",
+    "verify_positive_price_field",
+    "verify_source_or_provider_field_when_present",
+    "separate_raw_observations_from_consolidated_or_derived_rows",
+    "record_source_hashes",
+    "prohibit_current_state_backfill",
+    "prohibit_silent_zero_fill",
+    "require_reproducible_transformation_before_authority"
+  ],
+  "required_outputs": [
+    "collector_history_foundation_lineage_candidates.csv",
+    "collector_history_foundation_code_references.csv",
+    "collector_history_foundation_lineage_summary.json"
+  ],
+  "authorization_policy": {
+    "raw_history_authority_certified_by_discovery_only": false,
+    "historical_coverage_assessment_authorized": false,
+    "lifecycle_panel_build_authorized": false,
+    "model_tournament_authorized": false,
+    "purchase_recommendations_authorized": false
+  }
+}

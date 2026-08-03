@@ -1,0 +1,41 @@
+{
+  "review_name": "Collector Candidate v2.3 Final Validation and Freeze Recommendation",
+  "review_version": "1.0.0",
+  "inputs": {
+    "candidate_root": "data/operations/collector_candidate_methodology_v2_3/candidate_v2_3_0",
+    "candidate_forecasts": "collector_candidate_methodology_v2_3_forecasts.csv",
+    "candidate_summary": "collector_candidate_methodology_v2_3_summary.json",
+    "candidate_approval": "config/mtg/governance/collector_candidate_methodology_v2_3_approval.json",
+    "candidate_builder": "scripts/build_collector_candidate_methodology_v2_3.py",
+    "candidate_audit": "scripts/audit_collector_candidate_methodology_v2_3.py"
+  },
+  "output_directory": "data/operations/collector_candidate_v2_3_final_validation/candidate_v1_0_0",
+  "expectations": {
+    "product_count": 51,
+    "complete_count": 50,
+    "route_count": 4,
+    "reverse_score_diagnostic_only_count": 7,
+    "japanese_hybrid_inactive_count": 1,
+    "maximum_downside_loss_floor": -0.95,
+    "maximum_reverse_score_confidence": 10.0,
+    "maximum_inactive_hybrid_confidence": 15.0
+  },
+  "freeze_policy": {
+    "technical_freeze_allowed_with_documented_exclusions": true,
+    "required_exclusions": [
+      "reverse_score_routes_not_production_eligible",
+      "japanese_hybrid_formula_inactive",
+      "production_forecast_authorization_not_granted",
+      "purchase_recommendation_authorization_not_granted",
+      "prospective_accuracy_not_yet_certified"
+    ]
+  },
+  "authorization_boundaries": {
+    "candidate_freeze_recommendation_authorized": true,
+    "production_projection_authorized": false,
+    "purchase_recommendation_authorized": false,
+    "automatic_model_update_allowed": false,
+    "reverse_score_production_use_authorized": false,
+    "japanese_hybrid_formula_authorized": false
+  }
+}

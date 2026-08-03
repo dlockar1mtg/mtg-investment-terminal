@@ -22,7 +22,7 @@ _FORM_PATTERNS: tuple[tuple[str, tuple[str, ...]], ...] = (
     ("EMPTY_PACKAGING", ("empty box", "box only", "wrapper only", "empty packaging")),
     ("ACCESSORY", ("deck box", "sleeves", "playmat", "binder", "storage box", "display stand")),
     ("SINGLE_CARD", ("single card", "individual card", "one card", "card only")),
-    ("CASE", ("master case", "sealed case", "case of", "factory case")),
+    ("CASE", ("master case", "sealed case", "case of", "factory case", " case ")),
     ("LOOSE_PACK", ("single pack", "loose pack", "booster pack", "individual pack", "1 pack")),
     ("BOOSTER_DISPLAY", ("booster display", "booster box", "display box")),
     ("COMMANDER_DECK", ("commander deck",)),
@@ -110,20 +110,54 @@ def detect_completeness(value: object) -> str:
     return "UNSPECIFIED"
 
 
+def _valid_listing_quantity(raw: str) -> int | None:
+    try:
+        quantity = int(raw)
+    except ValueError:
+        return None
+    if 1900 <= quantity <= 2099 or quantity < 1 or quantity > 200:
+        return None
+    return quantity
+
+
 def detect_quantity(value: object) -> int | None:
+    """Return any explicit listing quantity, including legitimate retail pack counts."""
     text = str(value or "").lower()
     patterns = (
         r"\bcase\s+of\s+(\d+)\b",
         r"\blot\s+of\s+(\d+)\b",
-        r"\b(\d+)\s+(?:booster\s+)?(?:boxes|box|displays|display|packs|pack)\b",
+        r"\b(\d+)\s*[x×]\s*(?:collector\s+)?booster\s+(?:boxes|box|displays|display)\b",
+        r"\b(?:x|qty\s*)?(\d+)\s*(?:x\s*)?(?:booster\s+)?(?:boxes|box|displays|display|packs|pack)\b",
+        r"\b(?:boxes|box|displays|display)\b(?:\s+\w+){0,3}\s*[x×]\s*(\d+)\b",
+        r"\b[x×]\s*(\d+)\b",
     )
     for pattern in patterns:
         match = re.search(pattern, text)
         if match:
-            try:
-                return int(match.group(1))
-            except ValueError:
-                return None
+            quantity = _valid_listing_quantity(match.group(1))
+            if quantity is not None:
+                return quantity
+    return None
+
+
+def detect_multi_display_quantity(value: object) -> int | None:
+    """Return only explicit counts of boxes/displays, never retail pack counts."""
+    text = str(value or "").lower()
+    patterns = (
+        r"\bcase\s+of\s+(\d+)\b",
+        r"\blot\s+of\s+(\d+)\s+(?:collector\s+)?booster\s+(?:boxes|box|displays|display)\b",
+        r"^\s*(\d+)\s*[x×]\s+.*\b(?:collector\s+)?booster\s+(?:boxes|box|displays|display)\b",
+        r"\b(\d+)\s*[x×]\s*(?:magic\s+the\s+gathering\s+|magic\s+|mtg\s+)?(?:collector\s+)?booster\s+(?:boxes|box|displays|display)\b",
+        r"\b(\d+)\s+(?:collector\s+)?booster\s+(?:boxes|displays)\b",
+        r"\b(?:collector\s+)?booster\s+(?:boxes|box|displays|display)\b(?:\s+\w+){0,3}\s*[x×]\s*(\d+)\b",
+        r"\b[x×]\s*(\d+)\b",
+    )
+    for pattern in patterns:
+        match = re.search(pattern, text)
+        if match:
+            quantity = _valid_listing_quantity(match.group(1))
+            if quantity is not None:
+                return quantity
     return None
 
 
@@ -154,6 +188,7 @@ def _expected_form(product_class: object, product_name: object) -> str:
 
 def classify_listing_identity(product_name: object, product_class: object, title: object) -> UniversalClassification:
     listing = parse_listing_identity(title)
+    display_quantity = detect_multi_display_quantity(title)
     expected_language = target_language(product_name)
     expected_form = _expected_form(product_class, product_name)
 
@@ -168,6 +203,8 @@ def classify_listing_identity(product_name: object, product_class: object, title
     ]
     if listing.quantity is not None:
         audit.append(f"universal_quantity:{listing.quantity}")
+    if display_quantity is not None:
+        audit.append(f"universal_display_quantity:{display_quantity}")
 
     if listing.product_form in {"EMPTY_PACKAGING", "ACCESSORY", "SINGLE_CARD"}:
         hard.append(f"universal_excluded_form:{listing.product_form.lower()}")
@@ -187,6 +224,8 @@ def classify_listing_identity(product_name: object, product_class: object, title
             hard.append(f"universal_product_form_conflict:{listing.product_form.lower()}")
         elif listing.product_form == "SEALED_PRODUCT":
             review.append("universal_missing_form_qualifier:booster_display")
+        if display_quantity is not None and display_quantity > 1:
+            hard.append("universal_quantity_conflict:multi_display_listing")
 
     if expected_language != "UNSPECIFIED":
         if listing.language == "UNSPECIFIED":

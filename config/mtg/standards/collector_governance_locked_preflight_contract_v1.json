@@ -1,0 +1,38 @@
+{
+  "contract_name": "Collector Governance-Locked Preflight Contract",
+  "contract_version": "1.0.0",
+  "domain_owner": "MTG",
+  "purpose": "Make governance conformance and the certified August 1 snapshot identity mandatory preconditions for every Collector operation.",
+  "governing_snapshot": {
+    "snapshot_id": "collector-20260801T211201Z-7688afbd",
+    "operating_date": "2026-08-01",
+    "timezone": "America/Chicago",
+    "source_bundle_sha256": "7688afbd6dfb4483c0a316dad6a2a05458944434a91a3f714568e5f4a10c7890",
+    "certified_product_count": 50
+  },
+  "required_sequence": [
+    "governance_audit_passes_first",
+    "exact_snapshot_manifest_is_resolved",
+    "snapshot_identity_fields_match",
+    "source_bundle_hash_matches",
+    "certified_product_count_matches",
+    "only_then_may_a_collector_stage_execute",
+    "governance_audit_runs_again_after_execution"
+  ],
+  "failure_policy": {
+    "any_failure_stops_immediately": true,
+    "downstream_commands_prohibited_after_failure": true,
+    "missing_snapshot_manifest_is_failure": true,
+    "multiple_matching_snapshot_manifests_is_failure": true,
+    "runtime_clock_substitution_prohibited": true,
+    "broad_source_fallback_prohibited": true
+  },
+  "authorization": {
+    "snapshot_manifest_resolution_authorized": true,
+    "historical_price_recovery_authorized": false,
+    "historical_coverage_measurement_authorized": false,
+    "lifecycle_panel_build_authorized": false,
+    "model_tournament_authorized": false,
+    "purchase_recommendations_authorized": false
+  }
+}

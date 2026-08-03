@@ -1,0 +1,27 @@
+{
+  "contract_name": "Collector Product-Specific Forecast Differentiation",
+  "contract_version": "1.0.0",
+  "snapshot_id": "collector-20260801T211201Z-7688afbd",
+  "required_product_rows": 50,
+  "required_forecasted_products": 48,
+  "required_blocked_products": 2,
+  "required_horizons": [90, 180, 365],
+  "minimum_direct_observations": 3,
+  "minimum_comparable_members": 2,
+  "maximum_absolute_forecast_return": 3.0,
+  "minimum_within_route_unique_return_ratio": 0.35,
+  "maximum_single_return_share": 0.35,
+  "governance": {
+    "product_specific_inputs_required": true,
+    "direct_history_uses_product_history_only": true,
+    "comparable_route_uses_target_specific_comparable_set": true,
+    "global_route_median_as_final_forecast_prohibited": true,
+    "identical_returns_require_provenance_explanation": true,
+    "current_supply_demand_post_forecast_only": true,
+    "point_forecast_rewrite_allowed": false,
+    "historical_backtest_use_allowed": false,
+    "production_forecast_authorized": false,
+    "ranking_authorized": false,
+    "purchase_recommendations_authorized": false
+  }
+}

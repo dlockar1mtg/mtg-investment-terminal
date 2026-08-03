@@ -1,0 +1,33 @@
+{
+  "policy_name": "Collector Historical Reconstruction Policy",
+  "policy_version": "1.0.0",
+  "scope": "Dynamic English factory-sealed Collector Booster Display history",
+  "principles": {
+    "all_source_rows_preserved": true,
+    "governed_identity_required": true,
+    "fixed_product_count_prohibited": true,
+    "name_only_matching_requires_review": true,
+    "missing_values_never_zero_filled": true,
+    "presale_observations_isolated": true,
+    "foreign_language_and_case_pack_rows_excluded": true,
+    "source_specific_observations_retained": true,
+    "one_analytical_row_per_product_month_requires_precedence": true,
+    "historical_append_authorized": false,
+    "forecasting_resume_authorized": false,
+    "purchase_recommendation_authorized": false
+  },
+  "candidate_roots": ["data", "outputs", "reports", "workspace", "artifacts"],
+  "candidate_extensions": [".csv", ".json"],
+  "history_name_markers": ["history", "historical", "observation", "price", "monthly", "daily", "rolling", "backfill", "panel"],
+  "identity_columns": ["tcgplayer_product_id", "product_id", "productId", "canonical_product_id"],
+  "name_columns": ["box_name", "product_name", "name", "canonical_product_name", "set_name"],
+  "date_columns": ["observation_date", "date", "price_date", "month", "timestamp", "collected_at", "source_timestamp"],
+  "price_columns": ["market_price", "price", "close", "value", "low_price", "mid_price", "high_price"],
+  "required_outputs": [
+    "collector_history_source_inventory.csv",
+    "collector_history_schema_inventory.csv",
+    "collector_history_candidate_sources.csv",
+    "collector_history_source_errors.csv",
+    "collector_history_inventory_summary.json"
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "contract_name": "Collector August 1 eBay Supply Reconstruction",
+  "contract_version": "1.0.0",
+  "snapshot_id": "collector-20260801T211201Z-7688afbd",
+  "required_product_rows": 50,
+  "required_accepted_listing_rows": 562,
+  "minimum_identity_coverage": 1.0,
+  "canonical_output_path": "data/governance/permanence/certification/collector_v1_august1_current_data_package/collector_ebay_product_supply_snapshot.csv",
+  "supply_categories": [
+    "ZERO_OBSERVED_SUPPLY",
+    "ULTRA_THIN_SUPPLY",
+    "THIN_SUPPLY",
+    "MODERATE_SUPPLY",
+    "DEEP_SUPPLY"
+  ],
+  "category_method": "POSITIVE_LISTING_COUNT_QUARTILES_WITH_ZERO_SEPARATE",
+  "governance": {
+    "bounded_search_only": true,
+    "accepted_listings_only": true,
+    "all_products_retained": true,
+    "unknown_product_ids_fail_closed": true,
+    "zero_listings_are_valid_supply_evidence": true,
+    "seller_metrics_only_when_seller_identity_available": true,
+    "historical_backtest_use_allowed": false,
+    "point_forecast_rewrite_allowed": false,
+    "purchase_recommendations_authorized": false
+  }
+}

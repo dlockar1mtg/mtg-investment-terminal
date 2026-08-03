@@ -1,0 +1,85 @@
+{
+  "policy_name": "Collector Dynamic Universe Growth Policy",
+  "policy_version": "1.0.0",
+  "scope": "English factory-sealed Collector Booster Displays",
+  "principles": {
+    "universe_is_dynamic": true,
+    "fixed_product_count_prohibited": true,
+    "new_products_must_be_preserved": true,
+    "new_products_must_be_reviewed_before_admission": true,
+    "previously_governed_products_must_not_disappear_silently": true,
+    "presale_products_must_be_discovered": true,
+    "presale_products_must_be_isolated": true,
+    "historical_append_requires_independent_certification": true
+  },
+  "discovery": {
+    "primary_source": "TCGCSV_FULL_MAGIC_CATALOG_SNAPSHOT",
+    "snapshot_script": "scripts/snapshot_tcgcsv_catalog_safe.py",
+    "snapshot_archive_root": "data/operations/mtg_source_discovery/tcgcsv_snapshots",
+    "required_frequency": "before each governed live collection and at least monthly",
+    "candidate_name_markers": [
+      "Collector Booster Display",
+      "Collector Booster Box"
+    ],
+    "excluded_name_markers": [
+      "Display Case",
+      "Master Case",
+      "Box Case",
+      "Booster Pack",
+      "Sample Pack",
+      "Omega Pack",
+      "Minimal Packaging",
+      "Hanger Pack",
+      "Empty",
+      "Opened",
+      "Damaged",
+      "Resealed"
+    ],
+    "foreign_language_markers": [
+      "Japanese",
+      "German",
+      "French",
+      "Italian",
+      "Spanish",
+      "Portuguese",
+      "Korean",
+      "Chinese",
+      "Russian"
+    ]
+  },
+  "states": [
+    "GOVERNED_ACTIVE",
+    "NEW_CANDIDATE_REVIEW_REQUIRED",
+    "EXCLUDED_CONFIGURATION",
+    "EXCLUDED_FOREIGN_LANGUAGE",
+    "MISSING_FROM_LATEST_SNAPSHOT_REVIEW_REQUIRED",
+    "RETIRED_OR_DELISTED_REVIEW_REQUIRED"
+  ],
+  "promotion": {
+    "automatic_discovery_allowed": true,
+    "automatic_governed_admission_allowed": false,
+    "automatic_price_collection_for_unreviewed_products_allowed": false,
+    "required_evidence": [
+      "exact_tcgplayer_product_id",
+      "tcgcsv_category_id",
+      "tcgcsv_group_id",
+      "collector_display_configuration",
+      "language_authority",
+      "release_state",
+      "unique_normal_price_subtype"
+    ]
+  },
+  "outputs": {
+    "dynamic_universe_all": "collector_dynamic_universe_all.csv",
+    "new_candidate_queue": "collector_dynamic_new_candidate_queue.csv",
+    "governed_active": "collector_dynamic_governed_active.csv",
+    "missing_governed_review": "collector_dynamic_missing_governed_review.csv",
+    "excluded": "collector_dynamic_excluded.csv",
+    "summary": "collector_dynamic_universe_summary.json"
+  },
+  "authorization": {
+    "historical_append_authorized": false,
+    "forecasting_resume_authorized": false,
+    "purchase_recommendation_authorized": false
+  }
+}

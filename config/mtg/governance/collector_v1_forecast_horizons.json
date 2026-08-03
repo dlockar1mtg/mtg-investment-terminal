@@ -1,0 +1,23 @@
+{
+  "policy_name": "collector_v1_forecast_horizons",
+  "policy_version": "1.0.0",
+  "lane": "COLLECTOR_BOOSTER",
+  "horizons": [
+    {"days": 30, "label": "30D", "role": "near_term_diagnostic"},
+    {"days": 90, "label": "90D", "role": "short_term"},
+    {"days": 180, "label": "180D", "role": "medium_term"},
+    {"days": 365, "label": "1Y", "role": "annual"},
+    {"days": 1095, "label": "3Y", "role": "investment_primary"},
+    {"days": 1825, "label": "5Y", "role": "long_horizon_scenario"}
+  ],
+  "primary_investment_horizon_days": 1095,
+  "forecast_experiments_authorized": true,
+  "production_forecasts_authorized": false,
+  "purchase_recommendations_authorized": false,
+  "governance_notes": [
+    "Thirty-day forecasts are diagnostic and not purchase-authorizing.",
+    "Three-year forecasts are the primary current investment comparison horizon.",
+    "Five-year outputs require the widest uncertainty intervals.",
+    "Every horizon requires leakage-safe historical backtesting before production approval."
+  ]
+}

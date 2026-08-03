@@ -1,0 +1,44 @@
+{
+  "standard_id": "collector_deep_history_recovery_candidate_v1",
+  "status": "CANDIDATE_INACTIVE",
+  "governing_principles": {
+    "local_checkout_is_source_of_truth_for_generated_data_presence": true,
+    "missing_candidate_sources_must_be_visible": true,
+    "future_information_prohibited": true,
+    "retrospective_prices_may_support_outcomes_but_not_historical_decision_inputs_without_proven_availability": true,
+    "release_dates_must_be_governed_and_lineaged": true,
+    "no_source_is_authorized_by_file_name_or_row_count_alone": true,
+    "no_fixed_collector_product_count": true
+  },
+  "candidate_history_sources": [
+    "data/operations/mtg_universal_history_completion/archive/universal_tcgcsv_monthly_archive_observations.csv",
+    "data/operations/mtg_tcgcsv_price_backfill/archive/tcgcsv_monthly_archive_observations.csv",
+    "data/operations/mtg_universal_history_ledger/universal_mtg_historical_observation_ledger.csv",
+    "data/operations/mtg_history_foundation/universal_mtg_price_history.csv",
+    "data/operations/mtg_history_backfill/universal_mtg_daily_consolidated_history.csv",
+    "data/operations/mtg_history_backfill/universal_mtg_daily_source_history.csv"
+  ],
+  "release_sources": [
+    "data/validation/phase_10/collector_booster_boxes/governed_registry/collector_booster_box_governed_registry.csv",
+    "data/validation/phase_10/historical_final_release_dates/historical_final_governed_release_dates_2026-07-22.csv",
+    "data/product_master/product_master_model_input.csv"
+  ],
+  "admission_sources": [
+    "data/governance/mtg/collector_booster_admissions/applied_admissions.csv"
+  ],
+  "required_outputs": [
+    "collector_deep_history_source_inventory.csv",
+    "collector_release_identity_resolution.csv",
+    "collector_deep_history_candidate.csv",
+    "collector_deep_history_exclusions.csv",
+    "collector_decision_date_coverage.csv",
+    "collector_deep_history_recovery_summary.json"
+  ],
+  "candidate_output_directory": "data/operations/collector_deep_history_recovery/candidate_v1_0_0",
+  "authorizations": {
+    "deep_history_source_authorized": false,
+    "historical_snapshot_builder_authorized": false,
+    "projection_authorized": false,
+    "purchase_recommendation_authorized": false
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "program_name": "Collector Early-Lifecycle Feature Tournament",
+  "program_version": "1.1.0",
+  "purpose": "Evaluate leakage-safe early-lifecycle ranking methods after calibrating their ranking scores onto a return scale using only strictly prior historical outcomes.",
+  "inputs": {
+    "breakout_replay_cases": "data/operations/collector_early_lifecycle_breakout_replay/candidate_v1_0_0/collector_early_lifecycle_breakout_replay_cases.csv"
+  },
+  "output_root": "data/operations/collector_early_lifecycle_feature_tournament/candidate_v1_0_0",
+  "candidate_methods": [
+    "MOMENTUM_MEDIAN_BASELINE",
+    "CONTRARIAN_MOMENTUM",
+    "EXPANDING_AGE_PRIOR",
+    "EXPANDING_AGE_PRICE_PRIOR",
+    "CONTRARIAN_AGE_BLEND_50_50",
+    "CONTRARIAN_AGE_PRICE_BLEND_50_50",
+    "CONTRARIAN_AGE_PRICE_BLEND_25_75"
+  ],
+  "ranking_return_separation_required": true,
+  "point_forecast_calibration_contract": "Within each target cutoff, convert the raw ranking score to a percentile and map that percentile onto the realized-return distribution from strictly earlier cutoffs only.",
+  "prior_information_rule": "Only cases with decision_cutoff strictly before the target cutoff may contribute realized outcomes to a prior or return calibration.",
+  "breakout_thresholds": [0.25, 0.50, 0.70],
+  "ranking_quantile": 0.20,
+  "minimum_prior_cases": 3,
+  "selection_policy": {
+    "primary": "positive rank correlation and positive top-bottom spread on calibrated return forecasts",
+    "secondary": "maximize 70-percent breakout recall and top-quantile capture while minimizing false-negative and false-positive rates",
+    "guardrail": "no candidate may be promoted from this tournament without owner review, broader lifecycle evidence, and negative-case coverage"
+  },
+  "future_information_forbidden": true,
+  "shadow_only": true,
+  "methodology_change_authorized": false,
+  "production_projection_authorized": false,
+  "purchase_recommendation_authorized": false,
+  "automatic_model_update_allowed": false,
+  "technical_freeze_authorized": false,
+  "uip_acceptance_authorized": false
+}

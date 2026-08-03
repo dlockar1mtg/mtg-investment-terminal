@@ -1,0 +1,16 @@
+{
+  "audit_name": "Collector Walk-Forward Phase 2H Bias Shrinkage Calibration",
+  "audit_version": "1.0.0",
+  "source_training_windows": ["EXPANDING", "LAST_2_CUTOFFS", "LAST_3_CUTOFFS", "LAST_4_CUTOFFS", "LAST_6_CUTOFFS"],
+  "target_coverage": 0.68,
+  "bias_shrinkage_factors": [0.0, 0.25, 0.5, 0.75, 1.0],
+  "minimum_calibration_cases": 50,
+  "minimum_calibration_cutoffs": 2,
+  "selection_coverage_tolerance": 0.05,
+  "shadow_only": true,
+  "candidate_methodology_change_authorized": false,
+  "production_projection_authorized": false,
+  "purchase_recommendation_authorized": false,
+  "automatic_model_update_allowed": false,
+  "freeze_suspended_pending_walk_forward": true
+}

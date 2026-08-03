@@ -1,0 +1,37 @@
+{
+  "contract_name": "collector_snapshot_contract",
+  "contract_version": "1.0.0",
+  "snapshot_id_pattern": "^collector-[0-9]{8}T[0-9]{6}Z-[a-f0-9]{8}$",
+  "required_product_count": 50,
+  "purchase_freshness_days": 7,
+  "required_manifest_fields": [
+    "snapshot_id",
+    "captured_at_utc",
+    "maximum_source_observation_at_utc",
+    "minimum_source_observation_at_utc",
+    "freshness_cutoff_utc",
+    "product_count",
+    "source_files",
+    "source_provider",
+    "certified_for_model_input"
+  ],
+  "required_downstream_lineage_fields": [
+    "source_snapshot_id",
+    "source_snapshot_manifest_sha256",
+    "source_feature_matrix_sha256",
+    "source_price_authority_sha256",
+    "source_route_authority_sha256",
+    "model_generated_at_utc"
+  ],
+  "purchase_ineligible_conditions": [
+    "missing_observation_date",
+    "stale_observation",
+    "carried_forward_price",
+    "missing_listing_depth",
+    "snapshot_mismatch",
+    "source_hash_mismatch"
+  ],
+  "historical_current_data_separation_required": true,
+  "generated_at_may_not_replace_observation_at": true,
+  "fail_closed": true
+}

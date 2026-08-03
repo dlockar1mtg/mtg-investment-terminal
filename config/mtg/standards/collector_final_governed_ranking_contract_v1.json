@@ -1,0 +1,36 @@
+{
+  "contract_name": "Collector Final Governed 1-49 Ranking",
+  "contract_version": "1.0.0",
+  "snapshot_id": "collector-20260801T211201Z-7688afbd",
+  "required_products": 49,
+  "required_forecast_rows": 294,
+  "primary_horizons_days": [365, 1095],
+  "authorities": {
+    "final_forecasts": "data/governance/permanence/certification/collector_v1_canonical_identity_lineage_recertification/collector_final_authority_bound_49_product_forecasts.csv",
+    "final_ranking_eligibility": "data/governance/permanence/certification/collector_v1_final_ranking_eligibility/collector_final_ranking_eligibility_authority.csv",
+    "final_ranking_eligibility_summary": "data/governance/permanence/certification/collector_v1_final_ranking_eligibility/collector_final_ranking_eligibility_summary.json",
+    "calibration_rows": "data/governance/permanence/certification/collector_v1_final_probabilistic_calibration/collector_final_forecast_row_validation.csv",
+    "current_supply": "data/governance/permanence/certification/collector_v1_august1_current_data_package/collector_ebay_product_supply_snapshot.csv"
+  },
+  "weights": {
+    "forecast_return_365": 0.30,
+    "forecast_return_1095_annualized": 0.10,
+    "early_opportunity": 0.15,
+    "downside_protection": 0.15,
+    "uncertainty_control": 0.10,
+    "supply_demand": 0.10,
+    "calibration_strength": 0.10
+  },
+  "rules": {
+    "full_49_product_competition_required": true,
+    "primary_horizon_rows_required": true,
+    "cross_sectional_percentile_normalization_required": true,
+    "eligibility_penalties_must_be_applied": true,
+    "conditional_products_remain_purchase_ineligible": true,
+    "forecast_values_must_not_be_modified": true,
+    "deterministic_tie_breaker": "canonical_product_id",
+    "ranking_authorized": true,
+    "purchase_recommendations_authorized": false
+  },
+  "expected_status": "PASS_COLLECTOR_FINAL_GOVERNED_1_49_RANKING"
+}

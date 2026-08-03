@@ -1,0 +1,62 @@
+{
+  "specification_name": "Collector Dual-Track Evaluation Candidate",
+  "specification_version": "1.0.0",
+  "status": "CANDIDATE_INACTIVE",
+  "owner": "Devon Lockard",
+  "purpose": "Correct Collector-only scope, preserve recovered history for retrospective outcome analysis, and begin prospective decision snapshots without future leakage.",
+  "inputs": {
+    "governed_registry": "data/validation/phase_10/collector_booster_boxes/governed_registry/collector_booster_box_governed_registry.csv",
+    "applied_admissions": "data/governance/mtg/collector_booster_admissions/applied_admissions.csv",
+    "product_master": "data/product_master/product_master_model_input.csv",
+    "release_resolution": "data/operations/collector_deep_history_recovery/candidate_v1_0_0/collector_release_identity_resolution.csv",
+    "deep_history_candidate": "data/operations/collector_deep_history_recovery/candidate_v1_0_0/collector_deep_history_candidate.csv",
+    "current_route_reference": "data/operations/collector_production_completion/baseline_v3_0_0/collector_product_reconciliation.csv",
+    "numeric_candidate": "config/mtg/governance/collector_numeric_specification_candidate_v1.json"
+  },
+  "outputs": {
+    "directory": "data/operations/collector_dual_track_evaluation/candidate_v1_0_0",
+    "collector_authoritative_universe": "collector_authoritative_universe.csv",
+    "collector_retrospective_outcome_history": "collector_retrospective_outcome_history.csv",
+    "collector_retrospective_coverage": "collector_retrospective_coverage.csv",
+    "collector_prospective_decision_snapshot": "collector_prospective_decision_snapshot.csv",
+    "collector_prospective_snapshot_manifest": "collector_prospective_snapshot_manifest.json",
+    "collector_dual_track_summary": "collector_dual_track_summary.json"
+  },
+  "scope_rules": {
+    "collector_lane_only": true,
+    "pre_collector_products_prohibited": true,
+    "secret_lair_products_prohibited": true,
+    "future_release_products_retained_but_not_investable": true,
+    "unresolved_identity_fails_closed": true,
+    "dynamic_product_count_required": true
+  },
+  "retrospective_track": {
+    "purpose": "Outcome and historical-pattern analysis only.",
+    "historical_decision_input_eligible": false,
+    "release_boundary_required": true,
+    "valid_date_required": true,
+    "positive_price_required": true,
+    "source_lineage_required": true,
+    "deduplication_required": true,
+    "future_information_prohibited": true
+  },
+  "prospective_track": {
+    "purpose": "Capture information actually available at the current decision date for future walk-forward evaluation.",
+    "append_safe_snapshot_required": true,
+    "snapshot_date_uses_runtime_utc_date": true,
+    "model_version_recorded": true,
+    "route_reference_recorded": true,
+    "current_price_and_price_date_recorded": true,
+    "evidence_fields_recorded_when_available": true,
+    "missing_inputs_visible": true,
+    "projection_values_must_remain_diagnostic_or_blank": true
+  },
+  "authorizations": {
+    "retrospective_history_authorized_as_historical_decision_input": false,
+    "historical_snapshot_builder_authorized": false,
+    "candidate_projection_authorized": false,
+    "production_projection_authorized": false,
+    "purchase_recommendation_authorized": false,
+    "automatic_model_update_allowed": false
+  }
+}

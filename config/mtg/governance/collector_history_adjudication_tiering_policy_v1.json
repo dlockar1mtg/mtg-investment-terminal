@@ -1,0 +1,34 @@
+{
+  "policy_name": "Collector History Adjudication and Tiering Policy",
+  "policy_version": "1.0.0",
+  "scope": "Dynamic English factory-sealed Collector Booster Display analytical history",
+  "principles": {
+    "exact_id_rows_only": true,
+    "one_row_per_product_month": true,
+    "release_state_recomputed_as_of_latest_observation_month": true,
+    "material_change_is_annotation_not_automatic_rejection": true,
+    "extreme_change_requires_unresolved_review": true,
+    "owner_attested_high_value_bridge_changes_may_be_adjudicated": true,
+    "name_only_unresolved_rows_remain_quarantined": true,
+    "missing_values_never_zero_filled": true,
+    "absolute_price_caps_prohibited": true,
+    "forecast_input_authorization_separate_from_purchase_authorization": true,
+    "purchase_recommendation_authorized": false,
+    "uip_delivery_authorized": false
+  },
+  "history_tiers": [
+    {"tier": "DIRECT_HISTORY_MATURE", "minimum_released_months": 24},
+    {"tier": "DIRECT_HISTORY_DEVELOPING", "minimum_released_months": 12},
+    {"tier": "LIMITED_HISTORY", "minimum_released_months": 3},
+    {"tier": "EARLY_LIFECYCLE", "minimum_released_months": 1},
+    {"tier": "PRESALE_OR_NO_RELEASED_HISTORY", "minimum_released_months": 0}
+  ],
+  "early_lifecycle_months": 6,
+  "continuity_thresholds": {
+    "material_absolute_percent_change": 0.25,
+    "extreme_up_percent_change": 1.0,
+    "extreme_down_percent_change": -0.5
+  },
+  "owner_attested_high_value_product_ids": ["484912", "515906", "618893", "523185", "541238", "516614"],
+  "unresolved_name_only_rows_never_promoted": true
+}

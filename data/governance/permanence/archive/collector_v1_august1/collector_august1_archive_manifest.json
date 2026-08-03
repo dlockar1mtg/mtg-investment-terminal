@@ -1,0 +1,115 @@
+{
+  "archive_name": "Collector August 1 End-to-End Governance Archive",
+  "archive_version": "1.0.0",
+  "archived_at_utc": "2026-08-03T00:08:00Z",
+  "repository": "dlockar1mtg/mtg-investment-terminal",
+  "branch": "phase-8.2.8a-august1-snapshot-bound-current-product-rebuild",
+  "snapshot_id": "collector-20260801T211201Z-7688afbd",
+  "operating_date": "2026-08-01",
+  "operating_timezone": "America/Chicago",
+  "source_bundle_sha256": "7688afbd6dfb4483c0a316dad6a2a05458944434a91a3f714568e5f4a10c7890",
+  "documentation": {
+    "runbook": "docs/phase_8/collector/COLLECTOR_AUGUST1_ARCHIVE_AND_REPLICATION_RUNBOOK.md",
+    "new_chat_prompt": "docs/phase_8/collector/NEW_CHAT_PROMPT_PRECOLLECTOR_SECRET_LAIR.md",
+    "canonical_standard": "docs/standards/mtg/MTG_FORECASTING_STANDARD.md"
+  },
+  "documentation_commits": {
+    "runbook": "50d0b2188a34f739211742d646cd043769fa32cb",
+    "new_chat_prompt": "b82b905eaa1a0e97198bfee1249c2f5fd690198d"
+  },
+  "exact_evidence": [
+    {
+      "path": "data/governance/permanence/certification/collector_v1_august_1_snapshot_registration/collector_v1_august_1_snapshot_registration_summary.json",
+      "sha256": "4b9e887c0dda954750161eba21822130feae5c3beb6872580e544dd5927b9c37"
+    },
+    {
+      "path": "data/governance/permanence/certification/collector_v1_snapshot_bound_authority_verification/collector_v1_snapshot_bound_authority_verification_summary.json",
+      "sha256": "2da4c068b2e5c3cec2b164b67b55813e4090b5c4a5e1fbe08a5e55960ed76f18"
+    }
+  ],
+  "final_authority_counts": {
+    "current_price": 50,
+    "historical_ledger": 1215,
+    "integrated_comparables": 121,
+    "final_forecasts": 294,
+    "forecast_lineage": 294,
+    "blocked_horizons": 6,
+    "coverage_rows": 300,
+    "calibration": 294,
+    "eligibility": 49,
+    "rankings": 49,
+    "purchase_authority": 49,
+    "authorized_purchase_candidates": 13,
+    "watchlist": 33,
+    "not_purchase_eligible": 3
+  },
+  "final_authorities": {
+    "current_price": "data/governance/permanence/certification/collector_v1_final_premodel_user_exclusion_resolution/collector_final_current_price_authority.csv",
+    "method_routing": "data/governance/permanence/certification/collector_v1_final_premodel_user_exclusion_resolution/collector_final_method_routing.csv",
+    "historical_ledger": "data/governance/permanence/certification/collector_v1_august1_historical_observation_ledger/collector_august1_historical_observation_ledger.csv",
+    "integrated_comparables": "data/governance/permanence/certification/collector_v1_lorwyn_comparable_authority_integration/collector_integrated_comparable_pool_authority.csv",
+    "current_supply": "data/governance/permanence/certification/collector_v1_august1_current_data_package/collector_ebay_product_supply_snapshot.csv",
+    "final_forecasts": "data/governance/permanence/certification/collector_v1_canonical_identity_lineage_recertification/collector_final_authority_bound_49_product_forecasts.csv",
+    "forecast_lineage": "data/governance/permanence/certification/collector_v1_canonical_identity_lineage_recertification/collector_final_forecast_source_identity_lineage_manifest.csv",
+    "blocked_horizons": "data/governance/permanence/certification/collector_v1_canonical_identity_lineage_recertification/collector_final_authority_bound_blocked_horizons.csv",
+    "calibration": "data/governance/permanence/certification/collector_v1_final_probabilistic_calibration/collector_final_forecast_row_validation.csv",
+    "ranking_eligibility": "data/governance/permanence/certification/collector_v1_final_ranking_eligibility/collector_final_ranking_eligibility_authority.csv",
+    "ranking": "data/governance/permanence/certification/collector_v1_final_governed_ranking/collector_final_governed_1_49_rankings.csv",
+    "purchase_summary": "data/governance/permanence/certification/collector_v1_purchase_recommendation_certification/collector_purchase_recommendation_summary.json",
+    "purchase_authority": "data/governance/permanence/certification/collector_v1_purchase_recommendation_certification/collector_purchase_recommendation_authority.csv",
+    "authorized_candidates": "data/governance/permanence/certification/collector_v1_purchase_recommendation_certification/collector_authorized_purchase_candidates.csv",
+    "watchlist": "data/governance/permanence/certification/collector_v1_purchase_recommendation_certification/collector_purchase_watchlist.csv"
+  },
+  "authority_hashes": {
+    "final_rankings": "0f609fe2770b01f080ab02039adade3fe8679072792c35a0e7b8aa7cf48fb48c",
+    "ranking_summary": "3e9ea85437b735a9bcc869197ffb0a54f796917ae354acf5ae6bbdd59acc0a59",
+    "final_forecasts": "ba78970c401068b9387755d0ad052d1d5c6a9bc9ffe59302eb82f4a22973313e",
+    "ranking_eligibility": "a28db4f52ae9294ce83d6149f76f2ba4d521c54f1590e6d1f7ecb09d238ce22f",
+    "current_price_authority": "d8a0e2c256807407033a2f56194282e50647f2ecc3e55ca617d981023cffc884"
+  },
+  "audit": {
+    "exact_evidence_binding_status": "PASS_COLLECTOR_END_TO_END_GOVERNANCE_EXACT_EVIDENCE_BINDING",
+    "exact_evidence_binding_contract_commit": "112b8e056946e8493218f313fb089ee20b5b9f68",
+    "exact_evidence_binding_engine_commit": "579fe4797f6ea85c3fbeacc11a2621e9c8624db1",
+    "exact_evidence_binding_test_commit": "2a29fbb3fbd885fa53691ba68308dc5a3311fc20",
+    "declared_hashes_checked": 21,
+    "declared_hashes_reconciled": 21,
+    "mtg_standard_requirements_reviewed": 11,
+    "mtg_standard_requirements_documented": 11,
+    "structured_failure_evidence": 0,
+    "conditional_products_purchase_authorized": 0,
+    "forecast_values_modified_downstream": 0,
+    "automatic_purchase_execution_authorized": false
+  },
+  "review_workbook": {
+    "filename": "MTG_Collector_Purchase_Review.xlsx",
+    "sheets": [
+      "Dashboard",
+      "Authorized 13",
+      "All 49 Products",
+      "Watchlist 33",
+      "Consistency Audit",
+      "Methodology"
+    ],
+    "row_level_consistency_issues": 0,
+    "repository_storage": "external review artifact; retain with the project archive or add to a designated artifacts location"
+  },
+  "replication_policy": {
+    "collector_policy_is_structural_template_only": true,
+    "precollector_owner_approval_required": true,
+    "secret_lair_owner_approval_required": true,
+    "approval_required_for": [
+      "product universe",
+      "methods",
+      "weights",
+      "thresholds",
+      "source hierarchy",
+      "comparable rules",
+      "eligibility rules",
+      "ranking policy",
+      "purchase policy"
+    ]
+  },
+  "human_review_required": true,
+  "automatic_execution_authorized": false
+}

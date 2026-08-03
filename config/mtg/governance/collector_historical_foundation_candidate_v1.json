@@ -1,0 +1,70 @@
+{
+  "contract_name": "Collector Historical Foundation Candidate",
+  "contract_version": "1.0.0",
+  "status": "CANDIDATE_NOT_OWNER_APPROVED",
+  "scope": "COLLECTOR_BOOSTER",
+  "inputs": {
+    "primary_ledger": "data/operations/mtg_universal_history_ledger/universal_mtg_historical_observation_ledger.csv",
+    "supporting_ledger": "data/operations/mtg_history_foundation/universal_mtg_price_history.csv",
+    "governed_registry": "data/validation/phase_10/collector_booster_boxes/governed_registry/collector_booster_box_governed_registry.csv",
+    "applied_admissions": "data/governance/mtg/collector_booster_admissions/applied_admissions.csv",
+    "release_support": "data/validation/phase_10/historical_final_release_dates/historical_final_governed_release_dates_2026-07-22.csv"
+  },
+  "output_directory": "data/operations/collector_historical_foundation/candidate_v1_0_0",
+  "identity_policy": {
+    "canonicalize_numeric_identifiers": true,
+    "strip_whitespace": true,
+    "remove_trailing_decimal_zero": true,
+    "reject_non_integral_numeric_identifiers": true,
+    "preserve_raw_identifier": true,
+    "fail_on_conflicting_identity_mapping": true
+  },
+  "temporal_policy": {
+    "future_information_prohibited": true,
+    "observation_date_is_not_automatically_knowledge_available_date": true,
+    "observed_at_utc_is_candidate_knowledge_available_timestamp": true,
+    "retrospective_rows_must_be_visible": true,
+    "retrospective_rows_may_be_used_for_outcome_measurement": true,
+    "retrospective_rows_may_not_be_used_as_historical_decision_inputs_without_owner_approved_policy": true,
+    "pre_release_observations_must_be_excluded_from_decision_inputs": true,
+    "unknown_knowledge_availability_must_fail_closed_for_decision_inputs": true
+  },
+  "ledger_policy": {
+    "deduplicate_by_observation_fingerprint_when_present": true,
+    "fallback_deduplication_key": [
+      "canonical_tcgplayer_product_id",
+      "observation_date",
+      "source_name",
+      "price_field",
+      "market_price"
+    ],
+    "primary_source_precedence": true,
+    "supporting_unique_rows_may_be_retained": true,
+    "source_lineage_must_be_preserved": true,
+    "nonpositive_market_price_prohibited": true,
+    "currency_must_be_visible": true
+  },
+  "required_outputs": [
+    "collector_identity_reconciliation.csv",
+    "collector_ledger_source_profile.csv",
+    "collector_ledger_overlap_summary.json",
+    "collector_governed_historical_observations.csv",
+    "collector_historical_exclusions.csv",
+    "collector_product_history_readiness.csv",
+    "collector_historical_foundation_summary.json"
+  ],
+  "snapshot_readiness_policy": {
+    "readiness_is_diagnostic_only": true,
+    "no_minimum_observation_threshold_is_owner_approved": true,
+    "no_minimum_history_span_is_owner_approved": true,
+    "classify_data_availability_without_authorizing_model_use": true
+  },
+  "authorizations": {
+    "historical_foundation_authorized": false,
+    "historical_snapshot_builder_authorized": false,
+    "exact_numeric_specification_approved": false,
+    "methodology_activated": false,
+    "projection_authorized": false,
+    "purchase_recommendation_authorized": false
+  }
+}

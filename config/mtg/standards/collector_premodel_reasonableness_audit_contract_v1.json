@@ -1,0 +1,39 @@
+{
+  "contract_name": "Collector Pre-Model Data Reasonableness and Leakage Audit",
+  "contract_version": "1.0.0",
+  "governing_snapshot_id": "collector-20260801T211201Z-7688afbd",
+  "required_product_count": 50,
+  "required_ledger_rows": 1215,
+  "archive_endpoint": "2026-07-01",
+  "thresholds": {
+    "extreme_absolute_monthly_return": 0.50,
+    "severe_absolute_monthly_return": 1.00,
+    "large_current_to_history_gap": 0.50,
+    "flatline_run_observations": 4,
+    "minimum_direct_history_observations": 18,
+    "minimum_limited_history_observations": 12,
+    "minimum_direct_history_span_days": 365
+  },
+  "required_evaluations": [
+    "governance_audit_freshness",
+    "coverage_and_missing_months",
+    "sample_size_and_model_eligibility",
+    "current_price_anchor_gap",
+    "selection_method_transitions",
+    "release_date_and_presale_alignment",
+    "extreme_returns_and_flatlines",
+    "survivorship_bias",
+    "comparable_route_readiness",
+    "historical_feature_leakage",
+    "cross_market_source_mismatch",
+    "current_price_authority_status"
+  ],
+  "authorization": {
+    "historical_coverage_assessment_authorized": true,
+    "lifecycle_panel_build_authorized": false,
+    "model_tournament_authorized": false,
+    "production_forecasting_authorized": false,
+    "uip_delivery_authorized": false,
+    "purchase_recommendations_authorized": false
+  }
+}

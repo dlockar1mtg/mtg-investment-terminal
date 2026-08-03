@@ -1,0 +1,58 @@
+{
+  "approval_name": "Collector Candidate Methodology v2.3 Owner Approval",
+  "approval_version": "2.3.0",
+  "approved_at_local": "2026-08-01T07:42:00-05:00",
+  "scope": "DEVELOPMENT_AND_TESTING_ONLY",
+  "scenario_decision": {
+    "decision_id": "COL-SCEN-001",
+    "decision": "APPROVE_ROUTE_BOUNDED_EVIDENCE_WIDTH_WITH_95_PERCENT_LOSS_FLOOR",
+    "formula": "MAX(route_minimum, retrospective_volatility_if_available, half_methodology_spread), bounded_by_route_maximum_and_loss_floor",
+    "downside_annual_rate_floor": -0.95,
+    "route_minimum_widths": {
+      "DIRECT_HISTORY_CALIBRATED": 0.10,
+      "COMPARABLE_PRODUCT_ADJUSTED": 0.20,
+      "DIRECT_HISTORY_LIMITED": 0.30,
+      "FUNDAMENTAL_COMPARABLE_HYBRID": 0.35
+    },
+    "route_maximum_widths": {
+      "DIRECT_HISTORY_CALIBRATED": 0.20,
+      "COMPARABLE_PRODUCT_ADJUSTED": 0.45,
+      "DIRECT_HISTORY_LIMITED": 0.75,
+      "FUNDAMENTAL_COMPARABLE_HYBRID": 0.60
+    }
+  },
+  "confidence_decision": {
+    "decision_id": "COL-CONF-001",
+    "decision": "APPROVE_NORMALIZED_EVIDENCE_CONFIDENCE_0_TO_100",
+    "internal_scale": "0_TO_1",
+    "export_scale": "0_TO_100",
+    "factors": [
+      "route_maturity",
+      "peer_depth",
+      "methodology_sensitivity",
+      "retrospective_volatility",
+      "short_history_status",
+      "reverse_score_status",
+      "peer_concentration_status"
+    ],
+    "reverse_score_confidence_ceiling": 10,
+    "inactive_formula_confidence_ceiling": 15
+  },
+  "authorization_boundaries": {
+    "candidate_development_authorized": true,
+    "candidate_testing_authorized": true,
+    "scenario_methodology_authorized_for_candidate_v2_3": true,
+    "confidence_methodology_authorized_for_candidate_v2_3": true,
+    "candidate_projection_authorized": false,
+    "production_projection_authorized": false,
+    "purchase_recommendation_authorized": false,
+    "automatic_model_update_allowed": false,
+    "reverse_score_production_use_authorized": false,
+    "japanese_hybrid_formula_authorized": false
+  },
+  "inputs": {
+    "candidate_root": "data/operations/collector_candidate_methodology_v2_2/candidate_v2_2_0",
+    "scenario_review_root": "data/operations/collector_candidate_v2_2_scenario_confidence_review/candidate_v1_0_0"
+  },
+  "output_directory": "data/operations/collector_candidate_methodology_v2_3/candidate_v2_3_0"
+}

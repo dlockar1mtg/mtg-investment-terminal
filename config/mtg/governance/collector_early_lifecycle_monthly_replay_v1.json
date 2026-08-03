@@ -1,0 +1,29 @@
+{
+  "program_name": "Collector Early-Lifecycle Monthly Replay",
+  "program_version": "1.0.0",
+  "purpose": "Reconstruct leakage-safe 0-17 month Collector decision cases from monthly price history so breakout calibration includes winners, flat outcomes, and losers.",
+  "inputs": {
+    "monthly_price_panel": "data/operations/collector_long_horizon_historical_feature_panel/candidate_v1_0_0/collector_long_horizon_monthly_price_panel.csv"
+  },
+  "output_root": "data/operations/collector_early_lifecycle_monthly_replay/candidate_v1_0_0",
+  "age_bands_months": {
+    "LAUNCH_PRICE_DISCOVERY": [0, 3],
+    "INITIAL_SUPPLY_ABSORPTION": [4, 8],
+    "STABILIZATION": [9, 12],
+    "EARLY_ACCUMULATION": [13, 17]
+  },
+  "forward_horizon_months": 12,
+  "minimum_forward_gap_months": 11,
+  "maximum_forward_gap_months": 13,
+  "breakout_thresholds": [0.25, 0.50, 0.70],
+  "future_information_forbidden_in_features": true,
+  "realized_forward_price_allowed_for_scoring_only": true,
+  "complete_negative_case_retention_required": true,
+  "shadow_only": true,
+  "methodology_change_authorized": false,
+  "production_projection_authorized": false,
+  "purchase_recommendation_authorized": false,
+  "automatic_model_update_allowed": false,
+  "technical_freeze_authorized": false,
+  "uip_acceptance_authorized": false
+}

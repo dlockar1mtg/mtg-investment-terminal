@@ -1,0 +1,20 @@
+{
+  "approval_name": "Collector Candidate v2.4 Two-Tier Confidence Shadow Approval",
+  "approval_version": "1.0.0",
+  "approved_at": "2026-08-01",
+  "approved_horizons": [90, 180],
+  "confidence_method": "PRIOR_PRODUCT_MAE_PLUS_FORECAST_EXTREMENESS",
+  "confidence_structure": "TWO_TIER_STANDARD_LOW",
+  "low_confidence_rule": "BOTTOM_PROSPECTIVE_RELIABILITY_TERCILE",
+  "high_medium_distinction_authorized": false,
+  "confidence_365_day_authorized": false,
+  "decision_state_method_authorized": false,
+  "shadow_confidence_implementation_authorized": true,
+  "candidate_methodology_change_authorized": false,
+  "production_projection_authorized": false,
+  "purchase_recommendation_authorized": false,
+  "automatic_model_update_allowed": false,
+  "technical_freeze_authorized": false,
+  "uip_acceptance_authorized": false,
+  "freeze_suspended_pending_walk_forward": true
+}

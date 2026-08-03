@@ -1,0 +1,34 @@
+{
+  "specification_name": "Collector Comparable Repair and Outcome Review",
+  "specification_version": "1.0.0",
+  "status": "CANDIDATE_INACTIVE",
+  "owner": "Devon Lockard",
+  "inputs": {
+    "forecast_root": "data/operations/collector_candidate_forecast_diagnostics/candidate_v1_0_0",
+    "dual_track_root": "data/operations/collector_dual_track_evaluation/candidate_v1_0_0",
+    "numeric_specification": "config/mtg/governance/collector_numeric_specification_candidate_v1.json"
+  },
+  "output_directory": "data/operations/collector_comparable_repair_and_outcome_review/candidate_v1_0_0",
+  "rules": {
+    "canonical_ids_must_map_to_numeric_tcgplayer_ids": true,
+    "duplicate_comparable_edges_must_be_deduplicated": true,
+    "selected_comparables_take_precedence_over_pair_scores": true,
+    "peer_returns_are_retrospective_diagnostics_only": true,
+    "future_release_products_are_not_currently_investment_eligible": true,
+    "owner_validated_extreme_prices_are_not_data_errors": true,
+    "no_projection_clipping": true,
+    "future_information_prohibited": true
+  },
+  "owner_validated_prices": [
+    {"tcgplayer_product_id": "515906", "product_name": "The Lord of the Rings: Tales of Middle-earth - Special Edition Collector Booster Display", "validation_status": "OWNER_VALIDATED_CURRENT_PRICE"},
+    {"tcgplayer_product_id": "484912", "product_name": "Universes Beyond: The Lord of the Rings: Tales of Middle-earth Collector Booster Display", "validation_status": "OWNER_VALIDATED_CURRENT_PRICE"},
+    {"tcgplayer_product_id": "618893", "product_name": "FINAL FANTASY Collector Booster Display", "validation_status": "OWNER_VALIDATED_CURRENT_PRICE"},
+    {"tcgplayer_product_id": "628315", "product_name": "FINAL FANTASY - Collector Booster Display (Japanese)", "validation_status": "OWNER_VALIDATED_CURRENT_PRICE"}
+  ],
+  "authorizations": {
+    "candidate_projection_authorized": false,
+    "production_projection_authorized": false,
+    "purchase_recommendation_authorized": false,
+    "automatic_model_update_allowed": false
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "contract_name": "Collector Product-Specific Forecast Refit",
+  "contract_version": "1.0.0",
+  "snapshot_id": "collector-20260801T211201Z-7688afbd",
+  "snapshot_date": "2026-08-01",
+  "required_product_rows": 50,
+  "required_forecasted_products": 48,
+  "required_blocked_products": 2,
+  "required_forecast_rows": 115,
+  "required_certified_champion_groups": 6,
+  "minimum_within_route_unique_return_ratio": 0.35,
+  "maximum_single_return_share": 0.35,
+  "minimum_direct_history_observations": 3,
+  "minimum_comparable_members": 1,
+  "future_match_tolerance_days": 62,
+  "governance": {
+    "champion_model_family_must_be_preserved": true,
+    "direct_history_uses_target_product_history_only": true,
+    "comparable_route_uses_target_specific_comparable_pool": true,
+    "lifecycle_matched_forecast_uses_target_age": true,
+    "global_route_return_as_final_forecast_prohibited": true,
+    "identical_returns_require_explicit_provenance": true,
+    "current_supply_demand_post_forecast_only": true,
+    "current_supply_demand_used_in_refit": false,
+    "point_forecast_rewrite_by_overlay_allowed": false,
+    "production_forecast_authorized": false,
+    "ranking_authorized": false,
+    "purchase_recommendations_authorized": false
+  },
+  "allowed_models": [
+    "NAIVE_LAST_VALUE",
+    "ROBUST_LOG_TREND",
+    "COMPARABLE_MEDIAN_GROWTH",
+    "COMPARABLE_LIFECYCLE_MATCHED"
+  ],
+  "expected_output_directory": "data/governance/permanence/certification/collector_v1_product_specific_forecast_refit"
+}

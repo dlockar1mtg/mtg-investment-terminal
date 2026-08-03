@@ -1,0 +1,43 @@
+{
+  "contract_name": "Collector Pre-Model Governance Remediation",
+  "contract_version": "1.0.0",
+  "governing_snapshot_id": "collector-20260801T211201Z-7688afbd",
+  "required_product_count": 50,
+  "required_ledger_rows": 1215,
+  "required_risk_count": 12,
+  "required_artifacts": [
+    "data/governance/permanence/certification/collector_v1_august1_historical_observation_ledger/collector_august1_historical_observation_ledger.csv",
+    "data/governance/permanence/certification/collector_v1_august1_historical_observation_ledger/collector_august1_historical_observation_ledger_summary.json",
+    "data/governance/permanence/certification/collector_v1_premodel_reasonableness_audit/collector_premodel_product_reasonableness.csv",
+    "data/governance/permanence/certification/collector_v1_premodel_reasonableness_audit/collector_premodel_anomalies.csv",
+    "data/governance/permanence/certification/collector_v1_premodel_reasonableness_audit/collector_premodel_structural_risks.csv",
+    "data/governance/permanence/certification/collector_v1_premodel_reasonableness_audit/collector_premodel_reasonableness_summary.json",
+    "data/governance/permanence/certification/collector_v1_august1_snapshot_bound_current_foundation/collector_v1_august1_snapshot_bound_current_foundation.csv"
+  ],
+  "lifecycle_bands": {
+    "PRESALE": [-99999, -1],
+    "RELEASE_MONTH": [0, 30],
+    "EARLY_POST_RELEASE": [31, 90],
+    "DEVELOPING": [91, 365],
+    "ESTABLISHED": [366, 99999]
+  },
+  "feature_classes": [
+    "HISTORICALLY_AVAILABLE",
+    "DERIVED_FROM_HISTORICAL_LEDGER",
+    "STATIC_PRODUCT_ATTRIBUTE",
+    "CURRENT_ONLY",
+    "PROHIBITED_FOR_BACKTEST"
+  ],
+  "authorization": {
+    "dynamic_artifact_manifest_authorized": true,
+    "lifecycle_candidate_build_authorized": true,
+    "feature_availability_registry_authorized": true,
+    "anomaly_review_queue_authorized": true,
+    "comparable_review_queue_authorized": true,
+    "final_product_modeling_authorization": false,
+    "model_tournament_authorized": false,
+    "production_forecasting_authorized": false,
+    "uip_delivery_authorized": false,
+    "purchase_recommendations_authorized": false
+  }
+}

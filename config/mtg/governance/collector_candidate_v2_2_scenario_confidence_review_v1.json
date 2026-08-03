@@ -1,0 +1,43 @@
+{
+  "contract_name": "Collector Candidate v2.2 Scenario and Confidence Review",
+  "contract_version": "1.0.0",
+  "status": "DIAGNOSTIC_REVIEW_ONLY",
+  "inputs": {
+    "candidate_root": "data/operations/collector_candidate_methodology_v2_2/candidate_v2_2_0",
+    "economic_root": "data/operations/collector_candidate_v2_2_economic_review/candidate_v1_0_0",
+    "evidence_root": "data/operations/collector_methodology_evidence_review/candidate_v1_0_0",
+    "sensitivity_root": "data/operations/collector_methodology_sensitivity_review/candidate_v1_0_0"
+  },
+  "output_directory": "data/operations/collector_candidate_v2_2_scenario_confidence_review/candidate_v1_0_0",
+  "diagnostic_parameters": {
+    "minimum_width_by_route": {
+      "DIRECT_HISTORY_CALIBRATED": 0.10,
+      "COMPARABLE_PRODUCT_ADJUSTED": 0.20,
+      "DIRECT_HISTORY_LIMITED": 0.30,
+      "FUNDAMENTAL_COMPARABLE_HYBRID": 0.35
+    },
+    "maximum_width_by_route": {
+      "DIRECT_HISTORY_CALIBRATED": 0.75,
+      "COMPARABLE_PRODUCT_ADJUSTED": 0.90,
+      "DIRECT_HISTORY_LIMITED": 1.00,
+      "FUNDAMENTAL_COMPARABLE_HYBRID": 1.00
+    },
+    "maximum_downside_annual_rate": -0.95,
+    "confidence_route_base": {
+      "DIRECT_HISTORY_CALIBRATED": 0.70,
+      "COMPARABLE_PRODUCT_ADJUSTED": 0.55,
+      "DIRECT_HISTORY_LIMITED": 0.35,
+      "FUNDAMENTAL_COMPARABLE_HYBRID": 0.25
+    },
+    "confidence_minimum": 0.05,
+    "confidence_maximum": 0.90
+  },
+  "authorization_boundaries": {
+    "scenario_methodology_authorized": false,
+    "confidence_methodology_authorized": false,
+    "candidate_projection_authorized": false,
+    "production_projection_authorized": false,
+    "purchase_recommendation_authorized": false,
+    "automatic_model_update_allowed": false
+  }
+}

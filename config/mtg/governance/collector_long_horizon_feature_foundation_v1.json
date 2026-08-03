@@ -1,0 +1,66 @@
+{
+  "foundation_name": "Collector Long-Horizon Point-in-Time Feature Foundation",
+  "foundation_version": "1.0.0",
+  "primary_class": "COLLECTOR_BOOSTER_DISPLAY",
+  "source_roots": ["data"],
+  "source_file_patterns": ["*.csv"],
+  "required_raw_fields": {
+    "identity": ["product_key", "product_name"],
+    "time": ["observation_date", "decision_cutoff", "release_date"],
+    "price": ["market_price", "price", "current_price"],
+    "liquidity": ["listing_count", "sales_count", "sales_velocity", "bid_ask_spread", "buylist_price"],
+    "fundamental": ["reprint_risk", "scarcity_score", "demand_score", "franchise_strength", "premium_treatment_score"]
+  },
+  "derived_feature_contract": [
+    "product_age_months",
+    "product_age_route",
+    "return_3_month",
+    "return_6_month",
+    "return_12_month",
+    "cagr_2_year",
+    "cagr_3_year",
+    "since_release_cagr",
+    "collector_category_cagr",
+    "comparable_group_cagr",
+    "trailing_12_month_volatility",
+    "maximum_12_month_drawdown",
+    "positive_month_rate",
+    "return_persistence",
+    "forecast_extremeness",
+    "listing_depth",
+    "sales_velocity",
+    "market_buylist_spread",
+    "liquidity_grade",
+    "scarcity_score",
+    "demand_durability_score",
+    "reprint_substitution_risk",
+    "net_realizable_value_factor",
+    "data_quality_grade"
+  ],
+  "point_in_time_rules": {
+    "feature_observation_must_be_on_or_before_decision_cutoff": true,
+    "outcome_fields_must_be_separated_from_predictor_fields": true,
+    "future_information_forbidden": true,
+    "source_lineage_required": true,
+    "missing_feature_must_remain_missing": true,
+    "proxy_feature_must_be_labeled": true
+  },
+  "minimum_price_observations": {
+    "volatility": 6,
+    "drawdown": 6,
+    "cagr_2_year": 24,
+    "cagr_3_year": 36,
+    "since_release_cagr": 12
+  },
+  "asset_class_transfer": {
+    "PRE_COLLECTOR": "REUSE_CONTRACT_REBUILD_SOURCE_MAPPING_AND_CALIBRATION",
+    "SECRET_LAIR": "REUSE_CONTRACT_REBUILD_SOURCE_MAPPING_AND_CALIBRATION"
+  },
+  "shadow_only": true,
+  "candidate_methodology_change_authorized": false,
+  "production_projection_authorized": false,
+  "purchase_recommendation_authorized": false,
+  "automatic_model_update_allowed": false,
+  "technical_freeze_authorized": false,
+  "uip_acceptance_authorized": false
+}

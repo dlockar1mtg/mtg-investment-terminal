@@ -1,0 +1,101 @@
+{
+  "program_name": "Collector Display Source and Eligibility Authority",
+  "program_version": "1.0.0",
+  "effective_status": "STOP_THE_LINE_ACTIVE",
+  "collector_universe_contract": {
+    "required_product_class": "COLLECTOR_BOOSTER",
+    "required_packaging_type": "SEALED_DISPLAY",
+    "required_language": "ENGLISH",
+    "required_sealed_status": "FACTORY_SEALED",
+    "required_condition": "NORMAL_RETAIL_CONDITION",
+    "required_complete_contents": true,
+    "dynamic_product_universe_required": true,
+    "fixed_product_count_forbidden": true
+  },
+  "excluded_configurations": [
+    "SINGLE_PACK",
+    "DISPLAY_CASE",
+    "EMPTY_DISPLAY",
+    "OPENED_DISPLAY",
+    "PARTIAL_DISPLAY",
+    "DAMAGED_DISPLAY",
+    "RESEALED_DISPLAY",
+    "FOREIGN_LANGUAGE",
+    "COLLECTOR_SAMPLE_PACK",
+    "BUNDLE",
+    "GIFT_BUNDLE",
+    "COMMANDER_DECK",
+    "DRAFT_BOOSTER",
+    "SET_BOOSTER",
+    "PLAY_BOOSTER",
+    "JUMPSTART_BOOSTER",
+    "AMBIGUOUS_QUANTITY",
+    "AMBIGUOUS_CONFIGURATION"
+  ],
+  "source_authority": [
+    {
+      "source_id": "TCGPLAYER_CATALOG_API",
+      "authority_level": "PRIMARY",
+      "approved_domains": ["PRODUCT_IDENTITY", "CATALOG_NAME", "GROUP_ID", "PRODUCT_TYPE", "CURRENT_MARKET_PRICE", "LISTING_SUPPLY_WHEN_AVAILABLE"],
+      "required_controls": ["EXACT_PRODUCT_ID", "PRODUCT_TYPE_BOOSTER_BOX_OR_VERIFIED_EQUIVALENT", "CONFIGURATION_REVIEW", "LANGUAGE_REVIEW", "RAW_RESPONSE_VAULTING"],
+      "credentials_required": true,
+      "automatic_certification_allowed": false
+    },
+    {
+      "source_id": "WIZARDS_OFFICIAL_PRODUCT_PAGES",
+      "authority_level": "PRIMARY",
+      "approved_domains": ["OFFICIAL_PRODUCT_NAME", "RELEASE_DATE", "PACKAGING_DESCRIPTION", "PACK_COUNT", "LANGUAGE_AVAILABILITY", "REPRINT_OR_RELEASE_EVENT"],
+      "required_controls": ["PAGE_URL", "RETRIEVAL_TIMESTAMP", "RAW_PAGE_SNAPSHOT_OR_EXTRACT", "MANUAL_REVIEW_FOR_AMBIGUITY"],
+      "credentials_required": false,
+      "automatic_certification_allowed": false
+    },
+    {
+      "source_id": "MTGJSON_SEALED_DATA",
+      "authority_level": "SUPPLEMENTAL",
+      "approved_domains": ["SEALED_PRODUCT_CROSSWALK", "SET_CODE", "RELEASE_DATE_CROSSCHECK", "PACKAGING_CROSSCHECK"],
+      "required_controls": ["VERSION_CAPTURE", "RAW_RESPONSE_VAULTING", "NO_OVERRIDE_OF_PRIMARY_IDENTITY_WITHOUT_REVIEW"],
+      "credentials_required": false,
+      "automatic_certification_allowed": false
+    },
+    {
+      "source_id": "EXISTING_PROJECT_HISTORY",
+      "authority_level": "LEGACY_EVIDENCE",
+      "approved_domains": ["HISTORICAL_PRICE_OBSERVATIONS", "HISTORICAL_SUPPLY_OBSERVATIONS", "HISTORICAL_DEMAND_OBSERVATIONS"],
+      "required_controls": ["IDENTITY_RECONCILIATION", "CONFIGURATION_RECONCILIATION", "SOURCE_LINEAGE", "PLAUSIBILITY_REVIEW", "NO_AUTOMATIC_CERTIFICATION"],
+      "credentials_required": false,
+      "automatic_certification_allowed": false
+    }
+  ],
+  "fresh_acquisition_domains": [
+    "PRODUCT_AUTHORITY",
+    "CURRENT_PRICE",
+    "SUPPLY",
+    "DEMAND",
+    "LIQUIDITY",
+    "REPRINT_AND_SUBSTITUTION_EVENTS"
+  ],
+  "accuracy_states": [
+    "CONFIRMED",
+    "CORROBORATED",
+    "PLAUSIBLE_UNCORROBORATED",
+    "CONFLICTED",
+    "INVALID_CONFIGURATION",
+    "IDENTITY_UNRESOLVED",
+    "OUTLIER_REVIEW_REQUIRED"
+  ],
+  "missing_value_policy": {
+    "missing_must_not_equal_zero": true,
+    "unavailable_metric_must_lower_evidence_grade": true,
+    "unavailable_metric_must_not_remove_product": true
+  },
+  "fresh_pull_required_before_certification": true,
+  "cross_source_reconciliation_required": true,
+  "raw_response_vaulting_required": true,
+  "manual_owner_approval_required_for_ambiguous_identity": true,
+  "forecasting_resume_authorized": false,
+  "production_projection_authorized": false,
+  "purchase_recommendation_authorized": false,
+  "automatic_model_update_allowed": false,
+  "technical_freeze_authorized": false,
+  "uip_acceptance_authorized": false
+}

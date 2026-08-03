@@ -1,0 +1,35 @@
+{
+  "contract_name": "Collector Calibration Review Queue and Ranking Eligibility Candidate",
+  "contract_version": "1.0.0",
+  "snapshot_id": "collector-20260801T211201Z-7688afbd",
+  "required_products": 49,
+  "required_forecast_rows": 294,
+  "primary_ranking_horizons_days": [365, 1095],
+  "supporting_horizons_days": [90, 180, 730, 1825],
+  "authorities": {
+    "forecast_rows": "data/governance/permanence/certification/collector_v1_final_probabilistic_calibration/collector_final_forecast_row_validation.csv",
+    "product_status": "data/governance/permanence/certification/collector_v1_final_probabilistic_calibration/collector_product_calibration_status.csv",
+    "coherence_audit": "data/governance/permanence/certification/collector_v1_final_probabilistic_calibration/collector_horizon_coherence_audit.csv",
+    "extreme_review_queue": "data/governance/permanence/certification/collector_v1_final_probabilistic_calibration/collector_extreme_forecast_review_queue.csv",
+    "calibration_summary": "data/governance/permanence/certification/collector_v1_final_probabilistic_calibration/collector_probabilistic_calibration_summary.json",
+    "final_forecasts": "data/governance/permanence/certification/collector_v1_canonical_identity_lineage_recertification/collector_final_authority_bound_49_product_forecasts.csv"
+  },
+  "eligibility_rules": {
+    "structural_block_always_blocks": true,
+    "unresolved_primary_horizon_reasonableness_issue_blocks": true,
+    "unresolved_supporting_horizon_issue_allows_limited_candidate_only": true,
+    "at_least_one_short_or_primary_row_with_realized_validation_required": true,
+    "long_horizon_insufficient_realized_validation_alone_does_not_block": true,
+    "no_forecast_values_may_be_modified": true,
+    "ranking_authorized": false,
+    "purchase_recommendations_authorized": false
+  },
+  "candidate_statuses": [
+    "RANKING_ELIGIBLE",
+    "RANKING_ELIGIBLE_WITH_LIMITATIONS",
+    "REASONABLENESS_REVIEW_REQUIRED",
+    "INSUFFICIENT_FOR_RANKING",
+    "BLOCKED"
+  ],
+  "expected_status": "PASS_COLLECTOR_CALIBRATION_REVIEW_AND_RANKING_ELIGIBILITY_CANDIDATE"
+}

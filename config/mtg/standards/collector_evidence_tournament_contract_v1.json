@@ -1,0 +1,230 @@
+{
+  "contract_name": "Collector Evidence-Based Forecast Tournament Contract",
+  "contract_version": "1.0.0",
+  "contract_status": "GOVERNED_RECONSTRUCTION_BASELINE",
+  "domain_boundary": {
+    "mtg_owns": [
+      "MTG source evidence",
+      "MTG feature engineering",
+      "MTG candidate models",
+      "MTG backtesting",
+      "MTG horizon-specific model selection",
+      "MTG comparable-product selection",
+      "MTG breakout validation",
+      "MTG supply-demand modeling",
+      "MTG Monte Carlo calibration",
+      "MTG product forecasts",
+      "MTG uncertainty and confidence",
+      "MTG within-asset rankings",
+      "MTG opportunity and risk signals"
+    ],
+    "uip_owns": [
+      "cross-asset normalization",
+      "cross-asset comparison",
+      "portfolio constraints",
+      "capital allocation",
+      "portfolio-level ranking",
+      "cross-asset risk aggregation",
+      "final portfolio decisions"
+    ],
+    "prohibited_uip_behavior": [
+      "UIP must not define MTG forecast weights",
+      "UIP must not select MTG candidate models",
+      "UIP must not replace MTG confidence or uncertainty",
+      "UIP must not rewrite MTG comparable evidence",
+      "UIP must not infer MTG product forecasts from cross-asset scores"
+    ]
+  },
+  "required_forecast_horizons": [
+    {"horizon_id": "90_day", "days": 90, "selection_method": "OUT_OF_SAMPLE_MODEL_TOURNAMENT"},
+    {"horizon_id": "180_day", "days": 180, "selection_method": "OUT_OF_SAMPLE_MODEL_TOURNAMENT"},
+    {"horizon_id": "365_day", "days": 365, "selection_method": "OUT_OF_SAMPLE_MODEL_TOURNAMENT"},
+    {"horizon_id": "3_year", "days": 1095, "selection_method": "BACKTESTED_MONTE_CARLO_TOURNAMENT"},
+    {"horizon_id": "5_year", "days": 1825, "selection_method": "BACKTESTED_MONTE_CARLO_TOURNAMENT"}
+  ],
+  "model_selection_principles": [
+    "No candidate model is selected by predetermined preference.",
+    "No fixed rate or factor weight is required unless learned by the winning model.",
+    "Each horizon is evaluated independently.",
+    "Selection uses point-in-time-safe out-of-sample evidence.",
+    "Winner selection must consider accuracy, direction, calibration, downside error, ranking quality, and breakout detection where applicable.",
+    "A single model is not required to win every horizon.",
+    "All governed products receive every required horizon output.",
+    "Insufficient direct product history invokes governed comparable evidence rather than product exclusion."
+  ],
+  "candidate_model_families": [
+    "NAIVE_AND_HISTORICAL_BASELINES",
+    "MOMENTUM",
+    "MEAN_REVERSION",
+    "REGULARIZED_LINEAR",
+    "TREE_ENSEMBLE",
+    "GRADIENT_BOOSTING",
+    "AGE_CONDITIONED",
+    "SUPPLY_DEMAND",
+    "NEAREST_COMPARABLE",
+    "COMPARABLE_TRAJECTORY",
+    "HYBRID_ENSEMBLE"
+  ],
+  "short_horizon_backtest_requirements": {
+    "validation_design": [
+      "rolling_origin",
+      "walk_forward",
+      "strict_training_cutoff",
+      "no_future_feature_leakage",
+      "product_and_date lineage"
+    ],
+    "minimum_metrics": [
+      "mae",
+      "median_absolute_error",
+      "rmse",
+      "directional_accuracy",
+      "interval_coverage",
+      "calibration_error",
+      "large_error_frequency",
+      "rank_correlation",
+      "top_k_precision",
+      "downside_miss_severity"
+    ]
+  },
+  "comparable_requirements": {
+    "required_for_limited_history_products": true,
+    "required_outputs": [
+      "selected_comparable_ids",
+      "selected_comparable_names",
+      "similarity_scores",
+      "selection_reasons",
+      "lifecycle_alignment_basis",
+      "comparable_outcome_summary",
+      "confidence_penalty",
+      "uncertainty_adjustment"
+    ],
+    "candidate_features": [
+      "sealed_product_configuration",
+      "release_era",
+      "lifecycle_stage",
+      "franchise_strength",
+      "universes_beyond_status",
+      "premium_contents",
+      "initial_price_band",
+      "supply_profile",
+      "listing_depth",
+      "liquidity",
+      "reprint_exposure",
+      "release_cadence",
+      "historical_market_behavior"
+    ]
+  },
+  "breakout_validation_requirements": {
+    "historical_replay_required": true,
+    "point_in_time_evidence_only": true,
+    "minimum_metrics": [
+      "breakout_recall",
+      "breakout_precision",
+      "false_positive_rate",
+      "median_lead_time_days",
+      "pre_breakout_rank",
+      "top_k_realized_return"
+    ]
+  },
+  "long_horizon_requirements": {
+    "monte_carlo_required": true,
+    "candidate_processes": [
+      "HISTORICAL_BOOTSTRAP",
+      "AGE_CONDITIONED_BOOTSTRAP",
+      "COMPARABLE_TRAJECTORY_SIMULATION",
+      "REGIME_CONDITIONED_SIMULATION",
+      "MEAN_REVERTING_PROCESS",
+      "GEOMETRIC_PROCESS",
+      "HYBRID_EMPIRICAL_SIMULATION"
+    ],
+    "selection_rule": "BEST_BACKTESTED_AND_CALIBRATED_PROCESS_BY_HORIZON",
+    "minimum_outputs": [
+      "downside_percentile",
+      "median_terminal_value",
+      "upside_percentile",
+      "expected_annualized_return",
+      "probability_nominal_gain",
+      "probability_beating_transaction_costs",
+      "probability_exceeding_return_threshold",
+      "adverse_path_measure",
+      "simulation_confidence"
+    ]
+  },
+  "supply_demand_requirements": {
+    "candidate_inputs": [
+      "accepted_listing_count",
+      "listing_quantity_depth",
+      "seller_concentration",
+      "listing_price_distribution",
+      "price_dispersion",
+      "listing_supply_change",
+      "liquidity",
+      "demand_proxy",
+      "scarcity_indicator",
+      "reprint_risk"
+    ],
+    "ablation_required": true,
+    "retention_rule": "Retain only when validated performance, calibration, breakout detection, downside recognition, or ranking quality improves."
+  },
+  "required_product_outputs": [
+    "forecast_90d",
+    "forecast_180d",
+    "forecast_365d",
+    "forecast_3y",
+    "forecast_5y",
+    "selected_model_90d",
+    "selected_model_180d",
+    "selected_model_365d",
+    "selected_model_3y",
+    "selected_model_5y",
+    "downside_90d",
+    "base_90d",
+    "upside_90d",
+    "downside_180d",
+    "base_180d",
+    "upside_180d",
+    "downside_365d",
+    "base_365d",
+    "upside_365d",
+    "downside_3y",
+    "median_3y",
+    "upside_3y",
+    "downside_5y",
+    "median_5y",
+    "upside_5y",
+    "confidence_90d",
+    "confidence_180d",
+    "confidence_365d",
+    "confidence_3y",
+    "confidence_5y"
+  ],
+  "required_lineage": [
+    "source_snapshot_id",
+    "source_bundle_sha256",
+    "source_price_authority_sha256",
+    "source_listing_authority_sha256",
+    "source_feature_authority_sha256",
+    "model_generated_at_utc",
+    "code_commit_sha",
+    "tournament_run_id",
+    "training_cutoff"
+  ],
+  "uip_export_contract": {
+    "export_only_after_mtg_certification": true,
+    "mtg_outputs_are_immutable_inputs_to_uip": true,
+    "required_export_groups": [
+      "identity",
+      "current_value",
+      "horizon_forecasts",
+      "uncertainty",
+      "confidence",
+      "liquidity",
+      "risk",
+      "within_mtg_rank",
+      "opportunity_signal",
+      "lineage",
+      "limitations"
+    ],
+    "purchase_recommendations_authorized": false
+  }
+}

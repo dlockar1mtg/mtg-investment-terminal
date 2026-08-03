@@ -1,0 +1,105 @@
+{
+  "approval_name": "Collector Numeric Methodology Concept Approval",
+  "approval_version": "1.0.0",
+  "owner": "Devon Lockard",
+  "approval_date": "2026-07-31",
+  "status": "CONCEPTUALLY_APPROVED_NUMERIC_SPECIFICATION_REQUIRED",
+  "source_proposal": "config/mtg/governance/collector_numeric_methodology_owner_decision_v1.json",
+  "methodology_activated": false,
+  "projection_authorized": false,
+  "purchase_recommendation_authorized": false,
+  "exact_numeric_specification_approved": false,
+  "governing_rule": "These approvals authorize detailed numeric specification and testing only. No exact equation, weight, threshold, cap, purchase rule, production forecast, or UIP delivery is authorized until separately reviewed and approved.",
+  "approvals": [
+    {
+      "decision_id": "COL-DEC-001",
+      "owner_selection": "A",
+      "approval_status": "APPROVED_WITH_CONDITION",
+      "approved_concept": "Robust historical CAGR blend",
+      "conditions": [
+        "Applies only to products routed to DIRECT_HISTORY_CALIBRATED.",
+        "Historical maturity is not a universal forecast eligibility gate.",
+        "Products with insufficient mature history remain eligible through approved DIRECT_HISTORY_LIMITED, COMPARABLE_PRODUCT_ADJUSTED, or FUNDAMENTAL_COMPARABLE_HYBRID routes.",
+        "Lack of mature history alone must not cause the platform to miss an otherwise supportable early investment opportunity."
+      ]
+    },
+    {
+      "decision_id": "COL-DEC-002",
+      "owner_selection": "A",
+      "approval_status": "APPROVED",
+      "approved_concept": "History-comparable blend",
+      "conditions": [
+        "Limited direct history is a minority input.",
+        "Approved comparables are the primary input until the product qualifies for calibrated history.",
+        "Exact weights remain subject to separate numeric approval."
+      ]
+    },
+    {
+      "decision_id": "COL-DEC-003",
+      "owner_selection": "A",
+      "approval_status": "APPROVED",
+      "approved_concept": "Similarity-weighted peer returns",
+      "conditions": [
+        "Peer contributions must remain individually disclosed.",
+        "Exact weighting equations remain subject to separate numeric approval."
+      ]
+    },
+    {
+      "decision_id": "COL-DEC-004",
+      "owner_selection": "A",
+      "approval_status": "APPROVED",
+      "approved_concept": "Comparable-majority hybrid",
+      "conditions": [
+        "The approved same-set comparable remains the dominant evidence source.",
+        "Exact comparable and fundamental weights remain subject to separate numeric approval."
+      ]
+    },
+    {
+      "decision_id": "COL-DEC-005",
+      "owner_selection": "A",
+      "approval_status": "APPROVED",
+      "approved_concept": "Evidence-derived intervals",
+      "conditions": [
+        "Scenario width and confidence must reflect actual evidence quality, dispersion, agreement, and limitations.",
+        "Exact equations and class thresholds remain subject to separate numeric approval."
+      ]
+    },
+    {
+      "decision_id": "COL-DEC-006",
+      "owner_selection": "A",
+      "approval_status": "APPROVED",
+      "approved_concept": "Bounded transparent adjustment",
+      "conditions": [
+        "Supply, demand, liquidity, and reprint effects must be separately disclosed.",
+        "Exact adjustment scales and bounds remain subject to separate numeric approval."
+      ]
+    },
+    {
+      "decision_id": "COL-DEC-007",
+      "owner_selection": "A",
+      "approval_status": "APPROVED_WITH_CONDITIONS",
+      "approved_concept": "Data-derived review gates and purchase analysis development",
+      "conditions": [
+        "The intended operating state is daily data refresh so stale-price risk is minimized.",
+        "Freshness diagnostics and fail-closed behavior must still exist when a daily refresh fails or data is unavailable.",
+        "No hard forecast caps are authorized.",
+        "Extreme forecasts must remain visible and be routed to enhanced review rather than silently clipped.",
+        "Purchase-analysis calculations may be developed and backtested.",
+        "No purchase thresholds, recommendations, or authorizations may activate without separate owner approval."
+      ]
+    }
+  ],
+  "next_stage_authorized": [
+    "Prepare exact numerical equations, weights, thresholds, and diagnostics for owner review.",
+    "Implement candidate calculations in non-production mode.",
+    "Backtest and produce reasonableness diagnostics.",
+    "Prepare a separate exact numeric specification approval package."
+  ],
+  "not_authorized": [
+    "Production forecast activation",
+    "Purchase recommendation activation",
+    "Hard forecast caps",
+    "Automatic disqualification based only on insufficient mature history",
+    "UIP production delivery"
+  ]
+}

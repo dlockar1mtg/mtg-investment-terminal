@@ -1,0 +1,44 @@
+{
+  "program_name": "Collector 365-Day Route-Specific Owner Review",
+  "program_version": "1.0.0",
+  "source_qualification": "data/operations/collector_365_final_qualification/candidate_v1_0_0",
+  "recommendation": {
+    "MATURE": {
+      "method": "DIRECT",
+      "variant": "PW0.5_MR0.5_VP0.0_DP0.0_PA0.05",
+      "bias_shrinkage": 1.0,
+      "evidence_grade": "A_DIRECT_MATURED",
+      "owner_review_eligible": true
+    },
+    "DEVELOPING": {
+      "method": "COMPARABLE",
+      "variant": "COMPARABLE_BLENDED",
+      "bias_shrinkage": 1.0,
+      "evidence_grade": "B_VINTAGE_REPLAY",
+      "owner_review_eligible": true
+    },
+    "LIMITED": {
+      "method": "BLOCKED",
+      "variant": null,
+      "bias_shrinkage": null,
+      "evidence_grade": "BLOCKED",
+      "owner_review_eligible": false
+    }
+  },
+  "rationale": {
+    "MATURE": "DIRECT has lower MAE, lower absolute bias, stronger rank correlation, and stronger top-bottom spread than COMPARABLE for mature products.",
+    "DEVELOPING": "COMPARABLE has slightly lower MAE, materially lower absolute bias, stronger rank correlation, and stronger top-bottom spread than DIRECT for developing products.",
+    "LIMITED": "Both methods have high MAE, severe negative bias, and negative rank correlation; no forecast route qualifies."
+  },
+  "shadow_only": true,
+  "route_specific_shadow_implementation_authorized": false,
+  "direct_method_authorized": false,
+  "comparable_transfer_method_authorized": false,
+  "limited_route_authorized": false,
+  "candidate_methodology_change_authorized": false,
+  "production_projection_authorized": false,
+  "purchase_recommendation_authorized": false,
+  "automatic_model_update_allowed": false,
+  "technical_freeze_authorized": false,
+  "uip_acceptance_authorized": false
+}

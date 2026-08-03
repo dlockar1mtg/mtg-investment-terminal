@@ -1,0 +1,37 @@
+{
+  "policy_name": "Collector Historical Bridge Certification Policy",
+  "policy_version": "1.0.0",
+  "scope": "Dynamic English factory-sealed Collector Booster Display analytical history candidate",
+  "inputs": {
+    "safe_released_monthly_history": "data/governance/permanence/certification/collector_safe_monthly_history/collector_safe_released_monthly_history_candidate.csv",
+    "safe_presale_history": "data/governance/permanence/certification/collector_safe_monthly_history/collector_safe_presale_history_isolated.csv",
+    "current_authority": "data/governance/permanence/certification/collector_current_authority/collector_current_authority_all.csv",
+    "july_current_observations": "data/staging/purchase_refresh/2026-07-31/daily_price_observations.csv",
+    "august_live_observations": "data/operations/tcgcsv/collector_live_price_observations.csv",
+    "name_only_comparison_panel": "data/operations/collector_long_horizon_historical_feature_panel/candidate_v1_0_0/collector_long_horizon_monthly_price_panel.csv"
+  },
+  "principles": {
+    "exact_id_history_has_precedence": true,
+    "name_only_panel_is_comparison_only": true,
+    "certified_current_observations_may_extend_history": true,
+    "one_row_per_product_month": true,
+    "release_month_enforced": true,
+    "presale_isolated": true,
+    "missing_values_never_zero_filled": true,
+    "absolute_price_caps_prohibited": true,
+    "material_changes_require_review_not_automatic_rejection": true,
+    "historical_append_authorized": false,
+    "forecasting_resume_authorized": false,
+    "purchase_recommendation_authorized": false
+  },
+  "continuity_thresholds": {
+    "material_absolute_percent_change": 0.25,
+    "extreme_up_percent_change": 1.0,
+    "extreme_down_percent_change": -0.5
+  },
+  "current_source_precedence": [
+    "AUGUST_LIVE_CERTIFIED",
+    "JULY_31_CERTIFIED",
+    "ARCHIVE_MONTHLY"
+  ]
+}

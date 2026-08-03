@@ -1,0 +1,43 @@
+{
+  "contract_name": "Collector Final Model Output Validation and 49-Product Integration",
+  "contract_version": "1.0.0",
+  "snapshot_id": "collector-20260801T211201Z-7688afbd",
+  "horizons_days": [90, 180, 365, 730, 1095, 1825],
+  "required_forecast_products": 49,
+  "required_forecast_rows": 294,
+  "required_blocked_products": 1,
+  "required_coverage_rows": 300,
+  "simulation_count": 10000,
+  "early_awareness": {
+    "checkpoint_days": [30, 60, 90, 120, 180],
+    "selection_cutoffs": [3, 5, 10],
+    "strong_growth_return_floor": 0.50,
+    "exceptional_breakout_quantile": 0.75,
+    "exceptional_breakout_absolute_floor": 0.50,
+    "day30_status": "INSUFFICIENT_DIFFERENTIATING_EVIDENCE",
+    "primary_checkpoint_day": 120,
+    "primary_selection_cutoff": 5
+  },
+  "reasonableness": {
+    "maximum_flagged_five_year_median_cagr": 0.50,
+    "maximum_flagged_five_year_p90_multiple": 20.0,
+    "minimum_allowed_price": 0.01,
+    "probability_minimum": 0.0,
+    "probability_maximum": 1.0,
+    "quantiles_must_be_monotonic": true
+  },
+  "governance": {
+    "generic_method_prohibited": true,
+    "every_forecast_requires_explicit_method": true,
+    "every_forecast_requires_monte_carlo": true,
+    "lorwyn_supply_ambiguity_preserved": true,
+    "lorwyn_supply_overlay_neutral": true,
+    "lotr_special_edition_user_exclusion_preserved": true,
+    "strong_growth_and_exceptional_breakout_must_be_separate": true,
+    "edge_of_eternities_must_be_evaluated_as_strong_growth": true,
+    "production_forecast_authorized": false,
+    "ranking_authorized": false,
+    "purchase_recommendations_authorized": false
+  },
+  "expected_status": "PASS_COLLECTOR_FINAL_MODEL_OUTPUT_VALIDATION"
+}

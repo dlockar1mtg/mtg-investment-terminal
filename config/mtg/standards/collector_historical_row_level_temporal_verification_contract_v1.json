@@ -1,0 +1,50 @@
+{
+  "contract_name": "Collector Historical Row-Level Temporal Verification Contract",
+  "contract_version": "1.0.0",
+  "domain_owner": "MTG",
+  "purpose": "Verify actual row dates, product identities, observation semantics, duplicates, conflicts, and historical checkpoint coverage before lifecycle-panel construction.",
+  "required_source_fields": [
+    "source_path",
+    "source_sha256",
+    "feature_family",
+    "semantic_role",
+    "date_field",
+    "identity_field"
+  ],
+  "required_verification_outputs": [
+    "source_path",
+    "source_sha256",
+    "feature_family",
+    "semantic_role",
+    "row_count",
+    "valid_date_row_count",
+    "invalid_date_row_count",
+    "minimum_observation_date",
+    "maximum_observation_date",
+    "distinct_product_count",
+    "blank_identity_row_count",
+    "duplicate_identity_date_row_count",
+    "future_dated_row_count",
+    "checkpoint_coverage_count",
+    "row_level_replay_eligible",
+    "exclusion_reason"
+  ],
+  "evaluation_checkpoints_days": [0, 30, 60, 90, 120, 180, 270, 365],
+  "controls": {
+    "future_information_prohibited": true,
+    "blank_identity_prohibited_for_observation_rows": true,
+    "invalid_dates_not_replay_eligible": true,
+    "duplicate_identity_date_keys_must_be_disclosed": true,
+    "derived_or_operational_outputs_prohibited": true,
+    "current_only_sources_prohibited": true,
+    "row_level_temporal_verification_required": true,
+    "static_authorities_may_omit_observation_date": true,
+    "lifecycle_panel_build_requires_separate_authorization": true
+  },
+  "authorization": {
+    "row_level_verification_authorized": true,
+    "lifecycle_panel_build_authorized": false,
+    "model_tournament_authorized": false,
+    "purchase_recommendations_authorized": false
+  }
+}

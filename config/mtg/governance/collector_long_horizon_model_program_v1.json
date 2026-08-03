@@ -1,0 +1,91 @@
+{
+  "program_name": "Collector Long-Horizon Model Program",
+  "program_version": "1.0.0",
+  "primary_class": "COLLECTOR_BOOSTER_DISPLAY",
+  "horizons": {
+    "365_day": {
+      "model_family": "DIRECT_HYBRID_RETURN_MODEL",
+      "required_components": [
+        "product_momentum",
+        "collector_market_momentum",
+        "forecast_extremeness_mean_reversion",
+        "product_age_route",
+        "volatility_penalty",
+        "drawdown_penalty",
+        "liquidity_adjustment",
+        "asymmetric_uncertainty"
+      ],
+      "validation_mode": "DIRECT_POINT_IN_TIME_WALK_FORWARD",
+      "status": "DEVELOPMENT_AUTHORIZED_SHADOW_ONLY"
+    },
+    "3_year": {
+      "model_family": "LIFECYCLE_ADJUSTED_NORMALIZED_CAGR",
+      "required_components": [
+        "product_cagr",
+        "collector_category_cagr",
+        "comparable_group_cagr",
+        "product_lifecycle_phase",
+        "scarcity_score",
+        "demand_durability_score",
+        "reprint_substitution_risk",
+        "liquidity_adjustment",
+        "bear_base_bull_distribution"
+      ],
+      "validation_mode": "HISTORICAL_VINTAGE_AND_RANKING_REPLAY",
+      "status": "LONG_HORIZON_EXPERIMENTAL"
+    },
+    "5_year": {
+      "model_family": "FUNDAMENTAL_TERMINAL_GROWTH_PROBABILITY_MODEL",
+      "required_components": [
+        "year_1_calibrated_forecast",
+        "years_2_3_normalized_cagr",
+        "years_4_5_terminal_growth",
+        "growth_decay",
+        "premium_average_underperformer_probabilities",
+        "survivorship_obsolescence_risk",
+        "reprint_substitution_risk",
+        "net_realizable_value",
+        "proxy_prior",
+        "bear_base_bull_distribution"
+      ],
+      "validation_mode": "HISTORICAL_VINTAGE_PROXY_AND_RANKING_REPLAY",
+      "status": "LONG_HORIZON_EXPERIMENTAL"
+    }
+  },
+  "required_standard_outputs": [
+    "forecast_center",
+    "forecast_lower_bound",
+    "forecast_upper_bound",
+    "bear_case",
+    "base_case",
+    "bull_case",
+    "gross_projected_return",
+    "net_realizable_return",
+    "forecast_method",
+    "evidence_grade",
+    "model_maturity_status",
+    "confidence_tier",
+    "decision_state",
+    "liquidity_grade",
+    "data_quality_grade",
+    "route",
+    "lineage"
+  ],
+  "evidence_grades": ["A_DIRECT_MATURED", "B_VINTAGE_REPLAY", "C_PROXY_PRIOR", "D_EXPERIMENTAL", "BLOCKED"],
+  "product_age_routes_months": {
+    "MATURE": 36,
+    "DEVELOPING": 18,
+    "LIMITED": 0
+  },
+  "transfer_program": {
+    "PRE_COLLECTOR": "REUSE_FRAMEWORK_WITH_CLASS_SPECIFIC_COMPARABLES_LIFECYCLE_AND_LIQUIDITY",
+    "SECRET_LAIR": "REUSE_FRAMEWORK_WITH_SALE_WINDOW_EDITION_SCARCITY_REPRINT_AND_DROP_LIQUIDITY"
+  },
+  "shadow_only": true,
+  "candidate_methodology_change_authorized": false,
+  "production_projection_authorized": false,
+  "purchase_recommendation_authorized": false,
+  "automatic_model_update_allowed": false,
+  "technical_freeze_authorized": false,
+  "uip_acceptance_authorized": false
+}

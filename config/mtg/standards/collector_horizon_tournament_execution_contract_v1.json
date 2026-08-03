@@ -1,0 +1,82 @@
+{
+  "contract_name": "Collector Horizon-Specific Rolling Tournament Execution",
+  "contract_version": "1.0.0",
+  "governing_snapshot_id": "collector-20260801T211201Z-7688afbd",
+  "required_architecture_status": "PASS_COLLECTOR_HORIZON_SPECIFIC_TOURNAMENT_ARCHITECTURE",
+  "required_premodel_status": "PASS_COLLECTOR_FINAL_PREMODEL_USER_EXCLUSION_RESOLUTION",
+  "horizons": [
+    {"label": "90_DAY", "days": 90, "minimum_training_observations": 6},
+    {"label": "180_DAY", "days": 180, "minimum_training_observations": 8},
+    {"label": "1_YEAR", "days": 365, "minimum_training_observations": 10},
+    {"label": "2_YEAR", "days": 730, "minimum_training_observations": 12},
+    {"label": "3_YEAR", "days": 1095, "minimum_training_observations": 15},
+    {"label": "5_YEAR", "days": 1825, "minimum_training_observations": 18}
+  ],
+  "rolling_origin": {
+    "minimum_folds_per_tournament": 3,
+    "minimum_products_per_tournament": 1,
+    "future_match_tolerance_days": 45,
+    "training_data_must_precede_origin": true,
+    "current_only_features_prohibited": true
+  },
+  "direct_calibrated_models": [
+    "NAIVE_LAST_VALUE",
+    "MEDIAN_LOG_DRIFT",
+    "ROBUST_LOG_TREND",
+    "DAMPED_LOG_TREND",
+    "EXPONENTIAL_SMOOTHING"
+  ],
+  "direct_limited_models": [
+    "NAIVE_LAST_VALUE",
+    "MEDIAN_LOG_DRIFT",
+    "ROBUST_LOG_TREND"
+  ],
+  "comparable_models": [
+    "COMPARABLE_MEDIAN_GROWTH",
+    "COMPARABLE_WEIGHTED_GROWTH",
+    "COMPARABLE_LIFECYCLE_MATCHED",
+    "COMPARABLE_SHRUNK_ENSEMBLE"
+  ],
+  "winner_selection": {
+    "primary_metric": "median_absolute_percentage_error",
+    "secondary_metrics": [
+      "mean_absolute_error",
+      "directional_accuracy",
+      "median_bias",
+      "fold_stability"
+    ],
+    "baseline_model": "NAIVE_LAST_VALUE",
+    "must_beat_baseline_or_be_governed_no_winner": true,
+    "independent_winner_per_horizon_and_route": true
+  },
+  "major_365_growth_definition": {
+    "description": "Data-relative outcome; the former 350-400 range is contextual only and is not a gate.",
+    "absolute_return_floor": 0.50,
+    "cross_product_quantile": 0.75,
+    "classification_rule": "realized_365_return >= max(absolute_return_floor, realized_365_return_quantile)",
+    "early_origin_max_age_days": 180,
+    "maximum_upside_already_captured": 0.40,
+    "maximum_origin_to_day365_price_ratio": 0.70,
+    "primary_objective": "Identify major 365-day growers before most realized upside is captured."
+  },
+  "early_detection_metrics": [
+    "major_grower_precision",
+    "major_grower_recall",
+    "early_detection_rate",
+    "median_upside_captured_at_signal",
+    "median_days_from_release_at_signal",
+    "late_signal_rate",
+    "false_positive_rate"
+  ],
+  "current_supply_demand_policy": {
+    "historical_fit_allowed": false,
+    "historical_backtest_allowed": false,
+    "post_forecast_overlay_allowed": true,
+    "point_forecast_rewrite_allowed": false,
+    "ranking_and_confidence_adjustment_allowed": true,
+    "purchase_authorization_allowed": false
+  },
+  "expected_status": "PASS_COLLECTOR_HORIZON_SPECIFIC_TOURNAMENT_EXECUTION",
+  "production_forecasting_authorized": false,
+  "purchase_recommendations_authorized": false
+}

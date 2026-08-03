@@ -1,0 +1,33 @@
+{
+  "contract_name": "Collector Final Ranking Eligibility Certification",
+  "contract_version": "1.0.0",
+  "snapshot_id": "collector-20260801T211201Z-7688afbd",
+  "required_products": 49,
+  "required_forecast_rows": 294,
+  "primary_horizons_days": [365, 1095],
+  "supporting_horizons_days": [90, 180, 730, 1825],
+  "authorities": {
+    "eligibility_candidate": "data/governance/permanence/certification/collector_v1_calibration_review_and_ranking_eligibility/collector_ranking_eligibility_candidate.csv",
+    "review_queue": "data/governance/permanence/certification/collector_v1_calibration_review_and_ranking_eligibility/collector_calibration_review_queue.csv",
+    "eligibility_summary": "data/governance/permanence/certification/collector_v1_calibration_review_and_ranking_eligibility/collector_calibration_review_and_ranking_eligibility_summary.json",
+    "forecast_rows": "data/governance/permanence/certification/collector_v1_canonical_identity_lineage_recertification/collector_final_authority_bound_49_product_forecasts.csv",
+    "calibration_rows": "data/governance/permanence/certification/collector_v1_final_probabilistic_calibration/collector_final_forecast_row_validation.csv"
+  },
+  "rules": {
+    "all_governed_products_enter_ranking_competition": true,
+    "limited_evidence_is_penalized_not_silently_excluded": true,
+    "supporting_horizon_issue_does_not_block_primary_horizon_ranking": true,
+    "primary_horizon_issue_requires_review": true,
+    "structural_failure_blocks_ranking": true,
+    "conditional_products_are_purchase_ineligible": true,
+    "forecast_values_must_not_be_modified": true,
+    "ranking_execution_authorized": true,
+    "purchase_recommendations_authorized": false
+  },
+  "penalties": {
+    "ranking_eligible_with_limitations": 5.0,
+    "conditional_no_realized_primary_validation": 15.0,
+    "supporting_horizon_review": 5.0
+  },
+  "expected_status": "PASS_COLLECTOR_FINAL_RANKING_ELIGIBILITY_CERTIFICATION"
+}

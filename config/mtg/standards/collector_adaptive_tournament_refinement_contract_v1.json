@@ -1,0 +1,78 @@
+{
+  "contract_name": "Collector Adaptive Tournament Refinement",
+  "contract_version": "1.0.0",
+  "governing_snapshot_id": "collector-20260801T211201Z-7688afbd",
+  "required_first_round_status": "PASS_COLLECTOR_HORIZON_SPECIFIC_TOURNAMENT_EXECUTION",
+  "forecast_horizons_days": [90, 180, 365, 730, 1095, 1825],
+  "independent_refinement_per_horizon": true,
+  "independent_refinement_per_route": true,
+  "rounds": {
+    "round_1": "broad baseline tournament",
+    "round_2": "feature and model refinement tournament",
+    "round_3": "final champion challenge against round-1 and round-2 leaders"
+  },
+  "minimum_refinement_candidates_per_eligible_group": 40,
+  "maximum_refinement_candidates_per_eligible_group": 250,
+  "candidate_dimensions": [
+    "lookback_window",
+    "recency_weight",
+    "trend_damping",
+    "robust_loss",
+    "shrinkage_strength",
+    "lifecycle_segmentation",
+    "comparable_weighting",
+    "feature_subset",
+    "feature_transformation",
+    "ensemble_weight"
+  ],
+  "historical_features_allowed": [
+    "lagged_selected_price",
+    "lagged_log_return",
+    "lagged_volatility",
+    "lagged_drawdown",
+    "release_age_days",
+    "lifecycle_band",
+    "licensed_ip_family",
+    "time_safe_comparable_growth"
+  ],
+  "current_only_features_prohibited_from_refinement": [
+    "august1_current_price",
+    "ebay_listing_count",
+    "ebay_seller_count",
+    "current_scarcity_tier",
+    "current_eligibility_status",
+    "current_ranking_or_review_outcome"
+  ],
+  "anti_overfit_controls": {
+    "nested_rolling_origin_required": true,
+    "discovery_and_champion_folds_separate": true,
+    "product_group_holdout_required": true,
+    "multiple_testing_penalty_required": true,
+    "minimum_fold_stability_required": true,
+    "baseline_challenge_required": true,
+    "round_1_champion_challenge_required": true
+  },
+  "selection_objectives": {
+    "all_horizons": [
+      "mape",
+      "mae",
+      "directional_accuracy",
+      "bias",
+      "fold_stability",
+      "product_stability"
+    ],
+    "365_day_additional": [
+      "major_grower_precision",
+      "major_grower_recall",
+      "early_detection_rate",
+      "late_signal_rate",
+      "false_positive_rate",
+      "upside_remaining_at_signal"
+    ]
+  },
+  "promotion_rule": "A refined model must outperform the naive baseline and the prior-round champion on untouched champion folds after complexity and multiple-testing penalties.",
+  "no_forced_winner": true,
+  "production_forecasting_authorized": false,
+  "purchase_recommendations_authorized": false,
+  "expected_status": "PASS_COLLECTOR_ADAPTIVE_TOURNAMENT_REFINEMENT_ARCHITECTURE"
+}

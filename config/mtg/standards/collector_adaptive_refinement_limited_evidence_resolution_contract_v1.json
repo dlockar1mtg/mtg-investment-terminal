@@ -1,0 +1,30 @@
+{
+  "contract_name": "Collector Adaptive Round 2 Limited-Evidence Resolution",
+  "contract_version": "1.0.0",
+  "required_failed_status": "FAIL_COLLECTOR_ADAPTIVE_REFINEMENT_EXECUTION",
+  "required_failure": "INSUFFICIENT_FINALISTS:REFINE-180-DIRECT_HISTORY_LIMITED",
+  "required_refinement_groups": 8,
+  "required_candidate_rows": 2000,
+  "required_existing_finalists": 35,
+  "required_existing_group_decisions": 7,
+  "required_fallback_group_id": "REFINE-180-DIRECT_HISTORY_LIMITED",
+  "required_fallback_horizon_label": "180_DAY",
+  "required_fallback_horizon_days": 180,
+  "required_fallback_route": "DIRECT_HISTORY_LIMITED",
+  "fallback_decision": "RETAIN_ROUND1_CHAMPION_LIMITED_REFINEMENT_EVIDENCE",
+  "fallback_basis": "Round 2 discovery evidence is insufficient after governed product and latest-time holdouts; retain the certified Round 1 champion without claiming Round 2 improvement.",
+  "expected_status": "PASS_COLLECTOR_ADAPTIVE_REFINEMENT_LIMITED_EVIDENCE_RESOLUTION",
+  "governance": {
+    "do_not_lower_discovery_minimum": true,
+    "do_not_manufacture_finalists": true,
+    "retain_round1_champion_when_refinement_evidence_insufficient": true,
+    "preserve_nested_validation": true,
+    "preserve_product_holdout": true,
+    "preserve_latest_time_holdout": true,
+    "preserve_multiple_testing_penalty": true,
+    "current_only_features_prohibited": true,
+    "round3_champion_challenge_authorized": true,
+    "production_forecasting_authorized": false,
+    "purchase_recommendations_authorized": false
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "program_name": "Collector Early-Lifecycle Breakout Replay",
+  "program_version": "1.0.0",
+  "purpose": "Test whether early-lifecycle forecasts identify major Collector winners before most appreciation occurs.",
+  "inputs": {
+    "historical_feature_panel": "data/operations/collector_long_horizon_historical_feature_panel/candidate_v1_0_0/collector_long_horizon_decision_feature_panel.csv"
+  },
+  "output_root": "data/operations/collector_early_lifecycle_breakout_replay/candidate_v1_0_0",
+  "identity_contract": "TCGPLAYER_PRODUCT_ID_PRIMARY_WHEN_AVAILABLE",
+  "age_bands_months": {
+    "LAUNCH_PRICE_DISCOVERY": [0, 3],
+    "INITIAL_SUPPLY_ABSORPTION": [4, 8],
+    "STABILIZATION": [9, 12],
+    "EARLY_ACCUMULATION": [13, 17]
+  },
+  "breakout_thresholds": [0.25, 0.50, 0.70],
+  "lead_time_horizon_days": 365,
+  "ranking_quantile": 0.20,
+  "minimum_cases_per_band": 5,
+  "required_metrics": [
+    "case_count", "product_count", "cutoff_count", "breakout_count_25", "breakout_count_50",
+    "breakout_count_70", "breakout_recall_25", "breakout_recall_50", "breakout_recall_70",
+    "false_negative_rate_25", "false_negative_rate_50", "false_negative_rate_70",
+    "top_quantile_capture_25", "top_quantile_capture_50", "top_quantile_capture_70",
+    "false_positive_rate_25", "false_positive_rate_50", "false_positive_rate_70",
+    "mean_missed_upside_25", "mean_missed_upside_50", "mean_missed_upside_70",
+    "rank_correlation", "top_bottom_spread"
+  ],
+  "future_information_forbidden_in_forecast_features": true,
+  "historical_realized_outcome_allowed_for_scoring_only": true,
+  "shadow_only": true,
+  "methodology_change_authorized": false,
+  "production_projection_authorized": false,
+  "purchase_recommendation_authorized": false,
+  "automatic_model_update_allowed": false,
+  "technical_freeze_authorized": false,
+  "uip_acceptance_authorized": false
+}

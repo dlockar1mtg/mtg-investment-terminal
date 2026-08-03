@@ -1,0 +1,33 @@
+{
+  "approval_name": "Collector Candidate Methodology v2 Owner Approval",
+  "approval_version": "2.0.0",
+  "approved_at_local": "2026-08-01T07:06:00-05:00",
+  "scope": "DEVELOPMENT_AND_TESTING_ONLY",
+  "owner_decisions": {
+    "COL-METH-001": "APPROVE_DIAGNOSTIC_ONLY",
+    "COL-METH-002": "APPROVE_SIMPLE_RETURN_UNTIL_365_DAYS",
+    "COL-METH-003": "APPROVE_TRIMMED_MEAN_10_PERCENT",
+    "COL-METH-004": "APPROVE_DISCLOSURE_AND_REVIEW",
+    "COL-METH-005": "APPROVE_DISCLOSE_REVIEW_NO_AUTOMATIC_CAP",
+    "COL-METH-006": "APPROVE_PRIMARY_COMPARABLE_KEEP_FORMULA_INACTIVE"
+  },
+  "candidate_methodology": {
+    "peer_aggregation": "PEER_TRIMMED_MEAN_10_PERCENT",
+    "short_history_treatment": "SIMPLE_RETURN_UNTIL_365_DAYS_OBSERVED",
+    "symmetric_comparable_scores": "DIAGNOSTIC_ONLY",
+    "dominant_peer_treatment": "DISCLOSE_AND_REQUIRE_REVIEW",
+    "extreme_rate_treatment": "DISCLOSE_AND_REQUIRE_REVIEW_NO_AUTOMATIC_CAP",
+    "fundamental_adjustment_treatment": "PRESERVE_SEPARATELY_AND_ADD_VISIBLY",
+    "japanese_final_fantasy_primary_comparable": "OWNER_APPROVED",
+    "japanese_final_fantasy_formula": "INACTIVE"
+  },
+  "authorization_boundaries": {
+    "candidate_development_authorized": true,
+    "candidate_testing_authorized": true,
+    "candidate_projection_authorized": false,
+    "production_projection_authorized": false,
+    "purchase_recommendation_authorized": false,
+    "automatic_model_update_allowed": false,
+    "japanese_hybrid_formula_authorized": false
+  }
+}

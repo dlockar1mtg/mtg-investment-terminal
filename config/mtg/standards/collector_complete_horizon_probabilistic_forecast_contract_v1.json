@@ -1,0 +1,45 @@
+{
+  "contract_name": "Collector Complete-Horizon Product-Specific Probabilistic Forecast",
+  "contract_version": "1.0.0",
+  "snapshot_id": "collector-20260801T211201Z-7688afbd",
+  "required_product_rows": 50,
+  "required_authorized_products": 48,
+  "required_blocked_products": 2,
+  "horizons_days": [90, 180, 365, 730, 1095, 1825],
+  "required_forecast_rows": 288,
+  "required_coverage_rows": 300,
+  "monte_carlo": {
+    "simulations_per_product_horizon": 10000,
+    "time_step_days": 30.4375,
+    "lower_quantile": 0.10,
+    "central_quantile": 0.50,
+    "upper_quantile": 0.90,
+    "winsor_lower_quantile": 0.025,
+    "winsor_upper_quantile": 0.975,
+    "minimum_monthly_log_return": -0.35,
+    "maximum_monthly_log_return": 0.35,
+    "long_horizon_drift_decay_months": 36
+  },
+  "method_families": {
+    "DIRECT_HISTORY_CALIBRATED": "PRODUCT_DIRECT_EMPIRICAL_RESIDUAL_BOOTSTRAP_MC",
+    "DIRECT_HISTORY_LIMITED": "PRODUCT_HIERARCHICAL_SHRUNK_BOOTSTRAP_MC",
+    "COMPARABLE_PRODUCT_ADJUSTED": "TARGET_SPECIFIC_COMPARABLE_LIFECYCLE_BOOTSTRAP_MC"
+  },
+  "governance": {
+    "every_authorized_product_has_every_horizon": true,
+    "every_product_horizon_has_explicit_method_or_block_reason": true,
+    "generic_route_return_prohibited": true,
+    "global_median_as_final_forecast_prohibited": true,
+    "direct_products_use_own_history": true,
+    "limited_products_use_own_history_plus_target_specific_comparables": true,
+    "comparable_products_use_target_specific_comparable_pool": true,
+    "monte_carlo_required_for_every_authorized_product_horizon": true,
+    "long_horizons_require_monte_carlo": true,
+    "random_seed_must_be_snapshot_product_horizon_specific": true,
+    "current_supply_demand_used_in_forecast": false,
+    "production_forecast_authorized": false,
+    "ranking_authorized": false,
+    "purchase_recommendations_authorized": false
+  },
+  "expected_status": "PASS_COLLECTOR_COMPLETE_HORIZON_PROBABILISTIC_FORECAST"
+}

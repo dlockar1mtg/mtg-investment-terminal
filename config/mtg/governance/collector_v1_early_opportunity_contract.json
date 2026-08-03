@@ -1,0 +1,140 @@
+{
+  "contract_name": "Collector V1 Early Opportunity Identification Contract",
+  "contract_version": "1.0.0",
+  "effective_date": "2026-08-02",
+  "objective": "Identify evidence-supported first-year Collector Booster opportunities before most price appreciation has already occurred.",
+  "route": "EARLY_OPPORTUNITY_COMPARABLE_TRANSFER",
+  "eligibility": {
+    "maximum_history_months": 12,
+    "minimum_current_price_quality": "CERTIFIED",
+    "requires_release_authority": true,
+    "requires_current_supply_snapshot": true,
+    "requires_at_least_three_governed_comparables": true,
+    "allows_presale": true,
+    "allows_zero_realized_history": true
+  },
+  "required_signal_groups": {
+    "price_formation": [
+      "presale_price",
+      "release_price",
+      "current_price",
+      "days_since_release",
+      "return_since_release",
+      "early_price_velocity_30d",
+      "early_price_velocity_90d"
+    ],
+    "supply": [
+      "accepted_listing_count",
+      "review_listing_count",
+      "scarcity_confidence",
+      "supply_scarcity_index_v1a",
+      "listing_density_relative_to_peers"
+    ],
+    "demand_proxies": [
+      "market_price_premium_to_release",
+      "price_acceleration",
+      "peer_adjusted_price_strength",
+      "marketplace_depth_change_when_available"
+    ],
+    "product_structure": [
+      "product_configuration",
+      "collector_display_classification",
+      "set_name",
+      "release_state"
+    ],
+    "comparable_transfer": [
+      "peer_ids",
+      "peer_first_90d_return",
+      "peer_first_180d_return",
+      "peer_first_365d_return",
+      "peer_median_first_year_return",
+      "peer_first_year_winner_rate",
+      "peer_downside_rate",
+      "peer_dispersion"
+    ]
+  },
+  "additional_inputs_to_integrate": [
+    {
+      "name": "release_price_anchor",
+      "purpose": "Measure appreciation before gains are already mature.",
+      "preferred_sources": ["certified earliest TCGCSV monthly observation", "certified presale observation when separately labeled"],
+      "join_key": "tcgplayer_product_id"
+    },
+    {
+      "name": "historical_first_year_peer_outcomes",
+      "purpose": "Train and validate early-winner classification and return forecasting.",
+      "preferred_sources": ["collector_safe_monthly_history", "collector_deep_history after grain certification"],
+      "join_key": "tcgplayer_product_id"
+    },
+    {
+      "name": "comparable_similarity_scores",
+      "purpose": "Weight peers by product similarity instead of equal membership only.",
+      "preferred_sources": ["governed comparable pair score artifact created by prior comparable selection workflow"],
+      "join_key": "target_tcgplayer_product_id + peer_tcgplayer_product_id"
+    },
+    {
+      "name": "historical_supply_snapshots",
+      "purpose": "Test whether scarcity signals truly identified winners at the historical cutoff.",
+      "preferred_sources": ["future governed eBay snapshots", "other archived marketplace snapshots if already certified"],
+      "join_key": "tcgplayer_product_id + observation_date",
+      "v1_policy": "Optional enhancement; current snapshot may inform current forecasts but must not be backfilled into historical cutoffs."
+    },
+    {
+      "name": "print_and_distribution_proxies",
+      "purpose": "Improve early supply-risk estimation when direct supply history is sparse.",
+      "preferred_sources": ["official product configuration", "distributor availability where lawfully accessible", "certified marketplace breadth"],
+      "join_key": "tcgplayer_product_id"
+    },
+    {
+      "name": "demand_and_attention_proxies",
+      "purpose": "Identify unusual early demand before price history matures.",
+      "preferred_sources": ["marketplace sold-volume data where lawfully accessible", "certified search or watchlist indicators", "price velocity relative to peers"],
+      "join_key": "tcgplayer_product_id + observation_date"
+    }
+  ],
+  "tournament_requirements": {
+    "must_include_early_winner_classifier": true,
+    "must_include_first_year_return_regression": true,
+    "must_test_product_holdouts": true,
+    "must_test_release_cohort_holdouts": true,
+    "must_compare_equal_weight_and_similarity_weighted_peers": true,
+    "must_compare_no_scarcity_and_ssi_v1a": true,
+    "must_report_precision_at_top_k": true,
+    "must_report_recall_of_historical_first_year_winners": true,
+    "must_report_false_positive_rate": true,
+    "must_report_downside_capture": true,
+    "must_report_rank_correlation": true
+  },
+  "winner_definition": {
+    "first_year_winner_threshold_return": 0.25,
+    "strong_first_year_winner_threshold_return": 0.50,
+    "minimum_required_precision_at_top_k": 0.60,
+    "minimum_required_recall": 0.50,
+    "maximum_allowed_false_positive_rate": 0.40
+  },
+  "promotion_rules": {
+    "purchase_signal_requires_calibrated_probability": true,
+    "purchase_signal_requires_lower_bound_positive_expected_return": true,
+    "purchase_signal_requires_comparable_lineage": true,
+    "purchase_signal_requires_current_price_quality": true,
+    "presale_signals_require_wider_uncertainty": true,
+    "zero_history_products_cannot_use_direct_history_label": true,
+    "no_input_may_be_silently_imputed": true
+  },
+  "required_outputs": [
+    "early_opportunity_probability",
+    "probability_first_year_return_ge_25pct",
+    "probability_first_year_return_ge_50pct",
+    "expected_first_year_return",
+    "p10_first_year_return",
+    "p50_first_year_return",
+    "p90_first_year_return",
+    "peer_count",
+    "peer_outcome_summary",
+    "current_supply_summary",
+    "signal_confidence",
+    "maximum_purchase_price",
+    "authorization_state",
+    "source_lineage"
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "contract_name": "Collector History Foundation Reproducibility Contract",
+  "contract_version": "1.0.0",
+  "target": "data/operations/mtg_history_foundation/universal_mtg_price_history.csv",
+  "writer": "scripts/build_universal_mtg_history_foundation.py",
+  "requirements": {
+    "isolated_rebuild_required": true,
+    "target_must_not_be_mutated": true,
+    "row_key": ["canonical_product_id", "observation_date", "source_name", "source_file", "market_price"],
+    "compare_row_counts": true,
+    "compare_key_sets": true,
+    "compare_value_sets": true,
+    "contributing_source_inventory_required": true,
+    "collector_only_contamination_audit_required": true,
+    "derived_valuation_fields_not_raw_authority": ["evaluated_market_value_usd", "market_value_usd"],
+    "current_only_sources_not_historical_authority": true,
+    "secret_lair_sources_not_collector_authority": true,
+    "raw_authority_requires_reproducible_and_semantically_eligible_inputs": true
+  },
+  "authorization": {
+    "historical_coverage_assessment": false,
+    "lifecycle_panel_build": false,
+    "model_tournament": false,
+    "purchase_recommendations": false
+  }
+}
