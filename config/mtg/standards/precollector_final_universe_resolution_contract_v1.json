@@ -1,0 +1,58 @@
+{
+  "contract_id": "precollector_final_universe_resolution_contract_v1",
+  "contract_version": "1.0.0",
+  "status": "OWNER_REVIEW_PACKAGE_BUILD_AUTHORIZED",
+  "governed_lane": "precollector_booster_boxes",
+  "scope_authority": "config/mtg/governance/precollector_booster_product_scope_owner_decision_v1.json",
+  "semantic_cleanup_contract": "config/mtg/standards/precollector_semantic_cleanup_release_authority_contract_v1.json",
+  "purpose": "Resolve historical release aliases, re-apply the approved scope to fresh-only products, deduplicate marketplace listings, and produce a final owner-review universe without authorizing downstream decisions.",
+  "release_date_hierarchy": [
+    "WIZARDS_OFFICIAL",
+    "MTGJSON_SECONDARY",
+    "TCGCSV_PRODUCT_RELEASE_SECONDARY"
+  ],
+  "release_date_controls": {
+    "tcgcsv_group_creation_date_allowed": false,
+    "tcgcsv_product_presale_released_on_allowed": true,
+    "guessed_dates_allowed": false,
+    "source_conflicts_must_remain_visible": true
+  },
+  "fresh_delta_controls": {
+    "automatic_addition_allowed": false,
+    "collector_booster_allowed": false,
+    "draft_booster_allowed": false,
+    "play_booster_allowed": false,
+    "booster_box_case_allowed": false,
+    "non_booster_display_allowed": false,
+    "release_with_collector_option_allowed": false
+  },
+  "owner_review_statuses": [
+    "OWNER_APPROVAL_READY",
+    "OWNER_EXCLUSION_RECOMMENDED",
+    "DUPLICATE_LISTING",
+    "REQUIRES_FORMAT_REVIEW",
+    "REQUIRES_RELEASE_DATE_REVIEW",
+    "REQUIRES_COLLECTOR_OPTION_REVIEW",
+    "SOURCE_CONFLICT"
+  ],
+  "outputs": {
+    "directory": "artifacts/precollector/final_universe_resolution",
+    "resolved_existing_universe": "precollector_resolved_existing_universe.csv",
+    "fresh_delta_resolution": "precollector_fresh_delta_resolution.csv",
+    "owner_approval_ready": "precollector_owner_approval_ready.csv",
+    "owner_exclusion_recommended": "precollector_owner_exclusion_recommended.csv",
+    "owner_review_queue": "precollector_owner_review_queue.csv",
+    "release_alias_authority": "precollector_release_alias_authority.csv",
+    "summary": "precollector_final_universe_resolution_summary.json",
+    "manifest": "precollector_final_universe_resolution_manifest.json"
+  },
+  "certification_controls": {
+    "forecast_generation_authorized": false,
+    "ranking_execution_authorized": false,
+    "purchase_recommendation_authorized": false,
+    "automatic_purchase_execution_authorized": false,
+    "owner_approval_required_before_freeze": true
+  },
+  "next_stage_if_certified": "OWNER_DECISION_ON_FINAL_PRECOLLECTOR_UNIVERSE",
+  "change_control": "Changes require owner approval, versioning, targeted governance tests, full regression, and recertification."
+}
