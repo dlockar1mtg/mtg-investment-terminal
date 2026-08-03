@@ -1,9 +1,9 @@
 {
   "contract_id": "precollector_live_supply_collection_v1",
-  "contract_version": "1.0.0",
+  "contract_version": "1.0.1",
   "expected_product_count": 124,
   "expected_model_input_candidate_count": 94,
-  "limit_per_product": 25,
+  "limit_per_product": 200,
   "product_map_source": "artifacts/precollector/live_current_price_collection/governed_precollector_tcgcsv_product_map_v1.csv",
   "eligibility_source": "artifacts/precollector/historical_price_authority_review/precollector_model_input_eligibility_v1.csv",
   "outputs": {
