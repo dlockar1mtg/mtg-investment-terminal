@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import sys
 from pathlib import Path
 
 import pandas as pd
@@ -9,8 +10,9 @@ import pandas as pd
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = ROOT / "scripts/build_precollector_candidate_universe.py"
 SPEC = importlib.util.spec_from_file_location("precollector_universe", SCRIPT)
-MODULE = importlib.util.module_from_spec(SPEC)
 assert SPEC and SPEC.loader
+MODULE = importlib.util.module_from_spec(SPEC)
+sys.modules[SPEC.name] = MODULE
 SPEC.loader.exec_module(MODULE)
 
 
