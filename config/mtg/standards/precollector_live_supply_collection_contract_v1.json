@@ -1,0 +1,22 @@
+{
+  "contract_id": "precollector_live_supply_collection_v1",
+  "contract_version": "1.0.0",
+  "expected_product_count": 124,
+  "expected_model_input_candidate_count": 94,
+  "limit_per_product": 25,
+  "product_map_source": "artifacts/precollector/live_current_price_collection/governed_precollector_tcgcsv_product_map_v1.csv",
+  "eligibility_source": "artifacts/precollector/historical_price_authority_review/precollector_model_input_eligibility_v1.csv",
+  "outputs": {
+    "target_product_map_csv": "precollector_live_supply_target_product_map_v1.csv",
+    "dry_run_summary_json": "precollector_live_supply_dry_run_summary_v1.json",
+    "live_run_summary_json": "precollector_live_supply_live_run_summary_v1.json",
+    "collection_summary_json": "precollector_live_supply_collection_summary_v1.json",
+    "manifest_json": "precollector_live_supply_collection_manifest_v1.json"
+  },
+  "next_stage_if_collection_passes": "PRECOLLECTOR_SUPPLY_AND_LIQUIDITY_AUTHORITY",
+  "historical_append_authorized": false,
+  "forecast_generation_authorized": false,
+  "ranking_execution_authorized": false,
+  "purchase_recommendation_authorized": false,
+  "automatic_purchase_execution_authorized": false
+}
