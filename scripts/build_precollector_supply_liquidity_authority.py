@@ -13,8 +13,10 @@ import pandas as pd
 ROOT = Path(__file__).resolve().parents[1]
 CONTRACT_PATH = ROOT / "config/mtg/standards/precollector_supply_liquidity_authority_contract_v1.json"
 HISTORICAL_CONTRACT_PATH = ROOT / "config/mtg/standards/precollector_historical_price_authority_review_contract_v1.json"
+CURRENT_CONTRACT_PATH = ROOT / "config/mtg/standards/precollector_current_price_authority_review_contract_v1.json"
 HISTORICAL_BUILDER = ROOT / "scripts/build_precollector_historical_price_authority_review.py"
 HISTORICAL_DIR = ROOT / "artifacts/precollector/historical_price_authority_review"
+CURRENT_DIR = ROOT / "artifacts/precollector/current_price_authority_review"
 OUTPUT_DIR = ROOT / "artifacts/precollector/supply_liquidity_authority"
 
 
@@ -43,6 +45,7 @@ def normalize(series: pd.Series) -> pd.Series:
 def main() -> int:
     contract = load_json(CONTRACT_PATH)
     historical_contract = load_json(HISTORICAL_CONTRACT_PATH)
+    current_contract = load_json(CURRENT_CONTRACT_PATH)
 
     precollector_root = ROOT / "artifacts/precollector"
     if precollector_root.exists():
@@ -50,15 +53,26 @@ def main() -> int:
     run([sys.executable, str(HISTORICAL_BUILDER)])
 
     eligibility_path = HISTORICAL_DIR / historical_contract["outputs"]["model_eligibility_csv"]
+    current_authorized_path = CURRENT_DIR / current_contract["outputs"]["authorized_csv"]
+    current_blocked_path = CURRENT_DIR / current_contract["outputs"]["blocked_csv"]
     coverage_path = ROOT / contract["live_coverage_source"]
     listing_path = ROOT / contract["live_listing_source"]
     live_summary_path = ROOT / contract["live_summary_source"]
-    required_paths = [eligibility_path, coverage_path, listing_path, live_summary_path]
+    required_paths = [
+        eligibility_path,
+        current_authorized_path,
+        current_blocked_path,
+        coverage_path,
+        listing_path,
+        live_summary_path,
+    ]
     missing = [str(path.relative_to(ROOT)) for path in required_paths if not path.is_file()]
     if missing:
         raise RuntimeError(f"SUPPLY_LIQUIDITY_INPUT_MISSING:{missing}")
 
     eligibility = pd.read_csv(eligibility_path, dtype=str).fillna("")
+    current_authorized = pd.read_csv(current_authorized_path, dtype=str).fillna("")
+    current_blocked = pd.read_csv(current_blocked_path, dtype=str).fillna("")
     coverage = pd.read_csv(coverage_path, dtype=str).fillna("")
     listings = pd.read_csv(listing_path, dtype=str).fillna("")
     live_summary = load_json(live_summary_path)
@@ -107,12 +121,45 @@ def main() -> int:
     if missing_columns:
         raise RuntimeError(f"LIVE_SUPPLY_SCHEMA_DRIFT:{missing_columns}")
 
-    eligibility["tcgplayer_product_id"] = normalize(eligibility["tcgplayer_product_id"])
+    required_crosswalk_columns = {"canonical_product_id", "tcgplayer_product_id"}
+    current_crosswalk = pd.concat(
+        [current_authorized, current_blocked],
+        ignore_index=True,
+        sort=False,
+    )
+    missing_crosswalk_columns = sorted(required_crosswalk_columns - set(current_crosswalk.columns))
+    if missing_crosswalk_columns:
+        raise RuntimeError(f"CURRENT_PRICE_IDENTITY_CROSSWALK_SCHEMA_DRIFT:{missing_crosswalk_columns}")
+    if len(current_crosswalk) != int(contract["expected_product_count"]):
+        raise RuntimeError(f"CURRENT_PRICE_IDENTITY_CROSSWALK_COUNT_DRIFT:{len(current_crosswalk)}")
+
+    eligibility["canonical_product_id"] = normalize(eligibility["canonical_product_id"])
+    current_crosswalk["canonical_product_id"] = normalize(current_crosswalk["canonical_product_id"])
+    current_crosswalk["tcgplayer_product_id"] = normalize(current_crosswalk["tcgplayer_product_id"])
     coverage["tcgplayer_product_id"] = normalize(coverage["tcgplayer_product_id"])
-    if eligibility["tcgplayer_product_id"].duplicated().any():
-        raise RuntimeError("DUPLICATE_ELIGIBILITY_TCGPLAYER_PRODUCT_ID")
+
+    if eligibility["canonical_product_id"].duplicated().any():
+        raise RuntimeError("DUPLICATE_ELIGIBILITY_CANONICAL_PRODUCT_ID")
+    if current_crosswalk["canonical_product_id"].duplicated().any():
+        raise RuntimeError("DUPLICATE_CURRENT_PRICE_CROSSWALK_CANONICAL_PRODUCT_ID")
+    if current_crosswalk["tcgplayer_product_id"].eq("").any():
+        raise RuntimeError("MISSING_CURRENT_PRICE_CROSSWALK_TCGPLAYER_PRODUCT_ID")
+    if current_crosswalk["tcgplayer_product_id"].duplicated().any():
+        raise RuntimeError("DUPLICATE_CURRENT_PRICE_CROSSWALK_TCGPLAYER_PRODUCT_ID")
     if coverage["tcgplayer_product_id"].duplicated().any():
         raise RuntimeError("DUPLICATE_LIVE_COVERAGE_TCGPLAYER_PRODUCT_ID")
+
+    identity_crosswalk = current_crosswalk[["canonical_product_id", "tcgplayer_product_id"]].copy()
+    eligibility = eligibility.merge(
+        identity_crosswalk,
+        on="canonical_product_id",
+        how="left",
+        validate="one_to_one",
+        indicator="current_identity_join",
+    )
+    if not eligibility["current_identity_join"].eq("both").all():
+        raise RuntimeError("CURRENT_PRICE_IDENTITY_CROSSWALK_RECONCILIATION_FAILED")
+    eligibility = eligibility.drop(columns=["current_identity_join"])
 
     for column in [
         "accepted_listing_count",
@@ -123,8 +170,13 @@ def main() -> int:
         "accepted_seller_count",
     ]:
         coverage[column] = pd.to_numeric(coverage[column], errors="coerce")
-
-    if coverage[["accepted_listing_count", "review_listing_count", "rejected_listing_count", "accepted_seller_count"]].isna().any().any():
+    count_columns = [
+        "accepted_listing_count",
+        "review_listing_count",
+        "rejected_listing_count",
+        "accepted_seller_count",
+    ]
+    if coverage[count_columns].isna().any().any():
         raise RuntimeError("INVALID_LIVE_SUPPLY_COUNT_VALUES")
 
     observed = datetime.fromisoformat(str(live_summary["observed_at_utc"]).replace("Z", "+00:00"))
@@ -166,7 +218,6 @@ def main() -> int:
     median_price = pd.to_numeric(review["median_accepted_landed_price"], errors="coerce").fillna(0)
     source_clear = normalize(review["source_error"]).eq("")
     strong = review["coverage_state"].eq(contract["required_coverage_state"])
-
     supply_ok = (
         review["live_supply_identity_match"]
         & accepted.ge(int(contract["minimum_accepted_listing_count"]))
@@ -267,7 +318,10 @@ def main() -> int:
     manifest = {
         "contract_sha256": sha256_file(CONTRACT_PATH),
         "historical_contract_sha256": sha256_file(HISTORICAL_CONTRACT_PATH),
+        "current_contract_sha256": sha256_file(CURRENT_CONTRACT_PATH),
         "historical_eligibility_sha256": sha256_file(eligibility_path),
+        "current_authorized_identity_sha256": sha256_file(current_authorized_path),
+        "current_blocked_identity_sha256": sha256_file(current_blocked_path),
         "live_coverage_sha256": sha256_file(coverage_path),
         "live_listing_sha256": sha256_file(listing_path),
         "live_summary_sha256": sha256_file(live_summary_path),
