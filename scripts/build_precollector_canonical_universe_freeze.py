@@ -1,9 +1,10 @@
 from __future__ import annotations
 
 import hashlib
-import importlib.util
 import json
 import shutil
+import subprocess
+import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -39,14 +40,15 @@ def pick(frame: pd.DataFrame, *names: str, required: bool = True) -> pd.Series:
 
 
 def run_v7_builder() -> None:
-    spec = importlib.util.spec_from_file_location("precollector_v7_freeze_input", V7_BUILDER)
-    if spec is None or spec.loader is None:
-        raise RuntimeError("V7_BUILDER_IMPORT_FAILED")
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    result = module.MODULE.main()
-    if result != 0:
-        raise RuntimeError(f"V7_BUILDER_FAILED: {result}")
+    if not V7_BUILDER.exists():
+        raise RuntimeError(f"V7_BUILDER_MISSING: {V7_BUILDER}")
+    completed = subprocess.run(
+        [sys.executable, str(V7_BUILDER)],
+        cwd=ROOT,
+        check=False,
+    )
+    if completed.returncode != 0:
+        raise RuntimeError(f"V7_BUILDER_FAILED: {completed.returncode}")
 
 
 def build_canonical(ready: pd.DataFrame, approval: dict) -> pd.DataFrame:
@@ -75,16 +77,12 @@ def validate(canonical: pd.DataFrame, exclusions: pd.DataFrame, contract: dict, 
         raise RuntimeError("OWNER_APPROVAL_DECISION_MISSING")
     if int(approval.get("approved_product_count", -1)) != expected:
         raise RuntimeError("OWNER_APPROVAL_COUNT_DRIFT")
-
-    # Identity violations are more fundamental than aggregate count drift and
-    # must be surfaced first so fail-closed diagnostics remain deterministic.
-    if "canonical_product_id" in canonical.columns and canonical["canonical_product_id"].duplicated().any():
+    if canonical["canonical_product_id"].duplicated().any():
         raise RuntimeError("DUPLICATE_CANONICAL_PRODUCT_ID")
-    if "governed_asset_key" in canonical.columns and canonical["governed_asset_key"].duplicated().any():
+    if canonical["governed_asset_key"].duplicated().any():
         raise RuntimeError("DUPLICATE_GOVERNED_ASSET_KEY")
     if len(canonical) != expected:
         raise RuntimeError(f"CANONICAL_COUNT_DRIFT: {len(canonical)}")
-
     for column in contract["canonical_columns"]:
         if column not in canonical.columns:
             raise RuntimeError(f"CANONICAL_COLUMN_MISSING: {column}")
