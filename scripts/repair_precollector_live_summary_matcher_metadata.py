@@ -1,12 +1,16 @@
 from __future__ import annotations
 
 import json
+import sys
 from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
 
 from terminal2.market_sources.ebay_precision_production import MATCHER_VERSION
 from terminal2.market_sources.ebay_precision_v3 import identity_match_listing
 
-ROOT = Path(__file__).resolve().parents[1]
 SUMMARY_PATH = ROOT / "data/validation/phase_10/ebay_matching/ebay_matching_summary_2026-08-03.json"
 EXPECTED_MATCHER_VERSION = "precision-v3-universal"
 EXPECTED_MATCHER_ENTRYPOINT = "terminal2.market_sources.ebay_precision_v3.identity_match_listing"
