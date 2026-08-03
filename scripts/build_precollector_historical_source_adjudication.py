@@ -12,6 +12,7 @@ import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[1]
 CONTRACT_PATH = ROOT / "config/mtg/standards/precollector_historical_source_adjudication_contract_v1.json"
+INVENTORY_CONTRACT_PATH = ROOT / "config/mtg/standards/precollector_historical_price_evidence_inventory_contract_v1.json"
 INVENTORY_BUILDER = ROOT / "scripts/build_precollector_historical_price_evidence_inventory.py"
 INVENTORY_DIR = ROOT / "artifacts/precollector/historical_price_evidence_inventory"
 FREEZE_DIR = ROOT / "artifacts/precollector/canonical_universe_freeze"
@@ -57,15 +58,17 @@ def run_inventory() -> None:
 
 def main() -> int:
     contract = load_json(CONTRACT_PATH)
+    inventory_contract = load_json(INVENTORY_CONTRACT_PATH)
     precollector_root = ROOT / "artifacts/precollector"
     if precollector_root.exists():
         shutil.rmtree(precollector_root)
     run_inventory()
 
-    candidates_path = INVENTORY_DIR / "precollector_historical_candidate_sources_v1.csv"
+    candidates_path = INVENTORY_DIR / inventory_contract["outputs"]["candidate_sources_csv"]
     canonical_path = FREEZE_DIR / "precollector_canonical_product_universe_v1.csv"
     if not candidates_path.is_file() or not canonical_path.is_file():
-        raise RuntimeError("ADJUDICATION_INPUT_MISSING")
+        missing = [str(path) for path in (candidates_path, canonical_path) if not path.is_file()]
+        raise RuntimeError(f"ADJUDICATION_INPUT_MISSING: {missing}")
     if sha256_file(canonical_path) != contract["canonical_universe_sha256"]:
         raise RuntimeError("CANONICAL_UNIVERSE_HASH_DRIFT")
 
@@ -176,6 +179,7 @@ def main() -> int:
     summary_path.write_text(json.dumps(summary, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     manifest = {
         "contract_sha256": sha256_file(CONTRACT_PATH),
+        "inventory_contract_sha256": sha256_file(INVENTORY_CONTRACT_PATH),
         "canonical_universe_sha256": sha256_file(canonical_path),
         "candidate_sources_sha256": sha256_file(candidates_path),
         "source_adjudication_sha256": sha256_file(source_path),
