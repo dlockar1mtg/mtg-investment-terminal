@@ -7,7 +7,7 @@ $RepositoryRoot = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
 $ExpectedBranch = "phase-8.3-precollector-scope-governance"
 $PreCollectorArtifactsRoot = Join-Path $RepositoryRoot "artifacts\precollector"
 $OutputDirectory = Join-Path $PreCollectorArtifactsRoot "final_universe_resolution"
-$ExportZip = Join-Path $env:TEMP "MTG_PreCollector_Final_Universe_Owner_Review_v5.zip"
+$ExportZip = Join-Path $env:TEMP "MTG_PreCollector_Final_Universe_Owner_Review_v6.zip"
 
 function Invoke-GovernedStep {
     param([string]$Name, [scriptblock]$Action)
@@ -48,7 +48,7 @@ Invoke-GovernedStep "Final universe resolution governance tests" {
         .\tests\test_precollector_semantic_cleanup_release_authority.py `
         .\tests\test_precollector_final_universe_resolution.py
 }
-Invoke-GovernedStep "Build final zero-review owner universe" { python .\scripts\build_precollector_final_universe_resolution_v5.py }
+Invoke-GovernedStep "Build final zero-review owner universe" { python .\scripts\build_precollector_final_universe_resolution_v6.py }
 
 $SummaryPath = Join-Path $OutputDirectory "precollector_final_universe_resolution_summary.json"
 foreach ($name in @(
