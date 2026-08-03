@@ -86,5 +86,9 @@ def resolve_product_specific_and_final_tcgcsv_date(
 
 V6.MODULE.resolve_mystery_product_dates = resolve_product_specific_and_final_tcgcsv_date
 
+# Governed compatibility export used by downstream builders that dynamically
+# import this script and invoke MODULE.main().
+MODULE = V6.MODULE
+
 if __name__ == "__main__":
-    raise SystemExit(V6.MODULE.main())
+    raise SystemExit(MODULE.main())
