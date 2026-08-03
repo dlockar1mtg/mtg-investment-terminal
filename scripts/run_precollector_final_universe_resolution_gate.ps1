@@ -33,13 +33,6 @@ function Assert-CleanTree {
     }
 }
 
-function Get-JsonCount {
-    param([object]$Object, [string]$Name)
-    $property = $Object.PSObject.Properties[$Name]
-    if ($null -eq $property) { return 0 }
-    return [int]$property.Value
-}
-
 Set-Location $RepositoryRoot
 
 Invoke-GovernedStep -Name "Fetch GitHub state" -Action { git fetch origin }
@@ -75,7 +68,7 @@ Invoke-GovernedStep -Name "Final universe resolution governance tests" -Action {
 }
 
 Invoke-GovernedStep -Name "Build final owner-review universe resolution" -Action {
-    python .\scripts\build_precollector_final_universe_resolution_v2.py
+    python .\scripts\build_precollector_final_universe_resolution_v3.py
 }
 
 $SummaryPath = Join-Path $OutputDirectory "precollector_final_universe_resolution_summary.json"
