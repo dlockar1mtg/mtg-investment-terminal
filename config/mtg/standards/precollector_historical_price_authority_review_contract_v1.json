@@ -1,0 +1,23 @@
+{
+  "contract_id": "precollector_historical_price_authority_review_v1",
+  "contract_version": "1.0.0",
+  "canonical_universe_sha256": "db5eee09b3fa4d02766734aab6c5f65d324bb49c77744f82ecd95f6f7ea7395e",
+  "expected_product_count": 124,
+  "expected_canonical_historical_rows": 2826,
+  "minimum_history_rows": 2,
+  "minimum_distinct_dates": 2,
+  "outputs": {
+    "historical_authority_csv": "precollector_historical_price_authority_v1.csv",
+    "model_eligibility_csv": "precollector_model_input_eligibility_v1.csv",
+    "blocked_products_csv": "precollector_historical_price_blocked_products_v1.csv",
+    "coverage_summary_csv": "precollector_historical_price_authority_coverage_v1.csv",
+    "summary_json": "precollector_historical_price_authority_review_summary_v1.json",
+    "manifest_json": "precollector_historical_price_authority_review_manifest_v1.json"
+  },
+  "next_stage_if_certified": "PRECOLLECTOR_SUPPLY_AND_LIQUIDITY_AUTHORITY",
+  "historical_append_authorized": false,
+  "forecast_generation_authorized": false,
+  "ranking_execution_authorized": false,
+  "purchase_recommendation_authorized": false,
+  "automatic_purchase_execution_authorized": false
+}
