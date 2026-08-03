@@ -96,7 +96,7 @@ def main() -> int:
 
     supply_path = SUPPLY_DIR / "precollector_supply_adjusted_model_eligibility_v1.csv"
     historical_path = HISTORICAL_DIR / "precollector_model_input_eligibility_v1.csv"
-    current_authorized_path = CURRENT_DIR / "precollector_current_price_authorized_v1.csv"
+    current_authorized_path = CURRENT_DIR / "precollector_current_price_authority_v1.csv"
     current_blocked_path = CURRENT_DIR / "precollector_current_price_blocked_v1.csv"
     required = [supply_path, historical_path, current_authorized_path, current_blocked_path]
     missing = [str(path.relative_to(ROOT)) for path in required if not path.is_file()]
