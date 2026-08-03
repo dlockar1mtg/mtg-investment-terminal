@@ -1,0 +1,27 @@
+{
+  "contract_id": "precollector_supply_liquidity_authority_v1",
+  "contract_version": "1.0.0",
+  "expected_product_count": 124,
+  "expected_model_input_candidate_count": 94,
+  "collector_supply_snapshot_expected_rows": 50,
+  "collector_accepted_listing_ledger_expected_rows": 562,
+  "collector_supply_observation_date": "2026-08-01",
+  "minimum_accepted_listing_count": 1,
+  "minimum_positive_median_listing_price": 0.01,
+  "maximum_supply_age_days": 7,
+  "outputs": {
+    "authority_csv": "precollector_supply_liquidity_authority_v1.csv",
+    "model_eligibility_csv": "precollector_supply_adjusted_model_eligibility_v1.csv",
+    "blocked_products_csv": "precollector_supply_liquidity_blocked_products_v1.csv",
+    "source_overlap_csv": "precollector_collector_supply_source_overlap_v1.csv",
+    "summary_json": "precollector_supply_liquidity_authority_summary_v1.json",
+    "manifest_json": "precollector_supply_liquidity_authority_manifest_v1.json"
+  },
+  "next_stage_if_full_candidate_coverage": "PRECOLLECTOR_COMPARABLE_PRODUCT_TAXONOMY",
+  "next_stage_if_incomplete_candidate_coverage": "PRECOLLECTOR_LIVE_SUPPLY_COLLECTION",
+  "historical_append_authorized": false,
+  "forecast_generation_authorized": false,
+  "ranking_execution_authorized": false,
+  "purchase_recommendation_authorized": false,
+  "automatic_purchase_execution_authorized": false
+}
