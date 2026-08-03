@@ -1,6 +1,6 @@
 {
   "contract_id": "precollector_candidate_universe_inventory_contract_v1",
-  "contract_version": "1.0.0",
+  "contract_version": "1.0.1",
   "status": "OWNER_SCOPE_BOUND_CANDIDATE_UNIVERSE_BUILD_AUTHORIZED",
   "governed_lane": "precollector_booster_boxes",
   "scope_authority": "config/mtg/governance/precollector_booster_product_scope_owner_decision_v1.json",
@@ -8,10 +8,7 @@
   "purpose": "Build a row-level candidate universe from preserved TCGCSV product evidence without authorizing forecasts, rankings, or purchases.",
   "source_discovery": {
     "roots": [
-      "data/governance/permanence",
-      "data_vault",
-      "data",
-      "raw_data"
+      "data/operations/mtg_source_discovery/tcgcsv_snapshots/20260801T211201Z"
     ],
     "product_source_minimum_rows": 1000,
     "required_product_semantics": [
@@ -19,7 +16,14 @@
       "product name",
       "group or release identifier"
     ],
-    "selection_rule": "Choose the highest-scoring preserved local source; fail closed on no source or an unresolved tie."
+    "selection_rule": "Use the certified August 1 operational TCGCSV snapshot root only; choose the highest-scoring qualifying product source within that root and fail closed on no source or an unresolved tie.",
+    "excluded_source_classes": [
+      "staging copies",
+      "external discovery working copies",
+      "unbound raw-data mirrors",
+      "broad recursive data-directory discovery"
+    ],
+    "source_binding_reason": "The prior broad discovery found an operational snapshot and a staging copy with equal scores. This contract binds the build to the certified operational snapshot rather than selecting a working copy implicitly."
   },
   "classification": {
     "included_status": "INCLUDED_CANDIDATE",
