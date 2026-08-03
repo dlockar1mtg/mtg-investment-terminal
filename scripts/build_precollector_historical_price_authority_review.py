@@ -86,6 +86,16 @@ def main() -> int:
     if len(history) != int(contract["expected_canonical_historical_rows"]):
         raise RuntimeError(f"CANONICAL_HISTORY_ROW_COUNT_DRIFT:{len(history)}")
 
+    required_canonical_columns = {
+        "canonical_product_id",
+        "governed_asset_key",
+        "product_name",
+        "governed_release_date",
+    }
+    missing_canonical_columns = sorted(required_canonical_columns - set(canonical.columns))
+    if missing_canonical_columns:
+        raise RuntimeError(f"CANONICAL_UNIVERSE_SCHEMA_DRIFT:{missing_canonical_columns}")
+
     required_history_columns = {
         "canonical_product_id",
         "observation_timestamp",
@@ -127,7 +137,13 @@ def main() -> int:
         & authority["distinct_observation_dates"].ge(int(contract["minimum_distinct_dates"]))
     ).map({True: "HISTORICAL_PRICE_AUTHORIZED", False: "HISTORICAL_PRICE_BLOCKED"})
 
-    base = canonical[["canonical_product_id", "governed_asset_key", "product_name", "release_date"]].copy()
+    base = canonical[[
+        "canonical_product_id",
+        "governed_asset_key",
+        "product_name",
+        "governed_release_date",
+    ]].copy()
+    base = base.rename(columns={"governed_release_date": "release_date"})
     eligibility = base.merge(authority, on="canonical_product_id", how="left", validate="one_to_one")
     eligibility["historical_price_authority_status"] = eligibility["historical_price_authority_status"].fillna("HISTORICAL_PRICE_BLOCKED")
     eligibility["historical_rows"] = pd.to_numeric(eligibility["historical_rows"], errors="coerce").fillna(0).astype(int)
