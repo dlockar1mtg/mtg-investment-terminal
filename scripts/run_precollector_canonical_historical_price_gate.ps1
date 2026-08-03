@@ -17,8 +17,20 @@ function Invoke-GovernedStep {
     Write-Host "PASS: $Name" -ForegroundColor Green
 }
 
+function Assert-CleanTree {
+    $status = git status --porcelain
+    if ($LASTEXITCODE -ne 0) {
+        throw "GOVERNED_RUN_FAILED: unable to inspect Git status"
+    }
+    if ($status) {
+        Write-Host $status
+        throw "GOVERNED_RUN_FAILED: working tree is not clean"
+    }
+}
+
 Invoke-GovernedStep "Fetch GitHub state" { git fetch origin }
 Invoke-GovernedStep "Fast-forward governed branch" { git pull --ff-only }
+Assert-CleanTree
 $Commit = (git rev-parse HEAD).Trim()
 Write-Host "PASS_GITHUB_COMMIT_BINDING=$Commit"
 
@@ -38,7 +50,8 @@ Invoke-GovernedStep "Build canonical historical prices" {
     python .\scripts\build_precollector_canonical_historical_prices.py
 }
 
-$OutputDir = Join-Path $RepositoryRoot "artifacts\precollector\canonical_historical_prices"
+$ArtifactsRoot = Join-Path $RepositoryRoot "artifacts\precollector"
+$OutputDir = Join-Path $ArtifactsRoot "canonical_historical_prices"
 $SummaryPath = Join-Path $OutputDir "precollector_canonical_historical_price_summary_v1.json"
 if (-not (Test-Path $SummaryPath)) {
     throw "GOVERNED_RUN_FAILED: canonical historical summary missing"
@@ -68,10 +81,16 @@ Invoke-GovernedStep "Full repository regression suite" {
 $ZipPath = Join-Path $env:TEMP "MTG_PreCollector_Canonical_Historical_Prices_v1.zip"
 if (Test-Path $ZipPath) { Remove-Item $ZipPath -Force }
 Compress-Archive -Path (Join-Path $OutputDir "*") -DestinationPath $ZipPath -Force
+if (-not (Test-Path $ZipPath)) {
+    throw "GOVERNED_RUN_FAILED: canonical historical ZIP was not created"
+}
 $ZipHash = (Get-FileHash -Path $ZipPath -Algorithm SHA256).Hash.ToLowerInvariant()
 Write-Host "PASS_PRECOLLECTOR_CANONICAL_HISTORICAL_PRICE_EXPORT"
 Write-Host "CANONICAL_HISTORY_ZIP=$ZipPath"
 Write-Host "CANONICAL_HISTORY_ZIP_SHA256=$ZipHash"
+
+Remove-Item $ArtifactsRoot -Recurse -Force
+Assert-CleanTree
 
 Write-Host "`nCERTIFIED_PASS_PRECOLLECTOR_CANONICAL_HISTORICAL_PRICE_GATE" -ForegroundColor Green
 Write-Host "AUTHORIZED_NEXT_STAGE=PRECOLLECTOR_HISTORICAL_PRICE_AUTHORITY_REVIEW"
