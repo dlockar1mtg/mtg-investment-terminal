@@ -22,7 +22,7 @@ def test_contract_targets_certified_candidate_ceiling_and_is_fail_closed():
     contract = json.loads(CONTRACT_PATH.read_text(encoding="utf-8"))
     assert contract["expected_product_count"] == 124
     assert contract["expected_model_input_candidate_count"] == 94
-    assert contract["limit_per_product"] == 25
+    assert contract["limit_per_product"] == 200
     assert contract["next_stage_if_collection_passes"] == "PRECOLLECTOR_SUPPLY_AND_LIQUIDITY_AUTHORITY"
     assert contract["forecast_generation_authorized"] is False
     assert contract["ranking_execution_authorized"] is False
@@ -49,6 +49,7 @@ def test_gate_requires_clean_governed_completion():
     assert "build_precollector_live_supply_collection.py" in text
     assert "Full repository regression suite" in text
     assert "Assert-CleanTree" in text
+    assert "Remove-Item $GeneratedArtifacts -Recurse -Force" in text
     assert "CERTIFIED_PASS_PRECOLLECTOR_LIVE_SUPPLY_COLLECTION_GATE" in text
 
 
