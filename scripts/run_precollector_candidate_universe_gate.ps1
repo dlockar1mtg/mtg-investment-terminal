@@ -72,7 +72,8 @@ Invoke-GovernedStep -Name "Scope governance and MTG-standard audit" -Action {
 Invoke-GovernedStep -Name "Candidate-universe governance tests" -Action {
     python -m pytest -q `
         .\tests\test_precollector_scope_governance.py `
-        .\tests\test_precollector_candidate_universe.py
+        .\tests\test_precollector_candidate_universe.py `
+        .\tests\test_precollector_candidate_universe_source_binding.py
 }
 
 Invoke-GovernedStep -Name "Build governed candidate universe" -Action {
