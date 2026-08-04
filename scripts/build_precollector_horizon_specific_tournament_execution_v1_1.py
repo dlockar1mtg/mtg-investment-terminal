@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import importlib.util
+import os
 import shutil
 from pathlib import Path
 
@@ -82,12 +83,22 @@ def main() -> int:
         else:
             raise RuntimeError("CANONICAL_HORIZON_ARCHITECTURE_OUTPUT_MISSING")
 
-    module.run = corrected_run
-    module.discover_history = discover_canonical_history
-    result = int(module.main())
+    prior_snapshot_mode = os.environ.get("PRECOLLECTOR_USE_CERTIFIED_TCGCSV_SNAPSHOT")
+    os.environ["PRECOLLECTOR_USE_CERTIFIED_TCGCSV_SNAPSHOT"] = "1"
+    try:
+        module.run = corrected_run
+        module.discover_history = discover_canonical_history
+        result = int(module.main())
+    finally:
+        if prior_snapshot_mode is None:
+            os.environ.pop("PRECOLLECTOR_USE_CERTIFIED_TCGCSV_SNAPSHOT", None)
+        else:
+            os.environ["PRECOLLECTOR_USE_CERTIFIED_TCGCSV_SNAPSHOT"] = prior_snapshot_mode
+
     if result == 0:
         print("PASS_PRECOLLECTOR_HORIZON_EXECUTION_ARCHITECTURE_INTERFACE_CORRECTION_V1_1")
         print("PASS_PRECOLLECTOR_CANONICAL_HISTORY_SCHEMA_BINDING_V1_2")
+        print("PASS_PRECOLLECTOR_CERTIFIED_SNAPSHOT_ONLY_REBUILD_V1_3")
     return result
 
 
