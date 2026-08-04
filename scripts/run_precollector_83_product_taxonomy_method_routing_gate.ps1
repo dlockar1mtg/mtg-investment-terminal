@@ -5,7 +5,8 @@ Set-StrictMode -Version Latest
 
 $RepositoryRoot = Split-Path -Parent $PSScriptRoot
 $ExpectedBranch = "phase-8.3-precollector-scope-governance"
-$OutputRoot = Join-Path $RepositoryRoot "artifacts\precollector\83_product_taxonomy_method_routing"
+$ArtifactsRoot = Join-Path $RepositoryRoot "artifacts\precollector"
+$OutputRoot = Join-Path $ArtifactsRoot "83_product_taxonomy_method_routing"
 $SummaryPath = Join-Path $OutputRoot "precollector_83_product_taxonomy_method_routing_summary.json"
 $ManifestPath = Join-Path $OutputRoot "precollector_83_product_taxonomy_method_routing_manifest.json"
 $ZipPath = Join-Path $env:TEMP "MTG_PreCollector_83_Product_Taxonomy_Method_Routing_v1.zip"
@@ -22,6 +23,17 @@ function Invoke-GovernedStep {
         throw "GOVERNED_GATE_FAILED: $Name"
     }
     Write-Host "PASS: $Name" -ForegroundColor Green
+}
+
+function Assert-CleanTree {
+    $status = git status --porcelain
+    if ($LASTEXITCODE -ne 0) {
+        throw "GOVERNED_GATE_FAILED: unable to read Git status"
+    }
+    if ($status) {
+        Write-Host $status
+        throw "GOVERNED_GATE_FAILED: working tree is not clean"
+    }
 }
 
 Set-Location $RepositoryRoot
@@ -143,6 +155,12 @@ $ZipHash = (Get-FileHash $ZipPath -Algorithm SHA256).Hash.ToLowerInvariant()
 Write-Host "PASS_PRECOLLECTOR_83_PRODUCT_TAXONOMY_METHOD_ROUTING_EXPORT" -ForegroundColor Green
 Write-Host "TAXONOMY_ROUTING_ZIP=$ZipPath"
 Write-Host "TAXONOMY_ROUTING_ZIP_SHA256=$ZipHash"
+
+if (Test-Path $ArtifactsRoot) {
+    Remove-Item $ArtifactsRoot -Recurse -Force
+}
+Assert-CleanTree
+
 Write-Host ""
 Write-Host "CERTIFIED_PASS_PRECOLLECTOR_83_PRODUCT_TAXONOMY_METHOD_ROUTING_GATE" -ForegroundColor Green
 Write-Host "AUTHORIZED_NEXT_STAGE=$($Summary.next_stage)"
