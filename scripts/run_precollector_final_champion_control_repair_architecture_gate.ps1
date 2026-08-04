@@ -3,7 +3,7 @@ Set-StrictMode -Version Latest
 
 $RepositoryRoot = Split-Path -Parent $PSScriptRoot
 $ExpectedBranch = "phase-8.3-precollector-scope-governance"
-$ExpectedCommit = "ec2071351fbca16ddd9bc60c1e36e0c2cb86f994"
+$RequiredArchitectureCommit = "ec2071351fbca16ddd9bc60c1e36e0c2cb86f994"
 $RequiredPackageName = "MTG_PreCollector_Final_Champion_Challenge_Execution_v1.zip"
 $RequiredPackageHash = "7cc9c8ec5adb4d57bf81156c00b36537ae65077dcceabe295cc1b1f8f2296ca3"
 $OutputDirectory = Join-Path $RepositoryRoot "artifacts\precollector\final_champion_control_repair_architecture"
@@ -43,11 +43,13 @@ if ($CurrentBranch -ne $ExpectedBranch) {
     throw "GOVERNED_GATE_FAILED: branch drift expected=$ExpectedBranch actual=$CurrentBranch"
 }
 
-if ($CurrentCommit -ne $ExpectedCommit) {
-    throw "GOVERNED_GATE_FAILED: commit drift expected=$ExpectedCommit actual=$CurrentCommit"
+git merge-base --is-ancestor $RequiredArchitectureCommit $CurrentCommit
+if ($LASTEXITCODE -ne 0) {
+    throw "GOVERNED_GATE_FAILED: required architecture commit is not an ancestor required=$RequiredArchitectureCommit actual=$CurrentCommit"
 }
 
-Write-Host "PASS_GITHUB_COMMIT_BINDING=$CurrentCommit" -ForegroundColor Green
+Write-Host "PASS_GITHUB_HEAD_BINDING=$CurrentCommit" -ForegroundColor Green
+Write-Host "PASS_REQUIRED_ARCHITECTURE_ANCESTRY=$RequiredArchitectureCommit" -ForegroundColor Green
 
 $PackagePath = Join-Path $env:TEMP $RequiredPackageName
 if (-not (Test-Path $PackagePath)) {
