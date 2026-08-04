@@ -70,11 +70,13 @@ foreach ($PackageName in $RequiredPackages.Keys) {
 }
 
 Invoke-GovernedStep "Long horizon Monte Carlo execution tests" {
-    python -m pytest -q tests\test_precollector_long_horizon_monte_carlo_execution.py
+    python -m pytest -q `
+        tests\test_precollector_long_horizon_monte_carlo_execution.py `
+        tests\test_precollector_long_horizon_monte_carlo_execution_schema_adapter.py
 }
 
 Invoke-GovernedStep "Execute long horizon Monte Carlo" {
-    python scripts\run_precollector_long_horizon_monte_carlo_execution.py
+    python scripts\run_precollector_long_horizon_monte_carlo_execution_schema_adapter.py
 }
 
 $SummaryPath = Join-Path $OutputDirectory "precollector_long_horizon_monte_carlo_execution_summary.json"
