@@ -1,0 +1,41 @@
+{
+  "decision_id": "precollector_owner_comparable_practicality_decision_v1",
+  "decision_version": "1.0.0",
+  "approved_at_local": "2026-08-03T21:24:00-05:00",
+  "approved_by": "Devon Lockard",
+  "source_universe_count": 94,
+  "investable_universe_count": 83,
+  "reference_only_count": 11,
+  "price_based_automatic_exclusion": false,
+  "specialty_products_retained": true,
+  "specialty_comparison_within_class_required": true,
+  "reference_only_products": [
+    {"canonical_product_id": "tcgplayer:27276", "product_name": "Fallen Empires - Booster Box"},
+    {"canonical_product_id": "tcgplayer:27282", "product_name": "Homelands - Booster Box"},
+    {"canonical_product_id": "tcgplayer:27284", "product_name": "Invasion - Booster Box"},
+    {"canonical_product_id": "tcgplayer:27259", "product_name": "8th Edition - Booster Box"},
+    {"canonical_product_id": "tcgplayer:27272", "product_name": "Darksteel - Booster Box"},
+    {"canonical_product_id": "tcgplayer:27277", "product_name": "Fifth Dawn - Booster Box"},
+    {"canonical_product_id": "tcgplayer:27267", "product_name": "Betrayers of Kamigawa - Booster Box"},
+    {"canonical_product_id": "tcgplayer:27304", "product_name": "Saviors of Kamigawa - Booster Box"},
+    {"canonical_product_id": "tcgplayer:27273", "product_name": "Dissension - Booster Box"},
+    {"canonical_product_id": "tcgplayer:27281", "product_name": "Guildpact - Booster Box"},
+    {"canonical_product_id": "tcgplayer:27292", "product_name": "Morningtide - Booster Box"}
+  ],
+  "reference_only_policy": {
+    "retain_for_historical_research": true,
+    "retain_as_comparable_candidates": true,
+    "exclude_from_buy_ranking": true,
+    "exclude_from_purchase_recommendations": true
+  },
+  "investable_policy": {
+    "retain_specialty_products": true,
+    "permit_direct_and_comparable_model_routes": true,
+    "allow_price_to_affect_ranking_but_not_membership": true
+  },
+  "forecast_generation_authorized": false,
+  "ranking_execution_authorized": false,
+  "purchase_recommendation_authorized": false,
+  "automatic_purchase_execution_authorized": false,
+  "next_stage_if_certified": "PRECOLLECTOR_COMPARABLE_TAXONOMY_OWNER_APPROVAL"
+}
