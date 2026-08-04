@@ -7,6 +7,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 CONTRACT = ROOT / "config/mtg/standards/precollector_forecast_input_assembly_method_certification_contract_v1.json"
 BUILDER = ROOT / "scripts/build_precollector_forecast_input_assembly_method_certification.py"
+CORRECTED_BUILDER = ROOT / "scripts/build_precollector_forecast_input_assembly_method_certification_v1_1.py"
 ADAPTER = ROOT / "scripts/build_precollector_comparable_tournament_winner_adapter.py"
 
 
@@ -67,8 +68,26 @@ def test_winner_adapter_is_fail_closed() -> None:
     assert '"forecast_generation_authorized": False' in text
 
 
+def test_schema_overlap_correction_preserves_selected_evidence_authority() -> None:
+    text = CORRECTED_BUILDER.read_text(encoding="utf-8")
+    assert "FORECAST_INPUT_BASE_SCHEMA_PATCH_TARGET_NOT_FOUND" in text
+    assert '"canonical_product_id", "forecast_method",' in text
+    assert '"confidence_penalty_required", "route_version"' in text
+    corrected_route_block = text.split("NEW_ROUTE_SUBSET =", 1)[1]
+    assert '"historical_rows"' not in corrected_route_block.split("def main", 1)[0]
+    assert '"history_span_days"' not in corrected_route_block.split("def main", 1)[0]
+
+
 def test_builder_module_loads() -> None:
     spec = importlib.util.spec_from_file_location("forecast_input_builder", BUILDER)
+    assert spec is not None and spec.loader is not None
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    assert callable(module.main)
+
+
+def test_corrected_builder_module_loads() -> None:
+    spec = importlib.util.spec_from_file_location("forecast_input_builder_v1_1", CORRECTED_BUILDER)
     assert spec is not None and spec.loader is not None
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
