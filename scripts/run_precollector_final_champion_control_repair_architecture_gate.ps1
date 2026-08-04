@@ -3,7 +3,7 @@ Set-StrictMode -Version Latest
 
 $RepositoryRoot = Split-Path -Parent $PSScriptRoot
 $ExpectedBranch = "phase-8.3-precollector-scope-governance"
-$ExpectedCommit = "bad6d045f9cab8ec22fde4c2c0d47d3f5a63328f"
+$ExpectedCommit = "ec2071351fbca16ddd9bc60c1e36e0c2cb86f994"
 $RequiredPackageName = "MTG_PreCollector_Final_Champion_Challenge_Execution_v1.zip"
 $RequiredPackageHash = "7cc9c8ec5adb4d57bf81156c00b36537ae65077dcceabe295cc1b1f8f2296ca3"
 $OutputDirectory = Join-Path $RepositoryRoot "artifacts\precollector\final_champion_control_repair_architecture"
