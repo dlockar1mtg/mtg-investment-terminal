@@ -1,0 +1,40 @@
+{
+  "contract_id": "precollector_forecast_input_assembly_method_certification_v1",
+  "contract_version": "1.0.0",
+  "upstream_builder_path": "scripts/build_precollector_comparable_model_tournament_calibration.py",
+  "routing_output_directory": "artifacts/precollector/79_product_taxonomy_method_routing",
+  "ledger_output_directory": "artifacts/precollector/owner_approved_comparable_ledger_validation",
+  "tournament_output_directory": "artifacts/precollector/comparable_model_tournament_calibration",
+  "expected_active_product_count": 79,
+  "expected_excluded_product_count": 15,
+  "expected_horizon_count": 5,
+  "forecast_horizons": [
+    {"horizon_code": "D90", "horizon_days": 90, "display_name": "90 Day"},
+    {"horizon_code": "D180", "horizon_days": 180, "display_name": "180 Day"},
+    {"horizon_code": "D365", "horizon_days": 365, "display_name": "365 Day"},
+    {"horizon_code": "Y3", "horizon_days": 1095, "display_name": "3 Year"},
+    {"horizon_code": "Y5", "horizon_days": 1825, "display_name": "5 Year"}
+  ],
+  "allowed_forecast_methods": [
+    "DIRECT_HISTORY_CALIBRATED",
+    "DIRECT_HISTORY_LIMITED",
+    "COMPARABLE_PRODUCT_ADJUSTED"
+  ],
+  "required_selected_comparable_model": "RANK_DECAY",
+  "outputs": {
+    "product_input_csv": "precollector_79_product_forecast_input_certification.csv",
+    "horizon_matrix_csv": "precollector_79_product_horizon_tournament_input_matrix.csv",
+    "method_certification_csv": "precollector_forecast_method_certification.csv",
+    "lineage_csv": "precollector_forecast_input_lineage.csv",
+    "diagnostics_csv": "precollector_forecast_input_diagnostics.csv",
+    "summary_json": "precollector_forecast_input_assembly_method_certification_summary.json",
+    "manifest_json": "precollector_forecast_input_assembly_method_certification_manifest.json"
+  },
+  "next_stage_if_certified": "PRECOLLECTOR_HORIZON_SPECIFIC_TOURNAMENT_ARCHITECTURE",
+  "forecast_generation_authorized": false,
+  "ranking_execution_authorized": false,
+  "purchase_analysis_authorized": false,
+  "purchase_recommendation_authorized": false,
+  "automatic_purchase_execution_authorized": false,
+  "uip_delivery_authorized": false
+}
