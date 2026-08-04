@@ -13,6 +13,16 @@ ROOT = Path(__file__).resolve().parents[1]
 CONTRACT_PATH = ROOT / "config/mtg/standards/precollector_winner_uncertainty_certification_architecture_contract_v1.json"
 OUTPUT_DIR = ROOT / "artifacts/precollector/winner_uncertainty_certification_architecture"
 
+UNRESOLVED_FIELDS = [
+    "challenge_group_id",
+    "horizon_code",
+    "forecast_method",
+    "resolution_status",
+    "winner_certification_authorized",
+    "forecast_generation_authorized",
+    "forced_resolution_prohibited",
+]
+
 
 def clean(value: Any) -> str:
     return str(value or "").strip()
@@ -92,7 +102,10 @@ def main() -> int:
     observed = {
         "short_horizon_groups": len(decisions),
         "certifiable_winner_groups": len(winners),
-        "unresolved_no_champion_groups": sum(clean(r.get("repaired_final_decision")) == "GOVERNED_NO_PRODUCTION_CHAMPION" for r in decisions),
+        "unresolved_no_champion_groups": sum(
+            clean(r.get("repaired_final_challenge_decision")) == "GOVERNED_NO_PRODUCTION_CHAMPION"
+            for r in decisions
+        ),
         "long_horizon_monte_carlo_routes": len(long_routes),
         "preserved_scorecard_rows": len(scores),
     }
@@ -100,7 +113,15 @@ def main() -> int:
         if observed.get(key) != value:
             failures.append(f"COUNT_DRIFT:{key}:expected={value}:actual={observed.get(key)}")
 
-    winner_keys = {(clean(r.get("challenge_group_id")), clean(r.get("selected_model"))) for r in winners}
+    if int(summary.get("repaired_short_horizon_winner_rows", -1)) != len(winners):
+        failures.append("WINNER_SUMMARY_COUNT_DRIFT")
+    if int(summary.get("governed_no_production_champion_rows", -1)) != observed["unresolved_no_champion_groups"]:
+        failures.append("UNRESOLVED_SUMMARY_COUNT_DRIFT")
+
+    winner_keys = {
+        (clean(r.get("challenge_group_id")), clean(r.get("repaired_challenge_model")))
+        for r in winners
+    }
     if any(not group or not model for group, model in winner_keys):
         failures.append("WINNER_IDENTITY_INCOMPLETE")
 
@@ -108,13 +129,14 @@ def main() -> int:
     for row in decisions:
         group = clean(row.get("challenge_group_id"))
         model = clean(row.get("selected_model"))
-        certifiable = (group, model) in winner_keys
+        decision = clean(row.get("repaired_final_challenge_decision"))
+        certifiable = bool(model) and (group, model) in winner_keys
         scope_rows.append({
             "challenge_group_id": group,
             "horizon_code": clean(row.get("horizon_code")),
             "forecast_method": clean(row.get("forecast_method")),
             "selected_model": model,
-            "repaired_final_decision": clean(row.get("repaired_final_decision")),
+            "repaired_final_challenge_decision": decision,
             "winner_certification_in_scope": certifiable,
             "uncertainty_certification_in_scope": certifiable,
             "model_selection_reopened": False,
@@ -129,13 +151,13 @@ def main() -> int:
             "required_partitions": "|".join(uncertainty["required_partitions"]),
             "classification_inputs": "|".join(uncertainty["classification_inputs"]),
             "mean_signed_percentage_error_status": uncertainty["unavailable_metric_disposition"]["status"],
-            "lower_uncertainty_allowed": classification != "LOWER_UNCERTAINTY" or False,
+            "lower_uncertainty_allowed": False,
             "conservative_rule": uncertainty["conservative_rule"],
         })
 
-    unresolved_rows = []
+    unresolved_rows: list[dict[str, Any]] = []
     for row in decisions:
-        if clean(row.get("repaired_final_decision")) == "GOVERNED_NO_PRODUCTION_CHAMPION":
+        if clean(row.get("repaired_final_challenge_decision")) == "GOVERNED_NO_PRODUCTION_CHAMPION":
             unresolved_rows.append({
                 "challenge_group_id": clean(row.get("challenge_group_id")),
                 "horizon_code": clean(row.get("horizon_code")),
@@ -146,11 +168,14 @@ def main() -> int:
                 "forced_resolution_prohibited": True,
             })
 
-    execution_rows = []
-    scores_by_key = {(clean(r.get("challenge_group_id")), clean(r.get("model_name")), clean(r.get("partition_name"))): r for r in scores}
+    execution_rows: list[dict[str, Any]] = []
+    scores_by_key = {
+        (clean(r.get("challenge_group_id")), clean(r.get("model_name")), clean(r.get("partition_name"))): r
+        for r in scores
+    }
     for row in winners:
         group = clean(row.get("challenge_group_id"))
-        model = clean(row.get("selected_model"))
+        model = clean(row.get("repaired_challenge_model"))
         missing = [p for p in uncertainty["required_partitions"] if (group, model, p) not in scores_by_key]
         if missing:
             failures.append(f"WINNER_PARTITION_EVIDENCE_MISSING:{group}:{model}:{'|'.join(missing)}")
@@ -159,7 +184,7 @@ def main() -> int:
             "horizon_code": clean(row.get("horizon_code")),
             "forecast_method": clean(row.get("forecast_method")),
             "selected_model": model,
-            "source_decision": clean(row.get("repaired_final_decision")),
+            "source_decision": clean(row.get("repaired_challenge_decision")),
             "required_partition_count": len(uncertainty["required_partitions"]),
             "preserved_partition_evidence_only": True,
             "prediction_recomputation_authorized": False,
@@ -168,14 +193,36 @@ def main() -> int:
             "next_execution_stage": contract["next_stage_if_certified"],
         })
 
+    if len(winner_keys) != expected["certifiable_winner_groups"]:
+        failures.append(
+            f"WINNER_IDENTITY_COUNT_DRIFT:expected={expected['certifiable_winner_groups']}:actual={len(winner_keys)}"
+        )
+    if len(unresolved_rows) != expected["unresolved_no_champion_groups"]:
+        failures.append(
+            f"UNRESOLVED_REGISTRY_COUNT_DRIFT:expected={expected['unresolved_no_champion_groups']}:actual={len(unresolved_rows)}"
+        )
+
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
     outputs = contract["outputs"]
     write_csv(OUTPUT_DIR / outputs["input_lineage_csv"], lineage, list(lineage[0].keys()))
     write_csv(OUTPUT_DIR / outputs["certification_scope_registry_csv"], scope_rows, list(scope_rows[0].keys()))
     write_csv(OUTPUT_DIR / outputs["uncertainty_policy_csv"], policy_rows, list(policy_rows[0].keys()))
-    write_csv(OUTPUT_DIR / outputs["unresolved_group_registry_csv"], unresolved_rows, list(unresolved_rows[0].keys()))
+    write_csv(OUTPUT_DIR / outputs["unresolved_group_registry_csv"], unresolved_rows, UNRESOLVED_FIELDS)
     write_csv(OUTPUT_DIR / outputs["long_horizon_routing_csv"], long_routes, list(long_routes[0].keys()))
-    write_csv(OUTPUT_DIR / outputs["execution_plan_csv"], execution_rows, list(execution_rows[0].keys()))
+    execution_fields = [
+        "challenge_group_id",
+        "horizon_code",
+        "forecast_method",
+        "selected_model",
+        "source_decision",
+        "required_partition_count",
+        "preserved_partition_evidence_only",
+        "prediction_recomputation_authorized",
+        "error_recomputation_authorized",
+        "model_selection_reopened",
+        "next_execution_stage",
+    ]
+    write_csv(OUTPUT_DIR / outputs["execution_plan_csv"], execution_rows, execution_fields)
 
     status = "PASS" if not failures else "FAIL"
     architecture_summary = {
