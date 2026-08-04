@@ -1,0 +1,91 @@
+{
+  "contract_id": "precollector_final_champion_challenge_architecture_v1",
+  "contract_version": "1.0.0",
+  "governing_snapshot_id": "collector-20260801T211201Z-7688afbd",
+  "required_round_two_package": {
+    "package_name": "MTG_PreCollector_Adaptive_Tournament_Refinement_Execution_v1_1.zip",
+    "sha256": "f67f2c1f0241f9450498b4cf9cd584852766738e7a5b134591c0365b4bb7fc29"
+  },
+  "expected_round_two_counts": {
+    "groups": 15,
+    "short_horizon_groups": 9,
+    "long_horizon_groups": 6,
+    "candidate_scorecards": 2011,
+    "preserved_folds": 1992,
+    "round_one_leaders_retained": 9,
+    "long_horizon_insufficient_evidence": 6
+  },
+  "short_horizons": ["D90", "D180", "D365"],
+  "long_horizons": ["Y3", "Y5"],
+  "baseline_models": {
+    "DIRECT_HISTORY_CALIBRATED": "NAIVE_LAST_VALUE",
+    "DIRECT_HISTORY_LIMITED": "NAIVE_LAST_VALUE",
+    "COMPARABLE_PRODUCT_ADJUSTED": "COMPARABLE_MEDIAN_GROWTH"
+  },
+  "challenge_design": {
+    "candidate_set_frozen_before_challenge": true,
+    "incumbent_required": true,
+    "baseline_required": true,
+    "maximum_non_incumbent_challengers": 2,
+    "stress_partitions": [
+      "OUTER_ALL",
+      "LATEST_TIME_STRESS",
+      "PRODUCT_CONCENTRATION_STRESS"
+    ],
+    "no_new_parameter_tuning": true,
+    "no_new_feature_tuning": true,
+    "independent_per_horizon": true,
+    "independent_per_route": true,
+    "minimum_champion_rows": 3,
+    "minimum_directional_accuracy": 0.50,
+    "maximum_absolute_bias_ratio": 0.50,
+    "maximum_single_product_error_share": 0.60,
+    "maximum_worst_product_mape_multiple": 3.50,
+    "minimum_relative_improvement_for_challenger_promotion": 0.02,
+    "no_forced_winner": true
+  },
+  "long_horizon_routing": {
+    "direct_backtest_champion_authorized": false,
+    "required_next_process": "PRECOLLECTOR_LONG_HORIZON_MONTE_CARLO_ARCHITECTURE",
+    "required_simulations_per_product_horizon": 10000,
+    "required_horizons_days": [1095, 1825],
+    "scenario_only_when_support_insufficient": true,
+    "purchase_authorization_from_mean_only_prohibited": true
+  },
+  "allowed_challenge_decisions": [
+    "RETAIN_ROUND_ONE_INCUMBENT",
+    "PROMOTE_FROZEN_ROUND_TWO_CHALLENGER",
+    "RETAIN_GOVERNED_BASELINE",
+    "GOVERNED_NO_PRODUCTION_CHAMPION"
+  ],
+  "outputs": {
+    "input_lineage_csv": "precollector_final_champion_architecture_input_lineage.csv",
+    "challenge_group_registry_csv": "precollector_final_champion_challenge_group_registry.csv",
+    "frozen_candidate_registry_csv": "precollector_final_champion_frozen_candidate_registry.csv",
+    "stress_partition_registry_csv": "precollector_final_champion_stress_partition_registry.csv",
+    "long_horizon_routing_csv": "precollector_final_champion_long_horizon_routing.csv",
+    "decision_policy_csv": "precollector_final_champion_decision_policy.csv",
+    "summary_json": "precollector_final_champion_challenge_architecture_summary.json",
+    "manifest_json": "precollector_final_champion_challenge_architecture_manifest.json"
+  },
+  "prohibited_behavior": {
+    "execute_final_challenge": true,
+    "invoke_upstream_builders": true,
+    "perform_live_network_collection": true,
+    "change_preserved_fold_membership": true,
+    "add_new_candidates": true,
+    "tune_parameters": true,
+    "generate_forecasts": true,
+    "rank_products": true,
+    "generate_purchase_recommendations": true
+  },
+  "next_stage_if_certified": "PRECOLLECTOR_FINAL_CHAMPION_CHALLENGE_EXECUTION",
+  "final_challenge_execution_authorized": true,
+  "final_winner_certification_authorized": false,
+  "forecast_generation_authorized": false,
+  "ranking_execution_authorized": false,
+  "purchase_analysis_authorized": false,
+  "purchase_recommendation_authorized": false,
+  "automatic_purchase_execution_authorized": false,
+  "uip_delivery_authorized": false
+}
