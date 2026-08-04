@@ -1,6 +1,6 @@
 {
   "decision_id": "precollector_owner_selected_production_lane_v3",
-  "decision_version": "3.0.0",
+  "decision_version": "3.0.1",
   "owner": "Devon Lockard",
   "owner_approval_status": "APPROVED",
   "decision_scope": "PRECOLLECTOR_PRODUCTION_LANE",
@@ -8,29 +8,30 @@
   "excluded_product_count": 15,
   "newly_excluded_product_count": 4,
   "analytical_reference_lane_count": 0,
-  "newly_excluded_products": [
-    {
-      "canonical_product_id": "tcgplayer:27279",
-      "product_name": "Fourth Edition - Booster Box",
-      "reason_code": "WEAK_DISTANT_CORE_COMPARABLE_SET"
-    },
-    {
-      "canonical_product_id": "tcgplayer:27278",
-      "product_name": "Fifth Edition - Booster Box",
-      "reason_code": "WEAK_DISTANT_CORE_COMPARABLE_SET"
-    },
-    {
-      "canonical_product_id": "tcgplayer:27258",
-      "product_name": "7th Edition - Booster Box",
-      "reason_code": "WEAK_DISTANT_CORE_COMPARABLE_SET"
-    },
-    {
-      "canonical_product_id": "tcgplayer:27269",
-      "product_name": "Chronicles - Booster Box",
-      "reason_code": "AMBIGUOUS_REPRINT_SUPPLEMENTAL_TAXONOMY"
-    }
+  "excluded_products": [
+    {"canonical_product_id": "tcgplayer:27276", "product_name": "Fallen Empires - Booster Box", "reason_code": "OWNER_EXCLUDED_OLDER_THIN_MARKET"},
+    {"canonical_product_id": "tcgplayer:27282", "product_name": "Homelands - Booster Box", "reason_code": "OWNER_EXCLUDED_OLDER_THIN_MARKET"},
+    {"canonical_product_id": "tcgplayer:27284", "product_name": "Invasion - Booster Box", "reason_code": "OWNER_EXCLUDED_OLDER_THIN_MARKET"},
+    {"canonical_product_id": "tcgplayer:27259", "product_name": "8th Edition - Booster Box", "reason_code": "OWNER_EXCLUDED_OLDER_THIN_MARKET"},
+    {"canonical_product_id": "tcgplayer:27272", "product_name": "Darksteel - Booster Box", "reason_code": "OWNER_EXCLUDED_OLDER_THIN_MARKET"},
+    {"canonical_product_id": "tcgplayer:27277", "product_name": "Fifth Dawn - Booster Box", "reason_code": "OWNER_EXCLUDED_OLDER_THIN_MARKET"},
+    {"canonical_product_id": "tcgplayer:27267", "product_name": "Betrayers of Kamigawa - Booster Box", "reason_code": "OWNER_EXCLUDED_OLDER_THIN_MARKET"},
+    {"canonical_product_id": "tcgplayer:27304", "product_name": "Saviors of Kamigawa - Booster Box", "reason_code": "OWNER_EXCLUDED_OLDER_THIN_MARKET"},
+    {"canonical_product_id": "tcgplayer:27273", "product_name": "Dissension - Booster Box", "reason_code": "OWNER_EXCLUDED_OLDER_THIN_MARKET"},
+    {"canonical_product_id": "tcgplayer:27281", "product_name": "Guildpact - Booster Box", "reason_code": "OWNER_EXCLUDED_OLDER_THIN_MARKET"},
+    {"canonical_product_id": "tcgplayer:27292", "product_name": "Morningtide - Booster Box", "reason_code": "OWNER_EXCLUDED_OLDER_THIN_MARKET"},
+    {"canonical_product_id": "tcgplayer:27279", "product_name": "Fourth Edition - Booster Box", "reason_code": "WEAK_DISTANT_CORE_COMPARABLE_SET"},
+    {"canonical_product_id": "tcgplayer:27278", "product_name": "Fifth Edition - Booster Box", "reason_code": "WEAK_DISTANT_CORE_COMPARABLE_SET"},
+    {"canonical_product_id": "tcgplayer:27258", "product_name": "7th Edition - Booster Box", "reason_code": "WEAK_DISTANT_CORE_COMPARABLE_SET"},
+    {"canonical_product_id": "tcgplayer:27269", "product_name": "Chronicles - Booster Box", "reason_code": "AMBIGUOUS_REPRINT_SUPPLEMENTAL_TAXONOMY"}
   ],
-  "newly_excluded_product_policy": {
+  "newly_excluded_products": [
+    {"canonical_product_id": "tcgplayer:27279", "product_name": "Fourth Edition - Booster Box", "reason_code": "WEAK_DISTANT_CORE_COMPARABLE_SET"},
+    {"canonical_product_id": "tcgplayer:27278", "product_name": "Fifth Edition - Booster Box", "reason_code": "WEAK_DISTANT_CORE_COMPARABLE_SET"},
+    {"canonical_product_id": "tcgplayer:27258", "product_name": "7th Edition - Booster Box", "reason_code": "WEAK_DISTANT_CORE_COMPARABLE_SET"},
+    {"canonical_product_id": "tcgplayer:27269", "product_name": "Chronicles - Booster Box", "reason_code": "AMBIGUOUS_REPRINT_SUPPLEMENTAL_TAXONOMY"}
+  ],
+  "excluded_product_policy": {
     "active_analytical_lane": false,
     "forecast_method_routing": false,
     "comparable_target_eligibility": false,
@@ -56,5 +57,5 @@
   "automatic_purchase_execution_authorized": false,
   "uip_delivery_authorized": false,
   "supersedes": "precollector_owner_selected_production_lane_v2",
-  "governing_note": "The owner approved removal of Fourth Edition, Fifth Edition, 7th Edition, and Chronicles from the active Pre-Collector production lane because their comparable structure or taxonomy would add complexity without sufficient analytical benefit. The governed active production universe is now 79 products."
+  "governing_note": "The owner-approved active Pre-Collector production universe is 79 products. All 15 excluded products are blocked from analytical, comparable, forecast, ranking, purchase, and UIP-delivery authority."
 }
