@@ -7,6 +7,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 CONTRACT = ROOT / "config/mtg/standards/precollector_horizon_tournament_execution_from_certified_bundle_contract_v1.json"
 RUNNER = ROOT / "scripts/run_precollector_horizon_tournaments_from_certified_bundle.py"
+BOUND_RUNNER = ROOT / "scripts/run_precollector_horizon_tournaments_from_certified_bundle_v1_1.py"
 
 
 def contract() -> dict:
@@ -20,12 +21,26 @@ def test_contract_binds_expected_certified_counts() -> None:
     assert data["expected_route_count"] == 3
     assert data["expected_product_horizon_rows"] == 395
     assert data["expected_winner_rows"] == 15
+    assert data["expected_canonical_historical_rows"] == 2826
 
 
 def test_contract_requires_all_seven_certified_roles() -> None:
     assert len(contract()["required_artifact_roles"]) == 7
     assert "CANONICAL_HISTORICAL_PRICE" in contract()["required_artifact_roles"]
     assert "APPROVED_COMPARABLE_LEDGER" in contract()["required_artifact_roles"]
+
+
+def test_contract_exactly_binds_canonical_history_authority() -> None:
+    binding = contract()["canonical_history_binding"]
+    assert binding["package_name"] == "MTG_PreCollector_Canonical_Historical_Prices_v1.zip"
+    assert binding["package_sha256"] == "85dd8091ac9822b23ad29f099ff56868ad60768493cbf836136bb92697de1414"
+    assert binding["member_name"] == "precollector_canonical_historical_prices_v1.csv"
+    assert binding["member_sha256"] == "501592fe43eb295982835414f55bffd900ea39308ada8e5131ec0765fbf360fc"
+    assert binding["required_columns"] == [
+        "canonical_product_id",
+        "observation_timestamp",
+        "canonical_historical_price",
+    ]
 
 
 def test_contract_advances_to_round_two_only() -> None:
@@ -46,7 +61,7 @@ def test_contract_preserves_all_downstream_blocks() -> None:
 
 
 def test_runner_has_no_recursive_or_network_execution() -> None:
-    text = RUNNER.read_text(encoding="utf-8")
+    text = RUNNER.read_text(encoding="utf-8") + BOUND_RUNNER.read_text(encoding="utf-8")
     assert "subprocess" not in text
     assert "requests" not in text
     assert "urlopen" not in text
@@ -59,6 +74,16 @@ def test_runner_reads_certified_zip_members() -> None:
     assert "zipfile.ZipFile" in text
     assert "member_sha256" in text
     assert "load_certified_inputs" in text
+
+
+def test_bound_runner_validates_exact_history_package_member_and_schema() -> None:
+    text = BOUND_RUNNER.read_text(encoding="utf-8")
+    assert "BOUND_CANONICAL_HISTORY_PACKAGE_HASH_DRIFT" in text
+    assert "BOUND_CANONICAL_HISTORY_MEMBER_HASH_DRIFT" in text
+    assert "BOUND_CANONICAL_HISTORY_SCHEMA_DRIFT" in text
+    assert 'enriched["observation_date"] = row["observation_timestamp"]' in text
+    assert 'enriched["historical_price"] = row["canonical_historical_price"]' in text
+    assert "PASS_PRECOLLECTOR_EXACT_CANONICAL_HISTORY_BINDING_V1_1" in text
 
 
 def test_runner_executes_independent_horizon_route_competitions() -> None:
@@ -78,8 +103,8 @@ def test_runner_preserves_round_two_and_authority_blocks() -> None:
     assert 'print("LIVE_NETWORK_COLLECTION_PERFORMED=FALSE")' in text
 
 
-def test_runner_module_loads() -> None:
-    spec = importlib.util.spec_from_file_location("precollector_certified_bundle_round_one", RUNNER)
+def test_bound_runner_module_loads() -> None:
+    spec = importlib.util.spec_from_file_location("precollector_certified_bundle_round_one_v1_1", BOUND_RUNNER)
     assert spec is not None and spec.loader is not None
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
