@@ -47,7 +47,7 @@ Invoke-Step "Forecast input certification tests" {
 }
 
 Invoke-Step "Build forecast input assembly and method certification" {
-    python .\scripts\build_precollector_forecast_input_assembly_method_certification.py
+    python .\scripts\build_precollector_forecast_input_assembly_method_certification_v1_1.py
 }
 
 Invoke-Step "Validate forecast input certification summary" {
