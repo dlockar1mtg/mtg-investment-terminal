@@ -1,0 +1,54 @@
+{
+  "contract_id": "precollector_horizon_specific_tournament_architecture_v1",
+  "contract_version": "1.0.0",
+  "upstream_builder_path": "scripts/build_precollector_forecast_input_assembly_method_certification_v1_1.py",
+  "upstream_output_directory": "artifacts/precollector/forecast_input_assembly_method_certification",
+  "expected_active_product_count": 79,
+  "expected_horizon_count": 5,
+  "forecast_horizons": [
+    {"horizon_code": "D90", "horizon_days": 90, "display_name": "90 Day"},
+    {"horizon_code": "D180", "horizon_days": 180, "display_name": "180 Day"},
+    {"horizon_code": "D365", "horizon_days": 365, "display_name": "365 Day"},
+    {"horizon_code": "Y3", "horizon_days": 1095, "display_name": "3 Year"},
+    {"horizon_code": "Y5", "horizon_days": 1825, "display_name": "5 Year"}
+  ],
+  "independent_tournament_per_horizon": true,
+  "route_model_families": {
+    "DIRECT_HISTORY_CALIBRATED": ["NAIVE_LAST_VALUE", "DRIFT", "ROBUST_LOG_LINEAR", "DAMPED_TREND", "EXPONENTIAL_SMOOTHING"],
+    "DIRECT_HISTORY_LIMITED": ["NAIVE_LAST_VALUE", "DRIFT", "ROBUST_LOG_LINEAR", "SHRUNK_DIRECT_COMPARABLE_BLEND"],
+    "COMPARABLE_PRODUCT_ADJUSTED": ["COMPARABLE_MEDIAN_GROWTH", "RANK_DECAY_WEIGHTED_GROWTH", "LIFECYCLE_MATCHED_COMPARABLE", "SHRUNK_COMPARABLE_ENSEMBLE"]
+  },
+  "required_baselines": ["NAIVE_LAST_VALUE", "HORIZON_DRIFT_BASELINE"],
+  "validation_policy": {
+    "rolling_origin_required": true,
+    "minimum_train_observations_direct_calibrated": 18,
+    "minimum_train_observations_direct_limited": 10,
+    "minimum_test_origins_when_available": 3,
+    "metrics": ["MAE", "MAPE", "SMAPE", "RMSE", "DIRECTIONAL_ACCURACY", "INTERVAL_COVERAGE"],
+    "promotion_requires_baseline_improvement": true,
+    "promotion_requires_stability": true,
+    "promotion_requires_uncertainty_output": true,
+    "no_cross_horizon_winner_reuse_without_competing": true
+  },
+  "fallback_policy": {
+    "insufficient_direct_history": "ROUTE_TO_APPROVED_COMPARABLE_MODEL",
+    "insufficient_comparable_support": "NAIVE_LAST_VALUE_WITH_MAXIMUM_UNCERTAINTY",
+    "no_candidate_beats_baseline": "RETAIN_BASELINE",
+    "unstable_candidate": "REJECT_AND_USE_NEXT_ELIGIBLE_MODEL"
+  },
+  "outputs": {
+    "horizon_architecture_csv": "precollector_horizon_specific_tournament_architecture.csv",
+    "route_model_eligibility_csv": "precollector_horizon_route_model_eligibility.csv",
+    "validation_policy_csv": "precollector_horizon_validation_policy.csv",
+    "diagnostics_csv": "precollector_horizon_architecture_diagnostics.csv",
+    "summary_json": "precollector_horizon_specific_tournament_architecture_summary.json",
+    "manifest_json": "precollector_horizon_specific_tournament_architecture_manifest.json"
+  },
+  "next_stage_if_certified": "PRECOLLECTOR_HORIZON_SPECIFIC_TOURNAMENT_EXECUTION",
+  "forecast_generation_authorized": false,
+  "ranking_execution_authorized": false,
+  "purchase_analysis_authorized": false,
+  "purchase_recommendation_authorized": false,
+  "automatic_purchase_execution_authorized": false,
+  "uip_delivery_authorized": false
+}
