@@ -13,6 +13,11 @@ ROOT = Path(__file__).resolve().parents[1]
 CONTRACT_PATH = ROOT / "config/mtg/standards/precollector_long_horizon_monte_carlo_architecture_contract_v1.json"
 OUTPUT_DIR = ROOT / "artifacts/precollector/long_horizon_monte_carlo_architecture"
 
+CERTIFIED_WINNER_REGISTRY = "precollector_certified_short_horizon_winner_uncertainty_registry.csv"
+UNRESOLVED_GROUP_REGISTRY = "precollector_winner_uncertainty_unresolved_group_registry.csv"
+LONG_HORIZON_ROUTING = "precollector_winner_uncertainty_long_horizon_routing.csv"
+WINNER_UNCERTAINTY_SUMMARY = "precollector_winner_uncertainty_execution_summary.json"
+
 
 def clean(value: Any) -> str:
     return str(value or "").strip()
@@ -42,6 +47,15 @@ def write_csv(path: Path, rows: list[dict[str, Any]], fields: list[str]) -> None
         writer.writerows(rows)
 
 
+def required_package_members() -> list[str]:
+    return [
+        CERTIFIED_WINNER_REGISTRY,
+        UNRESOLVED_GROUP_REGISTRY,
+        LONG_HORIZON_ROUTING,
+        WINNER_UNCERTAINTY_SUMMARY,
+    ]
+
+
 def load_package(contract: dict[str, Any]) -> tuple[dict[str, bytes], list[dict[str, Any]]]:
     package = contract["required_winner_uncertainty_execution_package"]
     path = Path(tempfile.gettempdir()) / package["package_name"]
@@ -50,17 +64,11 @@ def load_package(contract: dict[str, Any]) -> tuple[dict[str, bytes], list[dict[
     actual = sha256_file(path)
     if actual != package["sha256"]:
         raise RuntimeError(f"PACKAGE_HASH_DRIFT:expected={package['sha256']}:actual={actual}")
-    required = [
-        "precollector_certified_short_horizon_winner_registry.csv",
-        "precollector_winner_uncertainty_unresolved_group_registry.csv",
-        "precollector_winner_uncertainty_long_horizon_routing.csv",
-        "precollector_winner_uncertainty_certification_execution_summary.json",
-    ]
     payloads: dict[str, bytes] = {}
     lineage: list[dict[str, Any]] = []
     with zipfile.ZipFile(path) as archive:
         available = {Path(item.filename).name: item for item in archive.infolist() if not item.is_dir()}
-        for name in required:
+        for name in required_package_members():
             member = available.get(name)
             if member is None:
                 raise RuntimeError(f"PACKAGE_MEMBER_MISSING:{name}")
@@ -80,10 +88,10 @@ def load_package(contract: dict[str, Any]) -> tuple[dict[str, bytes], list[dict[
 def main() -> int:
     contract = json.loads(CONTRACT_PATH.read_text(encoding="utf-8"))
     payloads, lineage = load_package(contract)
-    winners = read_csv_bytes(payloads["precollector_certified_short_horizon_winner_registry.csv"])
-    unresolved = read_csv_bytes(payloads["precollector_winner_uncertainty_unresolved_group_registry.csv"])
-    routes = read_csv_bytes(payloads["precollector_winner_uncertainty_long_horizon_routing.csv"])
-    summary = json.loads(payloads["precollector_winner_uncertainty_certification_execution_summary.json"].decode("utf-8-sig"))
+    winners = read_csv_bytes(payloads[CERTIFIED_WINNER_REGISTRY])
+    unresolved = read_csv_bytes(payloads[UNRESOLVED_GROUP_REGISTRY])
+    routes = read_csv_bytes(payloads[LONG_HORIZON_ROUTING])
+    summary = json.loads(payloads[WINNER_UNCERTAINTY_SUMMARY].decode("utf-8-sig"))
 
     failures: list[str] = []
     expected = contract["expected_counts"]
