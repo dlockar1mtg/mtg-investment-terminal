@@ -45,8 +45,8 @@ if (Test-Path $OutputDir) {
     Remove-Item $OutputDir -Recurse -Force
 }
 
-Invoke-Step "Execute Round One from certified bundle" {
-    python .\scripts\run_precollector_horizon_tournaments_from_certified_bundle.py
+Invoke-Step "Execute Round One from exact certified bundle" {
+    python .\scripts\run_precollector_horizon_tournaments_from_certified_bundle_v1_1.py
 }
 
 Invoke-Step "Validate certified-bundle Round One summary" {
@@ -94,9 +94,22 @@ if winners[["horizon_code", "forecast_method"]].drop_duplicates().shape[0] != 15
     raise SystemExit("WINNER_COVERAGE_FAILURE")
 if lineage["artifact_role"].nunique() != 7:
     raise SystemExit("CERTIFIED_INPUT_LINEAGE_COVERAGE_FAILURE")
+history = lineage[lineage["artifact_role"] == "CANONICAL_HISTORICAL_PRICE"]
+if len(history) != 1:
+    raise SystemExit("CANONICAL_HISTORY_LINEAGE_CARDINALITY_FAILURE")
+row = history.iloc[0]
+if row["package_name"] != "MTG_PreCollector_Canonical_Historical_Prices_v1.zip":
+    raise SystemExit("CANONICAL_HISTORY_PACKAGE_BINDING_FAILURE")
+if row["member_name"] != "precollector_canonical_historical_prices_v1.csv":
+    raise SystemExit("CANONICAL_HISTORY_MEMBER_BINDING_FAILURE")
+if row["member_sha256"] != "501592fe43eb295982835414f55bffd900ea39308ada8e5131ec0765fbf360fc":
+    raise SystemExit("CANONICAL_HISTORY_MEMBER_HASH_FAILURE")
+if int(row["row_count"]) != 2826:
+    raise SystemExit("CANONICAL_HISTORY_ROW_COUNT_FAILURE")
 if winners["forecast_generation_authorized"].astype(str).str.lower().ne("false").any():
     raise SystemExit("FORECAST_AUTHORITY_DRIFT")
 print("PASS_PRECOLLECTOR_HORIZON_TOURNAMENT_EXECUTION_FROM_CERTIFIED_BUNDLE_SUMMARY")
+print("PASS_PRECOLLECTOR_EXACT_CANONICAL_HISTORY_LINEAGE")
 for key in ["active_product_rows", "forecast_horizon_count", "route_count", "product_horizon_input_rows", "rolling_prediction_rows", "model_scorecard_rows", "winner_registry_rows", "competitive_winner_rows", "fallback_winner_rows", "uncertainty_evidence_rows"]:
     print(f"{key.upper()}={summary[key]}")
 print(f"AUTHORIZED_NEXT_STAGE={summary['next_stage']}")
@@ -132,6 +145,7 @@ if ($DirtyEnd) {
 
 Write-Host "`nCERTIFIED_PASS_PRECOLLECTOR_HORIZON_TOURNAMENT_EXECUTION_FROM_CERTIFIED_BUNDLE" -ForegroundColor Green
 Write-Host "AUTHORIZED_NEXT_STAGE=PRECOLLECTOR_ADAPTIVE_TOURNAMENT_REFINEMENT_ARCHITECTURE" -ForegroundColor Green
+Write-Host "EXACT_CANONICAL_HISTORY_BINDING=TRUE" -ForegroundColor Green
 Write-Host "NO_UPSTREAM_REBUILD_PERFORMED=TRUE" -ForegroundColor Green
 Write-Host "NO_LIVE_NETWORK_COLLECTION_PERFORMED=TRUE" -ForegroundColor Green
 Write-Host "ROUND_TWO_REFINEMENT_REQUIRED=TRUE" -ForegroundColor Green
