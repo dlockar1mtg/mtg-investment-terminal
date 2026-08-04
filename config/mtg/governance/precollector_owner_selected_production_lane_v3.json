@@ -1,0 +1,60 @@
+{
+  "decision_id": "precollector_owner_selected_production_lane_v3",
+  "decision_version": "3.0.0",
+  "owner": "Devon Lockard",
+  "owner_approval_status": "APPROVED",
+  "decision_scope": "PRECOLLECTOR_PRODUCTION_LANE",
+  "selected_production_product_count": 79,
+  "excluded_product_count": 15,
+  "newly_excluded_product_count": 4,
+  "analytical_reference_lane_count": 0,
+  "newly_excluded_products": [
+    {
+      "canonical_product_id": "tcgplayer:27279",
+      "product_name": "Fourth Edition - Booster Box",
+      "reason_code": "WEAK_DISTANT_CORE_COMPARABLE_SET"
+    },
+    {
+      "canonical_product_id": "tcgplayer:27278",
+      "product_name": "Fifth Edition - Booster Box",
+      "reason_code": "WEAK_DISTANT_CORE_COMPARABLE_SET"
+    },
+    {
+      "canonical_product_id": "tcgplayer:27258",
+      "product_name": "7th Edition - Booster Box",
+      "reason_code": "WEAK_DISTANT_CORE_COMPARABLE_SET"
+    },
+    {
+      "canonical_product_id": "tcgplayer:27269",
+      "product_name": "Chronicles - Booster Box",
+      "reason_code": "AMBIGUOUS_REPRINT_SUPPLEMENTAL_TAXONOMY"
+    }
+  ],
+  "newly_excluded_product_policy": {
+    "active_analytical_lane": false,
+    "forecast_method_routing": false,
+    "comparable_target_eligibility": false,
+    "comparable_donor_eligibility": false,
+    "forecast_generation": false,
+    "ranking_execution": false,
+    "purchase_analysis": false,
+    "purchase_recommendation": false,
+    "uip_delivery": false,
+    "historical_source_records_may_remain_archived": true
+  },
+  "selected_product_policy": {
+    "specialty_products_retained": true,
+    "specialty_family_separation_required": true,
+    "automatic_price_based_exclusion": false,
+    "missing_or_limited_evidence_requires_governed_route": true,
+    "owner_approved_comparable_selection_required": true
+  },
+  "next_stage": "PRECOLLECTOR_79_PRODUCT_TAXONOMY_ROUTING_RECONCILIATION",
+  "forecast_generation_authorized": false,
+  "ranking_execution_authorized": false,
+  "purchase_recommendation_authorized": false,
+  "automatic_purchase_execution_authorized": false,
+  "uip_delivery_authorized": false,
+  "supersedes": "precollector_owner_selected_production_lane_v2",
+  "governing_note": "The owner approved removal of Fourth Edition, Fifth Edition, 7th Edition, and Chronicles from the active Pre-Collector production lane because their comparable structure or taxonomy would add complexity without sufficient analytical benefit. The governed active production universe is now 79 products."
+}
