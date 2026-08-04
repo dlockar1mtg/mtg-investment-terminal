@@ -63,6 +63,10 @@ if ($ActualPackageHash -ne $RequiredPackageHash) {
 
 Write-Host "PASS_FINAL_CHALLENGE_PACKAGE_BINDING=$ActualPackageHash" -ForegroundColor Green
 
+if (Test-Path $OutputDirectory) {
+    Remove-Item $OutputDirectory -Recurse -Force
+}
+
 Invoke-GovernedStep "Control repair architecture tests" {
     python -m pytest -q tests\test_precollector_final_champion_control_repair_architecture.py
 }
@@ -132,6 +136,19 @@ Compress-Archive -Path (Join-Path $OutputDirectory "*") -DestinationPath $Output
 $OutputHash = (Get-FileHash $OutputZip -Algorithm SHA256).Hash.ToLowerInvariant()
 Write-Host "CONTROL_REPAIR_ARCHITECTURE_ZIP=$OutputZip" -ForegroundColor Green
 Write-Host "CONTROL_REPAIR_ARCHITECTURE_ZIP_SHA256=$OutputHash" -ForegroundColor Green
+
+Remove-Item $OutputDirectory -Recurse -Force
+
+$RemainingStatus = git status --porcelain --untracked-files=all
+if ($LASTEXITCODE -ne 0) {
+    throw "GOVERNED_GATE_FAILED: unable to verify repository cleanliness"
+}
+if ($RemainingStatus) {
+    Write-Host $RemainingStatus
+    throw "GOVERNED_GATE_FAILED: repository not clean after transient-output cleanup"
+}
+
+Write-Host "PASS_TRANSIENT_OUTPUT_CLEANUP=TRUE" -ForegroundColor Green
 
 Write-Host "`nCERTIFIED_PASS_PRECOLLECTOR_FINAL_CHAMPION_CONTROL_REPAIR_ARCHITECTURE" -ForegroundColor Green
 Write-Host "AUTHORIZED_NEXT_STAGE=PRECOLLECTOR_FINAL_CHAMPION_CHALLENGE_CONTROL_REPAIR_EXECUTION"
