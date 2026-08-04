@@ -1,0 +1,89 @@
+{
+  "contract_id": "precollector_long_horizon_monte_carlo_execution_v1",
+  "contract_version": "1.0.0",
+  "governing_snapshot_id": "collector-20260801T211201Z-7688afbd",
+  "required_architecture_package": {
+    "package_name": "MTG_PreCollector_Long_Horizon_Monte_Carlo_Architecture_v1.zip",
+    "sha256": "f77b965bc7acfe315050940e450a4ce011f194656556de06321249e551bcafc1"
+  },
+  "required_winner_uncertainty_execution_package": {
+    "package_name": "MTG_PreCollector_Winner_Uncertainty_Certification_Execution_v1.zip",
+    "sha256": "2a3385fe2f60ddda27e9d0f906cb3e87fea67945d9c0b2e79b5e3cb746837af0"
+  },
+  "expected_counts": {
+    "governed_products": 50,
+    "long_horizon_routes": 6,
+    "long_horizon_horizon_codes": 2,
+    "product_horizon_rows": 100,
+    "certified_short_horizon_winners": 5,
+    "unresolved_short_horizon_groups": 4
+  },
+  "simulation_policy": {
+    "engine": "EMPIRICAL_BOOTSTRAP_ANNUALIZED_LOG_RETURN",
+    "required_simulations_per_product_horizon": 10000,
+    "horizon_years": {"Y3": 3.0, "Y5": 5.0},
+    "required_quantiles": [0.05, 0.10, 0.25, 0.50, 0.75, 0.90, 0.95],
+    "minimum_product_return_observations": 3,
+    "fallback_order": ["PRODUCT", "FORECAST_ROUTE_POOL", "GLOBAL_POOL"],
+    "parameter_uncertainty": {
+      "enabled": true,
+      "method": "BOOTSTRAP_SAMPLE_MEAN_PERTURBATION",
+      "standard_error_floor": 0.02
+    },
+    "path_uncertainty": {
+      "enabled": true,
+      "steps_per_year": 12,
+      "method": "BOOTSTRAPPED_ANNUAL_RETURN_SHOCKS"
+    },
+    "scenario_uncertainty": {
+      "enabled": true,
+      "scenario_probabilities": {
+        "DOWNSIDE": 0.20,
+        "BASE": 0.60,
+        "UPSIDE": 0.20
+      },
+      "annual_log_return_adjustments": {
+        "DOWNSIDE": -0.10,
+        "BASE": 0.00,
+        "UPSIDE": 0.10
+      }
+    },
+    "tail_stress": {
+      "enabled": true,
+      "probability": 0.05,
+      "annual_log_return_adjustment": -0.25
+    },
+    "minimum_terminal_value": 0.01,
+    "maximum_annualized_log_return": 1.50,
+    "minimum_annualized_log_return": -1.50,
+    "deterministic_seed_method": "SHA256_SNAPSHOT_PRODUCT_HORIZON_TO_INT31",
+    "common_random_numbers_required_within_product": true
+  },
+  "input_governance": {
+    "snapshot_manifest_path": "data/governance/permanence/snapshots/collector-20260801T211201Z-7688afbd/collector_snapshot_manifest.json",
+    "current_foundation_path": "data/governance/permanence/certification/collector_v1_august1_snapshot_bound_current_foundation/collector_v1_august1_snapshot_bound_current_foundation.csv",
+    "required_manifest_roles": ["canonical_history", "current_authority"],
+    "new_live_collection_authorized": false,
+    "modify_short_horizon_certifications": false,
+    "reopen_short_horizon_model_selection": false,
+    "model_tuning_authorized": false,
+    "threshold_tuning_authorized": false
+  },
+  "required_outputs": {
+    "input_lineage_csv": "precollector_long_horizon_monte_carlo_execution_input_lineage.csv",
+    "seed_registry_csv": "precollector_long_horizon_monte_carlo_seed_registry.csv",
+    "return_pool_registry_csv": "precollector_long_horizon_monte_carlo_return_pool_registry.csv",
+    "product_horizon_distribution_csv": "precollector_long_horizon_monte_carlo_product_horizon_distribution.csv",
+    "route_summary_csv": "precollector_long_horizon_monte_carlo_route_summary.csv",
+    "diagnostics_csv": "precollector_long_horizon_monte_carlo_execution_diagnostics.csv",
+    "summary_json": "precollector_long_horizon_monte_carlo_execution_summary.json",
+    "manifest_json": "precollector_long_horizon_monte_carlo_execution_manifest.json"
+  },
+  "next_stage_if_certified": "PRECOLLECTOR_FORECAST_READINESS_AND_OUTPUT_ARCHITECTURE",
+  "forecast_generation_authorized": false,
+  "ranking_execution_authorized": false,
+  "purchase_analysis_authorized": false,
+  "purchase_recommendation_authorized": false,
+  "automatic_purchase_execution_authorized": false,
+  "uip_delivery_authorized": false
+}
