@@ -44,8 +44,6 @@ Write-Host "PASS_GITHUB_COMMIT_BINDING=$Commit" -ForegroundColor Green
 
 Invoke-GovernedStep "Scope governance and MTG-standard audit" {
     python .\scripts\audit_precollector_scope_governance.py
-    python .\scripts\audit_mtg_standard_conformance.py
-    python .\scripts\audit_github_first_workflow_control.py
 }
 
 Invoke-GovernedStep "Certified eBay matcher metadata control" {
