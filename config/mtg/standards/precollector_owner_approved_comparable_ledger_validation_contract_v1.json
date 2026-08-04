@@ -1,0 +1,43 @@
+{
+  "contract_id": "precollector_owner_approved_comparable_ledger_validation_v1",
+  "contract_version": "1.0.0",
+  "owner_approval_path": "config/mtg/governance/precollector_owner_comparable_selection_approval_v1.json",
+  "upstream_builder_path": "scripts/build_precollector_79_product_taxonomy_method_routing.py",
+  "upstream_output_directory": "artifacts/precollector/79_product_taxonomy_method_routing",
+  "expected_active_product_count": 79,
+  "expected_excluded_product_count": 15,
+  "expected_required_comparable_target_count": 23,
+  "expected_fully_comparable_adjusted_target_count": 3,
+  "primary_rank_max": 2,
+  "base_rank_weights": {
+    "1": 1.0,
+    "2": 0.75,
+    "3": 0.5,
+    "4": 0.35,
+    "5": 0.25
+  },
+  "distance_decay_scale": 0.15,
+  "contribution_caps": {
+    "PRIMARY": 0.45,
+    "SECONDARY": 0.25,
+    "DISTANT_CORE": 0.12,
+    "LOWER_RANKED_LORWYN_NEMESIS": 0.10,
+    "DIRECT_HISTORY_LIMITED_VALIDATION_ONLY": 0.08
+  },
+  "minimum_holdout_comparables": 1,
+  "outputs": {
+    "approved_ledger_csv": "precollector_owner_approved_comparable_ledger.csv",
+    "target_validation_csv": "precollector_comparable_target_validation.csv",
+    "holdout_validation_csv": "precollector_comparable_product_holdout_validation.csv",
+    "diagnostics_csv": "precollector_comparable_ledger_diagnostics.csv",
+    "summary_json": "precollector_owner_approved_comparable_ledger_summary.json",
+    "manifest_json": "precollector_owner_approved_comparable_ledger_manifest.json"
+  },
+  "next_stage_if_certified": "PRECOLLECTOR_COMPARABLE_MODEL_TOURNAMENT_AND_CALIBRATION",
+  "forecast_generation_authorized": false,
+  "ranking_execution_authorized": false,
+  "purchase_analysis_authorized": false,
+  "purchase_recommendation_authorized": false,
+  "automatic_purchase_execution_authorized": false,
+  "uip_delivery_authorized": false
+}
