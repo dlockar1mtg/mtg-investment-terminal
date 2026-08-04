@@ -1,0 +1,50 @@
+{
+  "decision_id": "precollector_owner_selected_production_lane_v2",
+  "decision_version": "2.0.0",
+  "owner": "Devon Lockard",
+  "owner_approval_status": "APPROVED",
+  "decision_scope": "PRECOLLECTOR_PRODUCTION_LANE",
+  "selected_production_product_count": 83,
+  "excluded_product_count": 11,
+  "analytical_reference_lane_count": 0,
+  "excluded_products": [
+    {"canonical_product_id": "tcgplayer:27276", "product_name": "Fallen Empires - Booster Box"},
+    {"canonical_product_id": "tcgplayer:27282", "product_name": "Homelands - Booster Box"},
+    {"canonical_product_id": "tcgplayer:27284", "product_name": "Invasion - Booster Box"},
+    {"canonical_product_id": "tcgplayer:27259", "product_name": "8th Edition - Booster Box"},
+    {"canonical_product_id": "tcgplayer:27272", "product_name": "Darksteel - Booster Box"},
+    {"canonical_product_id": "tcgplayer:27277", "product_name": "Fifth Dawn - Booster Box"},
+    {"canonical_product_id": "tcgplayer:27267", "product_name": "Betrayers of Kamigawa - Booster Box"},
+    {"canonical_product_id": "tcgplayer:27304", "product_name": "Saviors of Kamigawa - Booster Box"},
+    {"canonical_product_id": "tcgplayer:27273", "product_name": "Dissension - Booster Box"},
+    {"canonical_product_id": "tcgplayer:27281", "product_name": "Guildpact - Booster Box"},
+    {"canonical_product_id": "tcgplayer:27292", "product_name": "Morningtide - Booster Box"}
+  ],
+  "excluded_product_policy": {
+    "active_analytical_lane": false,
+    "forecast_method_routing": false,
+    "comparable_target_eligibility": false,
+    "comparable_donor_eligibility": false,
+    "forecast_generation": false,
+    "ranking_execution": false,
+    "purchase_analysis": false,
+    "purchase_recommendation": false,
+    "uip_delivery": false,
+    "historical_source_records_may_remain_archived": true
+  },
+  "selected_product_policy": {
+    "specialty_products_retained": true,
+    "specialty_family_separation_required": true,
+    "automatic_price_based_exclusion": false,
+    "missing_or_limited_evidence_requires_governed_route": true,
+    "owner_approved_comparable_selection_required": true
+  },
+  "next_stage": "PRECOLLECTOR_83_PRODUCT_COMPARABLE_TAXONOMY_AND_METHOD_ROUTING",
+  "forecast_generation_authorized": false,
+  "ranking_execution_authorized": false,
+  "purchase_recommendation_authorized": false,
+  "automatic_purchase_execution_authorized": false,
+  "uip_delivery_authorized": false,
+  "supersedes": "precollector_owner_selected_production_lane_v1",
+  "governing_note": "For the Pre-Collector lane, the owner-approved production universe is 83 products. The 11 excluded products are not carried forward as reference-only comparables or analytical products. Historical source records may remain archived solely for auditability and lineage."
+}
