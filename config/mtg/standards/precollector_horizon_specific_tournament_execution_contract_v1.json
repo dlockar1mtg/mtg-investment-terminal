@@ -1,0 +1,39 @@
+{
+  "contract_id": "precollector_horizon_specific_tournament_execution_v1",
+  "contract_version": "1.0.0",
+  "upstream_builder_path": "scripts/build_precollector_horizon_specific_tournament_architecture.py",
+  "architecture_output_directory": "artifacts/precollector/horizon_specific_tournament_architecture",
+  "forecast_input_output_directory": "artifacts/precollector/forecast_input_assembly_method_certification",
+  "ledger_output_directory": "artifacts/precollector/owner_approved_comparable_ledger_validation",
+  "expected_active_product_count": 79,
+  "expected_horizon_count": 5,
+  "expected_route_count": 3,
+  "expected_winner_rows": 15,
+  "minimum_test_origins_for_competitive_winner": 3,
+  "minimum_aggregate_predictions_for_competitive_winner": 6,
+  "minimum_baseline_improvement_fraction": 0.0,
+  "uncertainty_quantile": 0.8,
+  "uncertainty_floor_log": 0.10,
+  "uncertainty_ceiling_log": 3.00,
+  "fallback_models": {
+    "DIRECT_HISTORY_CALIBRATED": "NAIVE_LAST_VALUE",
+    "DIRECT_HISTORY_LIMITED": "NAIVE_LAST_VALUE",
+    "COMPARABLE_PRODUCT_ADJUSTED": "RANK_DECAY_WEIGHTED_GROWTH"
+  },
+  "outputs": {
+    "rolling_predictions_csv": "precollector_horizon_tournament_rolling_predictions.csv",
+    "model_scorecard_csv": "precollector_horizon_tournament_model_scorecard.csv",
+    "winner_registry_csv": "precollector_horizon_tournament_winner_registry.csv",
+    "uncertainty_calibration_csv": "precollector_horizon_tournament_uncertainty_calibration.csv",
+    "diagnostics_csv": "precollector_horizon_tournament_diagnostics.csv",
+    "summary_json": "precollector_horizon_specific_tournament_execution_summary.json",
+    "manifest_json": "precollector_horizon_specific_tournament_execution_manifest.json"
+  },
+  "next_stage_if_certified": "PRECOLLECTOR_HORIZON_WINNER_AND_UNCERTAINTY_CERTIFICATION",
+  "forecast_generation_authorized": false,
+  "ranking_execution_authorized": false,
+  "purchase_analysis_authorized": false,
+  "purchase_recommendation_authorized": false,
+  "automatic_purchase_execution_authorized": false,
+  "uip_delivery_authorized": false
+}
