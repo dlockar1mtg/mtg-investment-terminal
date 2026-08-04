@@ -93,6 +93,26 @@ def test_forecast_and_purchase_authority_remain_false():
     assert payload["purchase_recommendation_authorized"] is False
 
 
+def test_builder_uses_repaired_execution_schema_names():
+    source = SCRIPT.read_text(encoding="utf-8")
+    assert 'r.get("repaired_challenge_model")' in source
+    assert 'r.get("repaired_final_challenge_decision")' in source
+    assert 'row.get("repaired_final_challenge_decision")' in source
+
+
+def test_builder_has_safe_unresolved_csv_schema():
+    module = load_module()
+    assert module.UNRESOLVED_FIELDS == [
+        "challenge_group_id",
+        "horizon_code",
+        "forecast_method",
+        "resolution_status",
+        "winner_certification_authorized",
+        "forecast_generation_authorized",
+        "forced_resolution_prohibited",
+    ]
+
+
 def test_module_loads():
     module = load_module()
     assert callable(module.main)
