@@ -1,0 +1,43 @@
+{
+  "contract_id": "precollector_adaptive_tournament_refinement_architecture_recovery_v1_1",
+  "contract_version": "1.1.0",
+  "base_contract_path": "config/mtg/standards/precollector_adaptive_tournament_refinement_architecture_contract_v1.json",
+  "repair_scope": "FALLBACK_GROUP_GOVERNED_ROUTE_MODEL_RECOVERY_ONLY",
+  "minimum_per_fallback_group": 12,
+  "maximum_per_group": 180,
+  "governed_recovery_models_by_route": {
+    "DIRECT_HISTORY_CALIBRATED": [
+      "NAIVE_LAST_VALUE",
+      "DRIFT",
+      "ROBUST_LOG_LINEAR",
+      "DAMPED_TREND",
+      "EXPONENTIAL_SMOOTHING"
+    ],
+    "DIRECT_HISTORY_LIMITED": [
+      "NAIVE_LAST_VALUE",
+      "DRIFT",
+      "ROBUST_LOG_LINEAR",
+      "SHRUNK_DIRECT_COMPARABLE_BLEND"
+    ],
+    "COMPARABLE_PRODUCT_ADJUSTED": [
+      "RANK_DECAY_WEIGHTED_GROWTH",
+      "COMPARABLE_MEDIAN_GROWTH",
+      "LIFECYCLE_MATCHED_COMPARABLE",
+      "SHRUNK_COMPARABLE_ENSEMBLE"
+    ]
+  },
+  "controls": {
+    "preserve_round_one_fallback": true,
+    "preserve_round_one_fold_membership": true,
+    "do_not_lower_candidate_minimum": true,
+    "do_not_force_winner": true,
+    "do_not_execute_refinement": true,
+    "do_not_invoke_upstream_builders": true,
+    "do_not_perform_network_collection": true,
+    "final_winner_certification_authorized": false,
+    "forecast_generation_authorized": false,
+    "ranking_execution_authorized": false,
+    "purchase_analysis_authorized": false,
+    "purchase_recommendation_authorized": false
+  }
+}
