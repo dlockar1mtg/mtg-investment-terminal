@@ -1,0 +1,69 @@
+{
+  "contract_id": "precollector_winner_uncertainty_certification_execution_v1",
+  "contract_version": "1.0.0",
+  "governing_snapshot_id": "collector-20260801T211201Z-7688afbd",
+  "required_architecture_package": {
+    "package_name": "MTG_PreCollector_Winner_Uncertainty_Certification_Architecture_v1.zip",
+    "sha256": "6f27cfe24f14be57faa9ccbf7f2bd766da0832c14c8db5cd49724d49cdead08d"
+  },
+  "required_repair_execution_package": {
+    "package_name": "MTG_PreCollector_Final_Champion_Control_Repair_Execution_v1.zip",
+    "sha256": "fcdc8843f5c9ba0a1a32bea520c592da69b4018982e662ae2a2513142509ae8e"
+  },
+  "expected_counts": {
+    "short_horizon_groups": 9,
+    "certifiable_winner_groups": 5,
+    "unresolved_no_champion_groups": 4,
+    "long_horizon_monte_carlo_routes": 6,
+    "preserved_scorecard_rows": 90
+  },
+  "uncertainty_rules": {
+    "lower_uncertainty_authorized": false,
+    "moderate_uncertainty": {
+      "maximum_outer_all_median_ape": 0.20,
+      "minimum_outer_all_directional_accuracy": 0.60,
+      "maximum_latest_time_median_ape_deterioration_multiple": 2.00,
+      "maximum_latest_time_directional_accuracy_decline": 0.25,
+      "maximum_product_concentration_median_ape_deterioration_multiple": 2.50,
+      "minimum_product_concentration_directional_accuracy": 0.50
+    },
+    "otherwise_classification": "HIGH_UNCERTAINTY",
+    "missing_required_partition_classification": "NOT_CERTIFIABLE",
+    "mean_signed_percentage_error_status": "NOT_EVALUABLE_FROM_PRESERVED_SCORECARD"
+  },
+  "required_partitions": [
+    "OUTER_ALL",
+    "LATEST_TIME_STRESS",
+    "PRODUCT_CONCENTRATION_STRESS"
+  ],
+  "outputs": {
+    "input_lineage_csv": "precollector_winner_uncertainty_execution_input_lineage.csv",
+    "certified_winner_registry_csv": "precollector_certified_short_horizon_winner_uncertainty_registry.csv",
+    "winner_partition_evidence_csv": "precollector_winner_uncertainty_partition_evidence.csv",
+    "unresolved_group_registry_csv": "precollector_winner_uncertainty_unresolved_group_registry.csv",
+    "long_horizon_routing_csv": "precollector_winner_uncertainty_long_horizon_routing.csv",
+    "diagnostics_csv": "precollector_winner_uncertainty_execution_diagnostics.csv",
+    "summary_json": "precollector_winner_uncertainty_execution_summary.json",
+    "manifest_json": "precollector_winner_uncertainty_execution_manifest.json"
+  },
+  "prohibited_behavior": {
+    "reopen_model_selection": true,
+    "change_winner_identity": true,
+    "force_resolution_of_no_champion_groups": true,
+    "recompute_predictions": true,
+    "recompute_errors": true,
+    "tune_models": true,
+    "fabricate_unavailable_metrics": true,
+    "generate_forecasts": true,
+    "rank_products": true,
+    "generate_purchase_recommendations": true
+  },
+  "next_stage_if_certified": "PRECOLLECTOR_LONG_HORIZON_MONTE_CARLO_ARCHITECTURE",
+  "short_horizon_forecast_architecture_eligible": true,
+  "forecast_generation_authorized": false,
+  "ranking_execution_authorized": false,
+  "purchase_analysis_authorized": false,
+  "purchase_recommendation_authorized": false,
+  "automatic_purchase_execution_authorized": false,
+  "uip_delivery_authorized": false
+}
