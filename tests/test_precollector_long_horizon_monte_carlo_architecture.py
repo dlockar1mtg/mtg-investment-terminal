@@ -91,5 +91,25 @@ def test_next_stage_is_monte_carlo_execution():
     assert payload()["next_stage_if_certified"] == "PRECOLLECTOR_LONG_HORIZON_MONTE_CARLO_EXECUTION"
 
 
+def test_builder_uses_certified_winner_uncertainty_registry_name():
+    module = load_module()
+    assert module.CERTIFIED_WINNER_REGISTRY == "precollector_certified_short_horizon_winner_uncertainty_registry.csv"
+
+
+def test_builder_uses_certified_execution_summary_name():
+    module = load_module()
+    assert module.WINNER_UNCERTAINTY_SUMMARY == "precollector_winner_uncertainty_execution_summary.json"
+
+
+def test_required_members_match_execution_contract_outputs():
+    module = load_module()
+    assert module.required_package_members() == [
+        "precollector_certified_short_horizon_winner_uncertainty_registry.csv",
+        "precollector_winner_uncertainty_unresolved_group_registry.csv",
+        "precollector_winner_uncertainty_long_horizon_routing.csv",
+        "precollector_winner_uncertainty_execution_summary.json",
+    ]
+
+
 def test_module_loads():
     assert callable(load_module().main)
