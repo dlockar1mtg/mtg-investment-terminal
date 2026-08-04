@@ -1,0 +1,91 @@
+{
+  "decision_id": "precollector_owner_comparable_selection_approval_v1",
+  "decision_version": "1.0.0",
+  "owner": "Devon Lockard",
+  "owner_approval_status": "APPROVED",
+  "decision_scope": "PRECOLLECTOR_79_PRODUCT_COMPARABLE_SELECTION",
+  "certified_input_package": {
+    "filename": "MTG_PreCollector_79_Product_Taxonomy_Method_Routing_v1.zip",
+    "sha256": "de1971a2bbfea240757587a9e7871e686c19bf309d6722d1f3420185e610449a"
+  },
+  "active_product_count": 79,
+  "excluded_product_count": 15,
+  "required_comparable_target_count": 23,
+  "fully_comparable_adjusted_target_count": 3,
+  "owner_decision": {
+    "approve_all_active_products": true,
+    "approve_all_required_comparable_targets": true,
+    "approve_primary_comparables": true,
+    "approve_secondary_comparables_with_distance_weighting": true,
+    "forecast_generation_authorized": false
+  },
+  "weighting_policy": {
+    "primary_comparables_receive_highest_weight": true,
+    "secondary_comparables_receive_distance_based_weighting": true,
+    "distant_core_set_comparables_require_reduced_contribution_caps": true,
+    "lower_ranked_lorwyn_comparables_require_reduced_contribution_caps": true,
+    "lower_ranked_nemesis_comparables_require_reduced_contribution_caps": true,
+    "direct_history_remains_primary_for_direct_history_limited_products": true,
+    "comparable_support_may_not_replace_governed_direct_history": true
+  },
+  "product_specific_approval": {
+    "Eternal Masters - Booster Box": {
+      "status": "APPROVED",
+      "primary_comparables": [
+        "Ultimate Masters - Booster Box",
+        "Modern Masters 2015 - Booster Box"
+      ],
+      "secondary_policy": "ALLOW_WITH_DISTANCE_BASED_WEIGHTING"
+    },
+    "Lorwyn - Booster Box": {
+      "status": "APPROVED",
+      "primary_comparables": [
+        "Future Sight - Booster Box",
+        "Time Spiral - Booster Box"
+      ],
+      "secondary_policy": "ALLOW_WITH_REDUCED_WEIGHT_FOR_LOWER_RANKED_MATCHES"
+    },
+    "Nemesis - Booster Box": {
+      "status": "APPROVED",
+      "primary_comparables": [
+        "Torment - Booster Box"
+      ],
+      "secondary_policy": "ALLOW_WITH_REDUCED_WEIGHT_FOR_LOWER_RANKED_MATCHES"
+    },
+    "Magic 2011 - Booster Box": {
+      "status": "APPROVED",
+      "policy": "DIRECT_HISTORY_PRIMARY_COMPARABLES_VALIDATION_ONLY_REDUCED_WEIGHT"
+    },
+    "Magic 2012 - Booster Box": {
+      "status": "APPROVED",
+      "policy": "DIRECT_HISTORY_PRIMARY_COMPARABLES_VALIDATION_ONLY_REDUCED_WEIGHT"
+    },
+    "Magic 2013 - Booster Box": {
+      "status": "APPROVED",
+      "policy": "DIRECT_HISTORY_PRIMARY_COMPARABLES_VALIDATION_ONLY_REDUCED_WEIGHT"
+    },
+    "Magic 2014 - Booster Box": {
+      "status": "APPROVED",
+      "policy": "DIRECT_HISTORY_PRIMARY_COMPARABLES_VALIDATION_ONLY_REDUCED_WEIGHT"
+    }
+  },
+  "required_controls_before_forecasting": [
+    "Build versioned owner-approved comparable ledger",
+    "Mark primary and secondary comparable designations",
+    "Apply deterministic distance-based weights",
+    "Apply reduced contribution caps to distant matches",
+    "Preserve specialty-family separation",
+    "Enforce no self-comparables",
+    "Enforce exclusion leakage checks for all 15 excluded products",
+    "Run comparable validation and product-level holdout tests",
+    "Certify structural, statistical, economic, semantic, and regression diagnostics"
+  ],
+  "next_stage": "PRECOLLECTOR_OWNER_APPROVED_COMPARABLE_LEDGER_AND_VALIDATION",
+  "forecast_generation_authorized": false,
+  "ranking_execution_authorized": false,
+  "purchase_analysis_authorized": false,
+  "purchase_recommendation_authorized": false,
+  "automatic_purchase_execution_authorized": false,
+  "uip_delivery_authorized": false,
+  "governing_note": "The owner approves all 79 active Pre-Collector products and the proposed comparable recommendations. Primary comparables are approved. Secondary comparables are approved subject to deterministic distance-based weighting and reduced contribution caps for distant Core-set matches and lower-ranked Lorwyn and Nemesis matches. This decision does not authorize forecasting or any downstream purchase authority."
+}
