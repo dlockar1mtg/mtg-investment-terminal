@@ -1,6 +1,6 @@
 {
   "contract_id": "precollector_horizon_specific_tournament_execution_v1",
-  "contract_version": "1.1.0",
+  "contract_version": "1.1.1",
   "upstream_builder_path": "scripts/build_precollector_horizon_specific_tournament_architecture.py",
   "architecture_output_directory": "artifacts/precollector/horizon_specific_tournament_architecture",
   "forecast_input_output_directory": "artifacts/precollector/forecast_input_assembly_method_certification",
@@ -20,6 +20,8 @@
     "DIRECT_HISTORY_LIMITED": "NAIVE_LAST_VALUE",
     "COMPARABLE_PRODUCT_ADJUSTED": "RANK_DECAY_WEIGHTED_GROWTH"
   },
+  "round_two_refinement_required": true,
+  "final_winner_certification_authorized": false,
   "round_two_policy": {
     "adaptive_refinement_required": true,
     "advance_top_contenders_per_horizon_route": 2,
