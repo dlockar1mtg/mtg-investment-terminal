@@ -1,7 +1,7 @@
 {
   "contract_id": "precollector_forecast_input_assembly_method_certification_v1",
   "contract_version": "1.0.0",
-  "upstream_builder_path": "scripts/build_precollector_comparable_model_tournament_calibration.py",
+  "upstream_builder_path": "scripts/build_precollector_comparable_tournament_winner_adapter.py",
   "routing_output_directory": "artifacts/precollector/79_product_taxonomy_method_routing",
   "ledger_output_directory": "artifacts/precollector/owner_approved_comparable_ledger_validation",
   "tournament_output_directory": "artifacts/precollector/comparable_model_tournament_calibration",
