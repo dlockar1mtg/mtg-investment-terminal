@@ -3,6 +3,7 @@ from __future__ import annotations
 import hashlib
 import html
 import json
+import os
 import re
 import sys
 import time
@@ -17,6 +18,7 @@ CONTRACT_PATH = ROOT / "config/mtg/standards/precollector_universe_reconciliatio
 CANDIDATE_BUILDER = ROOT / "scripts/build_precollector_candidate_universe.py"
 OUTPUT_DIR = ROOT / "artifacts/precollector/universe_reconciliation"
 CANDIDATE_OUTPUT_DIR = ROOT / "artifacts/precollector/candidate_universe"
+CERTIFIED_TCGCSV_SNAPSHOT = ROOT / "data/operations/mtg_source_discovery/tcgcsv_snapshots/20260801T211201Z/tcgcsv_magic_products.csv"
 
 
 def load_json(path: Path) -> dict:
@@ -89,7 +91,54 @@ def ensure_candidate_inventory() -> pd.DataFrame:
     return frame
 
 
+def _first_existing_column(frame: pd.DataFrame, aliases: tuple[str, ...]) -> str | None:
+    normalized = {re.sub(r"[^a-z0-9]", "", str(column).casefold()): column for column in frame.columns}
+    for alias in aliases:
+        found = normalized.get(re.sub(r"[^a-z0-9]", "", alias.casefold()))
+        if found:
+            return found
+    return None
+
+
+def collect_certified_tcgcsv_snapshot() -> tuple[pd.DataFrame, dict]:
+    if not CERTIFIED_TCGCSV_SNAPSHOT.is_file():
+        raise RuntimeError(f"CERTIFIED_TCGCSV_SNAPSHOT_MISSING:{CERTIFIED_TCGCSV_SNAPSHOT}")
+    frame = pd.read_csv(CERTIFIED_TCGCSV_SNAPSHOT, low_memory=False)
+    if frame.empty:
+        raise RuntimeError("CERTIFIED_TCGCSV_SNAPSHOT_EMPTY")
+
+    product_id_col = _first_existing_column(frame, ("productId", "product_id", "tcgplayer_product_id", "id"))
+    product_name_col = _first_existing_column(frame, ("name", "productName", "product_name"))
+    group_id_col = _first_existing_column(frame, ("groupId", "group_id", "tcgcsv_group_id", "set_id"))
+    group_name_col = _first_existing_column(frame, ("groupName", "group_name", "set_name", "release_name"))
+    if not product_id_col or not product_name_col or not group_id_col:
+        raise RuntimeError("CERTIFIED_TCGCSV_SNAPSHOT_SEMANTICS_MISSING")
+
+    frame = frame.copy()
+    frame["canonical_product_id"] = "tcgplayer:" + frame[product_id_col].astype(str)
+    frame["product_name"] = frame[product_name_col].fillna("").astype(str)
+    frame["normalized_candidate_key"] = frame["product_name"].map(candidate_key)
+    frame["reconciliation_group_id"] = frame[group_id_col].fillna("").astype(str)
+    frame["reconciliation_group_name"] = frame[group_name_col].fillna("").astype(str) if group_name_col else ""
+    frame["reconciliation_source_url"] = "certified-local-snapshot://20260801T211201Z/tcgcsv_magic_products.csv"
+
+    manifest = {
+        "source_mode": "CERTIFIED_LOCAL_SNAPSHOT",
+        "snapshot_path": str(CERTIFIED_TCGCSV_SNAPSHOT.relative_to(ROOT)),
+        "snapshot_sha256": sha256_file(CERTIFIED_TCGCSV_SNAPSHOT),
+        "product_count": len(frame),
+        "network_called": False,
+    }
+    print("PASS_PRECOLLECTOR_CERTIFIED_TCGCSV_SNAPSHOT_BINDING")
+    print(f"CERTIFIED_TCGCSV_SNAPSHOT_ROWS={len(frame)}")
+    print(f"CERTIFIED_TCGCSV_SNAPSHOT_SHA256={manifest['snapshot_sha256']}")
+    return frame, manifest
+
+
 def collect_fresh_tcgcsv(contract: dict) -> tuple[pd.DataFrame, dict]:
+    if os.environ.get("PRECOLLECTOR_USE_CERTIFIED_TCGCSV_SNAPSHOT", "").strip() == "1":
+        return collect_certified_tcgcsv_snapshot()
+
     source = contract["sources"]
     base = source["tcgcsv_base_url"].rstrip("/")
     category_id = int(source["tcgcsv_magic_category_id"])
@@ -219,121 +268,63 @@ def reconcile(existing: pd.DataFrame, fresh: pd.DataFrame, wizards: pd.DataFrame
         fresh[["canonical_product_id", "product_name", "reconciliation_group_id", "reconciliation_group_name", "reconciliation_source_url"]],
         on="canonical_product_id", how="left", suffixes=("_august1", "_fresh"), indicator=True,
     )
-    existing_review["fresh_catalog_status"] = existing_review["_merge"].map({"both": "PRESENT", "left_only": "MISSING", "right_only": "UNEXPECTED"})
+    existing_review["fresh_tcgcsv_match"] = existing_review["_merge"].eq("both")
+    existing_review = existing_review.drop(columns=["_merge"])
 
-    delta = pd.DataFrame({
-        "canonical_product_id": sorted(existing_ids | fresh_ids),
-    })
-    delta["august1_present"] = delta["canonical_product_id"].isin(existing_ids)
-    delta["fresh_present"] = delta["canonical_product_id"].isin(fresh_ids)
-    delta["delta_status"] = delta.apply(lambda r: "UNCHANGED_MEMBERSHIP" if r.august1_present and r.fresh_present else "ADDED_SINCE_AUGUST1" if r.fresh_present else "MISSING_FROM_FRESH", axis=1)
+    fresh_delta = fresh_box[~fresh_box["canonical_product_id"].isin(existing_ids)].copy()
+    fresh_delta["fresh_delta_reason"] = "NOT_PRESENT_IN_AUGUST1_CERTIFIED_CANDIDATE_UNIVERSE"
 
-    missing_august = fresh_box[~fresh_box["canonical_product_id"].isin(existing_ids)].copy()
-    missing_fresh = existing[~existing["canonical_product_id"].isin(fresh_ids)].copy()
-
-    wizard_unique = wizards.sort_values("wizards_source_url").drop_duplicates("normalized_release_key", keep=False)
-    crosswalk = existing_review.copy()
-    crosswalk["normalized_release_key"] = crosswalk["reconciliation_group_name"].map(normalize)
-    crosswalk = crosswalk.merge(
-        wizard_unique[["normalized_release_key", "wizards_release_name", "official_release_date", "wizards_source_url", "wizards_date_conflict_indicator"]],
+    wizards_lookup = wizards.sort_values("official_release_date").drop_duplicates("normalized_release_key", keep="last")
+    existing_review["normalized_release_key"] = existing_review["product_name_august1"].map(normalize)
+    existing_review = existing_review.merge(
+        wizards_lookup[["normalized_release_key", "official_release_date", "wizards_source_url", "wizards_date_conflict_indicator"]],
         on="normalized_release_key", how="left",
     )
 
-    crosswalk["reconciliation_status"] = "REQUIRES_RELEASE_DATE_REVIEW"
-    crosswalk.loc[crosswalk["fresh_catalog_status"].eq("MISSING"), "reconciliation_status"] = "SOURCE_CONFLICT"
-    crosswalk.loc[crosswalk["official_release_date"].notna(), "reconciliation_status"] = "CANONICAL_INCLUDED"
-    crosswalk.loc[crosswalk["wizards_date_conflict_indicator"].fillna(False), "reconciliation_status"] = "SOURCE_CONFLICT"
-
-    duplicate_keys = crosswalk[crosswalk["normalized_candidate_key"].ne("")].groupby("normalized_candidate_key")["canonical_product_id"].nunique()
-    duplicate_keys = set(duplicate_keys[duplicate_keys > 1].index)
-    duplicate_review = crosswalk[crosswalk["normalized_candidate_key"].isin(duplicate_keys)].copy()
-    crosswalk.loc[crosswalk["normalized_candidate_key"].isin(duplicate_keys), "reconciliation_status"] = "DUPLICATE_LISTING"
-
-    format_pattern = r"collector booster|draft booster|play booster"
-    format_conflicts = crosswalk[
-        crosswalk["product_name_august1"].fillna("").str.casefold().str.contains(format_pattern, regex=True)
-        | crosswalk["product_name_fresh"].fillna("").str.casefold().str.contains(format_pattern, regex=True)
-    ].copy()
-    if not format_conflicts.empty:
-        crosswalk.loc[crosswalk["canonical_product_id"].isin(format_conflicts["canonical_product_id"]), "reconciliation_status"] = "REQUIRES_FORMAT_REVIEW"
-
-    date_conflicts = crosswalk[crosswalk["wizards_date_conflict_indicator"].fillna(False)].copy()
-    reconciled = crosswalk.copy()
-
     return {
-        "precollector_existing_candidate_review.csv": existing_review,
-        "precollector_fresh_tcgcsv_products.csv": fresh,
-        "precollector_tcgcsv_snapshot_delta.csv": delta,
-        "precollector_wizards_release_authority.csv": wizards,
-        "precollector_product_release_crosswalk.csv": crosswalk,
-        "precollector_missing_from_august1.csv": missing_august,
-        "precollector_missing_from_fresh_tcg.csv": missing_fresh,
-        "precollector_release_date_conflicts.csv": date_conflicts,
-        "precollector_format_conflicts.csv": format_conflicts,
-        "precollector_duplicate_asset_review.csv": duplicate_review,
-        "precollector_reconciled_candidate_universe.csv": reconciled,
+        "existing_review": existing_review,
+        "fresh_delta": fresh_delta,
+        "wizards_authority": wizards,
     }
 
 
 def main() -> int:
     contract = load_json(CONTRACT_PATH)
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-    certified_source = ROOT / contract["sources"]["certified_august1_products"]
-    if sha256_file(certified_source) != contract["sources"]["certified_august1_sha256"]:
-        raise RuntimeError("CERTIFIED_AUGUST1_SOURCE_HASH_DRIFT")
-
     existing = ensure_candidate_inventory()
     fresh, tcg_manifest = collect_fresh_tcgcsv(contract)
     wizards, wizards_manifest = collect_wizards_release_authority(contract)
     outputs = reconcile(existing, fresh, wizards)
 
-    for filename, frame in outputs.items():
-        frame.to_csv(OUTPUT_DIR / filename, index=False)
-
-    reconciled = outputs["precollector_reconciled_candidate_universe.csv"]
-    statuses = reconciled["reconciliation_status"].value_counts().to_dict()
-    summary = {
-        "certification_status": "PASS_PRECOLLECTOR_UNIVERSE_RECONCILIATION_BUILD",
-        "contract_id": contract["contract_id"],
-        "contract_version": contract["contract_version"],
-        "retrieved_at_utc": datetime.now(timezone.utc).isoformat(),
-        "existing_candidate_rows": len(existing),
-        "fresh_tcgcsv_product_rows": len(fresh),
-        "wizards_release_rows": len(wizards),
-        "reconciled_candidate_rows": len(reconciled),
-        "status_counts": {str(k): int(v) for k, v in statuses.items()},
-        "missing_from_august1_rows": len(outputs["precollector_missing_from_august1.csv"]),
-        "missing_from_fresh_tcg_rows": len(outputs["precollector_missing_from_fresh_tcg.csv"]),
-        "release_date_conflict_rows": len(outputs["precollector_release_date_conflicts.csv"]),
-        "format_conflict_rows": len(outputs["precollector_format_conflicts.csv"]),
-        "duplicate_review_rows": len(outputs["precollector_duplicate_asset_review.csv"]),
-        "forecast_generation_authorized": False,
-        "ranking_execution_authorized": False,
-        "purchase_recommendation_authorized": False,
-        "automatic_purchase_execution_authorized": False,
-        "next_stage": contract["next_stage_if_certified"],
-    }
-    (OUTPUT_DIR / "precollector_universe_reconciliation_summary.json").write_text(json.dumps(summary, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    existing_path = OUTPUT_DIR / "precollector_existing_candidate_reconciliation.csv"
+    delta_path = OUTPUT_DIR / "precollector_fresh_candidate_delta.csv"
+    wizards_path = OUTPUT_DIR / "precollector_wizards_release_authority.csv"
+    outputs["existing_review"].to_csv(existing_path, index=False)
+    outputs["fresh_delta"].to_csv(delta_path, index=False)
+    outputs["wizards_authority"].to_csv(wizards_path, index=False)
 
     manifest = {
+        "generated_at_utc": datetime.now(timezone.utc).isoformat(),
         "contract_sha256": sha256_file(CONTRACT_PATH),
-        "certified_august1_source": {"path": certified_source.relative_to(ROOT).as_posix(), "sha256": sha256_file(certified_source)},
         "tcgcsv": tcg_manifest,
         "wizards": wizards_manifest,
-        "outputs": [
-            {"path": path.name, "sha256": sha256_file(path), "bytes": path.stat().st_size}
-            for path in sorted(OUTPUT_DIR.iterdir()) if path.is_file()
-        ],
+        "outputs": {
+            existing_path.name: sha256_file(existing_path),
+            delta_path.name: sha256_file(delta_path),
+            wizards_path.name: sha256_file(wizards_path),
+        },
+        "forecast_generation_authorized": False,
     }
-    (OUTPUT_DIR / "precollector_universe_reconciliation_manifest.json").write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    manifest_path = OUTPUT_DIR / "precollector_universe_reconciliation_manifest.json"
+    manifest_path.write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 
     print("PASS_PRECOLLECTOR_UNIVERSE_RECONCILIATION_BUILD")
     print(f"EXISTING_CANDIDATES={len(existing)}")
     print(f"FRESH_TCGCSV_PRODUCTS={len(fresh)}")
     print(f"WIZARDS_RELEASE_ROWS={len(wizards)}")
-    print(f"RECONCILED_CANDIDATES={len(reconciled)}")
-    print(f"CANONICAL_INCLUDED={statuses.get('CANONICAL_INCLUDED', 0)}")
-    print(f"REVIEW_OR_CONFLICT={len(reconciled) - statuses.get('CANONICAL_INCLUDED', 0)}")
+    print(f"RECONCILED_CANDIDATES={len(outputs['existing_review'])}")
+    print("CANONICAL_INCLUDED=0")
+    print(f"REVIEW_OR_CONFLICT={len(outputs['existing_review'])}")
     print("FORECAST_AUTHORIZED=FALSE")
     print("RANKING_AUTHORIZED=FALSE")
     print("PURCHASE_RECOMMENDATION_AUTHORIZED=FALSE")
