@@ -41,8 +41,11 @@ def test_contract_preserves_all_downstream_blocks() -> None:
         assert data[key] is False
 
 
-def test_contract_advances_only_to_winner_certification() -> None:
-    assert contract()["next_stage_if_certified"] == "PRECOLLECTOR_HORIZON_WINNER_AND_UNCERTAINTY_CERTIFICATION"
+def test_contract_advances_only_to_round_two_refinement() -> None:
+    data = contract()
+    assert data["next_stage_if_certified"] == "PRECOLLECTOR_ADAPTIVE_TOURNAMENT_REFINEMENT_ARCHITECTURE"
+    assert data["round_two_refinement_required"] is True
+    assert data["final_winner_certification_authorized"] is False
 
 
 def test_builder_requires_rolling_origin_predictions() -> None:
