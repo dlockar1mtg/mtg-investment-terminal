@@ -38,11 +38,11 @@ Invoke-Step "Scope governance audit" {
 }
 
 Invoke-Step "Horizon tournament execution tests" {
-    python -m pytest .\tests\test_precollector_horizon_specific_tournament_execution.py -q
+    python -m pytest .\tests\test_precollector_horizon_specific_tournament_execution.py .\tests\test_precollector_horizon_execution_round_two_governance.py -q
 }
 
 Invoke-Step "Build horizon-specific tournament execution" {
-    python .\scripts\build_precollector_horizon_specific_tournament_execution.py
+    python .\scripts\build_precollector_horizon_specific_tournament_execution_v1_1.py
 }
 
 Invoke-Step "Validate horizon tournament execution summary" {
@@ -72,7 +72,7 @@ expected = {
     "winner_registry_rows": 15,
     "uncertainty_calibration_rows": 15,
     "blocking_diagnostic_rows": 0,
-    "next_stage": "PRECOLLECTOR_HORIZON_WINNER_AND_UNCERTAINTY_CERTIFICATION",
+    "next_stage": "PRECOLLECTOR_ADAPTIVE_TOURNAMENT_REFINEMENT_ARCHITECTURE",
     "forecast_generation_authorized": False,
     "ranking_execution_authorized": False,
     "purchase_analysis_authorized": False,
@@ -120,7 +120,8 @@ if ($DirtyEnd) {
 }
 
 Write-Host "`nCERTIFIED_PASS_PRECOLLECTOR_HORIZON_SPECIFIC_TOURNAMENT_EXECUTION_GATE" -ForegroundColor Green
-Write-Host "AUTHORIZED_NEXT_STAGE=PRECOLLECTOR_HORIZON_WINNER_AND_UNCERTAINTY_CERTIFICATION" -ForegroundColor Green
+Write-Host "AUTHORIZED_NEXT_STAGE=PRECOLLECTOR_ADAPTIVE_TOURNAMENT_REFINEMENT_ARCHITECTURE" -ForegroundColor Green
+Write-Host "ROUND_TWO_REFINEMENT_REQUIRED=TRUE" -ForegroundColor Green
 Write-Host "FORECAST_AUTHORIZED=FALSE" -ForegroundColor Yellow
 Write-Host "RANKING_AUTHORIZED=FALSE" -ForegroundColor Yellow
 Write-Host "PURCHASE_ANALYSIS_AUTHORIZED=FALSE" -ForegroundColor Yellow
