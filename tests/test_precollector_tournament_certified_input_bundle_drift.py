@@ -15,8 +15,9 @@ def data() -> dict:
 
 def test_contract_binds_known_certified_packages() -> None:
     packages = data()["required_certified_packages"]
-    assert len(packages) == 3
+    assert len(packages) == 4
     assert all(len(item["sha256"]) == 64 for item in packages)
+    assert any(item["package_name"] == "MTG_PreCollector_Canonical_Historical_Prices_v1.zip" for item in packages)
 
 
 def test_contract_preserves_expected_counts() -> None:
@@ -28,7 +29,21 @@ def test_contract_preserves_expected_counts() -> None:
         "product_horizon_rows": 395,
         "forecast_routes": 3,
         "approved_comparable_rows": 369,
+        "canonical_historical_rows": 2826,
     }
+
+
+def test_contract_exactly_binds_canonical_history_member() -> None:
+    binding = data()["exact_artifact_bindings"]["CANONICAL_HISTORICAL_PRICE"]
+    assert binding["package_name"] == "MTG_PreCollector_Canonical_Historical_Prices_v1.zip"
+    assert binding["member_name"] == "precollector_canonical_historical_prices_v1.csv"
+    assert binding["member_sha256"] == "501592fe43eb295982835414f55bffd900ea39308ada8e5131ec0765fbf360fc"
+    assert binding["row_count"] == 2826
+    assert binding["required_columns"] == [
+        "canonical_product_id",
+        "observation_timestamp",
+        "canonical_historical_price",
+    ]
 
 
 def test_contract_requires_canonical_history_and_tournament_inputs() -> None:
