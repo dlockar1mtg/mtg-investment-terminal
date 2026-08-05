@@ -1,0 +1,28 @@
+{
+  "contract_id": "precollector_authentic_control_point_evidence_v1",
+  "contract_version": "1.0.0",
+  "governed_lane": "precollector_booster_boxes",
+  "required_owner_review_package": {
+    "package_name": "MTG_PreCollector_Recovery_Owner_Review_v1.zip",
+    "sha256": "449020a39de6e7b7048c0204140df27ab7ef49a25f7363eab87f88df8059dd53"
+  },
+  "purpose": "Extract the exact non-quarantined FORECAST-stage artifacts, their dependencies, Collector-reference usage, and control-point suitability for explicit owner approval without authorizing execution.",
+  "required_outputs": [
+    "precollector_forecast_control_point_artifacts.csv",
+    "precollector_forecast_control_point_dependency_review.csv",
+    "precollector_forecast_control_point_risk_review.csv",
+    "precollector_authentic_control_point_recommendation.json",
+    "precollector_authentic_control_point_evidence_summary.json",
+    "precollector_authentic_control_point_evidence_manifest.json"
+  ],
+  "controls": {
+    "automatic_control_point_certification": false,
+    "owner_approval_required": true,
+    "forecast_execution_authorized": false,
+    "ranking_execution_authorized": false,
+    "purchase_analysis_authorized": false,
+    "collector_targets_prohibited": true,
+    "collector_comparables_allowed_as_typed_references": true
+  },
+  "next_stage_if_certified": "OWNER_APPROVAL_OR_REJECTION_OF_AUTHENTIC_PRECOLLECTOR_CONTROL_POINT"
+}
