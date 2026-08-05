@@ -1,0 +1,72 @@
+{
+  "contract_id": "precollector_forecast_readiness_output_architecture_v1",
+  "contract_version": "1.0.0",
+  "governing_snapshot_id": "collector-20260801T211201Z-7688afbd",
+  "required_monte_carlo_execution_package": {
+    "package_name": "MTG_PreCollector_Long_Horizon_Monte_Carlo_Execution_v1.zip",
+    "sha256": "5e0b70ab17a166a05521015c754789275a4d287c2458213f01248c48477cbc20"
+  },
+  "required_winner_uncertainty_execution_package": {
+    "package_name": "MTG_PreCollector_Winner_Uncertainty_Certification_Execution_v1.zip",
+    "sha256": "2a3385fe2f60ddda27e9d0f906cb3e87fea67945d9c0b2e79b5e3cb746837af0"
+  },
+  "expected_counts": {
+    "governed_products": 50,
+    "short_horizon_certified_winners": 5,
+    "short_horizon_unresolved_groups": 4,
+    "long_horizon_product_horizon_rows": 100,
+    "long_horizon_horizon_codes": 2
+  },
+  "readiness_scope": {
+    "certify_output_schema_only": true,
+    "generate_new_forecasts": false,
+    "recompute_monte_carlo": false,
+    "reopen_short_horizon_model_selection": false,
+    "modify_short_horizon_certifications": false,
+    "force_resolution_of_unresolved_groups": false,
+    "rank_products": false,
+    "generate_purchase_analysis": false
+  },
+  "output_governance": {
+    "required_horizons": ["D90", "D180", "D365", "Y3", "Y5"],
+    "short_horizon_statuses": ["CERTIFIED", "UNRESOLVED_NO_PRODUCTION_CHAMPION"],
+    "uncertainty_classes": ["MODERATE_UNCERTAINTY", "HIGH_UNCERTAINTY", "NOT_CERTIFIABLE", "UNRESOLVED"],
+    "long_horizon_required_fields": [
+      "current_price",
+      "terminal_value_q05",
+      "terminal_value_q10",
+      "terminal_value_q25",
+      "terminal_value_q50",
+      "terminal_value_q75",
+      "terminal_value_q90",
+      "terminal_value_q95",
+      "probability_of_loss",
+      "probability_of_positive_return",
+      "annualized_return_median",
+      "return_pool_source",
+      "return_pool_observations",
+      "seed"
+    ],
+    "point_forecast_only_prohibited": true,
+    "uncertainty_disclosure_required": true,
+    "lineage_disclosure_required": true,
+    "unresolved_short_horizon_output_must_remain_blank": true
+  },
+  "required_outputs": {
+    "input_lineage_csv": "precollector_forecast_readiness_output_architecture_input_lineage.csv",
+    "readiness_matrix_csv": "precollector_forecast_readiness_matrix.csv",
+    "output_schema_csv": "precollector_forecast_output_schema.csv",
+    "short_horizon_scope_csv": "precollector_forecast_short_horizon_scope.csv",
+    "long_horizon_scope_csv": "precollector_forecast_long_horizon_scope.csv",
+    "authorization_matrix_csv": "precollector_forecast_authorization_matrix.csv",
+    "summary_json": "precollector_forecast_readiness_output_architecture_summary.json",
+    "manifest_json": "precollector_forecast_readiness_output_architecture_manifest.json"
+  },
+  "next_stage_if_certified": "PRECOLLECTOR_FORECAST_READINESS_AND_OUTPUT_EXECUTION",
+  "forecast_generation_authorized": false,
+  "ranking_execution_authorized": false,
+  "purchase_analysis_authorized": false,
+  "purchase_recommendation_authorized": false,
+  "automatic_purchase_execution_authorized": false,
+  "uip_delivery_authorized": false
+}
