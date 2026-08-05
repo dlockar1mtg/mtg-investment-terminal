@@ -50,10 +50,10 @@ def main() -> None:
         raise RuntimeError(f"OWNER_REVIEW_PACKAGE_HASH_DRIFT:{actual}")
 
     with zipfile.ZipFile(package) as archive:
-        stage_summary = read_csv(archive, "precollector_recovery_stage_summary.csv")
-        control_points = read_csv(archive, "precollector_recovery_control_point_review.csv")
-        reusable = read_csv(archive, "precollector_reusable_architecture_review.csv")
-        quarantined = read_csv(archive, "precollector_quarantined_artifact_review.csv")
+        stage_summary = read_csv(archive, "precollector_recovery_owner_review_stage_summary.csv")
+        control_points = read_csv(archive, "precollector_recovery_owner_review_control_point_candidates.csv")
+        reusable = read_csv(archive, "precollector_recovery_owner_review_reusable_architecture.csv")
+        quarantined = read_csv(archive, "precollector_recovery_owner_review_quarantined_outputs.csv")
 
     forecast_stage = next((r for r in control_points if r.get("stage") == "FORECAST"), None)
     if not forecast_stage or forecast_stage.get("evidence_present") != "TRUE":
@@ -77,15 +77,15 @@ def main() -> None:
         {"dependency": "OWNER_APPROVED_PRECOLLECTOR_SCOPE", "required": "TRUE", "status": "PRESENT", "evidence": "precollector_booster_product_scope_owner_decision_v1.json"},
         {"dependency": "CERTIFIED_PRECOLLECTOR_UNIVERSE", "required": "TRUE", "status": "REQUIRES_EXACT_IDENTITY_CONFIRMATION", "evidence": "candidate universe and reconciliation authorities exist"},
         {"dependency": "TYPED_COLLECTOR_COMPARABLE_REFERENCES", "required": "TRUE", "status": "REQUIRES_ROW_LEVEL_CONFIRMATION", "evidence": "comparable/model/uncertainty evidence exists outside quarantine"},
-        {"dependency": "FORECAST_TARGET_LANE_BINDING", "required": "TRUE", "status": "REQUIRES_EXACT_ARTIFACT_REVIEW", "evidence": f"non-quarantined forecast evidence count={forecast_stage.get('non_quarantined_artifact_count', '0')}"},
+        {"dependency": "FORECAST_TARGET_LANE_BINDING", "required": "TRUE", "status": "REQUIRES_EXACT_ARTIFACT_REVIEW", "evidence": f"non-quarantined forecast evidence count={forecast_stage.get('non_quarantined_artifact_count', '0')}; stage artifacts={stage_row.get('artifact_count', '0')}"},
         {"dependency": "QUARANTINED_OUTPUT_EXCLUSION", "required": "TRUE", "status": "ENFORCED", "evidence": "26 quarantined artifacts remain unauthorized"},
     ]
 
     risks = [
         {"risk": "FORECAST_STAGE_CLASSIFICATION_IS_ARTIFACT_LEVEL_NOT_PRODUCT_LEVEL", "severity": "HIGH", "disposition": "DO_NOT_AUTO_CERTIFY"},
         {"risk": "NON_QUARANTINED_FORECAST_ARTIFACTS_MAY_INCLUDE_ARCHITECTURE_WITHOUT_VALID_OUTPUT", "severity": "HIGH", "disposition": "VERIFY_EXACT_PATHS_AND_INPUT_AUTHORITIES"},
-        {"risk": "COLLECTOR_V1_REFERENCE_MAY_BE_VALID_COMPARABLE_OR_INVALID_TARGET", "severity": "HIGH", "disposition": "REQUIRE_EXPLICIT TARGET VS COMPARABLE ROLE REVIEW"},
-        {"risk": "UNIVERSE_IDENTITY_HASH_NOT_YET OWNER_CERTIFIED", "severity": "HIGH", "disposition": "BLOCK EXECUTION"},
+        {"risk": "COLLECTOR_V1_REFERENCE_MAY_BE_VALID_COMPARABLE_OR_INVALID_TARGET", "severity": "HIGH", "disposition": "REQUIRE_EXPLICIT_TARGET_VS_COMPARABLE_ROLE_REVIEW"},
+        {"risk": "UNIVERSE_IDENTITY_HASH_NOT_YET_OWNER_CERTIFIED", "severity": "HIGH", "disposition": "BLOCK_EXECUTION"},
     ]
 
     recommendation = {
@@ -93,9 +93,9 @@ def main() -> None:
         "reason": "Non-quarantined evidence exists through FORECAST, but the audit does not yet prove that a complete product-level forecast output is correctly bound to the approved pre-Collector target universe.",
         "do_not_restart_from": ["GOVERNANCE", "UNIVERSE", "COMPARABLES"],
         "preserve_as_completed_subject_to_identity_validation": ["GOVERNANCE", "UNIVERSE", "COMPARABLES", "MODEL_SELECTION", "UNCERTAINTY"],
-        "owner_approval_recommended_now": false,
+        "owner_approval_recommended_now": False,
         "next_owner_decision": "Approve or reject FORECAST_CONTROL_POINT_VALIDATION as the governed restart stage after reviewing exact artifact paths and target/comparable role evidence.",
-        "forecast_execution_authorized": false,
+        "forecast_execution_authorized": False,
     }
 
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
