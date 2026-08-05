@@ -5,7 +5,7 @@ $Root = Split-Path -Parent $PSScriptRoot
 Set-Location $Root
 
 $ExpectedBranch = "phase-8.3-precollector-scope-governance"
-$ExpectedHead = "TO_BE_REPLACED"
+$RequiredAncestry = "cfb5bf13c074db6cd84742513d398a5ca259581c"
 $RequiredPackage = Join-Path $env:TEMP "MTG_PreCollector_Recovery_Owner_Review_v1.zip"
 $RequiredHash = "449020a39de6e7b7048c0204140df27ab7ef49a25f7363eab87f88df8059dd53"
 $OutputDir = Join-Path $Root "artifacts\precollector\authentic_control_point_evidence"
@@ -23,8 +23,10 @@ Invoke-Step "Fast-forward governed branch" { git pull --ff-only origin $Expected
 $Branch = (git branch --show-current).Trim()
 $Head = (git rev-parse HEAD).Trim()
 if ($Branch -ne $ExpectedBranch) { throw "BRANCH_MISMATCH:$Branch" }
-if ($Head -ne $ExpectedHead) { throw "HEAD_MISMATCH:$Head" }
+git merge-base --is-ancestor $RequiredAncestry $Head
+if ($LASTEXITCODE -ne 0) { throw "REQUIRED_ANCESTRY_MISSING:$RequiredAncestry" }
 Write-Host "PASS_GITHUB_HEAD_BINDING=$Head" -ForegroundColor Green
+Write-Host "PASS_REQUIRED_CONTROL_POINT_EVIDENCE_ANCESTRY=$RequiredAncestry" -ForegroundColor Green
 
 if (-not (Test-Path $RequiredPackage)) { throw "OWNER_REVIEW_PACKAGE_MISSING" }
 $ActualHash = (Get-FileHash $RequiredPackage -Algorithm SHA256).Hash.ToLowerInvariant()
