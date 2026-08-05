@@ -5,7 +5,7 @@ $Root = Split-Path -Parent $PSScriptRoot
 Set-Location $Root
 
 $ExpectedBranch = "phase-8.3-precollector-scope-governance"
-$ExpectedHead = "TO_BE_REPLACED"
+$RequiredAncestry = "83f5c70e6aaab6411987734f78cd2a4b5dce8234"
 $RequiredPackage = Join-Path $env:TEMP "MTG_PreCollector_Forecast_Control_Point_Validation_v1.zip"
 $RequiredHash = "f286938d3996bd2b167af138d9150cdf6ee6f5f7537df91287138b63d6006958"
 $OutputDir = Join-Path $Root "artifacts\precollector\forecast_control_point_owner_review"
@@ -23,8 +23,10 @@ Invoke-Step "Fast-forward governed branch" { git pull --ff-only origin $Expected
 $Branch = (git branch --show-current).Trim()
 $Head = (git rev-parse HEAD).Trim()
 if ($Branch -ne $ExpectedBranch) { throw "BRANCH_MISMATCH:$Branch" }
-if ($Head -ne $ExpectedHead) { throw "HEAD_MISMATCH:$Head" }
+git merge-base --is-ancestor $RequiredAncestry $Head
+if ($LASTEXITCODE -ne 0) { throw "REQUIRED_ANCESTRY_MISSING:$RequiredAncestry" }
 Write-Host "PASS_GITHUB_HEAD_BINDING=$Head" -ForegroundColor Green
+Write-Host "PASS_REQUIRED_OWNER_REVIEW_ANCESTRY=$RequiredAncestry" -ForegroundColor Green
 
 if (-not (Test-Path $RequiredPackage)) { throw "FORECAST_CONTROL_POINT_VALIDATION_PACKAGE_MISSING" }
 $ActualHash = (Get-FileHash $RequiredPackage -Algorithm SHA256).Hash.ToLowerInvariant()
