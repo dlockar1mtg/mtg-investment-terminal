@@ -1,0 +1,52 @@
+{
+  "contract_id": "precollector_recovery_state_audit_v1",
+  "contract_version": "1.0.0",
+  "status": "READ_ONLY_RECOVERY_AUDIT_AUTHORIZED",
+  "governed_lane": "precollector_booster_boxes",
+  "recovery_decision": "config/mtg/governance/precollector_lane_boundary_and_recovery_decision_v1.json",
+  "binding_scope_authority": "config/mtg/governance/precollector_booster_product_scope_owner_decision_v1.json",
+  "binding_reconciliation_authority": "config/mtg/standards/precollector_universe_reconciliation_contract_v1.json",
+  "purpose": "Inventory and classify all pre-Collector governance, universe, reconciliation, comparable, forecast, ranking, package, and handoff artifacts; identify the last authentic pre-Collector control point; and distinguish reusable architecture from invalid cross-lane output without modifying source authorities or executing forecasts.",
+  "quarantined_commit_range": {
+    "base_exclusive": "e61333932bfe8d51763463e53c8fe79ebf1948a4",
+    "head_inclusive": "401372dabc6a6c88af6f46b1ccca236d25451c1c"
+  },
+  "classification_values": [
+    "BINDING_GOVERNANCE",
+    "AUTHENTIC_PRECOLLECTOR_AUTHORITY",
+    "AUTHENTIC_PRECOLLECTOR_IMPLEMENTATION",
+    "COMPARABLE_REFERENCE_EVIDENCE",
+    "QUARANTINED_CROSS_LANE_OUTPUT",
+    "REUSABLE_ARCHITECTURE_REQUIRES_REBINDING",
+    "REQUIRES_OWNER_REVIEW",
+    "UNRESOLVED"
+  ],
+  "mandatory_checks": [
+    "Verify the owner-approved pre-Collector scope authority exists and declares the precollector_booster_boxes lane.",
+    "Verify Collector Booster boxes are prohibited as pre-Collector target products.",
+    "Inventory every tracked path containing precollector or pre-collector semantics.",
+    "Record the introducing commit for every inventoried path.",
+    "Flag any path introduced in the quarantined commit range.",
+    "Flag any pre-Collector contract or implementation that binds a target authority containing collector_v1 or secret_lair.",
+    "Identify candidate-universe, reconciliation, comparable, winner, uncertainty, route, forecast, ranking, and purchase-stage artifacts separately.",
+    "Do not infer owner approval from test success, package hashes, or downstream inheritance.",
+    "Do not execute forecasting, ranking, purchase analysis, Secret Lair work, or combined MTG integration."
+  ],
+  "required_outputs": [
+    "precollector_recovery_artifact_inventory.csv",
+    "precollector_recovery_authority_matrix.csv",
+    "precollector_recovery_quarantine_matrix.csv",
+    "precollector_recovery_control_point_candidates.csv",
+    "precollector_recovery_remaining_work.csv",
+    "precollector_recovery_state_summary.json",
+    "precollector_recovery_state_manifest.json"
+  ],
+  "next_stage_if_certified": "OWNER_REVIEW_OF_PRECOLLECTOR_RECOVERY_STATE",
+  "forecast_execution_authorized": false,
+  "ranking_execution_authorized": false,
+  "purchase_analysis_authorized": false,
+  "purchase_recommendation_authorized": false,
+  "secret_lair_work_authorized": false,
+  "combined_mtg_integration_authorized": false,
+  "change_control": "Changes require owner approval, version change, targeted governance tests, full regression, and recertification."
+}
