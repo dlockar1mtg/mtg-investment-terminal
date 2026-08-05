@@ -1,0 +1,51 @@
+{
+  "decision_id": "precollector_forecast_control_point_owner_approval_v1",
+  "decision_version": "1.0.0",
+  "status": "OWNER_APPROVED_RESTART_STAGE",
+  "approved_on": "2026-08-05",
+  "operating_timezone": "America/Chicago",
+  "repository": "dlockar1mtg/mtg-investment-terminal",
+  "governed_lane": "precollector_booster_boxes",
+  "owner_approval_text": "APPROVE FORECAST_CONTROL_POINT_VALIDATION",
+  "approved_restart_stage": "FORECAST_CONTROL_POINT_VALIDATION",
+  "evidence_package": {
+    "package_name": "MTG_PreCollector_Authentic_Control_Point_Evidence_v1.zip",
+    "sha256": "957713ba10cde28e875ba38fa7e1cdb8c3fe0dd6f4ce5d5949d8bf8463a2e2ee"
+  },
+  "preserved_stages": [
+    "GOVERNANCE",
+    "UNIVERSE",
+    "COMPARABLES",
+    "MODEL_SELECTION",
+    "UNCERTAINTY"
+  ],
+  "preservation_condition": "Preserved stages remain valid subject to target identity, target-versus-comparable role, and lineage validation at the forecast control point.",
+  "mandatory_validation_scope": [
+    "Verify the exact approved pre-Collector target universe identity and count.",
+    "Verify every forecast target product is a member of the approved pre-Collector universe.",
+    "Verify Collector products appear only as explicitly typed comparable-reference rows.",
+    "Reject any forecast target authority path containing collector_v1 or secret_lair.",
+    "Verify input lineage from pre-Collector target through comparable selection, model route, and uncertainty evidence.",
+    "Classify each of the eight forecast artifacts as authoritative evidence, reusable architecture requiring rebinding, or invalid output.",
+    "Maintain quarantine on all outputs from the cross-lane substitution range unless individually rebound and recertified."
+  ],
+  "current_authorization": {
+    "forecast_control_point_validation_authorized": true,
+    "forecast_execution_authorized": false,
+    "ranking_execution_authorized": false,
+    "purchase_analysis_authorized": false,
+    "purchase_recommendation_authorized": false,
+    "secret_lair_work_authorized": false,
+    "combined_mtg_integration_authorized": false
+  },
+  "fail_closed_controls": [
+    "Validation must fail if a Collector product is present as a forecast target.",
+    "Validation must fail if a target product is absent from the approved pre-Collector universe authority.",
+    "Validation must fail if target and comparable product roles are not explicitly separated.",
+    "Validation must fail if the target universe identity or count changes without a new owner-approved decision.",
+    "Validation must fail if an artifact cannot prove its target authority and dependency lineage.",
+    "No validation result may authorize forecast execution automatically."
+  ],
+  "next_stage": "PRECOLLECTOR_FORECAST_CONTROL_POINT_VALIDATION",
+  "change_control": "Any change to the approved restart stage, preserved stages, target universe, target/comparable roles, or authorization state requires a new owner-approved versioned decision and recertification."
+}
