@@ -5,7 +5,7 @@ $Root = Split-Path -Parent $PSScriptRoot
 Set-Location $Root
 
 $ExpectedBranch = "phase-8.3-precollector-scope-governance"
-$ExpectedHead = "TO_BE_REPLACED"
+$RequiredCommit = "e62a2df24af2f48a7d9c0b6a479dd643d6c78357"
 $RequiredPackage = Join-Path $env:TEMP "MTG_PreCollector_Authentic_Control_Point_Evidence_v1.zip"
 $RequiredHash = "957713ba10cde28e875ba38fa7e1cdb8c3fe0dd6f4ce5d5949d8bf8463a2e2ee"
 $OutputDir = Join-Path $Root "artifacts\precollector\forecast_control_point_validation"
@@ -23,8 +23,10 @@ Invoke-Step "Fast-forward governed branch" { git pull --ff-only origin $Expected
 $Branch = (git branch --show-current).Trim()
 $Head = (git rev-parse HEAD).Trim()
 if ($Branch -ne $ExpectedBranch) { throw "BRANCH_MISMATCH:$Branch" }
-if ($Head -ne $ExpectedHead) { throw "HEAD_MISMATCH:$Head" }
+git merge-base --is-ancestor $RequiredCommit $Head
+if ($LASTEXITCODE -ne 0) { throw "REQUIRED_COMMIT_NOT_IN_ANCESTRY:$RequiredCommit" }
 Write-Host "PASS_GITHUB_HEAD_BINDING=$Head" -ForegroundColor Green
+Write-Host "PASS_REQUIRED_FORECAST_CONTROL_POINT_ANCESTRY=$RequiredCommit" -ForegroundColor Green
 
 if (-not (Test-Path $RequiredPackage)) { throw "CONTROL_POINT_EVIDENCE_PACKAGE_MISSING" }
 $ActualHash = (Get-FileHash $RequiredPackage -Algorithm SHA256).Hash.ToLowerInvariant()
