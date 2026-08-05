@@ -1,0 +1,61 @@
+{
+  "contract_id": "precollector_ranking_execution_v1",
+  "contract_version": "1.0.0",
+  "governing_snapshot_id": "collector-20260801T211201Z-7688afbd",
+  "required_architecture_package": {
+    "package_name": "MTG_PreCollector_Ranking_Readiness_Architecture_v1.zip",
+    "sha256": "8f0235e32674633ef7956d0c55c6de12948a2f51d966de5b01de6bd0b476a660"
+  },
+  "required_forecast_output_execution_package": {
+    "package_name": "MTG_PreCollector_Forecast_Readiness_Output_Execution_v1.zip",
+    "sha256": "27af2c4f566e87feaa51c2d75412522c8e8f939ae31192897e92a85f882791f8"
+  },
+  "expected_counts": {
+    "governed_products": 50,
+    "long_horizon_output_rows": 100,
+    "ranked_product_rows": 50,
+    "ranking_components": 6
+  },
+  "execution_scope": {
+    "execute_long_horizon_rankings": true,
+    "use_short_horizon_product_values": false,
+    "recompute_forecasts": false,
+    "recompute_monte_carlo": false,
+    "modify_certifications": false,
+    "new_live_collection_authorized": false
+  },
+  "ranking_policy": {
+    "normalization": "CROSS_SECTIONAL_PERCENTILE_RANK_ASCENDING_BENEFIT",
+    "ranking_method": "DENSE_RANK_DESCENDING_SCORE",
+    "score_scale": [0.0, 100.0],
+    "tie_breakers": [
+      "lower_mean_probability_of_loss",
+      "higher_y5_annualized_return_median",
+      "higher_y3_annualized_return_median",
+      "tcgplayer_product_id_ascending"
+    ],
+    "components": [
+      {"component": "Y3_MEDIAN_ANNUALIZED_RETURN", "weight": 0.25, "higher_is_better": true},
+      {"component": "Y5_MEDIAN_ANNUALIZED_RETURN", "weight": 0.25, "higher_is_better": true},
+      {"component": "Y3_Q10_TERMINAL_MULTIPLE", "weight": 0.15, "higher_is_better": true},
+      {"component": "Y5_Q10_TERMINAL_MULTIPLE", "weight": 0.15, "higher_is_better": true},
+      {"component": "Y3_PROBABILITY_OF_LOSS", "weight": 0.10, "higher_is_better": false},
+      {"component": "Y5_PROBABILITY_OF_LOSS", "weight": 0.10, "higher_is_better": false}
+    ]
+  },
+  "required_outputs": {
+    "input_lineage_csv": "precollector_ranking_execution_input_lineage.csv",
+    "component_score_csv": "precollector_ranking_component_scores.csv",
+    "ranked_products_csv": "precollector_governed_long_horizon_product_rankings.csv",
+    "diagnostics_csv": "precollector_ranking_execution_diagnostics.csv",
+    "summary_json": "precollector_ranking_execution_summary.json",
+    "manifest_json": "precollector_ranking_execution_manifest.json"
+  },
+  "next_stage_if_certified": "PRECOLLECTOR_PURCHASE_ANALYSIS_READINESS_ARCHITECTURE",
+  "forecast_generation_authorized": false,
+  "ranking_execution_authorized": true,
+  "purchase_analysis_authorized": false,
+  "purchase_recommendation_authorized": false,
+  "automatic_purchase_execution_authorized": false,
+  "uip_delivery_authorized": false
+}
