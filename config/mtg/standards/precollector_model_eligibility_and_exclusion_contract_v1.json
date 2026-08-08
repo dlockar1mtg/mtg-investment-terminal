@@ -1,0 +1,133 @@
+{
+  "contract_id": "precollector_model_eligibility_and_exclusion_contract_v1",
+  "contract_version": "1.0.0",
+  "governed_lane": "precollector_booster_boxes",
+  "governance_authority_path": "config/mtg/governance/precollector_model_eligibility_owner_decision_v1.json",
+  "canonical_universe_identity_sha256": "e75151ab05e87c60559e3114b050717307678f4ed0da01f067de46474a7ed4ac",
+  "canonical_product_count": 186,
+  "canonical_group_count": 123,
+  "purpose": "Require empirical, model-specific eligibility and exclusion diagnostics for Pre-Collector forecasting while preserving the certified canonical product universe.",
+  "prohibited_shortcuts": {
+    "fixed_release_year_cutoff": true,
+    "fixed_product_age_cutoff": true,
+    "fixed_vintage_bucket_exclusion_without_empirical_support": true,
+    "exclude_only_because_product_is_expensive": true,
+    "exclude_only_because_product_is_old": true,
+    "exclude_only_because_product_is_scarce": true,
+    "exclude_only_because_removal_improves_selected_metric": true,
+    "silent_training_row_deletion": true,
+    "silent_canonical_universe_mutation": true
+  },
+  "required_product_state_fields": [
+    "canonical_product_id",
+    "canonical_universe_member",
+    "model_identifier",
+    "forecast_horizon",
+    "model_eligibility_status",
+    "model_eligibility_reason_code",
+    "diagnostic_evidence_reference",
+    "owner_review_status"
+  ],
+  "allowed_model_eligibility_statuses": [
+    "MODEL_CORE",
+    "MODEL_ELIGIBLE",
+    "MODEL_ELIGIBLE_DOWNWEIGHTED",
+    "HOLDOUT_DIAGNOSTIC_ONLY",
+    "MODEL_EXCLUDED"
+  ],
+  "allowed_exclusion_reason_codes": [
+    "MODEL_EXCLUDE_DATA_COVERAGE",
+    "MODEL_EXCLUDE_LIQUIDITY_AVAILABILITY",
+    "MODEL_EXCLUDE_STRUCTURAL_COMPARABILITY",
+    "MODEL_EXCLUDE_STATISTICAL_INFLUENCE",
+    "MODEL_EXCLUDE_OTHER_OWNER_REVIEWED"
+  ],
+  "required_empirical_diagnostics": {
+    "price_history": {
+      "required": true,
+      "evaluate": [
+        "coverage",
+        "continuity",
+        "staleness where measurable",
+        "source disagreement where measurable"
+      ]
+    },
+    "availability_and_liquidity": {
+      "required": true,
+      "evaluate": [
+        "observable supply",
+        "listing or transaction density where available",
+        "market depth proxies",
+        "availability discontinuity"
+      ]
+    },
+    "model_influence": {
+      "required": true,
+      "evaluate_as_applicable": [
+        "leverage",
+        "influence",
+        "residual extremity",
+        "prediction sensitivity",
+        "parameter sensitivity",
+        "model-family-specific influence diagnostics"
+      ]
+    },
+    "out_of_sample_validation": {
+      "required": true,
+      "evaluate": [
+        "full-sample performance",
+        "diagnostically treated-sample performance",
+        "validation fold or window stability",
+        "required horizon stability"
+      ]
+    },
+    "cross_model_robustness": {
+      "required_when_practical": true,
+      "rule": "Persistent exclusion should not depend solely on one model family when multiple governed candidate families are available."
+    }
+  },
+  "decision_rules": {
+    "all_canonical_products_begin_without_age_based_exclusion": true,
+    "model_specific_treatment_allowed": true,
+    "horizon_specific_treatment_allowed": true,
+    "downweighting_requires_evidence": true,
+    "holdout_only_requires_evidence": true,
+    "persistent_exclusion_requires_owner_review": true,
+    "training_exclusion_changes_canonical_membership": false,
+    "training_exclusion_automatically_blocks_prediction": false,
+    "training_exclusion_automatically_blocks_ranking": false,
+    "prediction_requires_separate_model_applicability_certification": true,
+    "ranking_requires_separate_downstream_authorization": true
+  },
+  "required_sensitivity_outputs": [
+    "full_sample_scorecard",
+    "treated_sample_scorecard",
+    "product_influence_diagnostics",
+    "eligibility_decision_ledger",
+    "excluded_or_downweighted_product_ledger",
+    "horizon_specific_applicability_summary",
+    "canonical_universe_reconciliation_check"
+  ],
+  "certification_invariants": {
+    "canonical_product_count_must_remain": 186,
+    "canonical_identity_hash_must_match": "e75151ab05e87c60559e3114b050717307678f4ed0da01f067de46474a7ed4ac",
+    "every_canonical_product_must_have_explicit_model_treatment": true,
+    "every_exclusion_must_have_reason_code": true,
+    "every_exclusion_must_have_diagnostic_evidence": true,
+    "no_exclusion_may_be_based_only_on_age": true,
+    "no_exclusion_may_be_based_only_on_release_year": true,
+    "no_exclusion_may_be_based_only_on_price_level": true,
+    "no_silent_row_drops": true
+  },
+  "authorization": {
+    "model_selection_recertification_authorized": true,
+    "model_selection_execution_authorized": false,
+    "forecast_execution_authorized": false,
+    "monte_carlo_execution_authorized": false,
+    "ranking_execution_authorized": false,
+    "purchase_analysis_authorized": false,
+    "purchase_recommendation_authorized": false,
+    "automatic_purchase_execution_authorized": false
+  },
+  "next_stage_if_certified": "PRECOLLECTOR_MODEL_SELECTION_RECERTIFICATION_AGAINST_CANONICAL_UNIVERSE_AND_MODEL_ELIGIBILITY_STANDARD"
+}
