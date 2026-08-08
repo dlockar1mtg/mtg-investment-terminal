@@ -1,0 +1,47 @@
+{
+    "contract_id":  "precollector_current_price_authority_v2",
+    "contract_version":  "2.0.0",
+    "governed_lane":  "precollector_sealed_booster_boxes",
+    "canonical_universe":  {
+                               "product_count":  131,
+                               "identity_sha256":  "d540be20ff26709b8e004e18ff16a11a05f50a1182777dcfd86a1821f62b7ac2",
+                               "package_name":  "MTG_PreCollector_Canonical_Universe_Scope_Correction_v2_20260808_144356.zip",
+                               "package_sha256":  "4f4813320ad189701553d4227dcdf077e7de9ad1bd0c22032bfed00fac24bade",
+                               "target_commercial_unit":  "INDIVIDUAL_SEALED_BOX_OR_DISPLAY"
+                           },
+    "source":  {
+                   "source_name":  "TCGCSV_LIVE",
+                   "acquisition_stage":  "STAGE_15H",
+                   "acquisition_date":  "2026-08-08",
+                   "source_product_count":  121,
+                   "explicit_gap_product_count":  10,
+                   "group_request_failures":  0,
+                   "direct_tcgplayer_identity_required":  true,
+                   "ebay_used_as_current_price_source":  false
+               },
+    "price_selection":  {
+                            "preferred_price":  "MARKET_PRICE",
+                            "fallback_order":  [
+                                                   "MID_PRICE",
+                                                   "LOW_PRICE"
+                                               ],
+                            "positive_price_required":  true,
+                            "synthetic_price_allowed":  false,
+                            "case_price_conversion_allowed":  false
+                        },
+    "gap_policy":  {
+                       "canonical_products_with_no_current_price_remain_canonical":  true,
+                       "missing_current_price_implies_model_exclusion":  false,
+                       "missing_current_price_implies_prediction_exclusion":  false,
+                       "gap_must_be_carried_to_empirical_diagnostics":  true
+                   },
+    "authorization":  {
+                          "current_price_certification":  true,
+                          "availability_certification":  false,
+                          "model_execution":  false,
+                          "forecast_execution":  false,
+                          "ranking_execution":  false,
+                          "purchase_analysis":  false
+                      },
+    "authorized_next_stage":  "RESOLVE_AND_CERTIFY_PRECOLLECTOR_AVAILABILITY_EVIDENCE"
+}
