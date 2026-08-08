@@ -1,0 +1,69 @@
+{
+    "contract_id":  "precollector_availability_authority_v1",
+    "contract_version":  "1.0.0",
+    "governed_lane":  "precollector_sealed_booster_boxes",
+    "canonical_universe":  {
+                               "product_count":  131,
+                               "identity_sha256":  "d540be20ff26709b8e004e18ff16a11a05f50a1182777dcfd86a1821f62b7ac2",
+                               "package_name":  "MTG_PreCollector_Canonical_Universe_Scope_Correction_v2_20260808_144356.zip",
+                               "package_sha256":  "4f4813320ad189701553d4227dcdf077e7de9ad1bd0c22032bfed00fac24bade"
+                           },
+    "evidence_source":  {
+                            "source_name":  "EBAY_BROWSE_API",
+                            "acquisition_stage":  "STAGE_15H",
+                            "page_limit":  200,
+                            "collection_scope_product_count":  131,
+                            "query_failures":  0
+                        },
+    "identity_rules":  {
+                           "collector_style_token_match":  true,
+                           "accepted_score_threshold":  0.82,
+                           "review_score_threshold":  0.62,
+                           "strict_variant_guards":  true,
+                           "generic_identity_loses_to_explicit_more_specific_identity":  true,
+                           "semantic_rule_empirically_tested_collision_count":  94,
+                           "semantic_rule_resolved_collision_count":  89,
+                           "residual_unresolved_collision_count":  5,
+                           "residual_collisions_admitted":  false
+                       },
+    "sealed_evidence_rules":  {
+                                  "title_explicit_sealed_wording_accepted":  true,
+                                  "explicit_condition_metadata_accepted":  true,
+                                  "explicit_condition_metadata_requires_full_identity_token_coverage":  true,
+                                  "explicit_condition_metadata_requires_valid_box_or_display_form":  true,
+                                  "admitted_explicit_condition_values":  [
+                                                                             "New/Factory Sealed",
+                                                                             "Sigillato/Nuovo",
+                                                                             "Neu/Fabrikversiegelt",
+                                                                             "Neuf/Scellé"
+                                                                         ],
+                                  "plain_new_accepted_as_sealed":  false,
+                                  "used_accepted_as_sealed":  false,
+                                  "open_box_used_accepted_as_sealed":  false,
+                                  "ungraded_accepted_as_sealed":  false,
+                                  "blank_condition_accepted_as_sealed":  false
+                              },
+    "coverage":  {
+                     "certified_availability_products":  111,
+                     "explicit_availability_gap_products":  20,
+                     "complete_coverage_required":  false,
+                     "availability_gap_implies_model_exclusion":  false,
+                     "availability_gap_implies_prediction_exclusion":  false
+                 },
+    "liquidity_governance":  {
+                                 "minimum_listing_count_threshold_used":  false,
+                                 "minimum_seller_count_threshold_used":  false,
+                                 "listing_count_is_empirical_feature":  true,
+                                 "seller_count_is_empirical_feature":  true,
+                                 "price_dispersion_is_empirical_feature":  true
+                             },
+    "authorization":  {
+                          "availability_certification":  true,
+                          "empirical_model_eligibility_diagnostics":  true,
+                          "model_execution":  false,
+                          "forecast_execution":  false,
+                          "ranking_execution":  false,
+                          "purchase_analysis":  false
+                      },
+    "authorized_next_stage":  "BUILD_PRECOLLECTOR_EMPIRICAL_MODEL_ELIGIBILITY_DIAGNOSTICS"
+}
