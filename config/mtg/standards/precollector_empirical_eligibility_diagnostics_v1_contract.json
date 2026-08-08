@@ -1,0 +1,94 @@
+{
+    "contract_id":  "precollector_empirical_eligibility_diagnostics_v1",
+    "contract_version":  "1.0.0",
+    "governed_lane":  "precollector_sealed_booster_boxes",
+    "canonical_universe":  {
+                               "product_count":  131,
+                               "identity_sha256":  "d540be20ff26709b8e004e18ff16a11a05f50a1182777dcfd86a1821f62b7ac2"
+                           },
+    "certified_evidence":  {
+                               "historical":  {
+                                                  "covered_products":  115,
+                                                  "gap_products":  16
+                                              },
+                               "current_price":  {
+                                                     "covered_products":  121,
+                                                     "gap_products":  10
+                                                 },
+                               "availability":  {
+                                                    "covered_products":  111,
+                                                    "gap_products":  20
+                                                }
+                           },
+    "required_diagnostic_dimensions":  [
+                                           "PRICE_HISTORY_COVERAGE",
+                                           "PRICE_HISTORY_STALENESS",
+                                           "PRICE_PATH_STABILITY",
+                                           "CURRENT_AVAILABILITY",
+                                           "LIQUIDITY_OR_MARKET_DEPTH",
+                                           "SOURCE_DISAGREEMENT",
+                                           "STATISTICAL_INFLUENCE",
+                                           "OUT_OF_SAMPLE_ERROR_CONTRIBUTION",
+                                           "MODEL_STABILITY",
+                                           "EXCLUSION_SENSITIVITY"
+                                       ],
+    "evidence_diagnostics_authorized_now":  [
+                                                "PRICE_HISTORY_COVERAGE",
+                                                "PRICE_HISTORY_STALENESS",
+                                                "PRICE_PATH_STABILITY",
+                                                "CURRENT_AVAILABILITY",
+                                                "LIQUIDITY_OR_MARKET_DEPTH",
+                                                "SOURCE_DISAGREEMENT"
+                                            ],
+    "model_dependent_diagnostics_pending":  [
+                                                "STATISTICAL_INFLUENCE",
+                                                "OUT_OF_SAMPLE_ERROR_CONTRIBUTION",
+                                                "MODEL_STABILITY",
+                                                "EXCLUSION_SENSITIVITY"
+                                            ],
+    "price_path_metrics":  {
+                               "observation_count":  true,
+                               "distinct_date_count":  true,
+                               "span_days":  true,
+                               "log_return_volatility":  true,
+                               "maximum_drawdown":  true,
+                               "first_price":  true,
+                               "latest_historical_price":  true
+                           },
+    "liquidity_metrics":  {
+                              "accepted_listing_count":  true,
+                              "unique_seller_count":  true,
+                              "positive_landed_price_count":  true,
+                              "median_landed_price":  true,
+                              "landed_price_stddev":  true,
+                              "landed_price_coefficient_of_variation":  true,
+                              "landed_price_interquartile_range":  true
+                          },
+    "source_disagreement":  {
+                                "tcgcsv_current_vs_ebay_median":  true,
+                                "absolute_difference":  true,
+                                "percentage_difference":  true,
+                                "no_ebay_price_authority_created":  true
+                            },
+    "eligibility_governance":  {
+                                   "arbitrary_age_cutoff_allowed":  false,
+                                   "arbitrary_history_count_cutoff_allowed":  false,
+                                   "arbitrary_listing_count_cutoff_allowed":  false,
+                                   "arbitrary_seller_count_cutoff_allowed":  false,
+                                   "diagnostics_stage_may_exclude_products":  false,
+                                   "canonical_membership_may_be_changed":  false,
+                                   "training_membership_selected_in_this_stage":  false
+                               },
+    "authorization":  {
+                          "evidence_diagnostics_build":  true,
+                          "model_variant_design":  true,
+                          "model_execution":  false,
+                          "statistical_influence_execution":  false,
+                          "out_of_sample_execution":  false,
+                          "exclusion_sensitivity_execution":  false,
+                          "forecast_execution":  false,
+                          "ranking_execution":  false,
+                          "purchase_analysis":  false
+                      },
+    "authorized_next_stage":  "DESIGN_PRECOLLECTOR_MODEL_VARIANT_TOURNAMENT_AND_OOS_DIAGNOSTICS"
+}
