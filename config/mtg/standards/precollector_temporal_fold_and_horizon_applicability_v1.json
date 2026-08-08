@@ -1,0 +1,62 @@
+{
+    "contract_id":  "precollector_temporal_fold_and_horizon_applicability_v1",
+    "contract_version":  "1.0.0",
+    "governed_lane":  "precollector_sealed_booster_boxes_and_displays",
+    "canonical_binding":  {
+                              "product_count":  131,
+                              "identity_sha256":  "d540be20ff26709b8e004e18ff16a11a05f50a1182777dcfd86a1821f62b7ac2"
+                          },
+    "certified_history":  {
+                              "package_name":  "MTG_PreCollector_Historical_Price_Authority_v3_20260808_144720.zip",
+                              "package_sha256":  "d6cd537fbd6f3370cdea136f9cf51a5aa5836859729d060440de8497277b0641",
+                              "covered_products":  115,
+                              "observation_rows":  3390
+                          },
+    "governed_horizons_days":  [
+                                   90,
+                                   180,
+                                   365,
+                                   1095,
+                                   1825
+                               ],
+    "horizon_roles":  {
+                          "90":  "DIAGNOSTIC_SUPPORT",
+                          "180":  "DIAGNOSTIC_SUPPORT",
+                          "365":  "ONE_YEAR_INVESTMENT",
+                          "1095":  "PRIMARY_THREE_YEAR_INVESTMENT",
+                          "1825":  "FIVE_YEAR_INVESTMENT"
+                      },
+    "fold_construction":  {
+                              "unit":  "CANONICAL_PRODUCT_ORIGIN_DATE_HORIZON",
+                              "origin_must_be_certified_observation":  true,
+                              "training_observations_must_be_on_or_before_origin":  true,
+                              "target_date_rule":  "ORIGIN_DATE_PLUS_REQUESTED_HORIZON_DAYS",
+                              "realized_endpoint_rule":  "FIRST_CERTIFIED_PRODUCT_OBSERVATION_ON_OR_AFTER_TARGET_DATE",
+                              "endpoint_tolerance_days":  null,
+                              "endpoint_tolerance_imposed":  false,
+                              "actual_elapsed_days_must_be_recorded":  true,
+                              "endpoint_drift_days_must_be_recorded":  true,
+                              "every_temporally_supported_origin_must_be_emitted":  true,
+                              "future_data_in_training_prohibited":  true
+                          },
+    "applicability_governance":  {
+                                     "zero_realized_folds_means":  "NO_DIRECT_HISTORICAL_VALIDATION_SUPPORT",
+                                     "zero_realized_folds_is_canonical_exclusion":  false,
+                                     "zero_realized_folds_is_model_exclusion":  false,
+                                     "zero_realized_folds_is_prediction_exclusion":  false,
+                                     "insufficient_long_horizon_support_must_be_labeled":  true,
+                                     "unsupported_three_year_claim_may_be_called_backtested":  false,
+                                     "unsupported_five_year_claim_may_be_called_backtested":  false
+                                 },
+    "authorization":  {
+                          "fold_construction":  true,
+                          "horizon_applicability_certification":  true,
+                          "model_fitting":  false,
+                          "treatment_assignment":  false,
+                          "persistent_exclusion":  false,
+                          "production_forecast":  false,
+                          "ranking":  false,
+                          "purchase_analysis":  false
+                      },
+    "authorized_next_stage":  "IMPLEMENT_PRECOLLECTOR_DIAGNOSTIC_TOURNAMENT_ENGINE"
+}
