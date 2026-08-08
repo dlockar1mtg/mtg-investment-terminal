@@ -1,0 +1,119 @@
+{
+    "contract_id":  "precollector_model_selection_rebinding_and_eligibility_gate_v2",
+    "contract_version":  "2.0.0",
+    "governed_lane":  "precollector_sealed_booster_boxes_and_displays",
+    "supersedes_scope_binding_of":  "config/mtg/standards/precollector_model_selection_rebinding_and_eligibility_gate_contract_v1.json",
+    "canonical_target_authority":  {
+                                       "canonical_product_count":  131,
+                                       "canonical_universe_identity_sha256":  "d540be20ff26709b8e004e18ff16a11a05f50a1182777dcfd86a1821f62b7ac2",
+                                       "canonical_package_name":  "MTG_PreCollector_Canonical_Universe_Scope_Correction_v2_20260808_144356.zip",
+                                       "canonical_package_sha256":  "4f4813320ad189701553d4227dcdf077e7de9ad1bd0c22032bfed00fac24bade",
+                                       "sole_binding_target_authority":  true,
+                                       "prior_186_product_authority_allowed":  false,
+                                       "collector_target_authority_allowed":  false
+                                   },
+    "certified_input_bindings":  {
+                                     "historical_price_authority":  {
+                                                                        "package_name":  "MTG_PreCollector_Historical_Price_Authority_v3_20260808_144720.zip",
+                                                                        "package_sha256":  "d6cd537fbd6f3370cdea136f9cf51a5aa5836859729d060440de8497277b0641",
+                                                                        "covered_products":  115
+                                                                    },
+                                     "current_price_authority":  {
+                                                                     "package_name":  "MTG_PreCollector_Current_Price_Authority_v2_20260808_151353.zip",
+                                                                     "package_sha256":  "cab2c351a167e5a5c02b58c411355d58c18d0f075f282a05e85083412cb3f3c6",
+                                                                     "covered_products":  121
+                                                                 },
+                                     "availability_authority":  {
+                                                                    "package_name":  "MTG_PreCollector_Availability_Authority_v1_20260808_152442.zip",
+                                                                    "package_sha256":  "769d253024e0cce18a5dab8b081818ae0fd724ea7bcb4b84e489c1b03d2bf675",
+                                                                    "covered_products":  111
+                                                                },
+                                     "empirical_diagnostics":  {
+                                                                   "package_name":  "MTG_PreCollector_Empirical_Eligibility_Diagnostics_v1_20260808_152835.zip",
+                                                                   "package_sha256":  "f5ac38765c0c7243cc0d6275a6fd1a9063e492ea017311ee0dface1ce279a67d",
+                                                                   "canonical_rows":  131,
+                                                                   "all_three_domains":  103,
+                                                                   "two_domains":  16,
+                                                                   "one_domain":  6,
+                                                                   "zero_domains":  6,
+                                                                   "exclusions_assigned":  0,
+                                                                   "treatments_assigned":  0
+                                                               }
+                                 },
+    "required_model_eligibility_standard":  "config/mtg/standards/precollector_model_eligibility_and_exclusion_contract_v2.json",
+    "eligibility_principles":  {
+                                   "canonical_products_begin_model_eligible":  true,
+                                   "arbitrary_age_cutoffs_allowed":  false,
+                                   "arbitrary_release_year_cutoffs_allowed":  false,
+                                   "arbitrary_vintage_cutoffs_allowed":  false,
+                                   "exclusion_for_model_improvement_alone_allowed":  false,
+                                   "empirical_diagnostics_required":  true,
+                                   "model_specific_dispositions_required":  true,
+                                   "horizon_specific_dispositions_supported":  true,
+                                   "persistent_exclusion_requires_owner_review":  true,
+                                   "excluded_training_product_remains_canonical":  true,
+                                   "training_exclusion_automatically_prohibits_forecast":  false
+                               },
+    "required_diagnostic_dimensions":  [
+                                           "PRICE_HISTORY_COVERAGE",
+                                           "PRICE_HISTORY_STALENESS",
+                                           "PRICE_PATH_STABILITY",
+                                           "CURRENT_AVAILABILITY",
+                                           "LIQUIDITY_OR_MARKET_DEPTH",
+                                           "SOURCE_DISAGREEMENT",
+                                           "STATISTICAL_INFLUENCE",
+                                           "OUT_OF_SAMPLE_ERROR_CONTRIBUTION",
+                                           "MODEL_STABILITY",
+                                           "EXCLUSION_SENSITIVITY"
+                                       ],
+    "evidence_diagnostics_completed":  [
+                                           "PRICE_HISTORY_COVERAGE",
+                                           "PRICE_HISTORY_STALENESS",
+                                           "PRICE_PATH_STABILITY",
+                                           "CURRENT_AVAILABILITY",
+                                           "LIQUIDITY_OR_MARKET_DEPTH",
+                                           "SOURCE_DISAGREEMENT"
+                                       ],
+    "model_dependent_diagnostics_pending":  [
+                                                "STATISTICAL_INFLUENCE",
+                                                "OUT_OF_SAMPLE_ERROR_CONTRIBUTION",
+                                                "MODEL_STABILITY",
+                                                "EXCLUSION_SENSITIVITY"
+                                            ],
+    "required_pre_execution_inputs":  {
+                                          "canonical_universe":  true,
+                                          "certified_price_history":  true,
+                                          "current_price_authority":  true,
+                                          "availability_evidence":  true,
+                                          "product_level_diagnostic_ledger":  true,
+                                          "governed_tournament_design":  false,
+                                          "model_treatment_disposition_ledger":  false,
+                                          "exclusion_sensitivity_evidence":  false,
+                                          "owner_approval_for_persistent_exclusions":  false
+                                      },
+    "fail_closed_conditions":  [
+                                   "CANONICAL_IDENTITY_MISMATCH",
+                                   "CANONICAL_COUNT_MISMATCH",
+                                   "MISSING_GOVERNED_TOURNAMENT_DESIGN",
+                                   "MISSING_PRODUCT_DISPOSITION",
+                                   "ARBITRARY_CHRONOLOGICAL_EXCLUSION",
+                                   "UNEXPLAINED_PRODUCT_EXCLUSION",
+                                   "PERSISTENT_EXCLUSION_WITHOUT_OWNER_REVIEW",
+                                   "LEGACY_186_TARGET_AUTHORITY_BINDING",
+                                   "COLLECTOR_TARGET_AUTHORITY_BINDING",
+                                   "MISSING_EXCLUSION_SENSITIVITY",
+                                   "MODEL_EXECUTION_BEFORE_GATE_CERTIFICATION"
+                               ],
+    "authorization":  {
+                          "architecture_rebinding_certification":  true,
+                          "tournament_design":  true,
+                          "tournament_execution":  false,
+                          "model_execution":  false,
+                          "forecast_execution":  false,
+                          "monte_carlo_execution":  false,
+                          "ranking_execution":  false,
+                          "purchase_analysis":  false,
+                          "purchase_recommendations":  false
+                      },
+    "next_stage":  "DESIGN_PRECOLLECTOR_MODEL_VARIANT_TOURNAMENT_AND_OOS_DIAGNOSTICS"
+}
