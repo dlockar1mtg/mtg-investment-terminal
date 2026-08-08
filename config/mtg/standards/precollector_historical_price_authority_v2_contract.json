@@ -1,0 +1,63 @@
+{
+    "contract_id":  "precollector_historical_price_authority_v2",
+    "contract_version":  "2.0.0",
+    "governed_lane":  "precollector_booster_boxes",
+    "canonical_universe":  {
+                               "product_count":  186,
+                               "identity_sha256":  "e75151ab05e87c60559e3114b050717307678f4ed0da01f067de46474a7ed4ac",
+                               "stage9_package_name":  "MTG_PreCollector_Canonical_Universe_Certification_v1_20260808_075246.zip",
+                               "stage9_package_sha256":  "4353ab033e9baff368bea42acee17251c5be6cdf0243fa6d68375f188000c6c1"
+                           },
+    "admitted_historical_source":  {
+                                       "source_class":  "TCGCSV_ARCHIVE_MONTHLY_DIRECT",
+                                       "repository_path":  "data/operations/mtg_universal_history_completion/archive/universal_tcgcsv_monthly_archive_observations.csv",
+                                       "required_identity_field":  "tcgplayer_product_id",
+                                       "required_date_field":  "observation_date",
+                                       "required_price_field":  "selected_price",
+                                       "require_positive_price":  true,
+                                       "direct_source_only":  true,
+                                       "universal_combined_ledger_authorized":  false,
+                                       "ebay_history_authorized":  false
+                                   },
+    "expected_certification_result":  {
+                                          "canonical_product_count":  186,
+                                          "admitted_product_count":  115,
+                                          "historical_gap_product_count":  71,
+                                          "admitted_observation_count":  3390,
+                                          "distinct_observation_date_count":  30,
+                                          "duplicate_product_date_conflict_count":  0,
+                                          "minimum_distinct_dates_per_admitted_product":  2
+                                      },
+    "historical_gap_policy":  {
+                                  "gap_products_remain_canonical":  true,
+                                  "gap_products_automatically_excluded_from_models":  false,
+                                  "gap_status":  "NO_CERTIFIED_HISTORICAL_PRICE_EVIDENCE",
+                                  "gap_requires_empirical_model_eligibility_review":  true,
+                                  "synthetic_case_price_derivation_allowed":  false,
+                                  "base_box_history_may_be_used_as_case_price":  false
+                              },
+    "excluded_source_dispositions":  {
+                                         "universal_combined_ledger":  "REFERENCE_ONLY_SOURCE_CONFLICTS",
+                                         "ebay":  "UNRESOLVED_SOURCE_LEVEL_PRICE_CONFLICTS",
+                                         "legacy_precollector_historical_contract_v1":  "SUPERSEDED_124_PRODUCT_AUTHORITY"
+                                     },
+    "outputs":  {
+                    "historical_prices_csv":  "precollector_historical_price_authority_v2.csv",
+                    "product_coverage_csv":  "precollector_historical_price_coverage_v2.csv",
+                    "historical_gap_csv":  "precollector_historical_price_gaps_v2.csv",
+                    "summary_json":  "precollector_historical_price_authority_v2_summary.json",
+                    "manifest_json":  "precollector_historical_price_authority_v2_manifest.json"
+                },
+    "authorization":  {
+                          "historical_authority_build":  true,
+                          "historical_gap_recovery":  true,
+                          "empirical_model_eligibility_diagnostics":  true,
+                          "model_execution":  false,
+                          "forecast_execution":  false,
+                          "monte_carlo_execution":  false,
+                          "ranking_execution":  false,
+                          "purchase_analysis":  false,
+                          "purchase_recommendations":  false
+                      },
+    "next_stage":  "CERTIFY_PRECOLLECTOR_CURRENT_PRICE_AND_AVAILABILITY_EVIDENCE"
+}
