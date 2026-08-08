@@ -1,0 +1,91 @@
+{
+    "contract_id":  "precollector_model_selection_rebinding_and_eligibility_gate_v1",
+    "contract_version":  "1.0.0",
+    "governed_lane":  "precollector_booster_boxes",
+    "canonical_target_authority":  {
+                                       "canonical_product_count":  186,
+                                       "canonical_universe_identity_sha256":  "e75151ab05e87c60559e3114b050717307678f4ed0da01f067de46474a7ed4ac",
+                                       "sole_binding_target_authority":  true,
+                                       "historical_target_authority_allowed":  false,
+                                       "collector_target_authority_allowed":  false
+                                   },
+    "historical_model_selection":  {
+                                       "artifact_count":  17,
+                                       "implementation_logic_reusable":  true,
+                                       "historical_execution_bindings_reusable":  false,
+                                       "historical_snapshot_binding_authoritative":  false,
+                                       "historical_79_product_universe_authoritative":  false,
+                                       "historical_frozen_packages_authoritative":  false
+                                   },
+    "required_model_eligibility_standard":  "config/mtg/standards/precollector_model_eligibility_and_exclusion_contract_v1.json",
+    "eligibility_principles":  {
+                                   "canonical_products_begin_model_eligible":  true,
+                                   "arbitrary_age_cutoffs_allowed":  false,
+                                   "arbitrary_release_year_cutoffs_allowed":  false,
+                                   "arbitrary_vintage_cutoffs_allowed":  false,
+                                   "exclusion_for_model_improvement_alone_allowed":  false,
+                                   "empirical_diagnostics_required":  true,
+                                   "model_specific_dispositions_required":  true,
+                                   "horizon_specific_dispositions_supported":  true,
+                                   "persistent_exclusion_requires_owner_review":  true,
+                                   "excluded_training_product_remains_canonical":  true,
+                                   "training_exclusion_automatically_prohibits_forecast":  false
+                               },
+    "required_diagnostic_dimensions":  [
+                                           "PRICE_HISTORY_COVERAGE",
+                                           "PRICE_HISTORY_STALENESS",
+                                           "PRICE_PATH_STABILITY",
+                                           "CURRENT_AVAILABILITY",
+                                           "LIQUIDITY_OR_MARKET_DEPTH",
+                                           "SOURCE_DISAGREEMENT",
+                                           "STATISTICAL_INFLUENCE",
+                                           "OUT_OF_SAMPLE_ERROR_CONTRIBUTION",
+                                           "MODEL_STABILITY",
+                                           "EXCLUSION_SENSITIVITY"
+                                       ],
+    "allowed_model_treatment_dispositions":  [
+                                                 "MODEL_CORE",
+                                                 "MODEL_ELIGIBLE",
+                                                 "MODEL_ELIGIBLE_DOWNWEIGHTED",
+                                                 "HOLDOUT_DIAGNOSTIC_ONLY",
+                                                 "MODEL_EXCLUDE_DATA_COVERAGE",
+                                                 "MODEL_EXCLUDE_LIQUIDITY_REGIME",
+                                                 "MODEL_EXCLUDE_PRODUCT_STRUCTURE",
+                                                 "MODEL_EXCLUDE_STATISTICAL_INFLUENCE",
+                                                 "MODEL_EXCLUDE_EMPIRICAL_REGIME_DIFFERENCE",
+                                                 "MODEL_EXCLUDE_OTHER_REVIEWED"
+                                             ],
+    "required_pre_execution_inputs":  {
+                                          "canonical_universe":  true,
+                                          "certified_price_history":  true,
+                                          "current_price_authority":  true,
+                                          "availability_or_supply_evidence":  true,
+                                          "product_level_diagnostic_ledger":  true,
+                                          "model_treatment_disposition_ledger":  true,
+                                          "exclusion_sensitivity_evidence":  true,
+                                          "owner_approval_for_persistent_exclusions":  true
+                                      },
+    "fail_closed_conditions":  [
+                                   "CANONICAL_IDENTITY_MISMATCH",
+                                   "CANONICAL_COUNT_MISMATCH",
+                                   "MISSING_PRODUCT_DISPOSITION",
+                                   "ARBITRARY_CHRONOLOGICAL_EXCLUSION",
+                                   "UNEXPLAINED_PRODUCT_EXCLUSION",
+                                   "PERSISTENT_EXCLUSION_WITHOUT_OWNER_REVIEW",
+                                   "LEGACY_TARGET_AUTHORITY_BINDING",
+                                   "COLLECTOR_TARGET_AUTHORITY_BINDING",
+                                   "MISSING_EXCLUSION_SENSITIVITY",
+                                   "MODEL_EXECUTION_BEFORE_GATE_CERTIFICATION"
+                               ],
+    "authorization":  {
+                          "architecture_certification":  true,
+                          "empirical_diagnostic_build":  true,
+                          "model_execution":  false,
+                          "forecast_execution":  false,
+                          "monte_carlo_execution":  false,
+                          "ranking_execution":  false,
+                          "purchase_analysis":  false,
+                          "purchase_recommendations":  false
+                      },
+    "next_stage":  "BUILD_PRECOLLECTOR_EMPIRICAL_MODEL_ELIGIBILITY_DIAGNOSTICS"
+}
