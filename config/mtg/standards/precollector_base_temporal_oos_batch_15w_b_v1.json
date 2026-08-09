@@ -1,0 +1,77 @@
+{
+    "contract_id":  "precollector_base_temporal_oos_batch_15w_b_v1",
+    "contract_version":  "1.0.0",
+    "batch_id":  "15W-B",
+    "batch_name":  "RIDGE_AND_HUBER_POOLED_TEMPORAL_OOS",
+    "prior_batch_binding":  {
+                                "package":  "MTG_PreCollector_Base_Temporal_OOS_Batch_15W_A_v1_20260809_082119.zip",
+                                "sha256":  "fe83fe3ba70b5ed45a4964285f3d70e17faaed53124a30fc205c18e4650588da"
+                            },
+    "model_families":  [
+                           "RIDGE_REGRESSION",
+                           "HUBER_REGRESSION"
+                       ],
+    "direct_horizons_days":  [
+                                 90,
+                                 180,
+                                 365
+                             ],
+    "feature_variants":  [
+                             "PRICE_ONLY",
+                             "PRICE_PLUS_AGE",
+                             "PRICE_PLUS_PATH_STABILITY"
+                         ],
+    "target_transformations":  [
+                                   "RAW_PRICE_CHANGE",
+                                   "LOG_PRICE_CHANGE",
+                                   "RETURN",
+                                   "ANNUALIZED_RETURN_WHERE_DEFINED"
+                               ],
+    "governed_matrix_cells":  72,
+    "fit_grain":  "MODEL_X_HORIZON_X_ORIGIN_DATE_X_FEATURE_VARIANT_X_TARGET_TRANSFORMATION",
+    "temporal_training_rule":  {
+                                   "realized_endpoint_must_be_on_or_before_validation_origin":  true,
+                                   "same_product_prior_matured_examples_allowed":  true,
+                                   "future_or_unmatured_examples_allowed":  false,
+                                   "current_market_features_allowed_historically":  false,
+                                   "random_time_split_allowed":  false
+                               },
+    "model_parameters":  {
+                             "RIDGE_REGRESSION":  {
+                                                      "scaler":  "StandardScaler",
+                                                      "alpha":  1,
+                                                      "fit_intercept":  true
+                                                  },
+                             "HUBER_REGRESSION":  {
+                                                      "scaler":  "StandardScaler",
+                                                      "epsilon":  1.35,
+                                                      "alpha":  0.0001,
+                                                      "max_iter":  1000
+                                                  }
+                         },
+    "minimum_supervised_training_rows":  20,
+    "insufficient_training_rows_action":  "EXPLICIT_SKIP",
+    "required_outputs":  [
+                             "PREDICTION_LEDGER",
+                             "CELL_SCORECARD",
+                             "FIT_LEDGER",
+                             "PRODUCT_ERROR_LEDGER",
+                             "SKIPPED_FOLD_LEDGER",
+                             "SUMMARY",
+                             "MANIFEST"
+                         ],
+    "authorization":  {
+                          "current_batch_execution":  true,
+                          "later_batch_execution":  false,
+                          "ensemble_execution":  false,
+                          "product_holdout_execution":  false,
+                          "persistent_treatment_assignment":  false,
+                          "persistent_exclusion":  false,
+                          "production_model_selection":  false,
+                          "monte_carlo_execution":  false,
+                          "forecast_execution":  false,
+                          "ranking_execution":  false,
+                          "purchase_analysis":  false
+                      },
+    "authorized_next_stage_if_certified":  "RUN_PRECOLLECTOR_BASE_TEMPORAL_OOS_BATCH_15W_C"
+}
