@@ -1,0 +1,217 @@
+{
+    "contract_id":  "precollector_base_oos_model_specification_v1",
+    "contract_version":  "1.0.0",
+    "governed_lane":  "precollector_sealed_booster_boxes_and_displays",
+    "upstream_matrix":  {
+                            "package_name":  "MTG_PreCollector_Executable_Tournament_Matrix_v1_20260809_072207.zip",
+                            "package_sha256":  "200c7814844d3def89d144e4d6dac9a15fb3cea7f5839c8ff63b691e8487692f",
+                            "theoretical_cells":  1820,
+                            "direct_oos_cells":  468
+                        },
+    "horizons":  {
+                     "direct_oos":  [
+                                        90,
+                                        180,
+                                        365
+                                    ],
+                     "scenario_only_later":  [
+                                                 1095,
+                                                 1825
+                                             ]
+                 },
+    "target_transformations":  {
+                                   "RAW_PRICE_CHANGE":  "endpoint_price - origin_price",
+                                   "LOG_PRICE_CHANGE":  "ln(endpoint_price / origin_price)",
+                                   "RETURN":  "(endpoint_price / origin_price) - 1",
+                                   "ANNUALIZED_RETURN_WHERE_DEFINED":  "(endpoint_price / origin_price)^(365 / actual_elapsed_days) - 1"
+                               },
+    "inversion_rules":  {
+                            "RAW_PRICE_CHANGE":  "origin_price + predicted_target",
+                            "LOG_PRICE_CHANGE":  "origin_price * exp(predicted_target)",
+                            "RETURN":  "origin_price * (1 + predicted_target)",
+                            "ANNUALIZED_RETURN_WHERE_DEFINED":  "origin_price * (1 + predicted_target)^(requested_horizon_days / 365)"
+                        },
+    "direct_feature_variants":  {
+                                    "PRICE_ONLY":  [
+                                                       "log_origin_price"
+                                                   ],
+                                    "PRICE_PLUS_AGE":  [
+                                                           "log_origin_price",
+                                                           "log1p_release_age_days"
+                                                       ],
+                                    "PRICE_PLUS_PATH_STABILITY":  [
+                                                                      "log_origin_price",
+                                                                      "training_log_return_volatility",
+                                                                      "training_max_drawdown",
+                                                                      "training_log_price_slope"
+                                                                  ]
+                                },
+    "feature_time_governance":  {
+                                    "origin_price":  "AVAILABLE_AT_FOLD_ORIGIN",
+                                    "release_age":  "COMPUTED_USING_RELEASE_DATE_AND_FOLD_ORIGIN",
+                                    "path_stability":  "COMPUTED_ONLY_FROM PRODUCT HISTORY ON_OR_BEFORE_FOLD_ORIGIN",
+                                    "current_2026_liquidity":  "PROHIBITED_FROM_HISTORICAL_OOS",
+                                    "current_2026_source_disagreement":  "PROHIBITED_FROM_HISTORICAL_OOS",
+                                    "silent_future_feature_fill":  false
+                                },
+    "supervised_training_governance":  {
+                                           "eligible_training_example_rule":  "training example realized_endpoint_date must be on or before validation origin_date",
+                                           "validation_product_excluded_from_pooled_training":  true,
+                                           "purpose":  "provide product-level holdout and prevent same-product leakage in pooled/peer models",
+                                           "minimum_training_rows":  20,
+                                           "insufficient_training_rows_action":  "SKIP_MODEL_FOLD_WITH_EXPLICIT_REASON",
+                                           "skipped_fold_is_product_exclusion":  false
+                                       },
+    "base_model_families":  {
+                                "LAST_VALUE":  {
+                                                   "class":  "NAIVE_BASELINE",
+                                                   "minimum_product_history_observations":  1,
+                                                   "prediction":  "origin_price",
+                                                   "uses_target_transformation_for_fitting":  false,
+                                                   "uses_feature_variant_for_fitting":  false
+                                               },
+                                "DRIFT":  {
+                                              "class":  "PRODUCT_TIME_SERIES",
+                                              "minimum_product_history_observations":  2,
+                                              "fit":  "OLS raw price on elapsed calendar days",
+                                              "forecast":  "origin_date plus requested horizon",
+                                              "floor_price_at_zero":  true,
+                                              "uses_target_transformation_for_fitting":  false,
+                                              "uses_feature_variant_for_fitting":  false
+                                          },
+                                "LOG_DRIFT":  {
+                                                  "class":  "PRODUCT_TIME_SERIES",
+                                                  "minimum_product_history_observations":  2,
+                                                  "fit":  "OLS log price on elapsed calendar days",
+                                                  "forecast":  "exponentiated log-price forecast",
+                                                  "uses_target_transformation_for_fitting":  false,
+                                                  "uses_feature_variant_for_fitting":  false
+                                              },
+                                "ROBUST_TREND":  {
+                                                     "class":  "PRODUCT_TIME_SERIES",
+                                                     "minimum_product_history_observations":  3,
+                                                     "fit":  "median pairwise Theil-Sen-style slope of log price over calendar days",
+                                                     "forecast":  "median intercept plus robust log-price slope",
+                                                     "uses_target_transformation_for_fitting":  false,
+                                                     "uses_feature_variant_for_fitting":  false
+                                                 },
+                                "EXPONENTIAL_SMOOTHING":  {
+                                                              "class":  "PRODUCT_TIME_SERIES",
+                                                              "minimum_product_history_observations":  3,
+                                                              "alpha":  0.35,
+                                                              "fit":  "exponentially weighted observed interval log-return drift",
+                                                              "forecast":  "origin price compounded using weighted daily log-return drift",
+                                                              "uses_target_transformation_for_fitting":  false,
+                                                              "uses_feature_variant_for_fitting":  false
+                                                          },
+                                "RIDGE_REGRESSION":  {
+                                                         "class":  "POOLED_SUPERVISED",
+                                                         "implementation":  "sklearn Pipeline(StandardScaler,Ridge)",
+                                                         "alpha":  1,
+                                                         "fit_intercept":  true,
+                                                         "product_holdout":  true
+                                                     },
+                                "HUBER_REGRESSION":  {
+                                                         "class":  "POOLED_SUPERVISED_ROBUST",
+                                                         "implementation":  "sklearn Pipeline(StandardScaler,HuberRegressor)",
+                                                         "epsilon":  1.35,
+                                                         "alpha":  0.0001,
+                                                         "max_iter":  1000,
+                                                         "product_holdout":  true
+                                                     },
+                                "RANDOM_FOREST":  {
+                                                      "class":  "POOLED_NONLINEAR",
+                                                      "implementation":  "sklearn RandomForestRegressor",
+                                                      "n_estimators":  500,
+                                                      "max_depth":  6,
+                                                      "min_samples_leaf":  5,
+                                                      "max_features":  1,
+                                                      "random_state":  20260809,
+                                                      "n_jobs":  -1,
+                                                      "product_holdout":  true
+                                                  },
+                                "GRADIENT_BOOSTING":  {
+                                                          "class":  "POOLED_NONLINEAR",
+                                                          "implementation":  "sklearn GradientBoostingRegressor",
+                                                          "n_estimators":  250,
+                                                          "learning_rate":  0.03,
+                                                          "max_depth":  2,
+                                                          "min_samples_leaf":  5,
+                                                          "random_state":  20260809,
+                                                          "product_holdout":  true
+                                                      },
+                                "PEER_MEDIAN_RETURN":  {
+                                                           "class":  "COMPARABLE_TRANSFER",
+                                                           "peer_training_rule":  "same horizon; endpoint realized on/before origin; validation product excluded",
+                                                           "statistic":  "median transformed target",
+                                                           "minimum_peers":  5,
+                                                           "product_holdout":  true
+                                                       },
+                                "PEER_WEIGHTED_RETURN":  {
+                                                             "class":  "COMPARABLE_TRANSFER",
+                                                             "peer_training_rule":  "same horizon; endpoint realized on/before origin; validation product excluded",
+                                                             "neighbor_count":  15,
+                                                             "minimum_peers":  5,
+                                                             "distance":  "Euclidean distance after robust feature standardization",
+                                                             "weight":  "1 / (1 + distance)",
+                                                             "product_holdout":  true
+                                                         }
+                            },
+    "deferred_model_families":  {
+                                    "ROUTE_ENSEMBLE":  {
+                                                           "status":  "DEFER_UNTIL_BASE_OOS_PREDICTIONS_EXIST",
+                                                           "reason":  "ensemble must consume only genuine component OOS predictions"
+                                                       },
+                                    "GLOBAL_ENSEMBLE":  {
+                                                            "status":  "DEFER_UNTIL_BASE_OOS_PREDICTIONS_EXIST",
+                                                            "reason":  "ensemble weighting must be estimated from component OOS performance only"
+                                                        }
+                                },
+    "execution_accounting":  {
+                                 "theoretical_direct_oos_cells":  468,
+                                 "base_family_count":  11,
+                                 "deferred_ensemble_family_count":  2,
+                                 "base_matrix_cells":  396,
+                                 "deferred_ensemble_cells":  72,
+                                 "identity":  "396 base cells plus 72 ensemble cells equals the 468 Stage15U direct-OOS cells"
+                             },
+    "baseline_dimension_governance":  {
+                                          "rule":  "Time-series baselines that do not consume feature_variant or target_transformation may produce semantically identical predictions across those dimensions.",
+                                          "duplicate_prediction_rows_must_be_identifiable":  true,
+                                          "duplicate_baseline_cells_may_be_silently_counted_as_independent_models":  false,
+                                          "winner_selection_must_account_for_semantic_duplicate_predictors":  true
+                                      },
+    "required_base_run_outputs":  [
+                                      "BASE_OOS_RUN_MANIFEST",
+                                      "BASE_OOS_PREDICTION_LEDGER",
+                                      "BASE_MODEL_VARIANT_SCORECARD",
+                                      "BASE_HORIZON_SCORECARD",
+                                      "BASE_PRODUCT_OOS_ERROR_LEDGER",
+                                      "BASE_PRODUCT_HOLDOUT_LEDGER",
+                                      "BASE_MODEL_STABILITY_LEDGER",
+                                      "BASE_SKIPPED_FOLD_LEDGER"
+                                  ],
+    "required_metrics":  [
+                             "SMAPE",
+                             "MAE",
+                             "RMSE",
+                             "MEDIAN_APE",
+                             "BIAS",
+                             "DIRECTIONAL_ACCURACY",
+                             "DOWNSIDE_ERROR",
+                             "RANK_CORRELATION"
+                         ],
+    "authorization":  {
+                          "specification_certification":  true,
+                          "base_direct_oos_execution_next_stage":  true,
+                          "ensemble_execution":  false,
+                          "persistent_model_treatment":  false,
+                          "persistent_exclusion":  false,
+                          "production_model_selection":  false,
+                          "monte_carlo_execution":  false,
+                          "forecast_execution":  false,
+                          "ranking_execution":  false,
+                          "purchase_analysis":  false
+                      },
+    "authorized_next_stage":  "RUN_PRECOLLECTOR_BASE_DIRECT_OOS_TOURNAMENT"
+}
