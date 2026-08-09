@@ -1,0 +1,76 @@
+{
+  "contract_id": "precollector_monte_carlo_purchase_ranking_v1",
+  "contract_version": "1.0.0",
+  "starting_governed_head": "7274a1c1a2dc83b4e4c40c39c11e29060b23cff0",
+  "governed_lane": "precollector_sealed_booster_boxes_and_displays",
+  "canonical_products": 131,
+  "production_forecast_binding": {
+    "package": "MTG_PreCollector_Final_Model_Forecast_Scenario_v1_2_20260809_103138.zip",
+    "sha256": "20669117bf5545c0ef8947719e41e9d60380fb7d7b1b4a2e950337224be27a61",
+    "direct_365_forecast_products": 95,
+    "governed_forecast_gap_products": 26,
+    "canonical_without_current_price_authority": 10,
+    "persistent_product_exclusions": 0
+  },
+  "monte_carlo": {
+    "paths_per_product_per_horizon": 10000,
+    "random_seed": 20260809,
+    "horizons_years": [3, 5],
+    "residual_source": "CERTIFIED_365_DAY_OOS_RESIDUALS",
+    "residual_observation_count": 516,
+    "residual_sampling_method": "EMPIRICAL_ANNUAL_BLOCK_BOOTSTRAP_WITH_REPLACEMENT",
+    "gaussian_noise_substitution_allowed": false,
+    "annual_log_return_anchor": "LOG_CERTIFIED_365_FORECAST_PRICE_DIVIDED_BY_CURRENT_PRICE",
+    "path_structure": "ANNUAL_COMPOUNDED",
+    "three_year_direct_backtest": false,
+    "five_year_direct_backtest": false,
+    "three_year_label": "THREE_YEAR_SCENARIO_NOT_DIRECTLY_BACKTESTED",
+    "five_year_label": "FIVE_YEAR_SCENARIO_NOT_DIRECTLY_BACKTESTED"
+  },
+  "ranking": {
+    "model_ranking_primary_metric": "MEDIAN_CAGR",
+    "purchase_score_components": [
+      "MEDIAN_CAGR_PERCENTILE",
+      "PROBABILITY_POSITIVE_RETURN",
+      "DOWNSIDE_CVAR10_PERCENTILE",
+      "EVIDENCE_QUALITY_SCORE",
+      "LIQUIDITY_SCORE"
+    ],
+    "purchase_score_component_weights": {
+      "median_cagr_percentile": 0.20,
+      "probability_positive_return": 0.20,
+      "downside_cvar10_percentile": 0.20,
+      "evidence_quality_score": 0.20,
+      "liquidity_score": 0.20
+    },
+    "ranking_weight_method": "PRECOMMITTED_EQUAL_WEIGHT_DECISION_LAYER",
+    "ranking_score_is_predictive_model": false,
+    "3_year_weight_in_combined_purchase_rank": 0.50,
+    "5_year_weight_in_combined_purchase_rank": 0.50,
+    "investment_tiers": "WITHIN_RANKED_UNIVERSE_QUARTILES",
+    "unforecastable_products_may_receive_synthetic_rank": false
+  },
+  "evidence": {
+    "empirical_diagnostics_package": "MTG_PreCollector_Empirical_Eligibility_Diagnostics_v1_20260808_152835.zip",
+    "availability_package": "MTG_PreCollector_Availability_Authority_v1_20260808_152442.zip",
+    "accepted_listing_count_used": true,
+    "unique_seller_count_used": true,
+    "history_observation_count_used": true,
+    "evidence_domain_count_used": true,
+    "source_disagreement_used_when_numeric_field_available": true,
+    "absence_of_source_disagreement_numeric_field_causes_failure": false
+  },
+  "scope_controls": {
+    "sealed_cases_are_targets": false,
+    "case_price_division_allowed": false,
+    "synthetic_box_price_from_case_allowed": false,
+    "secret_lair_work_authorized": false
+  },
+  "authorization_after_success": {
+    "monte_carlo_certified": true,
+    "uncertainty_certified": true,
+    "investment_ranking_certified": true,
+    "purchase_analysis_certified": true,
+    "secret_lair_work_authorized": false
+  }
+}
