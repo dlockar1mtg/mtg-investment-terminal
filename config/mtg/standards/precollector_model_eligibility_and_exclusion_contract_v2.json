@@ -1,0 +1,124 @@
+{
+    "contract_id":  "precollector_model_eligibility_and_exclusion_contract_v2",
+    "contract_version":  "2.0.0",
+    "governed_lane":  "precollector_sealed_booster_boxes_and_displays",
+    "governance_authority_path":  "config/mtg/governance/precollector_model_eligibility_owner_decision_v2.json",
+    "supersedes_scope_binding_of":  "config/mtg/standards/precollector_model_eligibility_and_exclusion_contract_v1.json",
+    "canonical_universe_identity_sha256":  "d540be20ff26709b8e004e18ff16a11a05f50a1182777dcfd86a1821f62b7ac2",
+    "canonical_product_count":  131,
+    "purpose":  "Require empirical, model-specific eligibility and exclusion diagnostics while preserving every member of the corrected 131-product canonical universe.",
+    "prohibited_shortcuts":  {
+                                 "fixed_release_year_cutoff":  true,
+                                 "fixed_product_age_cutoff":  true,
+                                 "fixed_vintage_bucket_exclusion_without_empirical_support":  true,
+                                 "exclude_only_because_product_is_expensive":  true,
+                                 "exclude_only_because_product_is_old":  true,
+                                 "exclude_only_because_product_is_scarce":  true,
+                                 "exclude_only_because_one_evidence_domain_is_missing":  true,
+                                 "exclude_only_because_removal_improves_selected_metric":  true,
+                                 "silent_training_row_deletion":  true,
+                                 "silent_canonical_universe_mutation":  true
+                             },
+    "required_product_state_fields":  [
+                                          "canonical_product_id",
+                                          "canonical_universe_member",
+                                          "model_identifier",
+                                          "forecast_horizon",
+                                          "model_eligibility_status",
+                                          "model_eligibility_reason_code",
+                                          "diagnostic_evidence_reference",
+                                          "owner_review_status"
+                                      ],
+    "allowed_model_treatment_dispositions":  [
+                                                 "MODEL_CORE",
+                                                 "MODEL_ELIGIBLE",
+                                                 "MODEL_ELIGIBLE_DOWNWEIGHTED",
+                                                 "HOLDOUT_DIAGNOSTIC_ONLY",
+                                                 "MODEL_EXCLUDE_DATA_COVERAGE",
+                                                 "MODEL_EXCLUDE_LIQUIDITY_REGIME",
+                                                 "MODEL_EXCLUDE_PRODUCT_STRUCTURE",
+                                                 "MODEL_EXCLUDE_STATISTICAL_INFLUENCE",
+                                                 "MODEL_EXCLUDE_EMPIRICAL_REGIME_DIFFERENCE",
+                                                 "MODEL_EXCLUDE_OTHER_REVIEWED"
+                                             ],
+    "required_empirical_diagnostics":  {
+                                           "price_history":  [
+                                                                 "coverage",
+                                                                 "continuity",
+                                                                 "staleness",
+                                                                 "path stability"
+                                                             ],
+                                           "availability_and_liquidity":  [
+                                                                              "accepted listing depth",
+                                                                              "seller depth",
+                                                                              "price dispersion",
+                                                                              "availability missingness"
+                                                                          ],
+                                           "source_disagreement":  [
+                                                                       "tcgcsv versus ebay reference median",
+                                                                       "absolute disagreement",
+                                                                       "percentage disagreement"
+                                                                   ],
+                                           "model_influence":  [
+                                                                   "leverage or analogous model-family influence",
+                                                                   "residual extremity",
+                                                                   "prediction sensitivity",
+                                                                   "parameter sensitivity"
+                                                               ],
+                                           "out_of_sample_validation":  [
+                                                                            "fold or window performance",
+                                                                            "product error contribution",
+                                                                            "required horizon stability"
+                                                                        ],
+                                           "cross_model_robustness":  [
+                                                                          "persistent treatment should not depend solely on one candidate family where multiple governed families are practical"
+                                                                      ]
+                                       },
+    "decision_rules":  {
+                           "all_canonical_products_begin_without_exclusion":  true,
+                           "model_specific_treatment_allowed":  true,
+                           "horizon_specific_treatment_allowed":  true,
+                           "downweighting_requires_evidence":  true,
+                           "holdout_only_requires_evidence":  true,
+                           "persistent_exclusion_requires_owner_review":  true,
+                           "training_exclusion_changes_canonical_membership":  false,
+                           "training_exclusion_automatically_blocks_prediction":  false,
+                           "training_exclusion_automatically_blocks_ranking":  false,
+                           "prediction_requires_separate_model_applicability_certification":  true,
+                           "ranking_requires_separate_downstream_authorization":  true
+                       },
+    "required_sensitivity_outputs":  [
+                                         "full_sample_scorecard",
+                                         "treated_sample_scorecard",
+                                         "product_influence_diagnostics",
+                                         "out_of_sample_product_error_ledger",
+                                         "model_stability_evidence",
+                                         "exclusion_sensitivity_evidence",
+                                         "eligibility_decision_ledger",
+                                         "excluded_or_downweighted_product_ledger",
+                                         "horizon_specific_applicability_summary",
+                                         "canonical_universe_reconciliation_check"
+                                     ],
+    "certification_invariants":  {
+                                     "canonical_product_count_must_remain":  131,
+                                     "canonical_identity_hash_must_match":  "d540be20ff26709b8e004e18ff16a11a05f50a1182777dcfd86a1821f62b7ac2",
+                                     "every_canonical_product_must_have_explicit_model_treatment_before_execution_gate":  true,
+                                     "every_exclusion_must_have_reason_code":  true,
+                                     "every_exclusion_must_have_diagnostic_evidence":  true,
+                                     "persistent_exclusion_requires_owner_review":  true,
+                                     "no_exclusion_may_be_based_only_on_age":  true,
+                                     "no_exclusion_may_be_based_only_on_release_year":  true,
+                                     "no_exclusion_may_be_based_only_on_price_level":  true,
+                                     "no_silent_row_drops":  true
+                                 },
+    "authorization":  {
+                          "tournament_design_authorized":  true,
+                          "tournament_execution_authorized":  false,
+                          "model_selection_execution_authorized":  false,
+                          "forecast_execution_authorized":  false,
+                          "monte_carlo_execution_authorized":  false,
+                          "ranking_execution_authorized":  false,
+                          "purchase_analysis_authorized":  false
+                      },
+    "next_stage_if_certified":  "DESIGN_PRECOLLECTOR_MODEL_VARIANT_TOURNAMENT_AND_OOS_DIAGNOSTICS"
+}

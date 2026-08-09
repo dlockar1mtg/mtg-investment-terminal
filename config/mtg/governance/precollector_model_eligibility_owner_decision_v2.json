@@ -1,0 +1,92 @@
+{
+    "decision_id":  "precollector_model_eligibility_owner_decision_v2",
+    "decision_version":  "2.0.0",
+    "status":  "OWNER_GOVERNANCE_REBOUND_TO_CERTIFIED_CORRECTED_SCOPE",
+    "approved_scope_basis":  "PRECOLLECTOR_CANONICAL_UNIVERSE_SCOPE_CORRECTION_V2",
+    "operating_timezone":  "America/Chicago",
+    "repository":  "dlockar1mtg/mtg-investment-terminal",
+    "governed_lane":  "precollector_sealed_booster_boxes_and_displays",
+    "supersedes_scope_binding_of":  "config/mtg/governance/precollector_model_eligibility_owner_decision_v1.json",
+    "prior_binding":  {
+                          "canonical_product_count":  186,
+                          "status":  "SUPERSEDED_BY_CERTIFIED_PRODUCT_FORM_SCOPE_CORRECTION"
+                      },
+    "canonical_universe_boundary":  {
+                                        "canonical_product_count":  131,
+                                        "canonical_universe_identity_sha256":  "d540be20ff26709b8e004e18ff16a11a05f50a1182777dcfd86a1821f62b7ac2",
+                                        "canonical_package_name":  "MTG_PreCollector_Canonical_Universe_Scope_Correction_v2_20260808_144356.zip",
+                                        "canonical_package_sha256":  "4f4813320ad189701553d4227dcdf077e7de9ad1bd0c22032bfed00fac24bade",
+                                        "target_commercial_unit":  "INDIVIDUAL_SEALED_BOX_OR_DISPLAY",
+                                        "cases_are_canonical_targets":  false,
+                                        "automatic_scope_removal_from_model_diagnostics_allowed":  false,
+                                        "rule":  "Model eligibility decisions never alter canonical universe membership. The corrected 131-product universe is the sole current target authority."
+                                    },
+    "governing_principles":  {
+                                 "arbitrary_calendar_cutoffs_allowed":  false,
+                                 "arbitrary_age_cutoffs_allowed":  false,
+                                 "arbitrary_vintage_cutoffs_allowed":  false,
+                                 "default_rule":  "Do not exclude, down-weight, or isolate a canonical product solely because it is old, expensive, scarce, unusual, or inconvenient for a candidate model.",
+                                 "evidence_rule":  "Model-specific treatment must be justified by governed empirical evidence from history, coverage, availability, liquidity, source disagreement, statistical influence, stability, exclusion sensitivity, and out-of-sample performance.",
+                                 "anti_cherry_picking_rule":  "A product must not be persistently excluded merely because removal improves a preferred metric after results are observed.",
+                                 "cross_model_rule":  "Where practical, persistent exclusion or reduced-influence findings must be tested across multiple governed model families, folds/windows, and required horizons.",
+                                 "data_problem_vs_regime_problem_must_be_distinguished":  true
+                             },
+    "universe_roles":  {
+                           "canonical_universe":  "All 131 governed investment targets.",
+                           "model_eligible_universe":  "Model-specific empirical fitting population.",
+                           "prediction_universe":  "Canonical products for which selected-model applicability is later certified.",
+                           "ranking_universe":  "Separately authorized forecasted products entering governed investment ranking.",
+                           "separation_required":  true
+                       },
+    "permitted_model_treatments":  [
+                                       "MODEL_CORE",
+                                       "MODEL_ELIGIBLE",
+                                       "MODEL_ELIGIBLE_DOWNWEIGHTED",
+                                       "HOLDOUT_DIAGNOSTIC_ONLY",
+                                       "MODEL_EXCLUDE_DATA_COVERAGE",
+                                       "MODEL_EXCLUDE_LIQUIDITY_REGIME",
+                                       "MODEL_EXCLUDE_PRODUCT_STRUCTURE",
+                                       "MODEL_EXCLUDE_STATISTICAL_INFLUENCE",
+                                       "MODEL_EXCLUDE_EMPIRICAL_REGIME_DIFFERENCE",
+                                       "MODEL_EXCLUDE_OTHER_REVIEWED"
+                                   ],
+    "required_exclusion_controls":  {
+                                        "single_metric_improvement_is_sufficient":  false,
+                                        "age_alone_is_sufficient":  false,
+                                        "price_level_alone_is_sufficient":  false,
+                                        "scarcity_alone_is_sufficient":  false,
+                                        "missing_one_evidence_domain_alone_is_sufficient":  false,
+                                        "owner_review_required_for_persistent_exclusion":  true,
+                                        "reason_code_required":  true,
+                                        "diagnostic_evidence_required":  true,
+                                        "model_or_horizon_scope_required":  true,
+                                        "reinstatement_allowed":  true,
+                                        "excluded_products_remain_canonical":  true,
+                                        "training_exclusion_automatically_prohibits_prediction":  false,
+                                        "training_exclusion_automatically_prohibits_ranking":  false
+                                    },
+    "certified_evidence_state":  {
+                                     "canonical_products":  131,
+                                     "historical_coverage_products":  115,
+                                     "current_price_coverage_products":  121,
+                                     "availability_coverage_products":  111,
+                                     "all_three_evidence_domains_products":  103,
+                                     "two_domain_products":  16,
+                                     "one_domain_products":  6,
+                                     "zero_domain_products":  6,
+                                     "products_currently_excluded":  0,
+                                     "products_currently_assigned_model_treatment":  0
+                                 },
+    "governance_controls":  {
+                                "canonical_universe_change_authorized":  false,
+                                "tournament_design_authorized":  true,
+                                "model_execution_authorized":  false,
+                                "forecast_execution_authorized":  false,
+                                "ranking_execution_authorized":  false,
+                                "purchase_analysis_authorized":  false,
+                                "purchase_recommendation_authorized":  false,
+                                "collector_reopening_authorized":  false,
+                                "secret_lair_work_authorized":  false
+                            },
+    "next_required_stage":  "DESIGN_PRECOLLECTOR_MODEL_VARIANT_TOURNAMENT_AND_OOS_DIAGNOSTICS"
+}

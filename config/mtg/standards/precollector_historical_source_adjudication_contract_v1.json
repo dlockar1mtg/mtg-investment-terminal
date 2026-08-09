@@ -1,0 +1,25 @@
+{
+  "contract_id": "precollector_historical_source_adjudication_v1",
+  "contract_version": "1.0.0",
+  "expected_product_count": 124,
+  "expected_candidate_source_count": 2,
+  "canonical_universe_sha256": "db5eee09b3fa4d02766734aab6c5f65d324bb49c77744f82ecd95f6f7ea7395e",
+  "minimum_rows_per_covered_product": 2,
+  "minimum_distinct_observation_dates": 2,
+  "accepted_identity_columns": ["canonical_product_id", "tcgplayer_product_id", "product_id", "productId"],
+  "accepted_date_columns": ["observation_date", "date", "timestamp", "collected_at", "source_timestamp", "as_of_date"],
+  "accepted_price_columns": ["market_price", "price", "current_price", "low_price", "mid_price"],
+  "outputs": {
+    "source_adjudication_csv": "precollector_historical_source_adjudication_v1.csv",
+    "row_level_audit_csv": "precollector_historical_row_level_audit_v1.csv",
+    "product_coverage_csv": "precollector_historical_adjudicated_product_coverage_v1.csv",
+    "summary_json": "precollector_historical_source_adjudication_summary_v1.json",
+    "manifest_json": "precollector_historical_source_adjudication_manifest_v1.json"
+  },
+  "next_stage_if_certified": "PRECOLLECTOR_CANONICAL_HISTORICAL_PRICE_BUILD",
+  "historical_append_authorized": false,
+  "forecast_generation_authorized": false,
+  "ranking_execution_authorized": false,
+  "purchase_recommendation_authorized": false,
+  "automatic_purchase_execution_authorized": false
+}

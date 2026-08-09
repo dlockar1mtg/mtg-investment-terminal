@@ -1,0 +1,24 @@
+{
+  "contract_id": "precollector_forecast_control_point_owner_review_v1",
+  "contract_version": "1.0.0",
+  "governed_lane": "precollector_booster_boxes",
+  "required_validation_package": {
+    "package_name": "MTG_PreCollector_Forecast_Control_Point_Validation_v1.zip",
+    "sha256": "f286938d3996bd2b167af138d9150cdf6ee6f5f7537df91287138b63d6006958"
+  },
+  "review_controls": {
+    "read_only": true,
+    "identify_each_critical_blocker": true,
+    "classify_blocker_repairability": true,
+    "authorize_forecast_execution": false,
+    "authorize_ranking_execution": false,
+    "authorize_purchase_analysis": false
+  },
+  "required_outputs": [
+    "precollector_forecast_control_point_owner_review_blockers.csv",
+    "precollector_forecast_control_point_owner_review_disposition.csv",
+    "precollector_forecast_control_point_owner_review_summary.json",
+    "precollector_forecast_control_point_owner_review_manifest.json"
+  ],
+  "next_stage_if_certified": "REPAIR_CRITICAL_FORECAST_CONTROL_POINT_BLOCKER"
+}

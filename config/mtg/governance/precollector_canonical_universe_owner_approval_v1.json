@@ -1,0 +1,21 @@
+{
+  "approval_id": "precollector_canonical_universe_owner_approval_v1",
+  "approval_version": "1.0.0",
+  "owner": "Devon Lockard",
+  "decision": "APPROVE_CERTIFIED_V7_PRECOLLECTOR_UNIVERSE_FOR_CANONICAL_FREEZE",
+  "decision_date": "2026-08-03",
+  "approved_product_count": 124,
+  "approved_fresh_exclusion_count": 80,
+  "certified_v7_review_zip_sha256": "1481a55307febda93375954d5fd1eb7a59f33dd53b8ed197a90d19016b691833",
+  "approval_basis": "Owner instructed the governed workflow to proceed after certification of the zero-review v7 universe.",
+  "controls": {
+    "scope_changes_allowed_during_freeze": false,
+    "product_additions_allowed_during_freeze": false,
+    "product_removals_allowed_during_freeze": false,
+    "release_date_changes_allowed_during_freeze": false,
+    "forecast_generation_authorized": false,
+    "ranking_execution_authorized": false,
+    "purchase_recommendation_authorized": false,
+    "automatic_purchase_execution_authorized": false
+  }
+}

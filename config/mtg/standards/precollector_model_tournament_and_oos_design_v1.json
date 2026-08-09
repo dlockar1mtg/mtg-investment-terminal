@@ -1,0 +1,310 @@
+{
+    "contract_id":  "precollector_model_tournament_and_oos_design_v1",
+    "contract_version":  "1.0.0",
+    "governed_lane":  "precollector_sealed_booster_boxes_and_displays",
+    "canonical_binding":  {
+                              "product_count":  131,
+                              "identity_sha256":  "d540be20ff26709b8e004e18ff16a11a05f50a1182777dcfd86a1821f62b7ac2",
+                              "canonical_membership_changed_by_tournament":  false
+                          },
+    "upstream_governance":  {
+                                "owner_decision":  "config/mtg/governance/precollector_model_eligibility_owner_decision_v2.json",
+                                "eligibility_contract":  "config/mtg/standards/precollector_model_eligibility_and_exclusion_contract_v2.json",
+                                "eligibility_gate":  "config/mtg/standards/precollector_model_selection_rebinding_and_eligibility_gate_contract_v2.json",
+                                "empirical_diagnostics_package":  "MTG_PreCollector_Empirical_Eligibility_Diagnostics_v1_20260808_152835.zip",
+                                "empirical_diagnostics_package_sha256":  "f5ac38765c0c7243cc0d6275a6fd1a9063e492ea017311ee0dface1ce279a67d",
+                                "eligibility_governance_package":  "MTG_PreCollector_Model_Eligibility_Governance_Rebinding_v2_20260808_153245.zip",
+                                "eligibility_governance_package_sha256":  "40afc0612dbe7a139e78b244397a1630abce7cceaa9d1203da2686fcdfe0ac2b"
+                            },
+    "empirical_population_state":  {
+                                       "canonical_products":  131,
+                                       "all_three_evidence_domains":  103,
+                                       "two_evidence_domains":  16,
+                                       "one_evidence_domain":  6,
+                                       "zero_evidence_domains":  6,
+                                       "products_pre_excluded":  0,
+                                       "products_pre_downweighted":  0,
+                                       "training_population_preselected":  false
+                                   },
+    "forecast_horizons":  {
+                              "diagnostic_support_days":  [
+                                                              90,
+                                                              180
+                                                          ],
+                              "governed_investment_horizons_days":  [
+                                                                        365,
+                                                                        1095,
+                                                                        1825
+                                                                    ],
+                              "primary_investment_horizon_days":  1095,
+                              "horizon_roles":  {
+                                                    "90":  "SHORT_HORIZON_DIAGNOSTIC_SUPPORT",
+                                                    "180":  "MEDIUM_HORIZON_DIAGNOSTIC_SUPPORT",
+                                                    "365":  "ONE_YEAR_INVESTMENT_FORECAST",
+                                                    "1095":  "PRIMARY_THREE_YEAR_INVESTMENT_FORECAST",
+                                                    "1825":  "FIVE_YEAR_INVESTMENT_SCENARIO_OR_FORECAST_WHEN_VALIDATED"
+                                                },
+                              "direct_validation_requires_realized_endpoint":  true,
+                              "unsupported_horizon_is_product_exclusion":  false,
+                              "unsupported_horizon_is_canonical_exclusion":  false,
+                              "three_year_without_realized_endpoint_label":  "THREE_YEAR_SCENARIO_NOT_DIRECTLY_BACKTESTED",
+                              "five_year_without_realized_endpoint_label":  "FIVE_YEAR_SCENARIO_NOT_DIRECTLY_BACKTESTED"
+                          },
+    "candidate_model_families":  [
+                                     "LAST_VALUE",
+                                     "DRIFT",
+                                     "LOG_DRIFT",
+                                     "ROBUST_TREND",
+                                     "EXPONENTIAL_SMOOTHING",
+                                     "RIDGE_REGRESSION",
+                                     "HUBER_REGRESSION",
+                                     "RANDOM_FOREST",
+                                     "GRADIENT_BOOSTING",
+                                     "PEER_MEDIAN_RETURN",
+                                     "PEER_WEIGHTED_RETURN",
+                                     "ROUTE_ENSEMBLE",
+                                     "GLOBAL_ENSEMBLE"
+                                 ],
+    "family_roles":  {
+                         "LAST_VALUE":  "NAIVE_REFERENCE_BASELINE",
+                         "DRIFT":  "LINEAR_PRICE_PATH_BASELINE",
+                         "LOG_DRIFT":  "COMPOUNDED_RETURN_BASELINE",
+                         "ROBUST_TREND":  "OUTLIER_RESISTANT_PRICE_PATH_MODEL",
+                         "EXPONENTIAL_SMOOTHING":  "RECENCY_WEIGHTED_TIME_SERIES_MODEL",
+                         "RIDGE_REGRESSION":  "REGULARIZED_CROSS_PRODUCT_FEATURE_MODEL",
+                         "HUBER_REGRESSION":  "ROBUST_CROSS_PRODUCT_FEATURE_MODEL",
+                         "RANDOM_FOREST":  "NONLINEAR_TREE_ENSEMBLE_DIAGNOSTIC",
+                         "GRADIENT_BOOSTING":  "NONLINEAR_BOOSTED_TREE_DIAGNOSTIC",
+                         "PEER_MEDIAN_RETURN":  "ROBUST_COMPARABLE_TRANSFER_MODEL",
+                         "PEER_WEIGHTED_RETURN":  "SIMILARITY_WEIGHTED_COMPARABLE_TRANSFER_MODEL",
+                         "ROUTE_ENSEMBLE":  "EVIDENCE_ROUTE_SPECIFIC_ENSEMBLE",
+                         "GLOBAL_ENSEMBLE":  "CROSS_FAMILY_ENSEMBLE"
+                     },
+    "governed_feature_variants":  [
+                                      "PRICE_ONLY",
+                                      "PRICE_PLUS_AGE",
+                                      "PRICE_PLUS_PATH_STABILITY",
+                                      "PRICE_PLUS_LIQUIDITY",
+                                      "PRICE_PLUS_SOURCE_DISAGREEMENT",
+                                      "DATA_QUALITY_WEIGHTED",
+                                      "ROBUST_FULL_EVIDENCE"
+                                  ],
+    "feature_governance":  {
+                               "release_age_may_be_predictor":  true,
+                               "release_age_may_be_exclusion_rule":  false,
+                               "liquidity_may_be_predictor":  true,
+                               "liquidity_may_be_fixed_exclusion_threshold":  false,
+                               "evidence_missingness_may_be_predictor":  true,
+                               "evidence_missingness_alone_may_trigger_persistent_exclusion":  false,
+                               "ebay_price_used_as_target_authority":  false,
+                               "tcgcsv_current_price_remains_price_authority":  true
+                           },
+    "target_transformations_to_compare":  [
+                                              "RAW_PRICE_CHANGE",
+                                              "LOG_PRICE_CHANGE",
+                                              "RETURN",
+                                              "ANNUALIZED_RETURN_WHERE_DEFINED"
+                                          ],
+    "target_governance":  {
+                              "nominal_price_level_alone_may_drive_exclusion":  false,
+                              "transformations_compared_out_of_sample":  true,
+                              "selected_transformation_must_be_horizon_specific_if_needed":  true
+                          },
+    "validation_design":  {
+                              "temporal_order_required":  true,
+                              "anti_leakage_required":  true,
+                              "rolling_origin_required":  true,
+                              "expanding_window_allowed":  true,
+                              "rolling_window_allowed_as_sensitivity":  true,
+                              "future_data_in_training_prohibited":  true,
+                              "product_level_holdout_required":  true,
+                              "leave_one_product_out_when_computationally_practical":  true,
+                              "grouped_product_holdout_allowed":  true,
+                              "horizon_specific_evaluation_required":  true,
+                              "model_family_specific_evaluation_required":  true,
+                              "no_random_time_shuffling":  true,
+                              "no_single_train_test_split_as_sole_evidence":  true
+                          },
+    "fold_construction":  {
+                              "rule":  "Create every temporally valid rolling-origin fold supported by certified history for each model/horizon; do not manufacture folds to meet a fixed count.",
+                              "minimum_fold_count_predeclared":  false,
+                              "insufficient_realized_folds_action":  "LABEL_HORIZON_INSUFFICIENT_FOR_DIRECT_VALIDATION",
+                              "insufficient_realized_folds_is_product_exclusion":  false,
+                              "fold_dates_must_be_persisted":  true,
+                              "training_and_validation_product_ids_must_be_persisted":  true
+                          },
+    "evaluation_metrics":  {
+                               "primary":  [
+                                               "SMAPE",
+                                               "MAE"
+                                           ],
+                               "secondary":  [
+                                                 "RMSE",
+                                                 "MEDIAN_APE",
+                                                 "BIAS",
+                                                 "DIRECTIONAL_ACCURACY",
+                                                 "DOWNSIDE_ERROR",
+                                                 "RANK_CORRELATION"
+                                             ],
+                               "uncertainty":  [
+                                                   "INTERVAL_COVERAGE",
+                                                   "INTERVAL_WIDTH",
+                                                   "DOWNSIDE_INTERVAL_ERROR"
+                                               ],
+                               "stability":  [
+                                                 "FOLD_METRIC_VARIANCE",
+                                                 "HOLDOUT_METRIC_VARIANCE",
+                                                 "PARAMETER_OR_FEATURE_IMPORTANCE_STABILITY",
+                                                 "PREDICTION_STABILITY"
+                                             ],
+                               "no_single_metric_may_authorize_persistent_exclusion":  true
+                           },
+    "winner_selection":  {
+                             "selection_grain":  [
+                                                     "MODEL_FAMILY",
+                                                     "FEATURE_VARIANT",
+                                                     "TARGET_TRANSFORMATION",
+                                                     "FORECAST_HORIZON"
+                                                 ],
+                             "no_single_global_winner_required":  true,
+                             "primary_metrics":  [
+                                                     "SMAPE",
+                                                     "MAE"
+                                                 ],
+                             "tie_breakers":  [
+                                                  "LOWER_ABSOLUTE_BIAS",
+                                                  "HIGHER_DIRECTIONAL_ACCURACY",
+                                                  "BETTER_INTERVAL_COVERAGE",
+                                                  "LOWER_FOLD_VARIANCE",
+                                                  "LOWER_HOLDOUT_VARIANCE"
+                                              ],
+                             "complexity_tie_break":  "PREFER_SIMPLER_MODEL_WHEN_OOS_PERFORMANCE_IS_STATISTICALLY_OR_PRACTICALLY_INDISTINGUISHABLE",
+                             "stability_required":  true,
+                             "product_holdout_robustness_required":  true,
+                             "winner_cannot_be_selected_on_in_sample_fit":  true
+                         },
+    "required_model_dependent_diagnostics":  {
+                                                 "statistical_influence":  {
+                                                                               "required":  true,
+                                                                               "candidate_measures":  [
+                                                                                                          "LEAVE_ONE_PRODUCT_OUT_SCORE_DELTA",
+                                                                                                          "PREDICTION_DELTA_WHEN_ISOLATED",
+                                                                                                          "PARAMETER_DELTA_WHEN_ISOLATED",
+                                                                                                          "RESIDUAL_EXTREMITY",
+                                                                                                          "LEVERAGE_OR_FAMILY_ANALOG"
+                                                                                                      ]
+                                                                           },
+                                                 "out_of_sample_error_contribution":  {
+                                                                                          "required":  true,
+                                                                                          "product_level_error_ledger":  true,
+                                                                                          "horizon_specific":  true,
+                                                                                          "fold_specific":  true
+                                                                                      },
+                                                 "model_stability":  {
+                                                                         "required":  true,
+                                                                         "evaluate_across":  [
+                                                                                                 "ROLLING_ORIGIN_FOLDS",
+                                                                                                 "PRODUCT_HOLDOUTS",
+                                                                                                 "MODEL_FAMILIES",
+                                                                                                 "FEATURE_VARIANTS",
+                                                                                                 "TARGET_TRANSFORMATIONS",
+                                                                                                 "SUPPORTED_HORIZONS"
+                                                                                             ]
+                                                                     },
+                                                 "exclusion_sensitivity":  {
+                                                                               "required":  true,
+                                                                               "full_sample_baseline_required":  true,
+                                                                               "leave_one_product_out_required_where_model_supports":  true,
+                                                                               "candidate_treatment_comparison_required":  true,
+                                                                               "persistent_exclusion_cannot_be_justified_by_score_improvement_alone":  true
+                                                                           }
+                                             },
+    "treatment_experiment_design":  {
+                                        "baseline_population":  "ALL_EMPIRICALLY_USABLE_CANONICAL_OBSERVATIONS_FOR_MODEL_AND_HORIZON",
+                                        "product_dispositions_may_be_tested":  [
+                                                                                   "MODEL_CORE",
+                                                                                   "MODEL_ELIGIBLE",
+                                                                                   "MODEL_ELIGIBLE_DOWNWEIGHTED",
+                                                                                   "HOLDOUT_DIAGNOSTIC_ONLY",
+                                                                                   "MODEL_EXCLUDE_DATA_COVERAGE",
+                                                                                   "MODEL_EXCLUDE_LIQUIDITY_REGIME",
+                                                                                   "MODEL_EXCLUDE_PRODUCT_STRUCTURE",
+                                                                                   "MODEL_EXCLUDE_STATISTICAL_INFLUENCE",
+                                                                                   "MODEL_EXCLUDE_EMPIRICAL_REGIME_DIFFERENCE",
+                                                                                   "MODEL_EXCLUDE_OTHER_REVIEWED"
+                                                                               ],
+                                        "test_downweighting_before_persistent_exclusion_where_practical":  true,
+                                        "test_robust_model_before_persistent_exclusion_where_practical":  true,
+                                        "persistent_exclusion_requires_repeatable_multi_diagnostic_evidence":  true,
+                                        "persistent_exclusion_requires_owner_review":  true,
+                                        "training_exclusion_changes_canonical_membership":  false,
+                                        "training_exclusion_automatically_prohibits_prediction":  false
+                                    },
+    "required_tournament_outputs":  [
+                                        "TOURNAMENT_RUN_MANIFEST",
+                                        "TEMPORAL_FOLD_LEDGER",
+                                        "PRODUCT_HOLDOUT_LEDGER",
+                                        "MODEL_VARIANT_SCORECARD",
+                                        "HORIZON_SCORECARD",
+                                        "PRODUCT_LEVEL_OOS_ERROR_LEDGER",
+                                        "PRODUCT_INFLUENCE_DIAGNOSTICS",
+                                        "MODEL_STABILITY_LEDGER",
+                                        "EXCLUSION_SENSITIVITY_LEDGER",
+                                        "FULL_SAMPLE_VS_TREATED_SAMPLE_SCORECARD",
+                                        "MODEL_TREATMENT_PROPOSAL_LEDGER",
+                                        "HORIZON_APPLICABILITY_LEDGER",
+                                        "CANONICAL_UNIVERSE_RECONCILIATION"
+                                    ],
+    "required_product_treatment_proposal_fields":  [
+                                                       "canonical_product_id",
+                                                       "canonical_universe_member",
+                                                       "model_identifier",
+                                                       "forecast_horizon",
+                                                       "proposed_model_eligibility_status",
+                                                       "proposed_reason_code",
+                                                       "diagnostic_evidence_reference",
+                                                       "cross_model_support",
+                                                       "cross_fold_support",
+                                                       "exclusion_sensitivity_reference",
+                                                       "owner_review_required",
+                                                       "owner_review_status"
+                                                   ],
+    "long_horizon_governance":  {
+                                    "direct_three_year_backtest_required_to_claim_historical_validation":  true,
+                                    "direct_five_year_backtest_required_to_claim_historical_validation":  true,
+                                    "shorter_horizon_compounding_may_be_scenario_input":  true,
+                                    "comparable_transfer_may_be_scenario_input":  true,
+                                    "scenario_must_be_distinguished_from_validated_forecast":  true,
+                                    "uncertainty_must_widen_with_unsupported_horizon":  true
+                                },
+    "fail_closed_conditions":  [
+                                   "CANONICAL_IDENTITY_MISMATCH",
+                                   "CANONICAL_COUNT_MISMATCH",
+                                   "FUTURE_DATA_LEAKAGE",
+                                   "RANDOM_TIME_SPLIT_USED",
+                                   "MISSING_TEMPORAL_FOLD_LEDGER",
+                                   "MISSING_PRODUCT_HOLDOUT_EVIDENCE",
+                                   "MISSING_PRODUCT_LEVEL_OOS_ERROR",
+                                   "MISSING_STATISTICAL_INFLUENCE_DIAGNOSTICS",
+                                   "MISSING_MODEL_STABILITY_EVIDENCE",
+                                   "MISSING_EXCLUSION_SENSITIVITY",
+                                   "SINGLE_METRIC_PRODUCT_EXCLUSION",
+                                   "AGE_ONLY_PRODUCT_EXCLUSION",
+                                   "PRICE_LEVEL_ONLY_PRODUCT_EXCLUSION",
+                                   "UNSUPPORTED_LONG_HORIZON_MISLABELED_AS_VALIDATED",
+                                   "TOURNAMENT_RESULT_USED_FOR_PURCHASE_BEFORE_DOWNSTREAM_AUTHORIZATION"
+                               ],
+    "execution_authorization":  {
+                                    "tournament_design_certification":  true,
+                                    "tournament_execution":  false,
+                                    "model_execution":  false,
+                                    "treatment_assignment":  false,
+                                    "persistent_exclusion":  false,
+                                    "forecast_execution":  false,
+                                    "monte_carlo_execution":  false,
+                                    "ranking_execution":  false,
+                                    "purchase_analysis":  false,
+                                    "purchase_recommendations":  false
+                                },
+    "authorized_next_stage":  "BUILD_AND_CERTIFY_PRECOLLECTOR_TOURNAMENT_EXECUTION_GATE"
+}

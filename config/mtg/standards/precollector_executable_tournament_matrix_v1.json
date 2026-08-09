@@ -1,0 +1,79 @@
+{
+    "contract_id":  "precollector_executable_tournament_matrix_v1",
+    "contract_version":  "1.0.0",
+    "governed_lane":  "precollector_sealed_booster_boxes_and_displays",
+    "canonical_binding":  {
+                              "product_count":  131,
+                              "identity_sha256":  "d540be20ff26709b8e004e18ff16a11a05f50a1182777dcfd86a1821f62b7ac2"
+                          },
+    "modeling_dependency":  {
+                                "package":  "scikit-learn",
+                                "governed_version_range":  "\u003e=1.9.0,\u003c1.10.0",
+                                "required_estimators":  [
+                                                            "Ridge",
+                                                            "HuberRegressor",
+                                                            "RandomForestRegressor",
+                                                            "GradientBoostingRegressor"
+                                                        ]
+                            },
+    "theoretical_tournament":  {
+                                   "model_families":  13,
+                                   "feature_variants":  7,
+                                   "target_transformations":  4,
+                                   "horizons":  5,
+                                   "theoretical_combination_count":  1820
+                               },
+    "direct_oos_horizons_days":  [
+                                     90,
+                                     180,
+                                     365
+                                 ],
+    "unsupported_direct_oos_horizons_days":  [
+                                                 1095,
+                                                 1825
+                                             ],
+    "directly_backtestable_feature_variants":  [
+                                                   "PRICE_ONLY",
+                                                   "PRICE_PLUS_AGE",
+                                                   "PRICE_PLUS_PATH_STABILITY"
+                                               ],
+    "blocked_point_in_time_feature_variants":  [
+                                                   "PRICE_PLUS_LIQUIDITY",
+                                                   "PRICE_PLUS_SOURCE_DISAGREEMENT",
+                                                   "DATA_QUALITY_WEIGHTED",
+                                                   "ROBUST_FULL_EVIDENCE"
+                                               ],
+    "point_in_time_governance":  {
+                                     "current_liquidity_allowed_in_historical_folds":  false,
+                                     "current_source_disagreement_allowed_in_historical_folds":  false,
+                                     "path_features_training_window_only":  true,
+                                     "age_computed_at_fold_origin":  true,
+                                     "future_information_leakage_allowed":  false
+                                 },
+    "expected_matrix_counts":  {
+                                   "direct_oos_executable":  468,
+                                   "blocked_point_in_time_feature_evidence":  624,
+                                   "unsupported_long_horizon":  728,
+                                   "total":  1820
+                               },
+    "long_horizon_governance":  {
+                                    "three_year_direct_backtest_supported":  false,
+                                    "five_year_direct_backtest_supported":  false,
+                                    "three_year_scenario_allowed_later":  true,
+                                    "five_year_scenario_allowed_later":  true,
+                                    "scenario_may_be_labeled_historically_validated":  false
+                                },
+    "authorization":  {
+                          "executable_matrix_build":  true,
+                          "direct_oos_engine_implementation":  true,
+                          "direct_oos_model_fitting":  false,
+                          "unsupported_feature_backtest":  false,
+                          "long_horizon_direct_backtest":  false,
+                          "monte_carlo_execution":  false,
+                          "production_model_selection":  false,
+                          "forecast_execution":  false,
+                          "ranking_execution":  false,
+                          "purchase_analysis":  false
+                      },
+    "authorized_next_stage":  "IMPLEMENT_AND_RUN_PRECOLLECTOR_DIRECT_OOS_TOURNAMENT"
+}

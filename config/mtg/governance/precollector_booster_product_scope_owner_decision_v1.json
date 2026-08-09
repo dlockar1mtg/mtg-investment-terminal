@@ -1,0 +1,84 @@
+{
+  "decision_id": "precollector_booster_product_scope_owner_decision_v1",
+  "decision_version": "1.0.0",
+  "status": "OWNER_APPROVED_SCOPE_BASELINE",
+  "approved_on": "2026-08-02",
+  "operating_timezone": "America/Chicago",
+  "repository": "dlockar1mtg/mtg-investment-terminal",
+  "governed_lane": "precollector_booster_boxes",
+  "purpose": "Define the initial governed product universe before source collection, forecasting, ranking, or purchase authorization.",
+  "scope_basis": {
+    "calendar_cutoff_used": false,
+    "rule": "Determine eligibility product by product from booster format and product configuration rather than using a fixed pre-2019 cutoff.",
+    "collector_option_exclusion": "Exclude a booster-box product when that set or release has a Collector Booster option.",
+    "draft_booster_exclusion": "Exclude all Draft Booster boxes, including products that coexisted with early Collector Booster products.",
+    "play_booster_exclusion": "Exclude all Play Booster boxes."
+  },
+  "required_inclusion_conditions": {
+    "language": "English only",
+    "sealed_state": "Factory sealed",
+    "product_unit": "Complete sealed booster box",
+    "damage_state": "No damaged seals or materially damaged boxes",
+    "authentication_required": false,
+    "foreign_language_allowed": false,
+    "foreign_first_edition_printings_allowed": false
+  },
+  "included_product_families_when_all_conditions_are_met": [
+    "regular expansion booster boxes",
+    "Masters booster boxes",
+    "supplemental-set booster boxes",
+    "premium-set booster boxes",
+    "Un-set booster boxes",
+    "other complete factory-sealed booster boxes that are not Collector, Draft, or Play Booster products"
+  ],
+  "excluded_product_families": [
+    "Collector Booster boxes",
+    "Draft Booster boxes",
+    "Play Booster boxes",
+    "foreign-language booster boxes",
+    "foreign first-edition printings",
+    "loose booster packs",
+    "tournament packs",
+    "starter decks",
+    "theme decks",
+    "special sealed cases",
+    "damaged-seal boxes",
+    "materially damaged boxes",
+    "opened or partially opened products"
+  ],
+  "vintage_high_price_products": {
+    "examples": [
+      "Alpha",
+      "Beta",
+      "Unlimited",
+      "Revised",
+      "Fourth Edition"
+    ],
+    "initial_treatment": "Include when they otherwise satisfy the governed scope.",
+    "future_treatment": "They may be excluded through a documented owner decision if their price, liquidity, scarcity, or evidence profile materially distorts the model or comparison universe."
+  },
+  "identity_rules": {
+    "separate_assets_required_for": [
+      "set or release",
+      "edition or printing",
+      "booster-box configuration"
+    ],
+    "language_dimension": "English-only universe; foreign-language variants are excluded rather than separately governed.",
+    "authentication_dimension": "Authentication is not required and authenticated versus unauthenticated boxes are not separate governed asset classes at this stage.",
+    "condition_dimension": "Only intact, undamaged factory-sealed examples are eligible; damaged examples are excluded rather than modeled as separate classes."
+  },
+  "governance_controls": {
+    "forecast_generation_authorized": false,
+    "ranking_execution_authorized": false,
+    "purchase_recommendation_authorized": false,
+    "automatic_purchase_execution_authorized": false,
+    "next_required_stage": "Build and certify the candidate product-universe inventory against this scope decision.",
+    "change_control": "Any change to product formats, language, sealed-state rules, inclusion families, exclusion families, or identity treatment requires owner approval, a version change, and recertification."
+  },
+  "owner_decision_notes": [
+    "The category must not be defined solely as all products released before 2019.",
+    "The practical investment universe is complete sealed booster boxes without a Collector Booster option and excluding Draft and Play Booster products.",
+    "Supplemental products are acceptable when the governed asset is a full sealed booster box.",
+    "Expensive vintage products remain visible initially so evidence can determine whether they distort modeling; they are not presumed purchase candidates."
+  ]
+}

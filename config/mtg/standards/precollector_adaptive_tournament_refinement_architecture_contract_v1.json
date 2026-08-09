@@ -1,0 +1,157 @@
+{
+  "contract_id": "precollector_adaptive_tournament_refinement_architecture_v1",
+  "contract_version": "1.0.0",
+  "governing_snapshot_id": "collector-20260801T211201Z-7688afbd",
+  "required_round_one_package": {
+    "package_name": "MTG_PreCollector_Horizon_Tournament_Execution_From_Certified_Bundle_v1.zip",
+    "sha256": "0088ddd5f1a87c12eb720956c75605f821aafa6d2e495d2b4c291065080ec231"
+  },
+  "required_round_one_status": "PASS",
+  "expected_round_one_counts": {
+    "active_products": 79,
+    "horizons": 5,
+    "routes": 3,
+    "tournament_groups": 15,
+    "competitive_winners": 9,
+    "governed_fallbacks": 6,
+    "rolling_predictions": 9162,
+    "model_scorecards": 39,
+    "uncertainty_rows": 15
+  },
+  "required_round_one_members": [
+    "precollector_round_one_certified_input_lineage.csv",
+    "precollector_round_one_rolling_predictions.csv",
+    "precollector_round_one_model_scorecard.csv",
+    "precollector_round_one_preliminary_winner_registry.csv",
+    "precollector_round_one_uncertainty_evidence.csv",
+    "precollector_round_one_execution_summary.json",
+    "precollector_round_one_execution_manifest.json"
+  ],
+  "independent_refinement_per_horizon": true,
+  "independent_refinement_per_route": true,
+  "preserve_identical_round_one_folds": true,
+  "advancement": {
+    "competitive_group_scorecard_contenders": 3,
+    "competitive_group_preserve_round_one_winner": true,
+    "competitive_group_preserve_naive_baseline": true,
+    "fallback_group_include_all_round_one_models": true,
+    "fallback_group_preserve_governed_fallback": true,
+    "fallback_group_mode": "EVIDENCE_RECOVERY_CHALLENGE",
+    "no_forced_winner": true
+  },
+  "candidate_limits": {
+    "minimum_per_competitive_group": 24,
+    "minimum_per_fallback_group": 12,
+    "maximum_per_group": 180
+  },
+  "parameter_grids": {
+    "NAIVE_LAST_VALUE": {
+      "lookback_observations": [1]
+    },
+    "DRIFT": {
+      "lookback_observations": [6, 9, 12, 18, 24],
+      "recency_weight": [0.0, 0.25, 0.5, 0.75],
+      "drift_shrinkage": [0.0, 0.25, 0.5, 0.75]
+    },
+    "MEDIAN_LOG_DRIFT": {
+      "lookback_observations": [6, 9, 12, 18, 24],
+      "recency_weight": [0.0, 0.25, 0.5, 0.75],
+      "drift_shrinkage": [0.0, 0.25, 0.5, 0.75]
+    },
+    "ROBUST_LOG_LINEAR": {
+      "lookback_observations": [9, 12, 18, 24, 30],
+      "trend_damping": [0.25, 0.5, 0.65, 0.8, 1.0],
+      "robust_loss_scale": [0.5, 1.0, 1.5]
+    },
+    "ROBUST_LOG_TREND": {
+      "lookback_observations": [9, 12, 18, 24, 30],
+      "trend_damping": [0.25, 0.5, 0.65, 0.8, 1.0],
+      "robust_loss_scale": [0.5, 1.0, 1.5]
+    },
+    "DAMPED_TREND": {
+      "lookback_observations": [9, 12, 18, 24, 30],
+      "trend_damping": [0.2, 0.35, 0.5, 0.65, 0.8],
+      "recency_weight": [0.25, 0.5, 0.75]
+    },
+    "DAMPED_LOG_TREND": {
+      "lookback_observations": [9, 12, 18, 24, 30],
+      "trend_damping": [0.2, 0.35, 0.5, 0.65, 0.8],
+      "recency_weight": [0.25, 0.5, 0.75]
+    },
+    "EXPONENTIAL_SMOOTHING": {
+      "alpha": [0.15, 0.25, 0.35, 0.5, 0.65, 0.8],
+      "trend_damping": [0.25, 0.5, 0.75, 1.0]
+    },
+    "SHRUNK_DIRECT_COMPARABLE_BLEND": {
+      "direct_weight": [0.2, 0.35, 0.5, 0.65, 0.8],
+      "shrinkage_strength": [0.1, 0.25, 0.4, 0.55, 0.7],
+      "comparable_count": [3, 5, 8, 12]
+    },
+    "COMPARABLE_MEDIAN_GROWTH": {
+      "comparable_count": [3, 5, 8, 12, 20],
+      "growth_winsorization": [0.0, 0.05, 0.1, 0.2]
+    },
+    "RANK_DECAY_WEIGHTED_GROWTH": {
+      "comparable_count": [3, 5, 8, 12, 20],
+      "rank_decay_exponent": [0.5, 0.75, 1.0, 1.25, 1.5],
+      "growth_winsorization": [0.0, 0.05, 0.1]
+    },
+    "LIFECYCLE_MATCHED_COMPARABLE": {
+      "comparable_count": [3, 5, 8, 12],
+      "lifecycle_tolerance_days": [90, 180, 365, 540, 730],
+      "rank_decay_exponent": [0.5, 1.0, 1.5]
+    },
+    "SHRUNK_COMPARABLE_ENSEMBLE": {
+      "comparable_count": [3, 5, 8, 12],
+      "median_weight": [0.2, 0.35, 0.5, 0.65, 0.8],
+      "shrinkage_strength": [0.1, 0.25, 0.4, 0.55, 0.7]
+    }
+  },
+  "boundary_expansion": {
+    "required_when_best_parameter_is_grid_minimum_or_maximum": true,
+    "maximum_expansion_rounds": 2,
+    "continuous_parameter_expansion_factor": 1.5,
+    "integer_parameter_expansion_step_factor": 1.5,
+    "retain_original_grid": true
+  },
+  "anti_overfit_controls": {
+    "nested_rolling_origin_required": true,
+    "discovery_and_champion_folds_separate": true,
+    "product_group_holdout_required": true,
+    "multiple_testing_penalty_required": true,
+    "complexity_penalty_required": true,
+    "minimum_fold_stability_required": true,
+    "baseline_challenge_required": true,
+    "round_one_champion_challenge_required": true,
+    "parameter_boundary_review_required": true,
+    "uncertainty_recalibration_required": true
+  },
+  "promotion_rule": "A refined contender may advance only when it outperforms both the governed baseline and the Round One champion on untouched champion folds after complexity and multiple-testing penalties, while satisfying fold and product stability controls.",
+  "prohibited_behavior": {
+    "invoke_upstream_builders": true,
+    "perform_live_network_collection": true,
+    "change_round_one_fold_membership": true,
+    "use_current_only_features": true,
+    "force_winner_for_fallback_group": true,
+    "generate_active_product_forecasts": true
+  },
+  "outputs": {
+    "round_one_lineage_csv": "precollector_round_two_round_one_lineage.csv",
+    "group_registry_csv": "precollector_round_two_refinement_group_registry.csv",
+    "contender_registry_csv": "precollector_round_two_contender_registry.csv",
+    "parameter_registry_csv": "precollector_round_two_parameter_candidate_registry.csv",
+    "fold_registry_csv": "precollector_round_two_fold_preservation_registry.csv",
+    "boundary_policy_csv": "precollector_round_two_boundary_expansion_policy.csv",
+    "summary_json": "precollector_adaptive_refinement_architecture_summary.json",
+    "manifest_json": "precollector_adaptive_refinement_architecture_manifest.json"
+  },
+  "next_stage_if_certified": "PRECOLLECTOR_ADAPTIVE_TOURNAMENT_REFINEMENT_EXECUTION",
+  "refinement_execution_authorized": true,
+  "final_winner_certification_authorized": false,
+  "forecast_generation_authorized": false,
+  "ranking_execution_authorized": false,
+  "purchase_analysis_authorized": false,
+  "purchase_recommendation_authorized": false,
+  "automatic_purchase_execution_authorized": false,
+  "uip_delivery_authorized": false
+}

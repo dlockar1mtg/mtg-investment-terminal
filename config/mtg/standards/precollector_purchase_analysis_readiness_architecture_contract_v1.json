@@ -1,0 +1,61 @@
+{
+  "contract_id": "precollector_purchase_analysis_readiness_architecture_v1",
+  "contract_version": "1.0.0",
+  "governing_snapshot_id": "collector-20260801T211201Z-7688afbd",
+  "required_ranking_execution_package": {
+    "package_name": "MTG_PreCollector_Ranking_Execution_v1.zip",
+    "sha256": "2760613b72389bb0c4edc8c0ca737cc75988df24f7b50830d127c5f2c5b72791"
+  },
+  "expected_counts": {
+    "governed_products": 50,
+    "ranked_product_rows": 50,
+    "ranking_components": 6
+  },
+  "architecture_scope": {
+    "architecture_only": true,
+    "execute_purchase_analysis": false,
+    "generate_purchase_recommendations": false,
+    "execute_purchases": false,
+    "recompute_rankings": false,
+    "recompute_forecasts": false,
+    "recompute_monte_carlo": false,
+    "new_live_collection_authorized": false
+  },
+  "required_purchase_analysis_dimensions": [
+    "RANK_STRENGTH",
+    "CURRENT_PRICE_AFFORDABILITY",
+    "DOWNSIDE_RISK",
+    "LOSS_PROBABILITY",
+    "LIQUIDITY_AND_SUPPLY",
+    "BUDGET_FIT",
+    "POSITION_CONCENTRATION",
+    "DATA_AND_MODEL_UNCERTAINTY"
+  ],
+  "readiness_policy": {
+    "ranking_is_necessary_but_not_sufficient": true,
+    "certified_current_price_required": true,
+    "certified_supply_and_liquidity_evidence_required": true,
+    "user_budget_required_before_purchase_analysis": true,
+    "existing_holdings_required_before_concentration_analysis": true,
+    "transaction_cost_and_tax_assumptions_required": true,
+    "minimum_purchase_unit_required": true,
+    "short_horizon_product_values_available": false,
+    "short_horizon_values_may_not_be_imputed": true,
+    "purchase_recommendation_requires_separate_certification": true
+  },
+  "required_outputs": {
+    "input_lineage_csv": "precollector_purchase_analysis_readiness_architecture_input_lineage.csv",
+    "dimension_policy_csv": "precollector_purchase_analysis_dimension_policy.csv",
+    "required_input_registry_csv": "precollector_purchase_analysis_required_input_registry.csv",
+    "authorization_matrix_csv": "precollector_purchase_analysis_authorization_matrix.csv",
+    "execution_plan_csv": "precollector_purchase_analysis_execution_plan.csv",
+    "summary_json": "precollector_purchase_analysis_readiness_architecture_summary.json",
+    "manifest_json": "precollector_purchase_analysis_readiness_architecture_manifest.json"
+  },
+  "next_stage_if_certified": "PRECOLLECTOR_PURCHASE_ANALYSIS_INPUT_CERTIFICATION",
+  "ranking_execution_authorized": true,
+  "purchase_analysis_authorized": false,
+  "purchase_recommendation_authorized": false,
+  "automatic_purchase_execution_authorized": false,
+  "uip_delivery_authorized": false
+}

@@ -1,0 +1,86 @@
+{
+  "contract_id": "precollector_final_champion_control_repair_architecture_v1",
+  "contract_version": "1.0.0",
+  "governing_snapshot_id": "collector-20260801T211201Z-7688afbd",
+  "required_final_challenge_package": {
+    "package_name": "MTG_PreCollector_Final_Champion_Challenge_Execution_v1.zip",
+    "sha256": "7cc9c8ec5adb4d57bf81156c00b36537ae65077dcceabe295cc1b1f8f2296ca3"
+  },
+  "expected_counts": {
+    "short_horizon_challenge_groups": 9,
+    "frozen_candidate_rows": 30,
+    "candidate_partition_scorecard_rows": 90,
+    "final_group_decision_rows": 9,
+    "long_horizon_monte_carlo_routes": 6
+  },
+  "superseded_decision_status": "SUPERSEDED_PENDING_CONTROL_DESIGN_REPAIR",
+  "repair_principles": {
+    "preserve_candidate_set": true,
+    "preserve_fold_membership": true,
+    "preserve_prediction_error_evidence": true,
+    "no_new_model_tuning": true,
+    "no_new_feature_tuning": true,
+    "no_threshold_selection_to_force_winners": true,
+    "separate_primary_eligibility_from_stress_robustness": true
+  },
+  "repaired_control_design": {
+    "outer_all": {
+      "role": "PRIMARY_PRODUCTION_ELIGIBILITY",
+      "minimum_rows": 3,
+      "minimum_directional_accuracy": 0.50,
+      "maximum_mean_signed_percentage_error": 0.20,
+      "maximum_single_product_error_share": 0.60,
+      "maximum_worst_product_mape_multiple": 3.50
+    },
+    "latest_time_stress": {
+      "role": "ROBUSTNESS_ONLY",
+      "minimum_rows": 3,
+      "maximum_median_ape_deterioration_multiple": 2.50,
+      "maximum_directional_accuracy_decline": 0.35,
+      "hard_bias_rejection_authorized": false
+    },
+    "product_concentration_stress": {
+      "role": "ROBUSTNESS_ONLY",
+      "minimum_rows": 3,
+      "maximum_median_ape_deterioration_multiple": 3.00,
+      "minimum_directional_accuracy": 0.40,
+      "recursive_concentration_rejection_authorized": false,
+      "recursive_worst_product_rejection_authorized": false
+    },
+    "challenger_promotion": {
+      "minimum_relative_outer_all_median_ape_improvement": 0.02,
+      "must_pass_outer_all": true,
+      "must_pass_both_robustness_partitions": true
+    },
+    "no_forced_winner": true
+  },
+  "required_outputs": {
+    "input_lineage_csv": "precollector_final_champion_control_repair_input_lineage.csv",
+    "supersession_registry_csv": "precollector_final_champion_control_repair_supersession_registry.csv",
+    "repaired_control_policy_csv": "precollector_final_champion_repaired_control_policy.csv",
+    "evidence_immutability_registry_csv": "precollector_final_champion_evidence_immutability_registry.csv",
+    "execution_plan_csv": "precollector_final_champion_control_repair_execution_plan.csv",
+    "summary_json": "precollector_final_champion_control_repair_architecture_summary.json",
+    "manifest_json": "precollector_final_champion_control_repair_architecture_manifest.json"
+  },
+  "prohibited_behavior": {
+    "execute_repaired_challenge": true,
+    "modify_existing_execution_package": true,
+    "change_candidates": true,
+    "change_folds": true,
+    "recompute_predictions": true,
+    "recompute_errors": true,
+    "tune_models": true,
+    "generate_forecasts": true,
+    "rank_products": true,
+    "generate_purchase_recommendations": true
+  },
+  "next_stage_if_certified": "PRECOLLECTOR_FINAL_CHAMPION_CHALLENGE_CONTROL_REPAIR_EXECUTION",
+  "final_winner_certification_authorized": false,
+  "forecast_generation_authorized": false,
+  "ranking_execution_authorized": false,
+  "purchase_analysis_authorized": false,
+  "purchase_recommendation_authorized": false,
+  "automatic_purchase_execution_authorized": false,
+  "uip_delivery_authorized": false
+}

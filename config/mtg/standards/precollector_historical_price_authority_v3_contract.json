@@ -1,0 +1,39 @@
+{
+    "contract_id":  "precollector_historical_price_authority_v3",
+    "contract_version":  "3.0.0",
+    "governed_lane":  "precollector_sealed_booster_boxes",
+    "canonical_universe":  {
+                               "product_count":  131,
+                               "identity_sha256":  "d540be20ff26709b8e004e18ff16a11a05f50a1182777dcfd86a1821f62b7ac2",
+                               "package_name":  "MTG_PreCollector_Canonical_Universe_Scope_Correction_v2_20260808_144356.zip",
+                               "package_sha256":  "4f4813320ad189701553d4227dcdf077e7de9ad1bd0c22032bfed00fac24bade",
+                               "target_commercial_unit":  "INDIVIDUAL_SEALED_BOX_OR_DISPLAY"
+                           },
+    "source_historical_authority":  {
+                                        "package_name":  "MTG_PreCollector_Historical_Price_Authority_v2_20260808_091454.zip",
+                                        "package_sha256":  "97d8ff46e23d23257b1b638aac5d64b286244c2fada0c638f7dae3687996fc71",
+                                        "source_class":  "TCGCSV_ARCHIVE_MONTHLY_DIRECT",
+                                        "source_recollection_required":  false,
+                                        "filtering_to_corrected_universe_required":  true
+                                    },
+    "excluded_commercial_units":  {
+                                      "multi_box_cases":  true,
+                                      "case_history_may_be_transformed_to_box_history":  false,
+                                      "case_price_division_allowed":  false
+                                  },
+    "gap_policy":  {
+                       "products_without_history_remain_canonical":  true,
+                       "absence_of_history_automatically_excludes_model":  false,
+                       "empirical_eligibility_review_required":  true
+                   },
+    "authorization":  {
+                          "historical_rebinding":  true,
+                          "fresh_current_price_collection":  true,
+                          "fresh_availability_collection":  true,
+                          "model_execution":  false,
+                          "forecast_execution":  false,
+                          "ranking_execution":  false,
+                          "purchase_analysis":  false
+                      },
+    "authorized_next_stage":  "FRESH_131_PRODUCT_CURRENT_PRICE_AND_HIGH_RECALL_EBAY_COLLECTION"
+}

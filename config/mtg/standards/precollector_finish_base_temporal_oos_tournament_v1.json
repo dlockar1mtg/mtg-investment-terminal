@@ -1,0 +1,98 @@
+{
+    "contract_id":  "precollector_finish_base_temporal_oos_tournament_v1",
+    "contract_version":  "1.0.0",
+    "governed_lane":  "precollector_sealed_booster_boxes_and_displays",
+    "purpose":  "Finish the frozen base temporal-OOS tournament by executing checkpointed tree models and reconciling all four base batches.",
+    "starting_governed_head":  "254d49060818d4be4fb0d4f70015716480f84f28",
+    "prior_certified_batches":  {
+                                    "batch_15w_a":  {
+                                                        "package":  "MTG_PreCollector_Base_Temporal_OOS_Batch_15W_A_v1_20260809_082119.zip",
+                                                        "sha256":  "fe83fe3ba70b5ed45a4964285f3d70e17faaed53124a30fc205c18e4650588da"
+                                                    },
+                                    "batch_15w_b":  {
+                                                        "package":  "MTG_PreCollector_Base_Temporal_OOS_Batch_15W_B_v1_20260809_082616.zip",
+                                                        "sha256":  "508812cde1210f40c33bb3ae1ce2c82f55668fdfb46bec77d2ad340f9eda029e"
+                                                    },
+                                    "batch_15w_c":  {
+                                                        "package":  "MTG_PreCollector_Base_Temporal_OOS_Batch_15W_C_v1_20260809_083207.zip",
+                                                        "sha256":  "eed0f454130abaa30f7669125ba5da3d74c7da0939a118fe6e163ea7213db32a"
+                                                    }
+                                },
+    "tree_batch":  {
+                       "batch_id":  "15W-D",
+                       "model_families":  [
+                                              "RANDOM_FOREST",
+                                              "GRADIENT_BOOSTING"
+                                          ],
+                       "direct_horizons_days":  [
+                                                    90,
+                                                    180,
+                                                    365
+                                                ],
+                       "feature_variants":  [
+                                                "PRICE_ONLY",
+                                                "PRICE_PLUS_AGE",
+                                                "PRICE_PLUS_PATH_STABILITY"
+                                            ],
+                       "target_transformations":  [
+                                                      "RAW_PRICE_CHANGE",
+                                                      "LOG_PRICE_CHANGE",
+                                                      "RETURN",
+                                                      "ANNUALIZED_RETURN_WHERE_DEFINED"
+                                                  ],
+                       "governed_matrix_cells":  72,
+                       "checkpoint_grain":  "MODEL_X_HORIZON_X_ORIGIN_X_FEATURE_X_TARGET",
+                       "checkpoint_resume_required":  true,
+                       "random_forest":  {
+                                             "n_estimators":  500,
+                                             "max_depth":  6,
+                                             "min_samples_leaf":  5,
+                                             "max_features":  1,
+                                             "random_state":  20260809,
+                                             "n_jobs":  -1
+                                         },
+                       "gradient_boosting":  {
+                                                 "n_estimators":  250,
+                                                 "learning_rate":  0.03,
+                                                 "max_depth":  2,
+                                                 "min_samples_leaf":  5,
+                                                 "random_state":  20260809
+                                             },
+                       "minimum_supervised_training_rows":  20
+                   },
+    "temporal_governance":  {
+                                "endpoint_must_be_matured_by_validation_origin":  true,
+                                "same_product_prior_matured_examples_allowed":  true,
+                                "future_or_unmatured_examples_allowed":  false,
+                                "current_market_features_allowed_historically":  false,
+                                "random_time_split_allowed":  false
+                            },
+    "reconciliation":  {
+                           "total_base_model_families":  11,
+                           "total_governed_base_cells":  396,
+                           "semantic_duplicate_deduplication_required":  true,
+                           "raw_coverage_scorecard_required":  true,
+                           "common_fold_paired_comparison_required":  true,
+                           "paired_common_fold_rule":  "For each direct horizon, compare semantic models only on the intersection of fold IDs for which all executed semantic models at that horizon have valid predictions.",
+                           "differing_coverage_may_determine_winner":  false,
+                           "descriptive_ranking_is_certified_winner":  false
+                       },
+    "authorization":  {
+                          "tree_execution":  true,
+                          "base_tournament_reconciliation":  true,
+                          "certified_base_winner_selection":  false,
+                          "ensemble_execution":  false,
+                          "product_holdout_execution":  false,
+                          "influence_execution":  false,
+                          "exclusion_sensitivity_execution":  false,
+                          "persistent_treatment_assignment":  false,
+                          "persistent_exclusion":  false,
+                          "production_model_selection":  false,
+                          "monte_carlo_execution":  false,
+                          "forecast_execution":  false,
+                          "ranking_execution":  false,
+                          "purchase_analysis":  false,
+                          "purchase_recommendations":  false
+                      },
+    "authorized_next_large_step_if_certified":  "RUN_PRECOLLECTOR_ENSEMBLES_AND_ROBUSTNESS_DIAGNOSTICS"
+}

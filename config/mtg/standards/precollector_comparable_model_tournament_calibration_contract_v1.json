@@ -1,0 +1,38 @@
+{
+  "contract_id": "precollector_comparable_model_tournament_calibration_v1",
+  "contract_version": "1.0.0",
+  "upstream_builder_path": "scripts/build_precollector_owner_approved_comparable_ledger_validation.py",
+  "upstream_output_directory": "artifacts/precollector/owner_approved_comparable_ledger_validation",
+  "routing_output_directory": "artifacts/precollector/79_product_taxonomy_method_routing",
+  "expected_active_product_count": 79,
+  "expected_required_comparable_target_count": 23,
+  "expected_approved_comparable_rows": 369,
+  "candidate_models": [
+    "APPROVED_POLICY_WEIGHTED",
+    "INVERSE_DISTANCE",
+    "RANK_DECAY",
+    "ROBUST_MEDIAN"
+  ],
+  "minimum_required_target_coverage": 23,
+  "maximum_winner_median_absolute_log_error": 1.5,
+  "maximum_winner_p90_absolute_log_error": 3.0,
+  "minimum_family_sample_for_blocking_threshold": 2,
+  "uncertainty_floor_log": 0.10,
+  "uncertainty_ceiling_log": 3.00,
+  "outputs": {
+    "tournament_predictions_csv": "precollector_comparable_model_tournament_predictions.csv",
+    "model_scorecard_csv": "precollector_comparable_model_scorecard.csv",
+    "family_route_scorecard_csv": "precollector_comparable_family_route_scorecard.csv",
+    "winner_calibration_csv": "precollector_comparable_winner_calibration.csv",
+    "diagnostics_csv": "precollector_comparable_model_tournament_diagnostics.csv",
+    "summary_json": "precollector_comparable_model_tournament_calibration_summary.json",
+    "manifest_json": "precollector_comparable_model_tournament_calibration_manifest.json"
+  },
+  "next_stage_if_certified": "PRECOLLECTOR_FORECAST_INPUT_ASSEMBLY_AND_METHOD_CERTIFICATION",
+  "forecast_generation_authorized": false,
+  "ranking_execution_authorized": false,
+  "purchase_analysis_authorized": false,
+  "purchase_recommendation_authorized": false,
+  "automatic_purchase_execution_authorized": false,
+  "uip_delivery_authorized": false
+}

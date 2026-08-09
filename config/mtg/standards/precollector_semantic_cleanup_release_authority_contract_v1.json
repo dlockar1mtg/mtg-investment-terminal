@@ -1,0 +1,51 @@
+{
+  "contract_id": "precollector_semantic_cleanup_release_authority_contract_v1",
+  "contract_version": "1.0.0",
+  "status": "EVIDENCE_RECONCILIATION_AUTHORIZED",
+  "governed_lane": "precollector_booster_boxes",
+  "scope_authority": "config/mtg/governance/precollector_booster_product_scope_owner_decision_v1.json",
+  "reconciliation_authority": "config/mtg/standards/precollector_universe_reconciliation_contract_v1.json",
+  "canonical_standard": "docs/standards/mtg/MTG_FORECASTING_STANDARD.md",
+  "purpose": "Remove cases and non-booster displays from the preliminary universe and build a historical release-date authority without guessing dates.",
+  "source_hierarchy": {
+    "release_date_primary": "Wizards of the Coast official product or archive evidence",
+    "release_date_secondary": "MTGJSON SetList releaseDate",
+    "tcgcsv_published_on_release_date_authorized": false,
+    "automatic_conflict_resolution_authorized": false,
+    "unmatched_release_date_status": "REQUIRES_RELEASE_DATE_REVIEW"
+  },
+  "semantic_rules": {
+    "booster_box_cases_allowed": false,
+    "theme_booster_displays_allowed": false,
+    "planeswalker_deck_displays_allowed": false,
+    "battle_pack_displays_allowed": false,
+    "starter_or_deck_displays_allowed": false,
+    "individual_factory_sealed_booster_boxes_required": true,
+    "duplicate_marketplace_listings_require_review": true
+  },
+  "outputs": {
+    "directory": "artifacts/precollector/semantic_cleanup_release_authority",
+    "semantic_review_csv": "precollector_semantic_candidate_review.csv",
+    "excluded_configuration_csv": "precollector_excluded_configuration_review.csv",
+    "release_authority_csv": "precollector_release_date_authority.csv",
+    "owner_review_csv": "precollector_owner_review_universe.csv",
+    "date_review_csv": "precollector_release_date_review_queue.csv",
+    "date_conflict_csv": "precollector_release_date_conflicts.csv",
+    "fresh_delta_review_csv": "precollector_fresh_delta_scope_review.csv",
+    "summary_json": "precollector_semantic_cleanup_summary.json",
+    "manifest_json": "precollector_semantic_cleanup_manifest.json"
+  },
+  "certification_controls": {
+    "included_case_products_allowed": false,
+    "included_non_booster_displays_allowed": false,
+    "blank_semantic_decisions_allowed": false,
+    "guessed_release_dates_allowed": false,
+    "tcgcsv_group_creation_date_as_release_date_allowed": false,
+    "forecast_generation_authorized": false,
+    "ranking_execution_authorized": false,
+    "purchase_recommendation_authorized": false,
+    "automatic_purchase_execution_authorized": false
+  },
+  "next_stage_if_certified": "OWNER_REVIEW_OF_CLEANED_UNIVERSE_AND_RELEASE_AUTHORITY",
+  "change_control": "Changes require owner approval, version change, governance tests, full regression, and recertification."
+}

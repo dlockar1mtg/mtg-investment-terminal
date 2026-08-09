@@ -1,0 +1,98 @@
+{
+  "decision_id": "precollector_model_eligibility_owner_decision_v1",
+  "decision_version": "1.0.0",
+  "status": "OWNER_APPROVED_MODEL_ELIGIBILITY_GOVERNANCE",
+  "approved_on": "2026-08-08",
+  "operating_timezone": "America/Chicago",
+  "repository": "dlockar1mtg/mtg-investment-terminal",
+  "governed_lane": "precollector_booster_boxes",
+  "purpose": "Govern the distinction between the certified canonical Pre-Collector product universe and model-specific training eligibility without introducing arbitrary age or vintage exclusions.",
+  "canonical_universe_boundary": {
+    "canonical_product_count": 186,
+    "canonical_group_count": 123,
+    "canonical_universe_identity_sha256": "e75151ab05e87c60559e3114b050717307678f4ed0da01f067de46474a7ed4ac",
+    "rule": "Model eligibility decisions do not alter canonical universe membership. A canonical product remains part of the governed Pre-Collector universe unless a separate scope-governance change is owner-approved and recertified.",
+    "automatic_scope_removal_from_model_diagnostics_allowed": false
+  },
+  "governing_principles": {
+    "arbitrary_calendar_cutoffs_allowed": false,
+    "arbitrary_age_cutoffs_allowed": false,
+    "arbitrary_vintage_cutoffs_allowed": false,
+    "default_rule": "Do not exclude, down-weight, or isolate a canonical product solely because it is old, expensive, scarce, or inconvenient for a candidate model.",
+    "evidence_rule": "Model-specific treatment must be justified by governed empirical evidence drawn from pricing history, data coverage, availability, liquidity, scarcity behavior, statistical influence, stability, and out-of-sample performance.",
+    "anti_cherry_picking_rule": "A product must not be excluded merely because removing it improves a preferred model metric after results are observed.",
+    "cross_model_rule": "Where practical, exclusion or reduced-influence findings must be tested across multiple candidate model families, validation folds or windows, and required forecast horizons before permanent model treatment is owner-approved.",
+    "collector_alignment_rule": "Pre-Collector forecasting should preserve Collector-lane principles for certified pricing authority, historical evidence, availability and liquidity evidence, comparable methodology, uncertainty, tournament evaluation, and separation of forecasts from purchase authorization, while allowing additional empirical model-eligibility controls because the Pre-Collector lane spans materially older products."
+  },
+  "universe_roles": {
+    "canonical_universe": "Defines which products belong to the governed Pre-Collector lane.",
+    "model_eligible_universe": "Defines which canonical products may contribute observations to fitting or calibration for a specific model or horizon.",
+    "prediction_universe": "Defines which canonical products may receive forecasts after the selected model is certified for that product's evidence and applicability profile.",
+    "ranking_universe": "Defines which forecasted products may enter governed investment ranking after separate downstream authorization.",
+    "separation_required": true
+  },
+  "permitted_model_treatments": [
+    "MODEL_CORE",
+    "MODEL_ELIGIBLE",
+    "MODEL_ELIGIBLE_DOWNWEIGHTED",
+    "HOLDOUT_DIAGNOSTIC_ONLY",
+    "MODEL_EXCLUDE_DATA_COVERAGE",
+    "MODEL_EXCLUDE_LIQUIDITY_AVAILABILITY",
+    "MODEL_EXCLUDE_STRUCTURAL_COMPARABILITY",
+    "MODEL_EXCLUDE_STATISTICAL_INFLUENCE",
+    "MODEL_EXCLUDE_OTHER_OWNER_REVIEWED"
+  ],
+  "required_diagnostic_dimensions": [
+    "historical price coverage and continuity",
+    "current and historical availability evidence",
+    "liquidity and observable market depth",
+    "price-source agreement and staleness where measurable",
+    "statistical leverage, influence, residual behavior, or analogous model-family diagnostics",
+    "parameter or prediction stability when the product is included versus diagnostically isolated",
+    "out-of-sample performance across governed validation folds or windows",
+    "performance across required one-year, three-year, and five-year horizons where applicable",
+    "robustness across multiple candidate model families where practical"
+  ],
+  "required_exclusion_controls": {
+    "single_metric_improvement_is_sufficient": false,
+    "age_alone_is_sufficient": false,
+    "price_level_alone_is_sufficient": false,
+    "scarcity_alone_is_sufficient": false,
+    "owner_review_required_for_persistent_exclusion": true,
+    "reason_code_required": true,
+    "diagnostic_evidence_required": true,
+    "model_or_horizon_scope_required": true,
+    "reinstatement_allowed_when_new_evidence_supports_it": true,
+    "excluded_products_remain_in_canonical_universe": true,
+    "training_exclusion_automatically_prohibits_prediction": false,
+    "training_exclusion_automatically_prohibits_ranking": false
+  },
+  "required_outputs": {
+    "model_eligibility_ledger": true,
+    "product_level_reason_codes": true,
+    "diagnostic_evidence_references": true,
+    "full_sample_vs_treated_sample_sensitivity": true,
+    "excluded_or_downweighted_product_list": true,
+    "reinstatement_history": true,
+    "canonical_universe_identity_binding": true
+  },
+  "governance_controls": {
+    "canonical_universe_change_authorized": false,
+    "model_selection_recertification_authorized": true,
+    "model_selection_execution_authorized": false,
+    "forecast_execution_authorized": false,
+    "ranking_execution_authorized": false,
+    "purchase_analysis_authorized": false,
+    "purchase_recommendation_authorized": false,
+    "collector_reopening_authorized": false,
+    "secret_lair_work_authorized": false,
+    "next_required_stage": "Recertify Pre-Collector model-selection architecture against the certified canonical universe and this model-eligibility governance.",
+    "change_control": "Any change to model-eligibility reason codes, diagnostic requirements, exclusion logic, treatment semantics, or the separation among canonical, training, prediction, and ranking universes requires owner approval, version change, and recertification."
+  },
+  "owner_decision_notes": [
+    "The data must determine whether older or unusual boxes impair model validity; age is not a predeclared exclusion rule.",
+    "A difficult observation may remain a valid investment target even when it is unsuitable for fitting a particular model.",
+    "Data-quality problems and genuine economic or structural non-comparability must be distinguished in the eligibility ledger.",
+    "Model exclusions are governed model decisions, not retroactive edits to the certified 186-product Pre-Collector universe."
+  ]
+}

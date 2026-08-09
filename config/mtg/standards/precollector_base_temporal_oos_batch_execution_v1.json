@@ -1,0 +1,81 @@
+{
+    "contract_id":  "precollector_base_temporal_oos_batch_execution_v1",
+    "contract_version":  "1.0.0",
+    "governed_lane":  "precollector_sealed_booster_boxes_and_displays",
+    "purpose":  "Execute the frozen Stage15V base tournament in deterministic resumable batches without altering model semantics.",
+    "batching_is_methodological_change":  false,
+    "frozen_model_specification_preserved":  true,
+    "frozen_hyperparameters_preserved":  true,
+    "current_batch":  {
+                          "batch_id":  "15W-A",
+                          "batch_name":  "TIME_SERIES_BASELINES",
+                          "model_families":  [
+                                                 "LAST_VALUE",
+                                                 "DRIFT",
+                                                 "LOG_DRIFT",
+                                                 "ROBUST_TREND",
+                                                 "EXPONENTIAL_SMOOTHING"
+                                             ],
+                          "semantic_model_horizon_count":  15,
+                          "governed_matrix_cell_count":  180
+                      },
+    "remaining_batches":  [
+                              {
+                                  "batch_id":  "15W-B",
+                                  "models":  [
+                                                 "RIDGE_REGRESSION",
+                                                 "HUBER_REGRESSION"
+                                             ]
+                              },
+                              {
+                                  "batch_id":  "15W-C",
+                                  "models":  [
+                                                 "PEER_MEDIAN_RETURN",
+                                                 "PEER_WEIGHTED_RETURN"
+                                             ]
+                              },
+                              {
+                                  "batch_id":  "15W-D",
+                                  "models":  [
+                                                 "RANDOM_FOREST",
+                                                 "GRADIENT_BOOSTING"
+                                             ]
+                              },
+                              {
+                                  "batch_id":  "15W-E",
+                                  "purpose":  "RECONCILE_ALL_BASE_BATCHES_AND_CERTIFY_SINGLE_BASE_TOURNAMENT"
+                              }
+                          ],
+    "direct_horizons_days":  [
+                                 90,
+                                 180,
+                                 365
+                             ],
+    "temporal_rules":  {
+                           "future_data_allowed":  false,
+                           "same_product_prior_history_allowed":  true,
+                           "same_product_future_history_allowed":  false,
+                           "random_time_split_allowed":  false
+                       },
+    "semantic_duplicate_governance":  {
+                                          "time_series_models_consume_feature_variant":  false,
+                                          "time_series_models_consume_target_transformation":  false,
+                                          "semantic_predictions_are_stored_once":  true,
+                                          "governed_matrix_mapping_still_required":  true,
+                                          "duplicate_matrix_cells_count_as_independent_winners":  false
+                                      },
+    "authorization":  {
+                          "current_batch_execution":  true,
+                          "later_batch_execution":  false,
+                          "base_tournament_final_certification":  false,
+                          "ensemble_execution":  false,
+                          "product_holdout_execution":  false,
+                          "persistent_exclusion":  false,
+                          "production_model_selection":  false,
+                          "monte_carlo_execution":  false,
+                          "forecast_execution":  false,
+                          "ranking_execution":  false,
+                          "purchase_analysis":  false
+                      },
+    "authorized_next_stage_if_certified":  "RUN_PRECOLLECTOR_BASE_TEMPORAL_OOS_BATCH_15W_B"
+}

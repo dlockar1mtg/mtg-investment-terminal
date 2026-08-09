@@ -1,0 +1,35 @@
+{
+  "contract_id": "precollector_94_product_evidence_comparable_review_v1",
+  "contract_version": "1.0.0",
+  "expected_final_universe_count": 94,
+  "expected_direct_supply_authorized_count": 67,
+  "minimum_direct_accepted_listings": 5,
+  "minimum_direct_sellers": 3,
+  "high_price_review_threshold": 1000.0,
+  "very_high_price_review_threshold": 2500.0,
+  "maximum_comparables_per_product": 5,
+  "allowed_model_routes": [
+    "DIRECT_EVIDENCE",
+    "DIRECT_HISTORY_LIMITED",
+    "COMPARABLE_PRODUCT_ADJUSTED"
+  ],
+  "allowed_owner_review_states": [
+    "STANDARD_REVIEW",
+    "LIQUIDITY_REVIEW_REQUIRED",
+    "HIGH_PRICE_REVIEW_REQUIRED",
+    "VERY_HIGH_PRICE_REVIEW_REQUIRED",
+    "AMBIGUOUS_EVIDENCE_REVIEW_REQUIRED"
+  ],
+  "outputs": {
+    "evidence_review_csv": "precollector_94_product_evidence_review.csv",
+    "comparable_matrix_csv": "precollector_comparable_candidate_matrix.csv",
+    "owner_decision_review_csv": "precollector_owner_decision_review.csv",
+    "summary_json": "precollector_94_product_evidence_comparable_review_summary.json",
+    "manifest_json": "precollector_94_product_evidence_comparable_review_manifest.json"
+  },
+  "next_stage_if_certified": "PRECOLLECTOR_OWNER_COMPARABLE_AND_PRACTICALITY_DECISIONS",
+  "forecast_generation_authorized": false,
+  "ranking_execution_authorized": false,
+  "purchase_recommendation_authorized": false,
+  "automatic_purchase_execution_authorized": false
+}

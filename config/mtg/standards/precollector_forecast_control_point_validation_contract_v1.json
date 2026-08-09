@@ -1,0 +1,34 @@
+{
+  "contract_id": "precollector_forecast_control_point_validation_v1",
+  "contract_version": "1.0.0",
+  "governed_lane": "precollector_booster_boxes",
+  "owner_approval": "config/mtg/governance/precollector_forecast_control_point_owner_approval_v1.json",
+  "required_evidence_package": {
+    "package_name": "MTG_PreCollector_Authentic_Control_Point_Evidence_v1.zip",
+    "sha256": "957713ba10cde28e875ba38fa7e1cdb8c3fe0dd6f4ce5d5949d8bf8463a2e2ee"
+  },
+  "quarantined_commit_range": {
+    "base_exclusive": "e61333932bfe8d51763463e53c8fe79ebf1948a4",
+    "head_inclusive": "401372dabc6a6c88af6f46b1ccca236d25451c1c"
+  },
+  "validation_controls": {
+    "read_only": true,
+    "collector_foundation_allowed_as_target": false,
+    "collector_products_allowed_as_comparables": true,
+    "target_and_comparable_roles_must_be_explicit": true,
+    "target_universe_must_be_precollector_authority": true,
+    "quarantined_outputs_may_be_authoritative": false,
+    "forecast_execution_authorized_by_this_stage": false,
+    "ranking_execution_authorized_by_this_stage": false,
+    "purchase_analysis_authorized_by_this_stage": false
+  },
+  "required_outputs": [
+    "precollector_forecast_control_point_artifact_validation.csv",
+    "precollector_forecast_control_point_authority_validation.csv",
+    "precollector_forecast_control_point_blockers.csv",
+    "precollector_forecast_control_point_reuse_plan.csv",
+    "precollector_forecast_control_point_validation_summary.json",
+    "precollector_forecast_control_point_validation_manifest.json"
+  ],
+  "next_stage_if_certified": "OWNER_REVIEW_OF_FORECAST_CONTROL_POINT_VALIDATION"
+}

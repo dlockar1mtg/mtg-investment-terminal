@@ -1,0 +1,79 @@
+{
+  "decision_id": "precollector_lane_boundary_and_recovery_decision_v1",
+  "decision_version": "1.0.0",
+  "status": "OWNER_DIRECTED_RECOVERY_ACTIVE",
+  "effective_date": "2026-08-05",
+  "operating_timezone": "America/Chicago",
+  "repository": "dlockar1mtg/mtg-investment-terminal",
+  "governed_lane": "precollector_booster_boxes",
+  "binding_authorities": [
+    "config/mtg/governance/precollector_booster_product_scope_owner_decision_v1.json",
+    "config/mtg/standards/precollector_candidate_universe_inventory_contract_v1.json",
+    "config/mtg/standards/precollector_universe_reconciliation_contract_v1.json",
+    "docs/standards/mtg/MTG_FORECASTING_STANDARD.md"
+  ],
+  "incident": {
+    "classification": "UNAPPROVED_CROSS_LANE_TARGET_AUTHORITY_SUBSTITUTION",
+    "description": "Pre-Collector-labeled forecast, Monte Carlo, ranking, and purchase-readiness stages were bound to the Collector v1 August 1 current foundation instead of the owner-approved pre-Collector target universe and reconciliation authority.",
+    "collector_source_assets_modified": false,
+    "collector_certified_outputs_overwritten": false,
+    "precollector_progress_claims_after_wrong_binding_authoritative": false
+  },
+  "quarantined_commit_range": {
+    "base_exclusive": "e61333932bfe8d51763463e53c8fe79ebf1948a4",
+    "head_inclusive": "401372dabc6a6c88af6f46b1ccca236d25451c1c",
+    "treatment": "Preserve for audit. No output produced by this range may be treated as authoritative pre-Collector analysis until individually rebound and recertified."
+  },
+  "quarantined_packages": [
+    "MTG_PreCollector_Long_Horizon_Monte_Carlo_Execution_v1.zip",
+    "MTG_PreCollector_Forecast_Readiness_Output_Architecture_v1.zip",
+    "MTG_PreCollector_Forecast_Readiness_Output_Execution_v1.zip",
+    "MTG_PreCollector_Ranking_Readiness_Architecture_v1.zip",
+    "MTG_PreCollector_Ranking_Execution_v1.zip",
+    "MTG_PreCollector_Purchase_Analysis_Readiness_Architecture_v1.zip"
+  ],
+  "lane_boundary_policy": {
+    "required_target_lane": "precollector_booster_boxes",
+    "required_target_scope_authority": "config/mtg/governance/precollector_booster_product_scope_owner_decision_v1.json",
+    "required_target_universe_authority": "certified pre-Collector candidate or reconciled universe approved by the owner",
+    "collector_booster_products_allowed_as_targets": false,
+    "collector_booster_products_allowed_as_comparable_evidence": true,
+    "collector_foundation_allowed_as_target_authority": false,
+    "secret_lair_products_allowed_as_targets": false,
+    "cross_lane_reference_rows_must_be_explicitly_typed": true,
+    "target_and_comparable_product_ids_must_be_separate": true
+  },
+  "mandatory_fail_closed_controls": [
+    "Reject a pre-Collector stage when any target authority path contains collector_v1 or secret_lair.",
+    "Reject a pre-Collector stage when target product IDs are not members of the approved pre-Collector universe authority.",
+    "Reject a pre-Collector stage when Collector products appear as target rows instead of explicitly typed comparable rows.",
+    "Reject a stage when the target universe count or identity hash changes without an owner-approved versioned decision.",
+    "Reject downstream inheritance when the prior package does not declare and prove the same governed target lane.",
+    "Reject forecasting until the universe reconciliation stage reaches its owner-review checkpoint.",
+    "Reject ranking and purchase analysis until corrected pre-Collector forecasts are certified."
+  ],
+  "current_authorization": {
+    "collector_rebuild_authorized": false,
+    "precollector_governance_recovery_authorized": true,
+    "precollector_universe_state_audit_authorized": true,
+    "precollector_comparable_state_audit_authorized": true,
+    "precollector_forecast_reuse_assessment_authorized": true,
+    "new_precollector_forecast_execution_authorized": false,
+    "ranking_execution_authorized": false,
+    "purchase_analysis_authorized": false,
+    "purchase_recommendation_authorized": false,
+    "secret_lair_work_authorized": false,
+    "combined_mtg_integration_authorized": false
+  },
+  "recovery_sequence": [
+    "Inventory and classify all pre-Collector governance, universe, reconciliation, comparable, model, forecast, ranking, and package artifacts.",
+    "Identify the last authentic pre-Collector certified control point before the wrong target binding.",
+    "Certify the approved pre-Collector target universe identity and count.",
+    "Certify selected Collector comparables as reference evidence only.",
+    "Assess each quarantined architecture component for reusable code versus invalid output.",
+    "Rebind reusable components to the correct pre-Collector authorities.",
+    "Rerun only the stages required after the authentic control point.",
+    "Finalize the pre-Collector lane before beginning Secret Lair finalization or combined MTG integration."
+  ],
+  "change_control": "No target-lane, target-authority, universe identity, product count, comparable-role, or authorization change may occur without an explicit owner-approved versioned decision and recertification."
+}

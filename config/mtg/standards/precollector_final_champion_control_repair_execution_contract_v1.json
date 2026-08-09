@@ -1,0 +1,87 @@
+{
+  "contract_id": "precollector_final_champion_control_repair_execution_v1",
+  "contract_version": "1.0.0",
+  "governing_snapshot_id": "collector-20260801T211201Z-7688afbd",
+  "required_repair_architecture_package": {
+    "package_name": "MTG_PreCollector_Final_Champion_Control_Repair_Architecture_v1.zip",
+    "sha256": "95a5921959089d46afb527c082f0610c012c7457106c8dda9b91c830eb9b9d40"
+  },
+  "required_final_challenge_package": {
+    "package_name": "MTG_PreCollector_Final_Champion_Challenge_Execution_v1.zip",
+    "sha256": "7cc9c8ec5adb4d57bf81156c00b36537ae65077dcceabe295cc1b1f8f2296ca3"
+  },
+  "expected_counts": {
+    "short_horizon_challenge_groups": 9,
+    "frozen_candidate_rows": 30,
+    "preserved_candidate_partition_scorecard_rows": 90,
+    "superseded_v1_decision_rows": 9,
+    "long_horizon_monte_carlo_routes": 6
+  },
+  "evidence_limitation": {
+    "missing_metric": "MEAN_SIGNED_PERCENTAGE_ERROR",
+    "reason": "PRESERVED_V1_SCORECARD_CONTAINS_BIAS_AND_MAE_BUT_NOT_MEAN_ACTUAL_PRICE_OR_ROW_LEVEL_ERRORS",
+    "prediction_recomputation_authorized": false,
+    "error_recomputation_authorized": false,
+    "hard_rejection_from_unavailable_metric_authorized": false,
+    "required_disposition": "NOT_EVALUABLE_FROM_PRESERVED_SCORECARD"
+  },
+  "repaired_controls": {
+    "outer_all": {
+      "minimum_rows": 3,
+      "minimum_directional_accuracy": 0.50,
+      "maximum_single_product_error_share": 0.60,
+      "maximum_worst_product_mape_multiple": 3.50
+    },
+    "latest_time_stress": {
+      "minimum_rows": 3,
+      "maximum_median_ape_deterioration_multiple": 2.50,
+      "maximum_directional_accuracy_decline": 0.35
+    },
+    "product_concentration_stress": {
+      "minimum_rows": 3,
+      "maximum_median_ape_deterioration_multiple": 3.00,
+      "minimum_directional_accuracy": 0.40
+    },
+    "challenger_promotion": {
+      "minimum_relative_outer_all_median_ape_improvement": 0.02
+    }
+  },
+  "allowed_repaired_decisions": [
+    "RETAIN_ROUND_ONE_INCUMBENT",
+    "PROMOTE_FROZEN_ROUND_TWO_CHALLENGER",
+    "RETAIN_GOVERNED_BASELINE",
+    "GOVERNED_NO_PRODUCTION_CHAMPION"
+  ],
+  "outputs": {
+    "input_lineage_csv": "precollector_final_champion_control_repair_execution_input_lineage.csv",
+    "preserved_scorecard_csv": "precollector_final_champion_preserved_candidate_partition_scorecard.csv",
+    "repaired_candidate_assessment_csv": "precollector_final_champion_repaired_candidate_assessment.csv",
+    "repaired_group_decisions_csv": "precollector_final_champion_repaired_group_decisions.csv",
+    "repaired_short_horizon_winners_csv": "precollector_repaired_short_horizon_winner_registry.csv",
+    "long_horizon_routing_csv": "precollector_final_champion_control_repair_long_horizon_routing.csv",
+    "evidence_limitations_csv": "precollector_final_champion_control_repair_evidence_limitations.csv",
+    "diagnostics_csv": "precollector_final_champion_control_repair_execution_diagnostics.csv",
+    "summary_json": "precollector_final_champion_control_repair_execution_summary.json",
+    "manifest_json": "precollector_final_champion_control_repair_execution_manifest.json"
+  },
+  "prohibited_behavior": {
+    "modify_source_packages": true,
+    "change_candidates": true,
+    "change_folds": true,
+    "recompute_predictions": true,
+    "recompute_errors": true,
+    "tune_models": true,
+    "select_thresholds_to_force_winners": true,
+    "generate_forecasts": true,
+    "rank_products": true,
+    "generate_purchase_recommendations": true
+  },
+  "next_stage_if_certified": "PRECOLLECTOR_WINNER_AND_UNCERTAINTY_CERTIFICATION",
+  "final_winner_certification_authorized": false,
+  "forecast_generation_authorized": false,
+  "ranking_execution_authorized": false,
+  "purchase_analysis_authorized": false,
+  "purchase_recommendation_authorized": false,
+  "automatic_purchase_execution_authorized": false,
+  "uip_delivery_authorized": false
+}

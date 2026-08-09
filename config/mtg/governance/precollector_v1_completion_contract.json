@@ -1,0 +1,48 @@
+{
+    "contract_id":  "precollector_v1_completion_contract",
+    "contract_version":  "1.0.0",
+    "lane":  "PRE_COLLECTOR_SEALED_BOOSTER_BOXES_AND_DISPLAYS",
+    "status":  "CERTIFIED_CLOSED",
+    "certified_branch":  "phase-8.3-precollector-scope-governance",
+    "certified_head_before_closeout_commit":  "3339e4e807b9421f69ea61eb058758c125a35bcf",
+    "final_package":  {
+                          "name":  "MTG_PreCollector_Monte_Carlo_Purchase_Ranking_v1_20260809_111303.zip",
+                          "sha256":  "47be599f92999fbdede603dc3aee7d720dd0eef01ca68d328e36abda3e256261"
+                      },
+    "final_universe":  {
+                           "canonical_products":  131,
+                           "ranked_forecastable_products":  95,
+                           "forecast_gap_products":  26,
+                           "no_current_price_authority_products":  10,
+                           "persistent_product_exclusions":  0
+                       },
+    "final_modeling":  {
+                           "monte_carlo_paths_per_product_per_horizon":  10000,
+                           "total_terminal_paths":  1900000,
+                           "oos_residual_observations":  516,
+                           "monte_carlo_certified":  true,
+                           "uncertainty_certified":  true,
+                           "investment_ranking_certified":  true,
+                           "purchase_analysis_certified":  true
+                       },
+    "horizon_governance":  {
+                               "one_year":  "DIRECT_CERTIFIED_FORECAST_WHERE_SUPPORTED",
+                               "three_year":  "SCENARIO_NOT_DIRECTLY_BACKTESTED",
+                               "five_year":  "SCENARIO_NOT_DIRECTLY_BACKTESTED"
+                           },
+    "scope_controls":  {
+                           "cases_ranked":  0,
+                           "case_to_box_synthetic_prices":  0,
+                           "automatic_purchase_execution":  false
+                       },
+    "reopening_policy":  {
+                             "ordinary_development_reopening_allowed":  false,
+                             "allowed_reasons":  [
+                                                     "GOVERNANCE_DEFECT",
+                                                     "GOVERNED_REFRESH",
+                                                     "MODEL_RECERTIFICATION_TRIGGER",
+                                                     "SOURCE_AUTHORITY_CHANGE"
+                                                 ]
+                         },
+    "downstream_state":  "AUTHORIZED_FOR_UNIFIED_MTG_INTEGRATION"
+}

@@ -1,0 +1,45 @@
+{
+  "contract_id": "precollector_79_product_taxonomy_method_routing_v1",
+  "contract_version": "1.0.0",
+  "owner_decision_path": "config/mtg/governance/precollector_owner_selected_production_lane_v3.json",
+  "expected_selected_product_count": 79,
+  "expected_excluded_product_count": 15,
+  "source_review_product_count": 94,
+  "maximum_selected_comparables_per_target": 5,
+  "minimum_selected_comparables_for_required_target": 1,
+  "allowed_product_families": [
+    "STANDARD_EXPANSION",
+    "CORE",
+    "MASTERS",
+    "SUPPLEMENTAL_DRAFT",
+    "NONSTANDARD_SPECIALTY"
+  ],
+  "allowed_forecast_methods": [
+    "DIRECT_HISTORY_CALIBRATED",
+    "DIRECT_HISTORY_LIMITED",
+    "COMPARABLE_PRODUCT_ADJUSTED"
+  ],
+  "specialty_families": [
+    "MASTERS",
+    "SUPPLEMENTAL_DRAFT",
+    "NONSTANDARD_SPECIALTY"
+  ],
+  "outputs": {
+    "selected_universe_csv": "precollector_79_product_selected_universe.csv",
+    "taxonomy_csv": "precollector_79_product_taxonomy.csv",
+    "method_routes_csv": "precollector_79_product_forecast_method_routes.csv",
+    "comparable_target_status_csv": "precollector_79_product_comparable_target_status.csv",
+    "selected_comparables_csv": "precollector_79_product_selected_comparables.csv",
+    "excluded_reconciliation_csv": "precollector_15_product_exclusion_reconciliation.csv",
+    "diagnostics_csv": "precollector_79_product_taxonomy_routing_diagnostics.csv",
+    "summary_json": "precollector_79_product_taxonomy_method_routing_summary.json",
+    "manifest_json": "precollector_79_product_taxonomy_method_routing_manifest.json"
+  },
+  "next_stage_if_certified": "PRECOLLECTOR_OWNER_COMPARABLE_SELECTION_APPROVAL",
+  "forecast_generation_authorized": false,
+  "ranking_execution_authorized": false,
+  "purchase_analysis_authorized": false,
+  "purchase_recommendation_authorized": false,
+  "automatic_purchase_execution_authorized": false,
+  "uip_delivery_authorized": false
+}

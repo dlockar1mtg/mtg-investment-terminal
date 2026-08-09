@@ -1,0 +1,26 @@
+{
+  "authority_id": "precollector_release_alias_authority_v1",
+  "version": "1.0.0",
+  "status": "GOVERNED_ALIAS_AUTHORITY_FOR_OWNER_REVIEW_BUILD",
+  "aliases": [
+    {"source_release_name": "10th Edition", "authoritative_release_name": "Tenth Edition", "authority_type": "MTGJSON_NAME_ALIAS"},
+    {"source_release_name": "7th Edition", "authoritative_release_name": "Seventh Edition", "authority_type": "MTGJSON_NAME_ALIAS"},
+    {"source_release_name": "8th Edition", "authoritative_release_name": "Eighth Edition", "authority_type": "MTGJSON_NAME_ALIAS"},
+    {"source_release_name": "9th Edition", "authoritative_release_name": "Ninth Edition", "authority_type": "MTGJSON_NAME_ALIAS"},
+    {"source_release_name": "Alpha Edition", "authoritative_release_name": "Limited Edition Alpha", "authority_type": "MTGJSON_NAME_ALIAS"},
+    {"source_release_name": "Beta Edition", "authoritative_release_name": "Limited Edition Beta", "authority_type": "MTGJSON_NAME_ALIAS"},
+    {"source_release_name": "Magic 2010 (M10)", "authoritative_release_name": "Magic 2010", "authority_type": "MTGJSON_NAME_ALIAS"},
+    {"source_release_name": "Magic 2011 (M11)", "authoritative_release_name": "Magic 2011", "authority_type": "MTGJSON_NAME_ALIAS"},
+    {"source_release_name": "Magic 2012 (M12)", "authoritative_release_name": "Magic 2012", "authority_type": "MTGJSON_NAME_ALIAS"},
+    {"source_release_name": "Magic 2013 (M13)", "authoritative_release_name": "Magic 2013", "authority_type": "MTGJSON_NAME_ALIAS"},
+    {"source_release_name": "Magic 2014 (M14)", "authoritative_release_name": "Magic 2014", "authority_type": "MTGJSON_NAME_ALIAS"},
+    {"source_release_name": "Magic 2015 (M15)", "authoritative_release_name": "Magic 2015", "authority_type": "MTGJSON_NAME_ALIAS"},
+    {"source_release_name": "Mystery Booster: Convention Edition Exclusives", "authoritative_release_name": "Mystery Booster", "authority_type": "PRODUCT_SPECIFIC_DATE_REQUIRED"},
+    {"source_release_name": "Mystery Booster: Retail Exclusives", "authoritative_release_name": "Mystery Booster", "authority_type": "PRODUCT_SPECIFIC_DATE_REQUIRED"}
+  ],
+  "controls": {
+    "guessed_dates_allowed": false,
+    "product_specific_variants_must_remain_separate": true,
+    "owner_approval_required_before_universe_freeze": true
+  }
+}

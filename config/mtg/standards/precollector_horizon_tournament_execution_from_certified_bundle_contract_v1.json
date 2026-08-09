@@ -1,0 +1,75 @@
+{
+  "contract_id": "precollector_horizon_tournament_execution_from_certified_bundle_v1",
+  "contract_version": "1.1.0",
+  "governing_snapshot_id": "collector-20260801T211201Z-7688afbd",
+  "drift_gate_contract_path": "config/mtg/standards/precollector_tournament_certified_input_bundle_drift_gate_contract_v1.json",
+  "required_drift_gate_status": "PASS",
+  "expected_active_product_count": 79,
+  "expected_horizon_count": 5,
+  "expected_route_count": 3,
+  "expected_product_horizon_rows": 395,
+  "expected_winner_rows": 15,
+  "expected_canonical_historical_rows": 2826,
+  "canonical_history_binding": {
+    "package_name": "MTG_PreCollector_Canonical_Historical_Prices_v1.zip",
+    "package_sha256": "85dd8091ac9822b23ad29f099ff56868ad60768493cbf836136bb92697de1414",
+    "member_name": "precollector_canonical_historical_prices_v1.csv",
+    "member_sha256": "501592fe43eb295982835414f55bffd900ea39308ada8e5131ec0765fbf360fc",
+    "required_columns": [
+      "canonical_product_id",
+      "observation_timestamp",
+      "canonical_historical_price"
+    ]
+  },
+  "minimum_test_origins_for_competitive_winner": 3,
+  "minimum_prediction_rows_for_competitive_winner": 6,
+  "future_match_tolerance_days": 75,
+  "uncertainty_quantile": 0.80,
+  "uncertainty_floor_log": 0.10,
+  "uncertainty_ceiling_log": 3.00,
+  "minimum_training_observations": {
+    "DIRECT_HISTORY_CALIBRATED": 18,
+    "DIRECT_HISTORY_LIMITED": 10,
+    "COMPARABLE_PRODUCT_ADJUSTED": 6
+  },
+  "fallback_models": {
+    "DIRECT_HISTORY_CALIBRATED": "NAIVE_LAST_VALUE",
+    "DIRECT_HISTORY_LIMITED": "NAIVE_LAST_VALUE",
+    "COMPARABLE_PRODUCT_ADJUSTED": "RANK_DECAY_WEIGHTED_GROWTH"
+  },
+  "required_artifact_roles": [
+    "ACTIVE_PRODUCT_UNIVERSE",
+    "PRODUCT_HORIZON_MATRIX",
+    "HORIZON_ARCHITECTURE",
+    "ROUTE_MODEL_ELIGIBILITY",
+    "APPROVED_COMPARABLE_LEDGER",
+    "COMPARABLE_MODEL_WINNER",
+    "CANONICAL_HISTORICAL_PRICE"
+  ],
+  "outputs": {
+    "input_lineage_csv": "precollector_round_one_certified_input_lineage.csv",
+    "rolling_predictions_csv": "precollector_round_one_rolling_predictions.csv",
+    "model_scorecard_csv": "precollector_round_one_model_scorecard.csv",
+    "winner_registry_csv": "precollector_round_one_preliminary_winner_registry.csv",
+    "uncertainty_csv": "precollector_round_one_uncertainty_evidence.csv",
+    "diagnostics_csv": "precollector_round_one_diagnostics.csv",
+    "summary_json": "precollector_round_one_execution_summary.json",
+    "manifest_json": "precollector_round_one_execution_manifest.json"
+  },
+  "prohibited_behavior": {
+    "delete_upstream_artifacts": true,
+    "invoke_upstream_builders": true,
+    "perform_live_network_collection": true,
+    "repair_drift_automatically": true,
+    "generate_active_product_forecasts": true
+  },
+  "next_stage_if_certified": "PRECOLLECTOR_ADAPTIVE_TOURNAMENT_REFINEMENT_ARCHITECTURE",
+  "round_two_refinement_required": true,
+  "final_winner_certification_authorized": false,
+  "forecast_generation_authorized": false,
+  "ranking_execution_authorized": false,
+  "purchase_analysis_authorized": false,
+  "purchase_recommendation_authorized": false,
+  "automatic_purchase_execution_authorized": false,
+  "uip_delivery_authorized": false
+}

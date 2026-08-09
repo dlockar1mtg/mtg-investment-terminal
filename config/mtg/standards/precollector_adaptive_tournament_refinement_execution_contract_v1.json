@@ -1,0 +1,69 @@
+{
+  "contract_id": "precollector_adaptive_tournament_refinement_execution_v1",
+  "contract_version": "1.0.0",
+  "governing_snapshot_id": "collector-20260801T211201Z-7688afbd",
+  "required_round_one_package": {
+    "package_name": "MTG_PreCollector_Horizon_Tournament_Execution_From_Certified_Bundle_v1.zip",
+    "sha256": "0088ddd5f1a87c12eb720956c75605f821aafa6d2e495d2b4c291065080ec231"
+  },
+  "required_architecture_package": {
+    "package_name": "MTG_PreCollector_Adaptive_Tournament_Refinement_Architecture_v1.zip",
+    "sha256": "42ca503d11a8a85ba5519739f273b4f7d9c6e3a8f83ca6df541d00d413ae06be"
+  },
+  "expected_counts": {
+    "refinement_groups": 15,
+    "competitive_groups": 9,
+    "fallback_recovery_groups": 6,
+    "parameter_candidates": 2011,
+    "preserved_folds": 1992
+  },
+  "fold_assignment": {
+    "method": "DETERMINISTIC_HASH_PARTITION",
+    "champion_modulus": 5,
+    "champion_remainder": 0,
+    "minimum_champion_folds_for_promotion": 3,
+    "minimum_discovery_folds_for_selection": 6
+  },
+  "selection": {
+    "primary_metric": "median_absolute_percentage_error",
+    "multiple_testing_penalty_scale": 0.01,
+    "complexity_penalty_per_parameter": 0.002,
+    "minimum_relative_improvement_over_round_one": 0.005,
+    "minimum_relative_improvement_over_baseline": 0.005,
+    "maximum_absolute_bias": 0.50,
+    "no_forced_winner": true,
+    "fallback_groups_require_positive_champion_evidence": true
+  },
+  "boundary_review": {
+    "required": true,
+    "expansion_execution_deferred": true,
+    "candidate_at_boundary_cannot_be_finally_certified": true
+  },
+  "outputs": {
+    "input_lineage_csv": "precollector_round_two_execution_input_lineage.csv",
+    "fold_assignment_csv": "precollector_round_two_fold_assignment.csv",
+    "candidate_scorecard_csv": "precollector_round_two_candidate_scorecard.csv",
+    "group_decision_csv": "precollector_round_two_preliminary_group_decisions.csv",
+    "boundary_review_csv": "precollector_round_two_boundary_review.csv",
+    "uncertainty_csv": "precollector_round_two_uncertainty_recalibration.csv",
+    "diagnostics_csv": "precollector_round_two_execution_diagnostics.csv",
+    "summary_json": "precollector_round_two_execution_summary.json",
+    "manifest_json": "precollector_round_two_execution_manifest.json"
+  },
+  "prohibited_behavior": {
+    "invoke_upstream_builders": true,
+    "perform_live_network_collection": true,
+    "change_preserved_fold_membership": true,
+    "use_current_only_features": true,
+    "force_winner": true,
+    "generate_active_product_forecasts": true
+  },
+  "next_stage_if_certified": "PRECOLLECTOR_FINAL_CHAMPION_CHALLENGE_ARCHITECTURE",
+  "final_winner_certification_authorized": false,
+  "forecast_generation_authorized": false,
+  "ranking_execution_authorized": false,
+  "purchase_analysis_authorized": false,
+  "purchase_recommendation_authorized": false,
+  "automatic_purchase_execution_authorized": false,
+  "uip_delivery_authorized": false
+}

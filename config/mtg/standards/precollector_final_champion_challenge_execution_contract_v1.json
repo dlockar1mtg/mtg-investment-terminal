@@ -1,0 +1,69 @@
+{
+  "contract_id": "precollector_final_champion_challenge_execution_v1",
+  "contract_version": "1.0.0",
+  "governing_snapshot_id": "collector-20260801T211201Z-7688afbd",
+  "required_architecture_package": {
+    "package_name": "MTG_PreCollector_Final_Champion_Challenge_Architecture_v1.zip",
+    "sha256": "d4c23481c8010123fe3a24cb3abc32d2d8e8123398013594f3ddcc2876f2ba8f"
+  },
+  "required_round_two_package": {
+    "package_name": "MTG_PreCollector_Adaptive_Tournament_Refinement_Execution_v1_1.zip",
+    "sha256": "f67f2c1f0241f9450498b4cf9cd584852766738e7a5b134591c0365b4bb7fc29"
+  },
+  "expected_counts": {
+    "short_horizon_challenge_groups": 9,
+    "long_horizon_monte_carlo_routes": 6,
+    "frozen_candidate_rows": 30,
+    "stress_partition_rows": 27,
+    "preserved_fold_rows": 1992
+  },
+  "stress_evaluation": {
+    "outer_all_role": "CHAMPION",
+    "latest_time_fraction": 0.25,
+    "minimum_rows_per_partition": 3,
+    "minimum_directional_accuracy": 0.50,
+    "maximum_absolute_bias_ratio": 0.50,
+    "maximum_single_product_error_share": 0.60,
+    "maximum_worst_product_mape_multiple": 3.50,
+    "minimum_relative_improvement_for_challenger_promotion": 0.02
+  },
+  "allowed_final_decisions": [
+    "RETAIN_ROUND_ONE_INCUMBENT",
+    "PROMOTE_FROZEN_ROUND_TWO_CHALLENGER",
+    "RETAIN_GOVERNED_BASELINE",
+    "GOVERNED_NO_PRODUCTION_CHAMPION"
+  ],
+  "long_horizon_routing": {
+    "required_next_process": "PRECOLLECTOR_LONG_HORIZON_MONTE_CARLO_ARCHITECTURE",
+    "required_simulations_per_product_horizon": 10000,
+    "direct_backtest_champion_authorized": false
+  },
+  "outputs": {
+    "input_lineage_csv": "precollector_final_champion_execution_input_lineage.csv",
+    "candidate_partition_scorecard_csv": "precollector_final_champion_candidate_partition_scorecard.csv",
+    "final_group_decisions_csv": "precollector_final_champion_group_decisions.csv",
+    "certified_short_horizon_winners_csv": "precollector_certified_short_horizon_winner_registry.csv",
+    "long_horizon_routing_csv": "precollector_final_champion_long_horizon_routing.csv",
+    "diagnostics_csv": "precollector_final_champion_execution_diagnostics.csv",
+    "summary_json": "precollector_final_champion_execution_summary.json",
+    "manifest_json": "precollector_final_champion_execution_manifest.json"
+  },
+  "prohibited_behavior": {
+    "invoke_upstream_builders": true,
+    "perform_live_network_collection": true,
+    "change_preserved_fold_membership": true,
+    "add_new_candidates": true,
+    "tune_parameters": true,
+    "generate_long_horizon_forecasts": true,
+    "rank_products": true,
+    "generate_purchase_recommendations": true
+  },
+  "next_stage_if_certified": "PRECOLLECTOR_WINNER_AND_UNCERTAINTY_CERTIFICATION",
+  "final_winner_certification_authorized": false,
+  "forecast_generation_authorized": false,
+  "ranking_execution_authorized": false,
+  "purchase_analysis_authorized": false,
+  "purchase_recommendation_authorized": false,
+  "automatic_purchase_execution_authorized": false,
+  "uip_delivery_authorized": false
+}

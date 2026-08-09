@@ -1,0 +1,23 @@
+{
+  "authority_id": "precollector_product_specific_release_authority_v1",
+  "authority_version": "1.0.0",
+  "owner_approval_required_before_freeze": true,
+  "records": [
+    {
+      "canonical_product_id": "tcgplayer:217533",
+      "product_name": "Mystery Booster - Booster Box [Convention Edition] (2019)",
+      "governed_release_date": "2019-11-08",
+      "authority_type": "WIZARDS_OFFICIAL_EVENT_RELEASE",
+      "source_url": "https://magic.wizards.com/en/news/announcements/mystery-booster-revealed-2019-11-11",
+      "rationale": "Original Convention Edition debuted at MagicFest Richmond in November 2019; date bound to the event opening date for product-specific review."
+    },
+    {
+      "canonical_product_id": "tcgplayer:246935",
+      "product_name": "Mystery Booster - Booster Box [Convention Edition] (2021)",
+      "governed_release_date": "2021-08-20",
+      "authority_type": "WIZARDS_OFFICIAL_WPN_RELEASE",
+      "source_url": "https://magic.wizards.com/en/news/announcements/mystery-booster-convention-edition-returns-store-events-2021-06-21",
+      "rationale": "Wizards states limited quantities became available at WPN stores beginning August 20, 2021."
+    }
+  ]
+}

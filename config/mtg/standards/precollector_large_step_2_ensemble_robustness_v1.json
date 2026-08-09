@@ -1,0 +1,60 @@
+{
+    "contract_id":  "precollector_large_step_2_ensemble_robustness_v1",
+    "contract_version":  "1.0.0",
+    "governed_lane":  "precollector_sealed_booster_boxes_and_displays",
+    "starting_governed_head":  "3af2884100ea191176a086fd3f66e81a5cd16764",
+    "canonical_product_count":  131,
+    "complete_base_tournament":  {
+                                     "package":  "MTG_PreCollector_Complete_Base_Temporal_OOS_Tournament_v1_20260809_084157.zip",
+                                     "sha256":  "07830bed335dc8e11a4f5435c019375abe18f01b1bb6b74011dee6ca31a9642f",
+                                     "base_model_families":  11,
+                                     "governed_cells":  396
+                                 },
+    "ensemble_rules":  {
+                           "families":  [
+                                            "ROUTE_ENSEMBLE",
+                                            "GLOBAL_ENSEMBLE"
+                                        ],
+                           "current_origin_actual_outcomes_may_select_components":  false,
+                           "only_prior_origin_oos_information_may_select_components":  true,
+                           "ensemble_component_predictions_must_be_genuine_oos":  true
+                       },
+    "robustness_dimensions":  [
+                                  "OUT_OF_SAMPLE_ERROR_CONTRIBUTION",
+                                  "MODEL_STABILITY",
+                                  "STATISTICAL_INFLUENCE",
+                                  "EXCLUSION_SENSITIVITY",
+                                  "PRODUCT_HOLDOUT"
+                              ],
+    "product_holdout":  {
+                            "genuine_refit_required_for_cross_product_pooled_candidate":  true,
+                            "posthoc_residual_removal_is_genuine_holdout":  false,
+                            "checkpoint_resume_required":  true
+                        },
+    "product_governance":  {
+                               "canonical_membership_changed":  false,
+                               "automatic_downweighting":  false,
+                               "automatic_exclusion":  false,
+                               "high_nominal_price_alone_can_exclude":  false,
+                               "release_age_alone_can_exclude":  false,
+                               "missing_market_domain_alone_can_exclude":  false,
+                               "single_diagnostic_alone_can_exclude":  false,
+                               "persistent_exclusion_requires_repeatable_multi_diagnostic_support":  true,
+                               "persistent_exclusion_requires_owner_review":  true
+                           },
+    "authorization":  {
+                          "ensemble_diagnostics":  true,
+                          "robustness_diagnostics":  true,
+                          "genuine_product_holdout_diagnostics":  true,
+                          "treatment_proposal_ledger":  true,
+                          "persistent_treatment_assignment":  false,
+                          "persistent_exclusion":  false,
+                          "final_model_selection":  false,
+                          "production_model_execution":  false,
+                          "forecast_execution":  false,
+                          "monte_carlo_execution":  false,
+                          "ranking_execution":  false,
+                          "purchase_analysis":  false
+                      },
+    "authorized_next_large_step_if_certified":  "FINAL_MODEL_CERTIFICATION_AND_FORECAST_SCENARIO_CONSTRUCTION"
+}

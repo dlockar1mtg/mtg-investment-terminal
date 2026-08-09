@@ -1,0 +1,76 @@
+{
+    "amendment_id":  "precollector_base_oos_validation_protocol_amendment_v1",
+    "amendment_version":  "1.0.0",
+    "governed_lane":  "precollector_sealed_booster_boxes_and_displays",
+    "amendment_scope":  "VALIDATION_SPLIT_INTERPRETATION_ONLY",
+    "upstream_model_specification":  {
+                                         "path":  "config/mtg/standards/precollector_base_oos_model_specification_v1.json",
+                                         "certified_package":  "MTG_PreCollector_Base_OOS_Model_Specification_v1_20260809_072737.zip",
+                                         "certified_package_sha256":  "168b4384c53162635e18e450f281e4a8b6d6dbefac3efe74bd15e007233c78f9"
+                                     },
+    "reason":  "Temporal out-of-sample forecasting and complete product holdout answer different validation questions and must be evaluated separately.",
+    "superseded_interpretation":  {
+                                      "temporal_oos_must_also_exclude_all_same_product_history":  false,
+                                      "explanation":  "The prior validation_product_excluded_from_pooled_training field must not be interpreted as requiring simultaneous leave-one-product-out inside every temporal OOS fold."
+                                  },
+    "temporal_oos_protocol":  {
+                                  "purpose":  "Evaluate forecast performance using only information legitimately available by each forecast origin.",
+                                  "time_order_required":  true,
+                                  "eligible_training_example_rule":  "training example realized_endpoint_date must be on or before validation origin_date",
+                                  "same_product_prior_matured_examples_allowed":  true,
+                                  "same_product_future_or_unmatured_examples_allowed":  false,
+                                  "future_endpoint_information_allowed":  false,
+                                  "current_2026_market_features_allowed_in_historical_fold":  false,
+                                  "validation_origin_feature_values_must_be_point_in_time":  true,
+                                  "random_time_split_allowed":  false
+                              },
+    "product_holdout_protocol":  {
+                                     "purpose":  "Test cross-product generalization independently from temporal forecast validation.",
+                                     "required":  true,
+                                     "all_training_examples_from_held_out_product_excluded":  true,
+                                     "time_order_still_required":  true,
+                                     "product_holdout_is_same_metric_as_temporal_oos":  false,
+                                     "product_holdout_results_must_be_reported_separately":  true,
+                                     "product_holdout_required_before_persistent_exclusion":  true,
+                                     "product_holdout_required_before_final_model_certification":  true
+                                 },
+    "execution_sequence":  [
+                               "DIRECT_TEMPORAL_OOS_BASE_TOURNAMENT",
+                               "BASE_OOS_ENSEMBLE_TOURNAMENT",
+                               "PRODUCT_HOLDOUT_AND_INFLUENCE_DIAGNOSTICS",
+                               "EXCLUSION_SENSITIVITY",
+                               "FINAL_MODEL_TREATMENT_REVIEW"
+                           ],
+    "methodological_effect":  {
+                                  "model_families_changed":  false,
+                                  "hyperparameters_changed":  false,
+                                  "target_transformations_changed":  false,
+                                  "feature_variants_changed":  false,
+                                  "horizons_changed":  false,
+                                  "theoretical_matrix_changed":  false,
+                                  "base_matrix_cells_changed":  false,
+                                  "observed_model_results_used_to_make_amendment":  false
+                              },
+    "anti_cherry_picking":  {
+                                "amendment_occurs_before_first_oos_model_result":  true,
+                                "hyperparameters_remain_frozen":  true,
+                                "winner_rules_remain_unchanged":  true,
+                                "product_treatments_assigned":  0,
+                                "product_exclusions_assigned":  0
+                            },
+    "authorization":  {
+                          "direct_temporal_oos_base_execution":  true,
+                          "ensemble_execution":  false,
+                          "product_holdout_execution":  false,
+                          "influence_execution":  false,
+                          "exclusion_sensitivity_execution":  false,
+                          "persistent_treatment_assignment":  false,
+                          "persistent_exclusion":  false,
+                          "production_model_selection":  false,
+                          "monte_carlo_execution":  false,
+                          "forecast_execution":  false,
+                          "ranking_execution":  false,
+                          "purchase_analysis":  false
+                      },
+    "authorized_next_stage":  "RUN_PRECOLLECTOR_BASE_DIRECT_TEMPORAL_OOS_TOURNAMENT"
+}

@@ -1,0 +1,56 @@
+{
+    "contract_id":  "precollector_base_temporal_oos_batch_15w_c_v1",
+    "contract_version":  "1.0.0",
+    "batch_id":  "15W-C",
+    "model_families":  [
+                           "PEER_MEDIAN_RETURN",
+                           "PEER_WEIGHTED_RETURN"
+                       ],
+    "direct_horizons_days":  [
+                                 90,
+                                 180,
+                                 365
+                             ],
+    "feature_variants":  [
+                             "PRICE_ONLY",
+                             "PRICE_PLUS_AGE",
+                             "PRICE_PLUS_PATH_STABILITY"
+                         ],
+    "target_transformations":  [
+                                   "RAW_PRICE_CHANGE",
+                                   "LOG_PRICE_CHANGE",
+                                   "RETURN",
+                                   "ANNUALIZED_RETURN_WHERE_DEFINED"
+                               ],
+    "governed_matrix_cells":  72,
+    "minimum_peer_rows":  5,
+    "weighted_neighbor_count":  15,
+    "weighted_distance":  "EUCLIDEAN_AFTER_ROBUST_FEATURE_STANDARDIZATION",
+    "weighted_weight":  "1_DIVIDED_BY_1_PLUS_DISTANCE",
+    "temporal_training_rule":  {
+                                   "endpoint_must_mature_by_validation_origin":  true,
+                                   "same_product_prior_matured_examples_allowed":  true,
+                                   "future_examples_allowed":  false,
+                                   "current_market_feature_leakage_allowed":  false,
+                                   "random_time_split_allowed":  false
+                               },
+    "semantic_duplicate_rule":  {
+                                    "peer_median_uses_feature_variant":  false,
+                                    "peer_median_duplicate_feature_cells_independent":  false,
+                                    "peer_weighted_uses_feature_variant":  true
+                                },
+    "authorization":  {
+                          "current_batch_execution":  true,
+                          "tree_batch_execution":  false,
+                          "base_reconciliation":  false,
+                          "ensemble_execution":  false,
+                          "product_holdout_execution":  false,
+                          "persistent_exclusion":  false,
+                          "production_model_selection":  false,
+                          "monte_carlo_execution":  false,
+                          "forecast_execution":  false,
+                          "ranking_execution":  false,
+                          "purchase_analysis":  false
+                      },
+    "authorized_next_stage_if_certified":  "RUN_PRECOLLECTOR_BASE_TEMPORAL_OOS_BATCH_15W_D"
+}

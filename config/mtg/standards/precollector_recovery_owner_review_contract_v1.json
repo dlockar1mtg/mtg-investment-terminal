@@ -1,0 +1,37 @@
+{
+  "contract_id": "precollector_recovery_owner_review_v1",
+  "contract_version": "1.0.0",
+  "governed_lane": "precollector_booster_boxes",
+  "required_recovery_audit_package": {
+    "package_name": "MTG_PreCollector_Recovery_State_Audit_v1.zip",
+    "sha256": "8d8ae7a32766d77ef32e67a8a96861ec553ab1fc7e2c2d903da3fe13a9bd2018"
+  },
+  "review_scope": {
+    "read_only": true,
+    "identify_authentic_control_point": true,
+    "classify_reusable_architecture": true,
+    "classify_invalid_outputs": true,
+    "execute_forecasts": false,
+    "execute_rankings": false,
+    "execute_purchase_analysis": false,
+    "modify_collector_assets": false
+  },
+  "required_outputs": [
+    "precollector_recovery_owner_review_stage_summary.csv",
+    "precollector_recovery_owner_review_control_point_candidates.csv",
+    "precollector_recovery_owner_review_reusable_architecture.csv",
+    "precollector_recovery_owner_review_quarantined_outputs.csv",
+    "precollector_recovery_owner_review_remaining_work.csv",
+    "precollector_recovery_owner_review_summary.json",
+    "precollector_recovery_owner_review_manifest.json"
+  ],
+  "decision_rules": {
+    "quarantined_artifacts_may_be_authoritative": false,
+    "non_quarantined_evidence_requires_owner_review": true,
+    "collector_target_authority_allowed": false,
+    "forecast_authorization_may_be_granted": false,
+    "ranking_authorization_may_be_granted": false,
+    "purchase_authorization_may_be_granted": false
+  },
+  "next_stage_if_certified": "OWNER_DECISION_ON_AUTHENTIC_PRECOLLECTOR_CONTROL_POINT"
+}

@@ -1,0 +1,77 @@
+{
+  "contract_id": "precollector_tournament_certified_input_bundle_drift_gate_v1",
+  "contract_version": "1.1.0",
+  "governing_snapshot_id": "collector-20260801T211201Z-7688afbd",
+  "expected_counts": {
+    "active_products": 79,
+    "excluded_products": 15,
+    "forecast_horizons": 5,
+    "product_horizon_rows": 395,
+    "forecast_routes": 3,
+    "approved_comparable_rows": 369,
+    "canonical_historical_rows": 2826
+  },
+  "required_certified_packages": [
+    {
+      "package_name": "MTG_PreCollector_Comparable_Model_Tournament_Calibration_v1.zip",
+      "sha256": "f5b7d5997edce1882a0e1bc6f6b6fa374d9566115e54cbca22764c8ff6b4e9d9"
+    },
+    {
+      "package_name": "MTG_PreCollector_Forecast_Input_Assembly_Method_Certification_v1.zip",
+      "sha256": "a4123838524d9ef678bde84c02df4eefd44cf9d1df41cfdeb588368fd0f2eabb"
+    },
+    {
+      "package_name": "MTG_PreCollector_Horizon_Specific_Tournament_Architecture_v1.zip",
+      "sha256": "38944b55104fd1368a8faf1ba97cf767b3e597a5217ecdeff3c6f38cb94faaca"
+    },
+    {
+      "package_name": "MTG_PreCollector_Canonical_Historical_Prices_v1.zip",
+      "sha256": "85dd8091ac9822b23ad29f099ff56868ad60768493cbf836136bb92697de1414"
+    }
+  ],
+  "exact_artifact_bindings": {
+    "CANONICAL_HISTORICAL_PRICE": {
+      "package_name": "MTG_PreCollector_Canonical_Historical_Prices_v1.zip",
+      "package_sha256": "85dd8091ac9822b23ad29f099ff56868ad60768493cbf836136bb92697de1414",
+      "member_name": "precollector_canonical_historical_prices_v1.csv",
+      "member_sha256": "501592fe43eb295982835414f55bffd900ea39308ada8e5131ec0765fbf360fc",
+      "row_count": 2826,
+      "required_columns": [
+        "canonical_product_id",
+        "observation_timestamp",
+        "canonical_historical_price"
+      ]
+    }
+  },
+  "required_artifact_roles": [
+    "ACTIVE_PRODUCT_UNIVERSE",
+    "PRODUCT_HORIZON_MATRIX",
+    "HORIZON_ARCHITECTURE",
+    "ROUTE_MODEL_ELIGIBILITY",
+    "APPROVED_COMPARABLE_LEDGER",
+    "COMPARABLE_MODEL_WINNER",
+    "CANONICAL_HISTORICAL_PRICE"
+  ],
+  "artifact_role_patterns": {
+    "ACTIVE_PRODUCT_UNIVERSE": ["precollector_79_product_forecast_input_certification.csv"],
+    "PRODUCT_HORIZON_MATRIX": ["precollector_79_product_horizon_tournament_input_matrix.csv"],
+    "HORIZON_ARCHITECTURE": ["precollector_horizon_specific_tournament_architecture.csv"],
+    "ROUTE_MODEL_ELIGIBILITY": ["precollector_horizon_route_model_eligibility.csv"],
+    "APPROVED_COMPARABLE_LEDGER": ["approved_comparable", "comparable_ledger"],
+    "COMPARABLE_MODEL_WINNER": ["comparable_model_tournament", "winner_adapter", "selected_model"],
+    "CANONICAL_HISTORICAL_PRICE": ["precollector_canonical_historical_prices_v1.csv"]
+  },
+  "prohibited_behavior": {
+    "delete_upstream_artifacts": true,
+    "invoke_upstream_builders": true,
+    "perform_live_network_collection": true,
+    "repair_drift_automatically": true
+  },
+  "next_stage_if_pass": "PRECOLLECTOR_HORIZON_SPECIFIC_TOURNAMENT_EXECUTION_FROM_CERTIFIED_BUNDLE",
+  "forecast_generation_authorized": false,
+  "ranking_execution_authorized": false,
+  "purchase_analysis_authorized": false,
+  "purchase_recommendation_authorized": false,
+  "automatic_purchase_execution_authorized": false,
+  "uip_delivery_authorized": false
+}

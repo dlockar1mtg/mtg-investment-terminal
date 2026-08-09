@@ -1,0 +1,54 @@
+{
+    "contract_id":  "precollector_canonical_universe_scope_correction_v2",
+    "contract_version":  "2.0.0",
+    "governed_lane":  "precollector_sealed_booster_boxes",
+    "prior_authority":  {
+                            "stage9_package_name":  "MTG_PreCollector_Canonical_Universe_Certification_v1_20260808_075246.zip",
+                            "stage9_package_sha256":  "4353ab033e9baff368bea42acee17251c5be6cdf0243fa6d68375f188000c6c1",
+                            "prior_product_count":  186,
+                            "prior_authority_preserved":  true,
+                            "prior_authority_status":  "SUPERSEDED_BY_PRODUCT_FORM_SCOPE_CORRECTION"
+                        },
+    "corrected_scope":  {
+                            "target_commercial_unit":  "INDIVIDUAL_SEALED_BOX_OR_DISPLAY",
+                            "include_booster_box":  true,
+                            "include_booster_display":  true,
+                            "include_display_box":  true,
+                            "exclude_booster_box_case":  true,
+                            "exclude_sealed_case":  true,
+                            "exclude_master_case":  true,
+                            "exclude_case_of_multiple_boxes":  true,
+                            "expected_corrected_product_count":  131,
+                            "expected_removed_case_count":  55,
+                            "expected_unresolved_product_form_count":  0
+                        },
+    "removal_policy":  {
+                           "removal_reason":  "WRONG_COMMERCIAL_UNIT_MULTI_BOX_CASE",
+                           "removal_is_model_exclusion":  false,
+                           "removal_is_statistical_exclusion":  false,
+                           "removal_is_age_based":  false,
+                           "case_to_box_price_division_allowed":  false,
+                           "synthetic_case_normalization_allowed":  false
+                       },
+    "downstream_rebinding":  {
+                                 "stage14_historical_authority_status":  "REQUIRES_REBINDING_TO_CORRECTED_131_PRODUCT_UNIVERSE",
+                                 "stage15d_fresh_market_collection_status":  "NON_CERTIFIABLE_OVERBROAD_186_PRODUCT_SCOPE_REQUIRES_RERUN",
+                                 "historical_source_recollection_required":  false,
+                                 "historical_authority_filter_and_rebind_required":  true,
+                                 "fresh_current_price_rerun_required":  true,
+                                 "fresh_ebay_rerun_required":  true,
+                                 "ebay_high_recall_page_limit":  200,
+                                 "ebay_cases_must_be_rejected":  true
+                             },
+    "authorization":  {
+                          "corrected_universe_certification":  true,
+                          "stage14_history_rebinding":  true,
+                          "fresh_current_price_collection":  true,
+                          "fresh_availability_collection":  true,
+                          "model_execution":  false,
+                          "forecast_execution":  false,
+                          "ranking_execution":  false,
+                          "purchase_analysis":  false
+                      },
+    "authorized_next_stage":  "REBIND_PRECOLLECTOR_HISTORY_TO_CORRECTED_131_PRODUCT_UNIVERSE"
+}

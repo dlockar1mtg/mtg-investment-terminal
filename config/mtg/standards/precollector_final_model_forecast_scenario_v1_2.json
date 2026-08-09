@@ -1,0 +1,48 @@
+{
+    "contract_id":  "precollector_final_model_forecast_scenario_v1_2",
+    "contract_version":  "1.2.0",
+    "amendment_reason":  "GOVERN_CURRENT_PRICE_AUTHORITY_GAPS_DURING_PRODUCTION_FORECAST",
+    "prior_failed_version":  {
+                                 "contract_id":  "precollector_final_model_forecast_scenario_v1_1",
+                                 "runner_sha256":  "b02d81b3961346abd09efdbb7e40859ccbbb7807d7ffea6b583d45ba65f7ca23",
+                                 "contract_sha256":  "e31732ff93c8722c65dfc1febd5268216b8d2bb91c586ff54cbf5db81316f2f2",
+                                 "certified":  false
+                             },
+    "canonical_products":  131,
+    "current_price_authority":  {
+                                    "governed_price_coverage_products":  121,
+                                    "canonical_products_without_governed_current_price":  10,
+                                    "missing_current_price_behavior":  "FORECAST_GAP",
+                                    "invalid_current_price_behavior":  "FORECAST_GAP",
+                                    "nonpositive_current_price_behavior":  "FORECAST_GAP",
+                                    "current_price_gap_causes_canonical_removal":  false,
+                                    "current_price_gap_causes_persistent_model_exclusion":  false
+                                },
+    "product_holdout":  {
+                            "required_dispositions":  115,
+                            "allowed_statuses":  [
+                                                     "GENUINE_LEAVE_ONE_PRODUCT_OUT",
+                                                     "NO_VALID_LOPO_PREDICTIONS"
+                                                 ],
+                            "no_valid_prediction_causes_exclusion":  false,
+                            "persistent_exclusions":  0
+                        },
+    "final_selection":  {
+                            "grain":  "HORIZON_SPECIFIC",
+                            "primary_metric":  "PAIRED_ROBUSTNESS_SMAPE",
+                            "one_global_winner_required":  false
+                        },
+    "long_horizon":  {
+                         "direct_3_year_backtest":  false,
+                         "direct_5_year_backtest":  false,
+                         "three_year_label":  "THREE_YEAR_SCENARIO_NOT_DIRECTLY_BACKTESTED",
+                         "five_year_label":  "FIVE_YEAR_SCENARIO_NOT_DIRECTLY_BACKTESTED"
+                     },
+    "authorization":  {
+                          "production_365_forecast":  true,
+                          "scenario_basis":  true,
+                          "monte_carlo_in_this_stage":  false,
+                          "monte_carlo_after_success":  true,
+                          "purchase_ranking_in_this_stage":  false
+                      }
+}

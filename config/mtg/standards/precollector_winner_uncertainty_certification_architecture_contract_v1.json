@@ -1,0 +1,82 @@
+{
+  "contract_id": "precollector_winner_uncertainty_certification_architecture_v1",
+  "contract_version": "1.0.0",
+  "governing_snapshot_id": "collector-20260801T211201Z-7688afbd",
+  "required_control_repair_execution_package": {
+    "package_name": "MTG_PreCollector_Final_Champion_Control_Repair_Execution_v1.zip",
+    "sha256": "fcdc8843f5c9ba0a1a32bea520c592da69b4018982e662ae2a2513142509ae8e"
+  },
+  "expected_counts": {
+    "short_horizon_groups": 9,
+    "certifiable_winner_groups": 5,
+    "unresolved_no_champion_groups": 4,
+    "long_horizon_monte_carlo_routes": 6,
+    "preserved_scorecard_rows": 90
+  },
+  "certification_scope": {
+    "certify_only_existing_repaired_winners": true,
+    "reopen_model_selection": false,
+    "recompute_predictions": false,
+    "recompute_errors": false,
+    "change_candidates": false,
+    "change_folds": false,
+    "tune_models": false,
+    "force_resolution_of_no_champion_groups": false
+  },
+  "uncertainty_design": {
+    "evidence_source": "PRESERVED_CANDIDATE_PARTITION_SCORECARD",
+    "required_partitions": [
+      "OUTER_ALL",
+      "LATEST_TIME_STRESS",
+      "PRODUCT_CONCENTRATION_STRESS"
+    ],
+    "classifications": [
+      "LOWER_UNCERTAINTY",
+      "MODERATE_UNCERTAINTY",
+      "HIGH_UNCERTAINTY",
+      "NOT_CERTIFIABLE"
+    ],
+    "classification_inputs": [
+      "outer_all_rows",
+      "outer_all_median_ape",
+      "outer_all_directional_accuracy",
+      "latest_time_median_ape_deterioration_multiple",
+      "latest_time_directional_accuracy_decline",
+      "product_concentration_median_ape_deterioration_multiple",
+      "product_concentration_directional_accuracy",
+      "single_product_error_share",
+      "worst_product_mape_multiple",
+      "mean_signed_percentage_error_status"
+    ],
+    "unavailable_metric_disposition": {
+      "metric": "MEAN_SIGNED_PERCENTAGE_ERROR",
+      "status": "NOT_EVALUABLE_FROM_PRESERVED_SCORECARD",
+      "fabrication_prohibited": true,
+      "automatic_low_uncertainty_prohibited": true
+    },
+    "conservative_rule": "NO_WINNER_MAY_RECEIVE_LOWER_UNCERTAINTY_WHILE_MEAN_SIGNED_PERCENTAGE_ERROR_IS_NOT_EVALUABLE"
+  },
+  "long_horizon_routing": {
+    "required_next_process": "PRECOLLECTOR_LONG_HORIZON_MONTE_CARLO_ARCHITECTURE",
+    "required_simulations_per_product_horizon": 10000,
+    "required_horizon_days": [1095, 1825],
+    "direct_winner_certification_authorized": false
+  },
+  "outputs": {
+    "input_lineage_csv": "precollector_winner_uncertainty_architecture_input_lineage.csv",
+    "certification_scope_registry_csv": "precollector_winner_uncertainty_certification_scope_registry.csv",
+    "uncertainty_policy_csv": "precollector_winner_uncertainty_policy.csv",
+    "unresolved_group_registry_csv": "precollector_winner_uncertainty_unresolved_group_registry.csv",
+    "long_horizon_routing_csv": "precollector_winner_uncertainty_long_horizon_routing.csv",
+    "execution_plan_csv": "precollector_winner_uncertainty_execution_plan.csv",
+    "summary_json": "precollector_winner_uncertainty_architecture_summary.json",
+    "manifest_json": "precollector_winner_uncertainty_architecture_manifest.json"
+  },
+  "next_stage_if_certified": "PRECOLLECTOR_WINNER_AND_UNCERTAINTY_CERTIFICATION_EXECUTION",
+  "forecast_generation_authorized": false,
+  "ranking_execution_authorized": false,
+  "purchase_analysis_authorized": false,
+  "purchase_recommendation_authorized": false,
+  "automatic_purchase_execution_authorized": false,
+  "uip_delivery_authorized": false
+}
