@@ -1,4 +1,4 @@
-# Secret Lair V1 — eBay Query and Acceptance Contract
+# Secret Lair V1 â€” eBay Query and Acceptance Contract
 
 ## Status
 
@@ -90,3 +90,23 @@ NOT AUTHORIZED:
 ## Next gate
 
 SL2C3_FRESH_EBAY_RAW_LISTING_ACQUISITION
+## SL-2C.2A Query-Plan Schema Correction
+
+Contract version: 1.0.1
+
+The original SL-2C.2 plan correctly calculated seven-query ladders for 81 products but serialized only query_01 through query_06.
+
+The correction adds query_07 to the governed query-plan schema.
+
+Certified invariants:
+
+- acquisition population remains 993 products;
+- all product query_count values are unchanged;
+- query_01 through query_06 are unchanged;
+- exactly 81 products require query_07;
+- total theoretical Browse calls remain 5,555;
+- legacy numeric matching remains unauthorized;
+- raw listing evidence remains non-authoritative;
+- the failed Wave-1 run directory is preserved unchanged.
+
+The correction was required after the first Wave-1 attempt failed closed at SL-0170AA960296CD before that product executed an eBay search.
