@@ -1,6 +1,6 @@
 {
     "contract_id":  "unified_mtg_v1_lane_authority_binding_contract",
-    "contract_version":  "1.0.0",
+    "contract_version":  "1.0.1",
     "status":  "UNIFIED_MTG_V1_CANONICAL_LANE_AUTHORITY_BINDING_CERTIFIED",
     "starting_head":  "c9e95898808f28a820eabb85705c07cbcc689239",
     "branch":  "phase-9.0-unified-mtg-production-authority",
@@ -93,7 +93,30 @@
                                                                         "three_year":  "SCENARIO_NOT_DIRECTLY_BACKTESTED",
                                                                         "five_year":  "SCENARIO_NOT_DIRECTLY_BACKTESTED"
                                                                     },
-                                        "automatic_purchase_execution":  false
+                                        "automatic_purchase_execution":  false,
+                                        "current_price":  {
+                                                              "authority_role":  "GOVERNED_CURRENT_PRICE_AUTHORITY",
+                                                              "certified_package_name":  "MTG_PreCollector_Current_Price_Authority_v2_20260808_151353.zip",
+                                                              "certified_package_sha256":  "cab2c351a167e5a5c02b58c411355d58c18d0f075f282a05e85083412cb3f3c6",
+                                                              "authority_member":  "precollector_current_price_authority_v2.csv",
+                                                              "authority_member_sha256":  "2f2e23afab13c5ffc41899cc14dbe92b5e4cb3a0cd60ac6d19cba11ce7d338a8",
+                                                              "authority_rows":  121,
+                                                              "governed_price_field":  "selected_price",
+                                                              "certified_coverage_status":  "CERTIFIED_TCGCSV_LIVE_CURRENT_PRICE",
+                                                              "coverage_member":  "precollector_current_price_coverage_v2.csv",
+                                                              "coverage_member_sha256":  "664c15c982dda1a53b7e98eeb089c93a1358215cdda98834d16b1401412ac9ed",
+                                                              "coverage_rows":  131,
+                                                              "gap_coverage_status":  "NO_CERTIFIED_CURRENT_PRICE_EVIDENCE",
+                                                              "gap_member":  "precollector_current_price_gaps_v2.csv",
+                                                              "gap_member_sha256":  "e2a9f81f551ed33312c3b51299c24717470a0870df350782787589ea1f80fda9",
+                                                              "explicit_gap_rows":  10,
+                                                              "summary_member":  "precollector_current_price_authority_v2_summary.json",
+                                                              "summary_member_sha256":  "48709413e6e1d3cdb0025621f572492003bd1b361d0e535bda4b2c2676717835",
+                                                              "source_name":  "TCGCSV_LIVE",
+                                                              "ebay_used_as_current_price_source":  false,
+                                                              "synthetic_price_used":  false,
+                                                              "case_price_conversion_used":  false
+                                                          }
                                     },
                   "secret_lair":  {
                                       "lane_id":  "SECRET_LAIR_V1_1",
@@ -149,5 +172,12 @@
                           "MTG_to_UIP_export":  false,
                           "automatic_purchase_execution":  false
                       },
-    "next_gate":  "MTG_U1C_NORMALIZED_PRODUCT_AUTHORITY_ASSEMBLY"
+    "next_gate":  "MTG_U1C_NORMALIZED_PRODUCT_AUTHORITY_ASSEMBLY",
+    "amendment":  {
+                      "amendment_id":  "MTG_U1B1_R1_PRECOLLECTOR_CURRENT_PRICE_BINDING",
+                      "integration_defect":  "U1C_INFERRED_CURRENT_PRICE_AUTHORITY_FROM_DISPOSITION_CONVENIENCE_FIELD",
+                      "correction":  "BIND_CERTIFIED_PRECOLLECTOR_CURRENT_PRICE_AUTHORITY_V2",
+                      "precollector_lane_reopened":  false,
+                      "native_precollector_data_changed":  false
+                  }
 }
