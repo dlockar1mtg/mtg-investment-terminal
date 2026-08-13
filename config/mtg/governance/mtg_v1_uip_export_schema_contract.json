@@ -1,0 +1,136 @@
+{
+    "contract_id":  "mtg_v1_uip_export_schema_contract",
+    "contract_version":  "1.0.0",
+    "status":  "MTG_V1_UIP_EXPORT_SCHEMA_CERTIFIED",
+    "payload_grain":  "ONE_ROW_PER_GOVERNED_MTG_ASSET_PER_AUTHORITY_SNAPSHOT",
+    "source_schema_preserved_exactly":  true,
+    "field_count":  23,
+    "fields":  [
+                   {
+                       "field":  "mtg_asset_id",
+                       "category":  "PORTABLE_FACT",
+                       "exported_without_transformation":  true
+                   },
+                   {
+                       "field":  "mtg_lane",
+                       "category":  "PORTABLE_FACT",
+                       "exported_without_transformation":  true
+                   },
+                   {
+                       "field":  "native_asset_id",
+                       "category":  "PORTABLE_FACT",
+                       "exported_without_transformation":  true
+                   },
+                   {
+                       "field":  "product_name",
+                       "category":  "PORTABLE_FACT",
+                       "exported_without_transformation":  true
+                   },
+                   {
+                       "field":  "lane_authority_state",
+                       "category":  "PORTABLE_FACT",
+                       "exported_without_transformation":  true
+                   },
+                   {
+                       "field":  "current_price_usd",
+                       "category":  "PORTABLE_FACT",
+                       "exported_without_transformation":  true
+                   },
+                   {
+                       "field":  "current_price_authority_available",
+                       "category":  "PORTABLE_FACT",
+                       "exported_without_transformation":  true
+                   },
+                   {
+                       "field":  "forecast_authority_available",
+                       "category":  "PORTABLE_FACT",
+                       "exported_without_transformation":  true
+                   },
+                   {
+                       "field":  "forecast_1y_price_usd",
+                       "category":  "LANE_NATIVE_ANALYTIC",
+                       "exported_without_transformation":  true
+                   },
+                   {
+                       "field":  "forecast_1y_return",
+                       "category":  "LANE_NATIVE_ANALYTIC",
+                       "exported_without_transformation":  true
+                   },
+                   {
+                       "field":  "risk_authority_available",
+                       "category":  "PORTABLE_FACT",
+                       "exported_without_transformation":  true
+                   },
+                   {
+                       "field":  "native_rank",
+                       "category":  "LANE_NATIVE_ANALYTIC",
+                       "exported_without_transformation":  true
+                   },
+                   {
+                       "field":  "native_rank_type",
+                       "category":  "LANE_NATIVE_ANALYTIC",
+                       "exported_without_transformation":  true
+                   },
+                   {
+                       "field":  "native_purchase_status",
+                       "category":  "LANE_NATIVE_ANALYTIC",
+                       "exported_without_transformation":  true
+                   },
+                   {
+                       "field":  "purchase_semantic",
+                       "category":  "LANE_NATIVE_ANALYTIC",
+                       "exported_without_transformation":  true
+                   },
+                   {
+                       "field":  "evidence_state",
+                       "category":  "LANE_NATIVE_ANALYTIC",
+                       "exported_without_transformation":  true
+                   },
+                   {
+                       "field":  "actionability_state",
+                       "category":  "LANE_NATIVE_ANALYTIC",
+                       "exported_without_transformation":  true
+                   },
+                   {
+                       "field":  "execution_ready_purchase_certified",
+                       "category":  "EXECUTION_GOVERNANCE_CONTROL",
+                       "exported_without_transformation":  true
+                   },
+                   {
+                       "field":  "manual_execution_price_check_required",
+                       "category":  "EXECUTION_GOVERNANCE_CONTROL",
+                       "exported_without_transformation":  true
+                   },
+                   {
+                       "field":  "native_authority_pointer",
+                       "category":  "PORTABLE_FACT",
+                       "exported_without_transformation":  true
+                   },
+                   {
+                       "field":  "native_authority_sha256",
+                       "category":  "PORTABLE_FACT",
+                       "exported_without_transformation":  true
+                   },
+                   {
+                       "field":  "snapshot_population_is_permanent",
+                       "category":  "PORTABLE_FACT",
+                       "exported_without_transformation":  true
+                   },
+                   {
+                       "field":  "automatic_purchase_execution",
+                       "category":  "EXECUTION_GOVERNANCE_CONTROL",
+                       "exported_without_transformation":  true
+                   }
+               ],
+    "semantic_rules":  {
+                           "native_rank_is_global_MTG_rank":  false,
+                           "native_rank_is_cross_asset_UIP_rank":  false,
+                           "native_purchase_status_is_universal_purchase_policy":  false,
+                           "secret_lair_BUY_is_execution_ready":  false,
+                           "missing_price_means_zero":  false,
+                           "missing_forecast_means_zero":  false,
+                           "missing_rank_means_worst_rank":  false,
+                           "missing_purchase_status_means_WAIT":  false,
+                           "current_snapshot_row_count_is_permanent_universe":  false
+                       }
+}
