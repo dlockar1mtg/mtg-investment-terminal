@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+from collections import Counter
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -26,6 +27,8 @@ def main() -> int:
         "forecasts": package / "forecasts.csv",
         "recommendations": package / "recommendations.csv",
         "risks": package / "risk_metrics.csv",
+        "native_authority": package / "mtg_native_authority.csv",
+        "package_summary": package / "package_summary.json",
         "prices": market / "consolidated_marketplace_prices.csv",
         "decisions": market / "certified_marketplace_decisions.csv",
     }
@@ -41,8 +44,10 @@ def main() -> int:
         forecasts = read_csv(required["forecasts"])
         recommendations = read_csv(required["recommendations"])
         risks = read_csv(required["risks"])
+        native_authority = read_csv(required["native_authority"])
         prices = read_csv(required["prices"])
         decisions = read_csv(required["decisions"])
+        summary = json.loads(required["package_summary"].read_text(encoding="utf-8"))
 
         aliases = build_asset_aliases(assets)
         package_ids = {i for values in aliases.values() for i in values}
@@ -69,9 +74,34 @@ def main() -> int:
 
         price_matches = sorted(price_ids.intersection(package_ids))
         decision_matches = sorted(decision_ids.intersection(package_ids))
+        native_asset_ids = {
+            str(row.get("mtg_asset_id", "") or "").strip()
+            for row in native_authority
+            if str(row.get("mtg_asset_id", "") or "").strip()
+        }
+        native_lane_counts = dict(
+            Counter(
+                str(row.get("mtg_lane", "") or "").strip()
+                for row in native_authority
+                if str(row.get("mtg_lane", "") or "").strip()
+            )
+        )
+
         reasons = []
-        if len(assets) != 1141:
-            reasons.append("PHASE_11E_PACKAGE_PRODUCT_COUNT_NOT_1141")
+        if not assets or len(assets) != len(native_authority):
+            reasons.append("PHASE_11E_PACKAGE_NATIVE_AUTHORITY_COUNT_MISMATCH")
+        if asset_ids != native_asset_ids:
+            reasons.append("PHASE_11E_PACKAGE_NATIVE_AUTHORITY_ID_MISMATCH")
+        if int(summary.get("products", -1)) != len(native_authority):
+            reasons.append("PHASE_11E_PACKAGE_SUMMARY_COUNT_MISMATCH")
+        if dict(summary.get("lane_counts") or {}) != native_lane_counts:
+            reasons.append("PHASE_11E_PACKAGE_LANE_COUNTS_MISMATCH")
+        if summary.get("snapshot_population_is_permanent") is not False:
+            reasons.append("PHASE_11E_SNAPSHOT_POPULATION_INCORRECTLY_PERMANENT")
+        if summary.get("generic_surfaces_are_semantic_authority") is not False:
+            reasons.append("PHASE_11E_GENERIC_SURFACES_INCORRECTLY_AUTHORITATIVE")
+        if summary.get("automatic_purchase_execution") is not False:
+            reasons.append("PHASE_11E_AUTOMATIC_EXECUTION_INCORRECTLY_AUTHORIZED")
         if not prices or not decisions:
             reasons.append("PHASE_11E_LIVE_SOURCE_ROWS_EMPTY")
         if not price_matches:
@@ -84,8 +114,10 @@ def main() -> int:
         payload = {
             "status": "PASS" if not reasons else "FAILED",
             "reason_codes": reasons,
+            "population_contract": "DYNAMIC_CERTIFIED_NATIVE_AUTHORITY",
             "counts": {
                 "assets": len(assets),
+                "native_authority": len(native_authority),
                 "forecasts": len(forecasts),
                 "recommendations": len(recommendations),
                 "risks": len(risks),
@@ -94,6 +126,7 @@ def main() -> int:
                 "joinable_price_identifiers": len(price_matches),
                 "joinable_decision_identifiers": len(decision_matches),
             },
+            "native_lane_counts": native_lane_counts,
             "orphan_asset_id_counts": orphan_counts,
             "sample_joinable_price_identifiers": price_matches[:10],
             "sample_joinable_decision_identifiers": decision_matches[:10],
