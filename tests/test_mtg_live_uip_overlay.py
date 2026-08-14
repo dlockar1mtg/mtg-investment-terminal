@@ -25,3 +25,5 @@ def test_identifier_index_supports_source_ids():
 def test_price_field_selection():
     module = load_module()
     assert module.first({"median_price_usd": "100"}, module.PRICE_FIELDS) == "100"
+    assert module.first({"consolidated_price": "222.56"}, module.PRICE_FIELDS) == "222.56"
+    assert module.first({"consolidated_market_price": "470.95"}, module.PRICE_FIELDS) == "470.95"
