@@ -10,59 +10,60 @@ from pathlib import Path
 from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
-BASELINE = ROOT / "data" / "reference" / "phase_11" / "mtg_hosted_baseline"
-UNIFIED_INTERFACE = (
+CERTIFIED_PAYLOAD = (
     ROOT
-    / "data"
-    / "validation"
-    / "phase_10"
-    / "unified_mtg_intelligence"
-    / "unified_mtg_intelligence_interface.csv"
+    / "docs"
+    / "phase_9"
+    / "uip_export"
+    / "mtg_v1_uip_export_payload.csv"
+)
+CERTIFIED_MANIFEST = (
+    ROOT
+    / "docs"
+    / "phase_9"
+    / "uip_export"
+    / "mtg_v1_uip_export_manifest.json"
 )
 DEFAULT_OUTPUT = ROOT / "data" / "operations" / "mtg_uip_delivery"
 
-HISTORICAL_PERFORMANCE_SOURCE = (
-    ROOT
-    / "data"
-    / "validation"
-    / "phase_8"
-    / "secret_lair_historical_performance"
-    / "secret_lair_historical_performance.csv"
-)
-
-FILES = {
-    "secret_lair": (
-        BASELINE / "secret_lair_registry.csv",
-        BASELINE / "secret_lair_evaluation.csv",
-    ),
-    "collector_booster_box": (
-        BASELINE / "collector_registry.csv",
-        BASELINE / "collector_evaluation.csv",
-    ),
-    "pre_collector_booster_box": (
-        BASELINE / "pre_collector_registry.csv",
-        BASELINE / "pre_collector_evaluation.csv",
-    ),
-}
-
-LANE_NAMES = {
-    "secret_lair": "SECRET_LAIR",
-    "collector_booster_box": "COLLECTOR_BOOSTER_BOX",
-    "pre_collector_booster_box": "PRE_COLLECTOR_BOOSTER_BOX",
-}
-
-EXPECTED_COUNTS = {
-    "secret_lair": 973,
-    "collector_booster_box": 49,
-    "pre_collector_booster_box": 119,
-}
+REQUIRED_FIELDS = [
+    "mtg_asset_id",
+    "mtg_lane",
+    "native_asset_id",
+    "product_name",
+    "lane_authority_state",
+    "current_price_usd",
+    "current_price_authority_available",
+    "forecast_authority_available",
+    "forecast_1y_price_usd",
+    "forecast_1y_return",
+    "risk_authority_available",
+    "native_rank",
+    "native_rank_type",
+    "native_purchase_status",
+    "purchase_semantic",
+    "evidence_state",
+    "actionability_state",
+    "execution_ready_purchase_certified",
+    "manual_execution_price_check_required",
+    "native_authority_pointer",
+    "native_authority_sha256",
+    "snapshot_population_is_permanent",
+    "automatic_purchase_execution",
+]
 
 
 def read_csv(path: Path) -> list[dict[str, str]]:
     if not path.is_file():
         raise FileNotFoundError(path)
     with path.open("r", encoding="utf-8-sig", newline="") as handle:
-        return list(csv.DictReader(handle))
+        reader = csv.DictReader(handle)
+        if reader.fieldnames is None:
+            raise RuntimeError(f"CSV has no header: {path}")
+        missing = [field for field in REQUIRED_FIELDS if field not in reader.fieldnames]
+        if missing:
+            raise RuntimeError(f"Certified MTG payload is missing fields: {missing}")
+        return list(reader)
 
 
 def write_csv(path: Path, rows: list[dict[str, Any]], fields: list[str]) -> None:
@@ -73,40 +74,6 @@ def write_csv(path: Path, rows: list[dict[str, Any]], fields: list[str]) -> None
         writer.writerows(rows)
 
 
-def first(row: dict[str, str], *names: str, default: str = "") -> str:
-    for name in names:
-        value = str(row.get(name, "") or "").strip()
-        if value:
-            return value
-    return default
-
-
-def source_id(row: dict[str, str]) -> str:
-    return first(
-        row,
-        "investment_product_id",
-        "canonical_product_id",
-        "source_product_id",
-        "product_id",
-        "tcgplayer_product_id",
-    )
-
-
-def tcgplayer_id(row: dict[str, str]) -> str:
-    return first(
-        row,
-        "approved_tcgplayer_product_id",
-        "tcgplayer_product_id",
-        "tcgplayer_product_id_str",
-    )
-
-
-def universal_id(lane: str, source: str) -> str:
-    if source.startswith("MTG:"):
-        return source
-    return f"MTG:{lane}:{source}"
-
-
 def sha256(path: Path) -> str:
     digest = hashlib.sha256()
     with path.open("rb") as handle:
@@ -115,56 +82,54 @@ def sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
-def normalize_bool(value: str) -> str:
-    return "YES" if str(value).strip().upper() in {
-        "YES", "TRUE", "1", "ELIGIBLE", "PASS", "SCENARIO_READY"
-    } else "NO"
+def is_true(value: str) -> bool:
+    return str(value).strip().lower() == "true"
+
+
+def tcgplayer_id(native_asset_id: str) -> str:
+    marker = "TCGPLAYER-"
+    upper = native_asset_id.upper()
+    if marker not in upper:
+        return ""
+    value = native_asset_id[upper.rfind(marker) + len(marker):].strip()
+    return value if value.isdigit() else ""
+
+
+def validate_payload(rows: list[dict[str, str]]) -> None:
+    if not rows:
+        raise RuntimeError("Certified MTG payload is empty.")
+
+    asset_ids = [row["mtg_asset_id"].strip() for row in rows]
+    if any(not asset_id for asset_id in asset_ids):
+        raise RuntimeError("Certified MTG payload contains a missing mtg_asset_id.")
+    if len(set(asset_ids)) != len(asset_ids):
+        raise RuntimeError("Certified MTG payload contains duplicate mtg_asset_id values.")
+
+    native_ids = [row["native_asset_id"].strip() for row in rows]
+    if any(not native_id for native_id in native_ids):
+        raise RuntimeError("Certified MTG payload contains a missing native_asset_id.")
+
+    lanes = {row["mtg_lane"].strip() for row in rows}
+    required_lanes = {"COLLECTOR_V1", "PRE_COLLECTOR_V1", "SECRET_LAIR_V1_1"}
+    if lanes != required_lanes:
+        raise RuntimeError(
+            "Certified MTG payload lane set changed unexpectedly: "
+            f"found={sorted(lanes)} expected={sorted(required_lanes)}"
+        )
+
+    if any(is_true(row["automatic_purchase_execution"]) for row in rows):
+        raise RuntimeError("Certified MTG payload must not authorize automatic execution.")
+    if any(is_true(row["execution_ready_purchase_certified"]) for row in rows):
+        raise RuntimeError("Certified MTG payload must not certify execution-ready purchases.")
 
 
 def build(output_root: Path) -> dict[str, Any]:
     generated = datetime.now(timezone.utc)
+    rows = read_csv(CERTIFIED_PAYLOAD)
+    validate_payload(rows)
 
-    historical_rows = read_csv(HISTORICAL_PERFORMANCE_SOURCE)
-
-    if len(historical_rows) != 973:
-        raise RuntimeError(
-            "Historical performance must contain 973 Secret Lair rows; "
-            f"found {len(historical_rows)}"
-        )
-
-    historical_ids = [
-        first(row, "investment_product_id")
-        for row in historical_rows
-    ]
-
-    if (
-        any(not product_id for product_id in historical_ids)
-        or len(set(historical_ids)) != 973
-    ):
-        raise RuntimeError(
-            "Historical performance contains missing or duplicate "
-            "investment product IDs."
-        )
-
-    historical_ready = sum(
-        normalize_bool(
-            first(
-                row,
-                "historical_performance_eligible",
-                default="NO",
-            )
-        )
-        == "YES"
-        for row in historical_rows
-    )
-
-    if historical_ready != 782:
-        raise RuntimeError(
-            "Historical performance must contain 782 eligible products; "
-            f"found {historical_ready}"
-        )
-
-    package_id = generated.strftime("mtg-hosted-%Y%m%dT%H%M%SZ")
+    source_manifest = json.loads(CERTIFIED_MANIFEST.read_text(encoding="utf-8"))
+    package_id = generated.strftime("mtg-hosted-r2-%Y%m%dT%H%M%SZ")
     package = output_root / package_id
     if package.exists():
         shutil.rmtree(package)
@@ -178,221 +143,84 @@ def build(output_root: Path) -> dict[str, Any]:
 
     lane_counts: dict[str, int] = {}
 
-    unified_rows = read_csv(UNIFIED_INTERFACE)
+    for row in rows:
+        asset_id = row["mtg_asset_id"].strip()
+        lane = row["mtg_lane"].strip()
+        native_id = row["native_asset_id"].strip()
+        name = row["product_name"].strip()
+        tcgid = tcgplayer_id(native_id)
+        lane_counts[lane] = lane_counts.get(lane, 0) + 1
 
-    if len(unified_rows) != 1141:
-        raise RuntimeError(
-            "Unified intelligence interface must contain 1,141 rows; "
-            f"found {len(unified_rows)}"
-        )
+        asset_rows.append({
+            "asset_id": asset_id,
+            "asset_name": name,
+            "asset_class": "MTG",
+            "asset_subclass": lane,
+            "source_product_id": native_id,
+            "tcgplayer_product_id": tcgid,
+            "lane_authority_state": row["lane_authority_state"],
+            "evidence_state": row["evidence_state"],
+            "actionability_state": row["actionability_state"],
+            "currency": "USD",
+        })
 
-    unified_ids = {
-        first(row, "universal_mtg_product_id")
-        for row in unified_rows
-        if first(row, "universal_mtg_product_id")
-    }
+        forecast_available = is_true(row["forecast_authority_available"])
+        current_price_available = is_true(row["current_price_authority_available"])
+        forecast_rows.append({
+            "asset_id": asset_id,
+            "source_product_id": native_id,
+            "tcgplayer_product_id": tcgid,
+            "forecast_eligible": "YES" if forecast_available else "NO",
+            "forecast_status": (
+                "CERTIFIED_NATIVE_1Y" if forecast_available else "NATIVE_FORECAST_UNAVAILABLE"
+            ),
+            "forecast_method": "NATIVE_CERTIFIED_1Y" if forecast_available else "",
+            "current_market_value_usd": row["current_price_usd"] if current_price_available else "",
+            "native_forecast_low_usd": "",
+            "native_forecast_base_usd": row["forecast_1y_price_usd"] if forecast_available else "",
+            "native_forecast_high_usd": "",
+            "one_year_downside_usd": "",
+            "one_year_base_usd": row["forecast_1y_price_usd"] if forecast_available else "",
+            "one_year_upside_usd": "",
+            "three_year_downside_usd": "",
+            "three_year_base_usd": "",
+            "three_year_upside_usd": "",
+            "five_year_downside_usd": "",
+            "five_year_base_usd": "",
+            "five_year_upside_usd": "",
+            "forecast_1y_return": row["forecast_1y_return"] if forecast_available else "",
+            "currency": "USD",
+        })
 
-    if len(unified_ids) != len(unified_rows):
-        raise RuntimeError(
-            "Unified intelligence interface contains duplicate or "
-            "missing universal product IDs."
-        )
+        native_purchase_status = row["native_purchase_status"].strip()
+        recommendation_rows.append({
+            "asset_id": asset_id,
+            "source_product_id": native_id,
+            "tcgplayer_product_id": tcgid,
+            "recommendation_eligible": "YES" if native_purchase_status else "NO",
+            "recommendation_status": native_purchase_status,
+            "recommendation_action": native_purchase_status or "NO_NATIVE_STATUS",
+            "native_purchase_status": native_purchase_status,
+            "purchase_semantic": row["purchase_semantic"],
+            "actionability_state": row["actionability_state"],
+            "execution_ready_purchase_certified": row["execution_ready_purchase_certified"],
+            "manual_execution_price_check_required": row["manual_execution_price_check_required"],
+            "automatic_purchase_execution": row["automatic_purchase_execution"],
+            "currency": "USD",
+        })
 
-    for key, (registry_path, _legacy_evaluation_path) in FILES.items():
-        lane = LANE_NAMES[key]
-        registry = read_csv(registry_path)
+        risk_rows.append({
+            "asset_id": asset_id,
+            "source_product_id": native_id,
+            "tcgplayer_product_id": tcgid,
+            "risk_authority_available": row["risk_authority_available"],
+            "native_rank": row["native_rank"],
+            "native_rank_type": row["native_rank_type"],
+            "evidence_state": row["evidence_state"],
+            "actionability_state": row["actionability_state"],
+        })
 
-        evaluation = [
-            row
-            for row in unified_rows
-            if first(row, "lane") == lane
-        ]
-
-        lane_counts[lane] = len(registry)
-
-        evaluation_by_id = {
-            source_id(row): row
-            for row in evaluation
-            if source_id(row)
-        }
-
-        if len(registry) != EXPECTED_COUNTS[key]:
-            diagnostics.append({
-                "lane": lane,
-                "source_product_id": "",
-                "diagnostic": f"REGISTRY_COUNT_{len(registry)}_EXPECTED_{EXPECTED_COUNTS[key]}",
-            })
-
-        for base in registry:
-            sid = source_id(base)
-            if not sid:
-                diagnostics.append({
-                    "lane": lane,
-                    "source_product_id": "",
-                    "diagnostic": "MISSING_SOURCE_PRODUCT_ID",
-                })
-                continue
-
-            evaluation_row = evaluation_by_id.get(sid)
-            if evaluation_row is None:
-                diagnostics.append({
-                    "lane": lane,
-                    "source_product_id": sid,
-                    "diagnostic": "MISSING_EVALUATION_ROW",
-                })
-                continue
-
-            uid = universal_id(lane, sid)
-            tcgid = tcgplayer_id(base) or tcgplayer_id(evaluation_row)
-            name = first(
-                base,
-                "canonical_product_name",
-                "product_name",
-                "name",
-                default=first(evaluation_row, "canonical_product_name", "product_name", "name"),
-            )
-            current_value = first(
-                evaluation_row,
-                "current_market_value_usd",
-                "current_unit_value_usd",
-                "market_value_usd",
-                "current_price",
-                "evaluated_market_value_usd",
-                default=first(base, "current_market_value_usd"),
-            )
-            confidence = first(
-                evaluation_row,
-                "model_confidence_score",
-                "confidence",
-                default=first(base, "confidence"),
-            )
-            admission = first(
-                evaluation_row,
-                "evaluation_tier",
-                "admission_tier",
-                default=first(base, "admission_tier"),
-            )
-            forecast_status = first(
-                evaluation_row,
-                "forecast_status",
-                default=first(base, "forecast_status"),
-            )
-            recommendation_status = first(
-                evaluation_row,
-                "recommendation_status",
-                default=first(base, "recommendation_status"),
-            )
-            recommendation_action = first(
-                evaluation_row,
-                "guarded_recommendation",
-                "recommendation_action",
-                "action",
-                default=first(base, "guarded_recommendation"),
-            )
-
-            asset_rows.append({
-                "asset_id": uid,
-                "asset_name": name,
-                "asset_class": "MTG",
-                "asset_subclass": lane,
-                "source_product_id": sid,
-                "tcgplayer_product_id": tcgid,
-                "product_class": first(base, "product_class", default=lane),
-                "canonical_set_name": first(base, "canonical_set_name", "set_name"),
-                "release_date": first(base, "release_date"),
-                "registry_status": first(base, "registry_status", default="GOVERNED"),
-                "currency": first(base, "currency", default="USD"),
-            })
-
-            horizon_certified = normalize_bool(
-                first(evaluation_row, "horizon_model_certified", default="NO")
-            ) == "YES"
-
-            forecast_rows.append({
-                "asset_id": uid,
-                "source_product_id": sid,
-                "tcgplayer_product_id": tcgid,
-                "forecast_eligible": normalize_bool(
-                    first(evaluation_row, "forecast_eligible", default=forecast_status)
-                ),
-                "forecast_status": forecast_status,
-                "forecast_method": first(
-                    evaluation_row, "forecast_method", "valuation_method"
-                ),
-                "current_market_value_usd": current_value,
-                "native_forecast_low_usd": first(
-                    evaluation_row, "forecast_low_usd", "native_forecast_low_usd"
-                ),
-                "native_forecast_base_usd": first(
-                    evaluation_row, "forecast_base_usd", "native_forecast_base_usd"
-                ),
-                "native_forecast_high_usd": first(
-                    evaluation_row, "forecast_high_usd", "native_forecast_high_usd"
-                ),
-                "one_year_downside_usd": first(evaluation_row, "1y_downside_usd", "one_year_downside_usd") if horizon_certified else "",
-                "one_year_base_usd": first(evaluation_row, "1y_base_usd", "one_year_base_usd") if horizon_certified else "",
-                "one_year_upside_usd": first(evaluation_row, "1y_upside_usd", "one_year_upside_usd") if horizon_certified else "",
-                "three_year_downside_usd": first(evaluation_row, "3y_downside_usd", "three_year_downside_usd") if horizon_certified else "",
-                "three_year_base_usd": first(evaluation_row, "3y_base_usd", "three_year_base_usd") if horizon_certified else "",
-                "three_year_upside_usd": first(evaluation_row, "3y_upside_usd", "three_year_upside_usd") if horizon_certified else "",
-                "five_year_downside_usd": first(evaluation_row, "5y_downside_usd", "five_year_downside_usd") if horizon_certified else "",
-                "five_year_base_usd": first(evaluation_row, "5y_base_usd", "five_year_base_usd") if horizon_certified else "",
-                "five_year_upside_usd": first(evaluation_row, "5y_upside_usd", "five_year_upside_usd") if horizon_certified else "",
-                "confidence": confidence,
-                "currency": "USD",
-            })
-
-            eligible = (
-                normalize_bool(
-                    first(
-                        evaluation_row,
-                        "recommendation_eligible",
-                        default="NO",
-                    )
-                )
-                == "YES"
-            )
-            recommendation_rows.append({
-                "asset_id": uid,
-                "source_product_id": sid,
-                "tcgplayer_product_id": tcgid,
-                "recommendation_eligible": "YES" if eligible else "NO",
-                "recommendation_status": recommendation_status,
-                "recommendation_action": recommendation_action or "NO_ACTION",
-                "recommendation_rationale": first(
-                    evaluation_row, "rationale", "recommendation_rationale"
-                ),
-                "suppression_reason": first(
-                    evaluation_row, "suppression_reason", "plausibility_flags"
-                ),
-                "confidence": confidence,
-                "currency": "USD",
-            })
-
-            risk_rows.append({
-                "asset_id": uid,
-                "source_product_id": sid,
-                "tcgplayer_product_id": tcgid,
-                "admission_tier": admission,
-                "quality_disposition": first(
-                    evaluation_row,
-                    "quality_disposition",
-                    default=first(base, "quality_disposition"),
-                ),
-                "quality_flags": first(
-                    evaluation_row,
-                    "quality_flags",
-                    "suppression_reason",
-                    "plausibility_flags",
-                ),
-                "confidence": confidence,
-                "forecast_eligible": normalize_bool(
-                    first(evaluation_row, "forecast_eligible", default=forecast_status)
-                ),
-                "recommendation_eligible": "YES" if eligible else "NO",
-            })
-
-    asset_rows.sort(key=lambda row: (row["asset_subclass"], row["asset_name"], row["asset_id"]))
+    asset_rows.sort(key=lambda item: (item["asset_subclass"], item["asset_name"], item["asset_id"]))
 
     positions_fields = [
         "position_id",
@@ -407,72 +235,16 @@ def build(output_root: Path) -> dict[str, Any]:
     ]
     position_rows: list[dict[str, str]] = []
 
-    secret_rows = [
-        row
-        for row in forecast_rows
-        if row["asset_id"].startswith("MTG:SECRET_LAIR:")
-    ]
-    if len(secret_rows) != 973:
-        raise RuntimeError(f"Expected 973 hosted Secret Lair rows; found {len(secret_rows)}")
-    if any(row["forecast_eligible"] != "NO" for row in secret_rows):
-        raise RuntimeError("Secret Lair horizon forecasts must remain fail-closed.")
-    if any(any(row[field] for field in ("one_year_base_usd", "three_year_base_usd", "five_year_base_usd")) for row in secret_rows):
-        raise RuntimeError("Hosted Secret Lair output contains uncertified horizon values.")
-    if any(row["forecast_method"] != "NATIVE_VALUATION_RANGE" for row in secret_rows):
-        raise RuntimeError("Hosted Secret Lair valuation method is not explicit.")
-
-    aftermath_rows = [
-        row
-        for row in forecast_rows
-        if row["source_product_id"] == "TCGCSV-22876-489207"
-    ]
-
-    if len(aftermath_rows) != 1:
-        raise RuntimeError(
-            "Expected exactly one hosted Aftermath forecast row."
-        )
-
-    aftermath = aftermath_rows[0]
-
-    if aftermath["current_market_value_usd"] != "227.18":
-        raise RuntimeError(
-            "Hosted Aftermath current value regressed: "
-            f"{aftermath['current_market_value_usd']}"
-        )
-
-    if aftermath["forecast_method"] != "NATIVE_MONTE_CARLO_RANGE":
-        raise RuntimeError(
-            "Hosted Aftermath forecast method regressed: "
-            f"{aftermath['forecast_method']}"
-        )
-
-    if aftermath["native_forecast_base_usd"] != "340.58":
-        raise RuntimeError(
-            "Hosted Aftermath native forecast base regressed: "
-            f"{aftermath['native_forecast_base_usd']}"
-        )
-
-    if any(
-        aftermath[field]
-        for field in (
-            "one_year_base_usd",
-            "three_year_base_usd",
-            "five_year_base_usd",
-        )
-    ):
-        raise RuntimeError(
-            "Hosted Aftermath contains uncertified horizon values."
-        )
-
     platform_rows = [{
         "platform": "MTG",
-        "status": "PASS" if not diagnostics else "WARN",
-        "interface_name": "mtg-hosted-uip-delivery-v1",
-        "contract_version": "1",
+        "status": "PASS",
+        "interface_name": "mtg-hosted-uip-delivery-v2",
+        "contract_version": "2",
         "products": str(len(asset_rows)),
         "forecast_eligible": str(sum(row["forecast_eligible"] == "YES" for row in forecast_rows)),
-        "recommendation_eligible": str(sum(row["recommendation_eligible"] == "YES" for row in recommendation_rows)),
-        "diagnostics": str(len(diagnostics)),
+        "recommendation_rows": str(len(recommendation_rows)),
+        "diagnostics": "0",
+        "semantic_authority": "mtg_native_authority.csv",
         "generated_at_utc": generated.isoformat(),
     }]
 
@@ -488,10 +260,8 @@ def build(output_root: Path) -> dict[str, Any]:
         ["lane", "source_product_id", "diagnostic"],
     )
 
-    shutil.copy2(
-        HISTORICAL_PERFORMANCE_SOURCE,
-        package / "historical_performance.csv",
-    )
+    shutil.copy2(CERTIFIED_PAYLOAD, package / "mtg_native_authority.csv")
+    shutil.copy2(CERTIFIED_MANIFEST, package / "mtg_native_authority_manifest.json")
 
     exported = [
         "asset_master.csv",
@@ -501,23 +271,26 @@ def build(output_root: Path) -> dict[str, Any]:
         "portfolio_positions.csv",
         "platform_status.csv",
         "diagnostics.csv",
-        "historical_performance.csv",
+        "mtg_native_authority.csv",
+        "mtg_native_authority_manifest.json",
     ]
 
     manifest = {
-        "status": "PASS" if len(asset_rows) == 1141 and not diagnostics else "WARN",
-        "delivery_contract": "uip-mtg-delivery-v1",
+        "status": "PASS",
+        "delivery_contract": "uip-mtg-delivery-v2",
         "package_id": package_id,
         "generated_at_utc": generated.isoformat(),
         "products": len(asset_rows),
         "lane_counts": lane_counts,
-        "portfolio_positions": len(position_rows),
-        "diagnostics": len(diagnostics),
-        "historical_performance": {
-            "rows": len(historical_rows),
-            "eligible": historical_ready,
-            "suppressed": len(historical_rows) - historical_ready,
-        },
+        "portfolio_positions": 0,
+        "diagnostics": 0,
+        "semantic_authority_file": "mtg_native_authority.csv",
+        "semantic_authority_sha256": sha256(package / "mtg_native_authority.csv"),
+        "source_manifest_status": source_manifest.get("status", ""),
+        "snapshot_population_is_permanent": False,
+        "automatic_purchase_execution": False,
+        "execution_ready_purchase_certified": False,
+        "generic_surfaces_are_semantic_authority": False,
         "files": {
             name: {
                 "sha256": sha256(package / name),
@@ -542,6 +315,7 @@ def build(output_root: Path) -> dict[str, Any]:
         "package_id": package_id,
         "delivery_directory": str(package),
         "manifest": str(package / "export_manifest.json"),
+        "semantic_authority": str(package / "mtg_native_authority.csv"),
     }
     (output_root / "latest.json").write_text(
         json.dumps(latest_pointer, indent=2), encoding="utf-8"
@@ -551,7 +325,7 @@ def build(output_root: Path) -> dict[str, Any]:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Build the hosted MTG UIP delivery package.")
+    parser = argparse.ArgumentParser(description="Build the hosted MTG UIP delivery package from certified Phase 9 authority.")
     parser.add_argument("--output-root", type=Path, default=DEFAULT_OUTPUT)
     args = parser.parse_args()
     result = build(args.output_root)
