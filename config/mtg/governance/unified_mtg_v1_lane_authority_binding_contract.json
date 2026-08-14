@@ -1,0 +1,183 @@
+{
+    "contract_id":  "unified_mtg_v1_lane_authority_binding_contract",
+    "contract_version":  "1.0.1",
+    "status":  "UNIFIED_MTG_V1_CANONICAL_LANE_AUTHORITY_BINDING_CERTIFIED",
+    "starting_head":  "c9e95898808f28a820eabb85705c07cbcc689239",
+    "branch":  "phase-9.0-unified-mtg-production-authority",
+    "integration_principle":  "COMMON_INTERFACE_WITH_NATIVE_LANE_SEMANTICS_PRESERVED",
+    "lanes":  {
+                  "collector":  {
+                                    "lane_id":  "COLLECTOR_V1",
+                                    "state":  "CERTIFIED_CLOSED",
+                                    "canonical_snapshot_products":  50,
+                                    "ranked_products":  49,
+                                    "current_price":  {
+                                                          "path":  "data/governance/permanence/certification/collector_v1_final_premodel_user_exclusion_resolution/collector_final_current_price_authority.csv",
+                                                          "sha256":  "d8a0e2c256807407033a2f56194282e50647f2ecc3e55ca617d981023cffc884",
+                                                          "rows":  50
+                                                      },
+                                    "forecast":  {
+                                                     "path":  "data/governance/permanence/certification/collector_v1_canonical_identity_lineage_recertification/collector_final_authority_bound_49_product_forecasts.csv",
+                                                     "sha256":  "ba78970c401068b9387755d0ad052d1d5c6a9bc9ffe59302eb82f4a22973313e",
+                                                     "rows":  294
+                                                 },
+                                    "ranking":  {
+                                                    "path":  "data/governance/permanence/certification/collector_v1_final_governed_ranking/collector_final_governed_1_49_rankings.csv",
+                                                    "sha256":  "0f609fe2770b01f080ab02039adade3fe8679072792c35a0e7b8aa7cf48fb48c",
+                                                    "rows":  49,
+                                                    "native_rank_field":  "final_rank"
+                                                },
+                                    "purchase":  {
+                                                     "path":  "data/governance/permanence/certification/collector_v1_purchase_recommendation_certification/collector_purchase_recommendation_authority.csv",
+                                                     "sha256":  "363358aeb269f9acb04fb489fe614d6cc1db39587f0a53decebca01a4330de7e",
+                                                     "rows":  49,
+                                                     "native_status_field":  "purchase_status"
+                                                 },
+                                    "purchase_summary":  {
+                                                             "path":  "data/governance/permanence/certification/collector_v1_purchase_recommendation_certification/collector_purchase_recommendation_summary.json",
+                                                             "sha256":  "bee273d572cff9cef2ec334bd50c708270ca4d58b3e943b5fd7ef842e9e259e8"
+                                                         },
+                                    "execution_ready_purchase_certified":  false,
+                                    "automatic_purchase_execution":  false
+                                },
+                  "pre_collector":  {
+                                        "lane_id":  "PRE_COLLECTOR_V1",
+                                        "state":  "CERTIFIED_CLOSED",
+                                        "certified_package":  {
+                                                                  "name":  "MTG_PreCollector_Monte_Carlo_Purchase_Ranking_v1_20260809_111303.zip",
+                                                                  "sha256":  "47be599f92999fbdede603dc3aee7d720dd0eef01ca68d328e36abda3e256261"
+                                                              },
+                                        "canonical_products":  131,
+                                        "ranked_forecastable_products":  95,
+                                        "forecast_gap_products":  26,
+                                        "no_current_price_authority_products":  10,
+                                        "complete_disposition":  {
+                                                                     "package_file":  "precollector_final_131_product_disposition_v1.csv",
+                                                                     "sha256":  "b28769909432e5c61b0d8afee8a88b275b23f178a3d4e6ff1bb69ae189cf5113",
+                                                                     "rows":  131
+                                                                 },
+                                        "forecast_and_risk":  {
+                                                                  "package_file":  "precollector_monte_carlo_summary_v1.csv",
+                                                                  "sha256":  "c5084e4f3fcd63eee08c7490647fd0e231e9d67830092fee6fd35b57fa3d4992",
+                                                                  "rows":  190,
+                                                                  "row_grain":  "PRODUCT_X_SCENARIO_HORIZON",
+                                                                  "horizons_years":  [
+                                                                                         3,
+                                                                                         5
+                                                                                     ]
+                                                              },
+                                        "model_return_ranking":  {
+                                                                     "package_file":  "precollector_model_return_ranking_v1.csv",
+                                                                     "sha256":  "3a59415e6abb08c5accc99ea3224bed29af665b3408dfe5acfb80ed5b4926500",
+                                                                     "rows":  190,
+                                                                     "native_rank_field":  "model_rank"
+                                                                 },
+                                        "purchase_ranking":  {
+                                                                 "package_file":  "precollector_purchase_ranking_v1.csv",
+                                                                 "sha256":  "5aa061c8d005074e4dab88ba5646a1888bd84ef8bc6f27abdc55ce9629e59185",
+                                                                 "rows":  95,
+                                                                 "native_rank_field":  "purchase_rank",
+                                                                 "native_tier_field":  "investment_tier"
+                                                             },
+                                        "high_confidence_subset":  {
+                                                                       "package_file":  "precollector_high_confidence_purchase_ranking_v1.csv",
+                                                                       "sha256":  "f597745b14c7e7767ff2cfb6dee179de31b53b7f2db757ea55ff50e5e7a44ad6",
+                                                                       "rows":  88
+                                                                   },
+                                        "speculative_subset":  {
+                                                                   "package_file":  "precollector_speculative_candidate_ranking_v1.csv",
+                                                                   "sha256":  "c754af3bc70da31c5767d4708b0318ac1f9be2b2c23a2befbaaf7272417a1113",
+                                                                   "rows":  6
+                                                               },
+                                        "long_horizon_governance":  {
+                                                                        "three_year":  "SCENARIO_NOT_DIRECTLY_BACKTESTED",
+                                                                        "five_year":  "SCENARIO_NOT_DIRECTLY_BACKTESTED"
+                                                                    },
+                                        "automatic_purchase_execution":  false,
+                                        "current_price":  {
+                                                              "authority_role":  "GOVERNED_CURRENT_PRICE_AUTHORITY",
+                                                              "certified_package_name":  "MTG_PreCollector_Current_Price_Authority_v2_20260808_151353.zip",
+                                                              "certified_package_sha256":  "cab2c351a167e5a5c02b58c411355d58c18d0f075f282a05e85083412cb3f3c6",
+                                                              "authority_member":  "precollector_current_price_authority_v2.csv",
+                                                              "authority_member_sha256":  "2f2e23afab13c5ffc41899cc14dbe92b5e4cb3a0cd60ac6d19cba11ce7d338a8",
+                                                              "authority_rows":  121,
+                                                              "governed_price_field":  "selected_price",
+                                                              "certified_coverage_status":  "CERTIFIED_TCGCSV_LIVE_CURRENT_PRICE",
+                                                              "coverage_member":  "precollector_current_price_coverage_v2.csv",
+                                                              "coverage_member_sha256":  "664c15c982dda1a53b7e98eeb089c93a1358215cdda98834d16b1401412ac9ed",
+                                                              "coverage_rows":  131,
+                                                              "gap_coverage_status":  "NO_CERTIFIED_CURRENT_PRICE_EVIDENCE",
+                                                              "gap_member":  "precollector_current_price_gaps_v2.csv",
+                                                              "gap_member_sha256":  "e2a9f81f551ed33312c3b51299c24717470a0870df350782787589ea1f80fda9",
+                                                              "explicit_gap_rows":  10,
+                                                              "summary_member":  "precollector_current_price_authority_v2_summary.json",
+                                                              "summary_member_sha256":  "48709413e6e1d3cdb0025621f572492003bd1b361d0e535bda4b2c2676717835",
+                                                              "source_name":  "TCGCSV_LIVE",
+                                                              "ebay_used_as_current_price_source":  false,
+                                                              "synthetic_price_used":  false,
+                                                              "case_price_conversion_used":  false
+                                                          }
+                                    },
+                  "secret_lair":  {
+                                      "lane_id":  "SECRET_LAIR_V1_1",
+                                      "state":  "CERTIFIED_CLOSED",
+                                      "dynamic_universe":  true,
+                                      "fixed_product_count":  false,
+                                      "current_ranked_snapshot_products":  787,
+                                      "final_authority":  {
+                                                              "path":  "docs/phase_8/secret_lair_v1_1/secret_lair_v1_1_final_authority_manifest.json",
+                                                              "sha256":  "1a2f75c92003d8d00b6424f98550b298069493b70b3c4f47920bc37403f2eebf"
+                                                          },
+                                      "ranking":  {
+                                                      "path":  "docs/phase_8/secret_lair_v1_1/secret_lair_v1_1_production_ranking.csv",
+                                                      "sha256":  "c276cd158361fbe6fa340f24723a7df1f0f09c3a08eae2dfdf8f80ca6fcc34fb",
+                                                      "rows":  787,
+                                                      "native_rank_field":  "v1_1_production_competition_rank"
+                                                  },
+                                      "purchase":  {
+                                                       "path":  "docs/phase_8/secret_lair_v1_1/secret_lair_v1_1_purchase_recommendation_reconciliation.csv",
+                                                       "sha256":  "7d52249525fde39d811b64f53b810e5eaea726c690f0dc53ccfc70771226da12",
+                                                       "rows":  787,
+                                                       "native_status_field":  "purchase_recommendation"
+                                                   },
+                                      "actionability":  {
+                                                            "path":  "docs/phase_8/secret_lair_v1_1/secret_lair_v1_1_purchase_actionability.csv",
+                                                            "sha256":  "5b1f43e90b6a0afe6a6c721143b9268862e3782b62f51d0a585cbaec78861955",
+                                                            "rows":  787,
+                                                            "BUY_semantic":  "MODEL_QUALIFIED_ENTRY_CANDIDATE",
+                                                            "execution_price_authority":  "NOT_CERTIFIED"
+                                                        },
+                                      "TCG_market_price_is_execution_authority":  false,
+                                      "execution_ready_purchase_certified":  false,
+                                      "manual_live_execution_price_check_required":  true,
+                                      "automatic_purchase_execution":  false
+                                  }
+              },
+    "cross_lane_governance":  {
+                                  "native_lane_methods_preserved":  true,
+                                  "native_lane_ranks_preserved":  true,
+                                  "native_purchase_semantics_preserved":  true,
+                                  "cross_lane_rank_created":  false,
+                                  "cross_lane_score_created":  false,
+                                  "cross_lane_purchase_policy_created":  false,
+                                  "cross_lane_weights_transferred":  false,
+                                  "cross_lane_thresholds_transferred":  false,
+                                  "forecast_values_recalculated":  false,
+                                  "risk_values_recalculated":  false
+                              },
+    "authorization":  {
+                          "unified_schema_definition":  true,
+                          "normalized_row_assembly":  true,
+                          "unified_production_authority_certified":  false,
+                          "MTG_to_UIP_export":  false,
+                          "automatic_purchase_execution":  false
+                      },
+    "next_gate":  "MTG_U1C_NORMALIZED_PRODUCT_AUTHORITY_ASSEMBLY",
+    "amendment":  {
+                      "amendment_id":  "MTG_U1B1_R1_PRECOLLECTOR_CURRENT_PRICE_BINDING",
+                      "integration_defect":  "U1C_INFERRED_CURRENT_PRICE_AUTHORITY_FROM_DISPOSITION_CONVENIENCE_FIELD",
+                      "correction":  "BIND_CERTIFIED_PRECOLLECTOR_CURRENT_PRICE_AUTHORITY_V2",
+                      "precollector_lane_reopened":  false,
+                      "native_precollector_data_changed":  false
+                  }
+}

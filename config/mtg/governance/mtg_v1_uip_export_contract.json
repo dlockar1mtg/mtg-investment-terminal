@@ -1,0 +1,129 @@
+{
+    "contract_id": "mtg_v1_uip_export_contract",
+    "contract_version": "1.0.0",
+    "status": "MTG_V1_TO_UIP_EXPORT_CONTRACT_CERTIFIED",
+    "governed_source": {
+        "production_authority_status": "UNIFIED_MTG_V1_PRODUCTION_AUTHORITY_CERTIFIED",
+        "production_authority_commit": "94c2bd3273eaba4d05ee8f7f5c3d6c4dcc283768",
+        "production_contract_path": "config/mtg/governance/unified_mtg_v1_production_authority_contract.json",
+        "production_contract_sha256": "a8d145ed161854f23316a54233c76e05bad9cff898aa2ebb1ea7c3db67f6aef7",
+        "final_authority_manifest_path": "docs/phase_9/unified_mtg/unified_mtg_v1_final_production_authority_manifest.json",
+        "final_authority_manifest_sha256": "dbf5a91ba12474a98d98e3759c8f205960d7793d0d4ca03e43449c2673cd238c",
+        "normalized_product_authority_path": "docs/phase_9/unified_mtg/unified_mtg_v1_normalized_product_authority.csv",
+        "normalized_product_authority_sha256": "006ba3951565437291284d8e86e93a40208d2c0e783f43d3652e9f8f510914e1",
+        "normalized_product_authority_repository_sha256": "aa363cd474ae6b846588bb4af2fd235a676e5cefd65441d497addf765a35eb71",
+        "normalized_product_authority_git_blob_sha1": "8d3fd2658ab8bda26357beb1ef3d676d8f754040"
+    },
+    "payload": {
+        "path": "docs/phase_9/uip_export/mtg_v1_uip_export_payload.csv",
+        "sha256": "006ba3951565437291284d8e86e93a40208d2c0e783f43d3652e9f8f510914e1",
+        "byte_identical_to_certified_source_authority": true,
+        "rows": 968,
+        "row_count_is_permanent_universe_constant": false,
+        "transformations_applied": 0,
+        "rows_filtered": 0,
+        "rows_added": 0,
+        "rows_removed": 0,
+        "columns_renamed": 0,
+        "columns_reordered": 0,
+        "missing_values_imputed": 0,
+        "repository_sha256": "aa363cd474ae6b846588bb4af2fd235a676e5cefd65441d497addf765a35eb71",
+        "git_blob_sha1": "8d3fd2658ab8bda26357beb1ef3d676d8f754040",
+        "legacy_windows_crlf_sha256": "006ba3951565437291284d8e86e93a40208d2c0e783f43d3652e9f8f510914e1",
+        "repository_byte_representation": "GIT_CANONICAL_LF_BYTES",
+        "repository_hash_verification_authorized": true,
+        "hash_portability_correction_path": "config/mtg/governance/mtg_v1_uip_export_hash_portability_correction.json"
+    },
+    "current_snapshot": {
+        "collector_rows": 50,
+        "precollector_rows": 131,
+        "secret_lair_rows": 787,
+        "total_rows": 968,
+        "secret_lair_dynamic_universe": true,
+        "total_snapshot_is_permanent_universe": false
+    },
+    "UIP_permitted_operations": [
+        "INGEST_PAYLOAD",
+        "STORE_PAYLOAD_WITH_LINEAGE",
+        "DISPLAY_NATIVE_VALUES",
+        "FILTER_BY_MTG_LANE",
+        "FILTER_BY_NATIVE_PURCHASE_STATUS",
+        "FILTER_BY_AUTHORITY_AVAILABILITY",
+        "DISPLAY_NATIVE_RANK_WITH_NATIVE_RANK_TYPE",
+        "DISPLAY_FORECAST_WHERE_AUTHORITY_AVAILABLE",
+        "DISPLAY_EVIDENCE_AND_ACTIONABILITY_STATE",
+        "ROUTE_RECORDS_TO_FUTURE_UIP_ANALYSIS_WITH_EXPLICIT_MTG_LINEAGE"
+    ],
+    "UIP_prohibited_operations": [
+        "REINTERPRET_NATIVE_RANK_AS_GLOBAL_MTG_RANK",
+        "REINTERPRET_NATIVE_RANK_AS_CROSS_ASSET_UIP_RANK",
+        "CREATE_CROSS_LANE_MTG_SCORE_WITHOUT_SEPARATE_GOVERNANCE",
+        "TRANSFER_COLLECTOR_THRESHOLDS_TO_OTHER_LANES",
+        "TRANSFER_PRECOLLECTOR_WEIGHTS_TO_OTHER_LANES",
+        "TRANSFER_SECRET_LAIR_Q10_POLICY_TO_OTHER_LANES",
+        "TREAT_SECRET_LAIR_BUY_AS_EXECUTION_READY",
+        "TREAT_TCG_MARKET_PRICE_AS_CERTIFIED_EXECUTION_PRICE_WHERE_NOT_GOVERNED",
+        "REPLACE_MISSING_PRICE_WITH_ZERO",
+        "REPLACE_MISSING_FORECAST_WITH_ZERO",
+        "REPLACE_MISSING_RANK_WITH_WORST_RANK",
+        "REPLACE_MISSING_PURCHASE_STATUS_WITH_WAIT",
+        "TREAT_968_AS_PERMANENT_MTG_UNIVERSE",
+        "TREAT_SECRET_LAIR_PRODUCT_COUNT_AS_FIXED",
+        "AUTOMATIC_PURCHASE_EXECUTION"
+    ],
+    "native_semantics": {
+        "collector": "COLLECTOR_V1_NATIVE_FORECAST_RANKING_PURCHASE_SEMANTICS",
+        "pre_collector": "PRE_COLLECTOR_V1_NATIVE_FORECAST_RISK_RANKING_PURCHASE_SEMANTICS",
+        "secret_lair": "SECRET_LAIR_V1_1_NATIVE_FORECAST_UNCERTAINTY_RANKING_PURCHASE_ACTIONABILITY_SEMANTICS"
+    },
+    "secret_lair_execution_semantics": {
+        "BUY_CANDIDATE_NOW": "MODEL_QUALIFIED_ENTRY_CANDIDATE",
+        "BUY_is_execution_ready": false,
+        "manual_execution_price_check_required": true,
+        "automatic_purchase_execution": false
+    },
+    "refresh_contract": {
+        "UIP_may_request_refresh": true,
+        "refresh_must_execute_through_MTG_domain_governance": true,
+        "current_price_refresh_is_model_retraining": false,
+        "new_product_discovery_is_model_redesign": false,
+        "historical_append_is_model_retraining": false,
+        "model_rerun_is_retraining": false,
+        "retraining_requires_separate_authority": true,
+        "recertification_requires_separate_authority": true,
+        "secret_lair_new_product_discovery_required": true
+    },
+    "execution": {
+        "execution_ready_purchase_authority_exported": false,
+        "automatic_purchase_execution_authorized": false,
+        "marketplace_calls": 0,
+        "ebay_calls": 0
+    },
+    "responsibility_boundary": {
+        "MTG_domain": "OWNS_MTG_DATA_MODELING_FORECAST_RISK_RANKING_PURCHASE_SEMANTICS_REFRESH_AND_RECERTIFICATION",
+        "UIP": "MAY_CONSUME_CERTIFIED_MTG_EXPORT_UNDER_THIS_CONTRACT_AND_MUST_PRESERVE_MTG_AUTHORITY_LINEAGE_AND_SEMANTICS"
+    },
+    "authorization": {
+        "MTG_export_contract_certified": true,
+        "MTG_export_payload_certified": true,
+        "UIP_acceptance_testing_authorized": true,
+        "UIP_integration_certified": false,
+        "UIP_cross_asset_ranking_authorized": false,
+        "automatic_purchase_execution": false
+    },
+    "next_gate": "UIP_MTG_A1_EXPORT_ACCEPTANCE_AND_SEMANTIC_PRESERVATION",
+    "hash_portability_correction": {
+        "status": "MTG_V1_TO_UIP_HASH_PORTABILITY_CORRECTION_CERTIFIED",
+        "base_export_commit": "f7dea3e2611f27de4ff6541da3b1d6a60dc6d695",
+        "difference_scope": "LINE_ENDINGS_ONLY",
+        "payload_content_changed": false,
+        "payload_rows_changed": 0,
+        "payload_columns_changed": 0,
+        "payload_values_changed": 0,
+        "model_semantics_changed": false,
+        "legacy_windows_crlf_sha256": "006ba3951565437291284d8e86e93a40208d2c0e783f43d3652e9f8f510914e1",
+        "canonical_repository_sha256": "aa363cd474ae6b846588bb4af2fd235a676e5cefd65441d497addf765a35eb71",
+        "git_blob_sha1": "8d3fd2658ab8bda26357beb1ef3d676d8f754040",
+        "UIP_may_verify_canonical_repository_bytes": true
+    }
+}

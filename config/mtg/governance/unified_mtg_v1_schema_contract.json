@@ -1,0 +1,177 @@
+{
+    "contract_id":  "unified_mtg_v1_schema_contract",
+    "contract_version":  "1.0.0",
+    "status":  "UNIFIED_MTG_V1_SCHEMA_ARCHITECTURE_CERTIFIED",
+    "row_grain":  "ONE_ROW_PER_GOVERNED_MTG_ASSET_PER_AUTHORITY_SNAPSHOT",
+    "schema_purpose":  "COMMON_INTERFACE_NOT_COMMON_MODEL",
+    "fields":  [
+                   {
+                       "field":  "mtg_asset_id",
+                       "required":  true,
+                       "meaning":  "Stable lane-qualified asset identifier",
+                       "cross_lane_comparable":  false
+                   },
+                   {
+                       "field":  "mtg_lane",
+                       "required":  true,
+                       "meaning":  "COLLECTOR_V1, PRE_COLLECTOR_V1, or SECRET_LAIR_V1_1",
+                       "cross_lane_comparable":  true
+                   },
+                   {
+                       "field":  "native_asset_id",
+                       "required":  true,
+                       "meaning":  "Unmodified native lane identifier",
+                       "cross_lane_comparable":  false
+                   },
+                   {
+                       "field":  "product_name",
+                       "required":  true,
+                       "meaning":  "Native governed product name",
+                       "cross_lane_comparable":  false
+                   },
+                   {
+                       "field":  "lane_authority_state",
+                       "required":  true,
+                       "meaning":  "Certified lane authority state",
+                       "cross_lane_comparable":  true
+                   },
+                   {
+                       "field":  "current_price_usd",
+                       "required":  false,
+                       "meaning":  "Native governed current-price value when authority exists",
+                       "cross_lane_comparable":  false
+                   },
+                   {
+                       "field":  "current_price_authority_available",
+                       "required":  true,
+                       "meaning":  "Whether governed current-price authority exists",
+                       "cross_lane_comparable":  true
+                   },
+                   {
+                       "field":  "forecast_authority_available",
+                       "required":  true,
+                       "meaning":  "Whether product has governed forecast authority",
+                       "cross_lane_comparable":  true
+                   },
+                   {
+                       "field":  "forecast_1y_price_usd",
+                       "required":  false,
+                       "meaning":  "Native certified one-year forecast where governed and available",
+                       "cross_lane_comparable":  false
+                   },
+                   {
+                       "field":  "forecast_1y_return",
+                       "required":  false,
+                       "meaning":  "Native certified one-year return where governed and available",
+                       "cross_lane_comparable":  false
+                   },
+                   {
+                       "field":  "risk_authority_available",
+                       "required":  true,
+                       "meaning":  "Whether native governed risk or uncertainty authority exists",
+                       "cross_lane_comparable":  true
+                   },
+                   {
+                       "field":  "native_rank",
+                       "required":  false,
+                       "meaning":  "Native lane rank only; never a cross-lane rank",
+                       "cross_lane_comparable":  false
+                   },
+                   {
+                       "field":  "native_rank_type",
+                       "required":  false,
+                       "meaning":  "Meaning and scope of native rank",
+                       "cross_lane_comparable":  false
+                   },
+                   {
+                       "field":  "native_purchase_status",
+                       "required":  false,
+                       "meaning":  "Unmodified native purchase classification/status",
+                       "cross_lane_comparable":  false
+                   },
+                   {
+                       "field":  "purchase_semantic",
+                       "required":  false,
+                       "meaning":  "Governed interpretation of the native purchase status",
+                       "cross_lane_comparable":  false
+                   },
+                   {
+                       "field":  "evidence_state",
+                       "required":  false,
+                       "meaning":  "Native lane evidence or analysis disposition",
+                       "cross_lane_comparable":  false
+                   },
+                   {
+                       "field":  "actionability_state",
+                       "required":  true,
+                       "meaning":  "Whether output is analytical, model-qualified, review-only, wait, or otherwise native-governed",
+                       "cross_lane_comparable":  false
+                   },
+                   {
+                       "field":  "execution_ready_purchase_certified",
+                       "required":  true,
+                       "meaning":  "Separate execution authority; false unless explicitly certified",
+                       "cross_lane_comparable":  true
+                   },
+                   {
+                       "field":  "manual_execution_price_check_required",
+                       "required":  true,
+                       "meaning":  "Whether live acquisition-price verification is required before action",
+                       "cross_lane_comparable":  true
+                   },
+                   {
+                       "field":  "native_authority_pointer",
+                       "required":  true,
+                       "meaning":  "Primary lane-specific authority source",
+                       "cross_lane_comparable":  false
+                   },
+                   {
+                       "field":  "native_authority_sha256",
+                       "required":  true,
+                       "meaning":  "Hash binding to primary authority source",
+                       "cross_lane_comparable":  false
+                   },
+                   {
+                       "field":  "snapshot_population_is_permanent",
+                       "required":  true,
+                       "meaning":  "Whether snapshot row count may be treated as fixed universe",
+                       "cross_lane_comparable":  true
+                   },
+                   {
+                       "field":  "automatic_purchase_execution",
+                       "required":  true,
+                       "meaning":  "Automatic purchase execution authority",
+                       "cross_lane_comparable":  true
+                   }
+               ],
+    "semantic_rules":  {
+                           "native_rank_is_cross_lane_rank":  false,
+                           "native_purchase_status_is_cross_lane_purchase_policy":  false,
+                           "missing_forecast_is_zero_forecast":  false,
+                           "missing_current_price_is_zero_price":  false,
+                           "missing_rank_is_worst_rank":  false,
+                           "missing_purchase_status_is_WAIT":  false,
+                           "secret_lair_BUY_means_execution_ready":  false,
+                           "precollector_3y_5y_scenarios_directly_backtested":  false,
+                           "collector_thresholds_apply_to_other_lanes":  false,
+                           "precollector_weights_apply_to_other_lanes":  false,
+                           "secret_lair_Q10_policy_applies_to_other_lanes":  false
+                       },
+    "population_rules":  {
+                             "collector":  "PRESERVE_CURRENT_CERTIFIED_SNAPSHOT_AND_EXPLICITLY_RETAIN_UNRANKED_ASSETS",
+                             "pre_collector":  "PRESERVE_ALL_131_CANONICAL_DISPOSITION_ROWS",
+                             "secret_lair":  "DYNAMIC_UNIVERSE_DO_NOT_TREAT_CURRENT_787_RANKED_ROWS_AS_PERMANENT_UNIVERSE"
+                         },
+    "prohibited_derivations":  [
+                                   "CROSS_LANE_RANK_FROM_NATIVE_RANKS",
+                                   "CROSS_LANE_SCORE_FROM_NATIVE_SCORES",
+                                   "TRANSFER_COLLECTOR_PURCHASE_THRESHOLDS",
+                                   "TRANSFER_PRECOLLECTOR_WEIGHTS",
+                                   "TRANSFER_SECRET_LAIR_Q10_POLICY",
+                                   "SYNTHESIZE_MISSING_PRICE_AS_ZERO",
+                                   "SYNTHESIZE_MISSING_FORECAST_AS_ZERO",
+                                   "CASE_PRICE_DIVISION_TO_BOX_PRICE",
+                                   "AUTOMATIC_PURCHASE_EXECUTION"
+                               ],
+    "next_gate":  "MTG_U1C_NORMALIZED_PRODUCT_AUTHORITY_ASSEMBLY"
+}

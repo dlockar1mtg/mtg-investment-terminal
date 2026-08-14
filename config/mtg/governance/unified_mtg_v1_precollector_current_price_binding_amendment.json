@@ -1,0 +1,49 @@
+{
+    "contract_id":  "unified_mtg_v1_precollector_current_price_binding_amendment",
+    "contract_version":  "1.0.0",
+    "status":  "UNIFIED_MTG_V1_PRECOLLECTOR_CURRENT_PRICE_BINDING_CORRECTED",
+    "governed_head_before":  "eaa3bcc8caeebe598961ca14b0fec75a49a430ba",
+    "failed_integration_stage":  "MTG_U1C_NORMALIZED_PRODUCT_AUTHORITY_ASSEMBLY",
+    "root_cause":  "UNIFIED_INTEGRATION_BINDING_DEFECT",
+    "source_semantics":  {
+                             "canonical_products":  131,
+                             "governed_current_price_products":  121,
+                             "explicit_current_price_gaps":  10,
+                             "certified_coverage_status":  "CERTIFIED_TCGCSV_LIVE_CURRENT_PRICE",
+                             "gap_coverage_status":  "NO_CERTIFIED_CURRENT_PRICE_EVIDENCE",
+                             "governed_price_field":  "selected_price",
+                             "governed_source":  "TCGCSV_LIVE"
+                         },
+    "reconciliation":  {
+                           "ranked_forecastable_products":  95,
+                           "forecast_gap_products_with_current_price_authority":  26,
+                           "current_price_products":  121,
+                           "equality":  "121_EQUALS_95_PLUS_26",
+                           "no_current_price_products":  10
+                       },
+    "certified_package":  {
+                              "name":  "MTG_PreCollector_Current_Price_Authority_v2_20260808_151353.zip",
+                              "sha256":  "cab2c351a167e5a5c02b58c411355d58c18d0f075f282a05e85083412cb3f3c6",
+                              "authority_member_sha256":  "2f2e23afab13c5ffc41899cc14dbe92b5e4cb3a0cd60ac6d19cba11ce7d338a8",
+                              "coverage_member_sha256":  "664c15c982dda1a53b7e98eeb089c93a1358215cdda98834d16b1401412ac9ed",
+                              "gap_member_sha256":  "e2a9f81f551ed33312c3b51299c24717470a0870df350782787589ea1f80fda9",
+                              "summary_member_sha256":  "48709413e6e1d3cdb0025621f572492003bd1b361d0e535bda4b2c2676717835"
+                          },
+    "preservation":  {
+                         "precollector_lane_reopened":  false,
+                         "precollector_data_changed":  false,
+                         "forecast_changed":  false,
+                         "Monte_Carlo_changed":  false,
+                         "ranking_changed":  false,
+                         "purchase_policy_changed":  false,
+                         "marketplace_calls":  0,
+                         "automatic_purchase_execution":  false
+                     },
+    "authorization":  {
+                          "corrected_U1C_rerun":  true,
+                          "unified_MTG_production_certified":  false,
+                          "MTG_to_UIP_export":  false,
+                          "automatic_purchase_execution":  false
+                      },
+    "next_gate":  "MTG_U1C_R1_NORMALIZED_PRODUCT_AUTHORITY_ASSEMBLY"
+}

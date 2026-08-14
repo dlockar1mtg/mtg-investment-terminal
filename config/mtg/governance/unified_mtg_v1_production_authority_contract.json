@@ -1,0 +1,67 @@
+{
+    "contract_id":  "unified_mtg_v1_production_authority_contract",
+    "contract_version":  "1.0.0",
+    "status":  "UNIFIED_MTG_V1_PRODUCTION_AUTHORITY_CERTIFIED",
+    "governed_head_before":  "9e82648621e982335c0310d3900c9f74035cc6e2",
+    "upstream":  {
+                     "lane_authority_binding":  "config/mtg/governance/unified_mtg_v1_lane_authority_binding_contract.json",
+                     "lane_authority_binding_sha256":  "842ffa7064865b5235e87478690ada5b891df0463a99d500a9fd79faba931261",
+                     "unified_schema":  "config/mtg/governance/unified_mtg_v1_schema_contract.json",
+                     "unified_schema_sha256":  "d0be1feb5a82f75159c18cab546e5f99512767bf0d4f0a58854d8b4d0b5352ad",
+                     "precollector_current_price_binding_amendment":  "config/mtg/governance/unified_mtg_v1_precollector_current_price_binding_amendment.json",
+                     "precollector_current_price_binding_amendment_sha256":  "083e44a735e2f4dcf83a3c318f618fcd22ead8a782a8becba80a8406fe639f8e",
+                     "normalized_assembly_contract":  "config/mtg/governance/unified_mtg_v1_normalized_product_authority_contract.json",
+                     "normalized_assembly_contract_sha256":  "835b2fac67121f24a47b65e4a7ace35ede5202e2eadf33b9c591649a61b5f23d"
+                 },
+    "production_authority":  {
+                                 "normalized_product_authority_path":  "docs/phase_9/unified_mtg/unified_mtg_v1_normalized_product_authority.csv",
+                                 "normalized_product_authority_sha256":  "006ba3951565437291284d8e86e93a40208d2c0e783f43d3652e9f8f510914e1",
+                                 "final_authority_manifest_path":  "docs/phase_9/unified_mtg/unified_mtg_v1_final_production_authority_manifest.json",
+                                 "final_authority_manifest_sha256":  "dbf5a91ba12474a98d98e3759c8f205960d7793d0d4ca03e43449c2673cd238c"
+                             },
+    "current_snapshot":  {
+                             "total_rows":  968,
+                             "collector_rows":  50,
+                             "precollector_rows":  131,
+                             "secret_lair_rows":  787,
+                             "total_is_permanent_universe_constant":  false
+                         },
+    "validation":  {
+                       "structural_validation_passed":  true,
+                       "product_population_validation_passed":  true,
+                       "missing_authority_semantics_passed":  true,
+                       "native_rank_semantics_passed":  true,
+                       "native_purchase_semantics_passed":  true,
+                       "authority_lineage_validation_passed":  true,
+                       "execution_safety_validation_passed":  true,
+                       "violations":  0
+                   },
+    "prohibited_unified_behavior":  {
+                                        "cross_lane_rank":  false,
+                                        "cross_lane_score":  false,
+                                        "cross_lane_purchase_threshold":  false,
+                                        "threshold_transfer":  false,
+                                        "weight_transfer":  false,
+                                        "missing_price_as_zero":  false,
+                                        "missing_forecast_as_zero":  false,
+                                        "automatic_purchase_execution":  false
+                                    },
+    "execution":  {
+                      "model_refit":  false,
+                      "forecast_rebuild":  false,
+                      "Monte_Carlo_rebuild":  false,
+                      "ranking_rebuild":  false,
+                      "purchase_policy_redesign":  false,
+                      "marketplace_calls":  0,
+                      "ebay_calls":  0,
+                      "execution_ready_purchase_certified":  false,
+                      "automatic_purchase_execution":  false
+                  },
+    "authorization":  {
+                          "unified_MTG_production_authority_certified":  true,
+                          "MTG_to_UIP_export_contract_authorized":  true,
+                          "UIP_integration_certified":  false,
+                          "automatic_purchase_execution":  false
+                      },
+    "next_gate":  "MTG_U2_MTG_TO_UIP_EXPORT_CONTRACT"
+}

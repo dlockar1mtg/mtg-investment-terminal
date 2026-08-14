@@ -1,0 +1,78 @@
+{
+    "authority_id":  "UNIFIED_MTG_V1_FINAL_PRODUCTION_AUTHORITY",
+    "authority_version":  "1.0",
+    "status":  "UNIFIED_MTG_V1_PRODUCTION_AUTHORITY_CERTIFIED",
+    "authority_principle":  "COMMON_INTERFACE_WITH_NATIVE_LANE_SEMANTICS_PRESERVED",
+    "normalized_product_authority":  {
+                                         "path":  "docs/phase_9/unified_mtg/unified_mtg_v1_normalized_product_authority.csv",
+                                         "sha256":  "006ba3951565437291284d8e86e93a40208d2c0e783f43d3652e9f8f510914e1",
+                                         "row_grain":  "ONE_ROW_PER_GOVERNED_MTG_ASSET_PER_AUTHORITY_SNAPSHOT",
+                                         "current_snapshot_rows":  968,
+                                         "current_snapshot_is_permanent_universe_constant":  false
+                                     },
+    "lanes":  {
+                  "collector":  {
+                                    "lane_authority":  "COLLECTOR_V1",
+                                    "state":  "CERTIFIED_CLOSED",
+                                    "current_snapshot_rows":  50,
+                                    "ranked_rows":  49,
+                                    "native_methods_preserved":  true
+                                },
+                  "pre_collector":  {
+                                        "lane_authority":  "PRE_COLLECTOR_V1",
+                                        "state":  "CERTIFIED_CLOSED",
+                                        "canonical_rows":  131,
+                                        "current_price_authority_rows":  121,
+                                        "ranked_forecastable_rows":  95,
+                                        "forecast_gap_rows":  26,
+                                        "no_current_price_authority_rows":  10,
+                                        "native_methods_preserved":  true
+                                    },
+                  "secret_lair":  {
+                                      "lane_authority":  "SECRET_LAIR_V1_1",
+                                      "state":  "CERTIFIED_CLOSED",
+                                      "current_ranked_snapshot_rows":  787,
+                                      "current_rank_groups":  704,
+                                      "dynamic_universe":  true,
+                                      "fixed_product_count":  false,
+                                      "native_methods_preserved":  true
+                                  }
+              },
+    "ranking":  {
+                    "unified_cross_lane_rank":  false,
+                    "native_lane_ranks_exposed":  true,
+                    "native_lane_ranks_are_directly_cross_lane_comparable":  false
+                },
+    "purchase":  {
+                     "unified_cross_lane_purchase_policy":  false,
+                     "native_purchase_statuses_exposed":  true,
+                     "native_purchase_semantics_preserved":  true,
+                     "secret_lair_BUY_semantic":  "MODEL_QUALIFIED_ENTRY_CANDIDATE",
+                     "execution_ready_purchase_authority":  false
+                 },
+    "validation":  {
+                       "validation_ledger_path":  "docs/phase_9/unified_mtg/unified_mtg_v1_production_validation_ledger.csv",
+                       "validation_ledger_sha256":  "6ecd777afc130954d986ac551641a75d0b710baf52bd3993be648f9978ad885b",
+                       "validation_summary_path":  "docs/phase_9/unified_mtg/unified_mtg_v1_production_validation_summary.json",
+                       "validation_summary_sha256":  "6adf79cc5bdf4f33ba65c9490f12c213b5a031e37382a766097538bf8b86b103",
+                       "violations":  0
+                   },
+    "refresh_governance":  {
+                               "lane_specific_refresh_authority_preserved":  true,
+                               "current_price_refresh_is_model_retraining":  false,
+                               "new_product_discovery_is_full_model_redesign":  false,
+                               "secret_lair_dynamic_discovery_required":  true
+                           },
+    "execution":  {
+                      "execution_ready_purchase_certified":  false,
+                      "automatic_purchase_execution":  false,
+                      "marketplace_calls_during_certification":  0
+                  },
+    "authorization":  {
+                          "unified_MTG_production_authority":  true,
+                          "MTG_to_UIP_export_contract":  true,
+                          "UIP_integration_certified":  false,
+                          "automatic_purchase_execution":  false
+                      },
+    "next_gate":  "MTG_U2_MTG_TO_UIP_EXPORT_CONTRACT"
+}

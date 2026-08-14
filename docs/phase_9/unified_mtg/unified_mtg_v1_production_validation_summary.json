@@ -1,0 +1,64 @@
+{
+    "status":  "UNIFIED_MTG_V1_NORMALIZED_AUTHORITY_VALIDATED",
+    "governed_head_before":  "9e82648621e982335c0310d3900c9f74035cc6e2",
+    "normalized_authority":  {
+                                 "path":  "docs/phase_9/unified_mtg/unified_mtg_v1_normalized_product_authority.csv",
+                                 "sha256":  "006ba3951565437291284d8e86e93a40208d2c0e783f43d3652e9f8f510914e1",
+                                 "rows":  968,
+                                 "permanent_universe_constant":  false
+                             },
+    "collector":  {
+                      "rows":  50,
+                      "ranked":  49,
+                      "unranked":  1,
+                      "unranked_asset_id":  "COLLECTOR_V1|MTG-CANON-TCGPLAYER-515906",
+                      "unranked_product_name":  "The Lord of the Rings: Tales of Middle-earth - Special Edition Collector Booster Display",
+                      "purchase_status_counts":  {
+                                                     "NOT_PURCHASE_ELIGIBLE":  3,
+                                                     "PURCHASE_CANDIDATE":  6,
+                                                     "STRONG_PURCHASE_CANDIDATE":  7,
+                                                     "WATCHLIST":  33
+                                                 }
+                  },
+    "pre_collector":  {
+                          "rows":  131,
+                          "current_price_rows":  121,
+                          "no_current_price_rows":  10,
+                          "ranked_forecastable_rows":  95,
+                          "unranked_rows":  36,
+                          "forecast_gap_rows_with_current_price":  26,
+                          "price_reconciliation_121_equals_95_plus_26":  true,
+                          "population_reconciliation_131_equals_121_plus_10":  true,
+                          "synthetic_price_rows":  0,
+                          "no_price_rows_with_rank":  0
+                      },
+    "secret_lair":  {
+                        "rows":  787,
+                        "production_rank_groups":  704,
+                        "BUY_CANDIDATE_NOW":  88,
+                        "REVIEW_GLOBAL_COMPARABLE_ONLY":  1,
+                        "WAIT_FOR_Q10_ENTRY":  698,
+                        "BUY_semantic":  "MODEL_QUALIFIED_ENTRY_CANDIDATE",
+                        "BUY_execution_ready":  false,
+                        "BUY_manual_execution_price_check_required":  true,
+                        "dynamic_universe":  true,
+                        "fixed_product_count":  false
+                    },
+    "semantic_validation":  {
+                                "native_rank_remains_lane_specific":  true,
+                                "cross_lane_rank_created":  false,
+                                "cross_lane_score_created":  false,
+                                "cross_lane_purchase_policy_created":  false,
+                                "missing_prices_synthesized":  0,
+                                "missing_forecasts_synthesized":  0
+                            },
+    "execution":  {
+                      "execution_ready_purchase_rows":  0,
+                      "automatic_purchase_execution_rows":  0,
+                      "marketplace_calls":  0,
+                      "ebay_calls":  0
+                  },
+    "validation_violations":  0,
+    "production_certification_authorized":  true,
+    "next_gate":  "MTG_U1D_UNIFIED_MTG_PRODUCTION_CERTIFICATION"
+}

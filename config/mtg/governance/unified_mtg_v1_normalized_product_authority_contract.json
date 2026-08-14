@@ -1,0 +1,77 @@
+{
+    "contract_id":  "unified_mtg_v1_normalized_product_authority_contract",
+    "contract_version":  "1.0.0",
+    "status":  "UNIFIED_MTG_V1_NORMALIZED_PRODUCT_AUTHORITY_ASSEMBLY_CERTIFIED",
+    "assembly_revision":  "U1C_R1",
+    "governed_head_before":  "7bb01a30de01d1aab01ad2fd427de494c1046e4c",
+    "upstream":  {
+                     "lane_binding_contract":  "config/mtg/governance/unified_mtg_v1_lane_authority_binding_contract.json",
+                     "lane_binding_contract_version":  "1.0.1",
+                     "lane_binding_sha256":  "842ffa7064865b5235e87478690ada5b891df0463a99d500a9fd79faba931261",
+                     "precollector_price_binding_amendment":  "config/mtg/governance/unified_mtg_v1_precollector_current_price_binding_amendment.json",
+                     "precollector_price_binding_amendment_sha256":  "083e44a735e2f4dcf83a3c318f618fcd22ead8a782a8becba80a8406fe639f8e",
+                     "schema_contract":  "config/mtg/governance/unified_mtg_v1_schema_contract.json",
+                     "schema_sha256":  "d0be1feb5a82f75159c18cab546e5f99512767bf0d4f0a58854d8b4d0b5352ad"
+                 },
+    "output":  {
+                   "path":  "docs/phase_9/unified_mtg/unified_mtg_v1_normalized_product_authority.csv",
+                   "sha256":  "006ba3951565437291284d8e86e93a40208d2c0e783f43d3652e9f8f510914e1",
+                   "current_snapshot_rows":  968,
+                   "current_snapshot_is_permanent_universe_constant":  false,
+                   "row_grain":  "ONE_ROW_PER_GOVERNED_MTG_ASSET_PER_AUTHORITY_SNAPSHOT"
+               },
+    "lane_populations":  {
+                             "collector":  {
+                                               "rows":  50,
+                                               "ranked_rows":  49,
+                                               "unranked_rows":  1
+                                           },
+                             "pre_collector":  {
+                                                   "rows":  131,
+                                                   "current_price_authority_rows":  121,
+                                                   "no_current_price_authority_rows":  10,
+                                                   "ranked_forecastable_rows":  95,
+                                                   "forecast_gap_rows_with_current_price":  26,
+                                                   "price_reconciliation":  "121_EQUALS_95_PLUS_26",
+                                                   "disposition_current_price_field_used":  false,
+                                                   "governed_current_price_source":  "PRECOLLECTOR_CURRENT_PRICE_AUTHORITY_V2"
+                                               },
+                             "secret_lair":  {
+                                                 "rows":  787,
+                                                 "dynamic_universe":  true,
+                                                 "fixed_product_count":  false
+                                             }
+                         },
+    "semantic_preservation":  {
+                                  "native_lane_methods_preserved":  true,
+                                  "native_lane_ranks_preserved":  true,
+                                  "native_purchase_semantics_preserved":  true,
+                                  "cross_lane_rank_created":  false,
+                                  "cross_lane_score_created":  false,
+                                  "cross_lane_purchase_policy_created":  false,
+                                  "missing_price_values_synthesized":  0,
+                                  "missing_forecast_values_synthesized":  0
+                              },
+    "execution":  {
+                      "execution_ready_purchase_rows":  0,
+                      "automatic_purchase_execution_rows":  0,
+                      "marketplace_calls":  0,
+                      "ebay_calls":  0
+                  },
+    "governance":  {
+                       "model_refit":  false,
+                       "forecast_rebuild":  false,
+                       "Monte_Carlo_rebuild":  false,
+                       "native_ranking_rebuild":  false,
+                       "purchase_policy_redesign":  false,
+                       "final_unified_production_authority_certified":  false
+                   },
+    "authorization":  {
+                          "normalized_product_authority":  true,
+                          "normalized_authority_validation":  true,
+                          "unified_MTG_production_certification":  true,
+                          "MTG_to_UIP_export":  false,
+                          "automatic_purchase_execution":  false
+                      },
+    "next_gate":  "MTG_U1D_NORMALIZED_AUTHORITY_VALIDATION_AND_PRODUCTION_CERTIFICATION"
+}

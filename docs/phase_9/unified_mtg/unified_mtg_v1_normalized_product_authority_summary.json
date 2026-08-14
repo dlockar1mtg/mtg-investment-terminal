@@ -1,0 +1,47 @@
+{
+  "status": "UNIFIED_MTG_V1_NORMALIZED_PRODUCT_AUTHORITY_ASSEMBLED",
+  "assembly_revision": "U1C_R1",
+  "row_grain": "ONE_ROW_PER_GOVERNED_MTG_ASSET_PER_AUTHORITY_SNAPSHOT",
+  "current_snapshot": {
+    "total_rows": 968,
+    "collector_rows": 50,
+    "precollector_rows": 131,
+    "secret_lair_rows": 787,
+    "snapshot_total_is_permanent_universe_constant": false
+  },
+  "collector": {
+    "ranked_rows": 49,
+    "unranked_rows": 1
+  },
+  "precollector": {
+    "canonical_rows": 131,
+    "current_price_authority_rows": 121,
+    "no_current_price_authority_rows": 10,
+    "ranked_forecastable_rows": 95,
+    "forecast_gap_rows_with_current_price": 26,
+    "current_price_source": "CERTIFIED_PRECOLLECTOR_CURRENT_PRICE_AUTHORITY_V2",
+    "disposition_current_price_field_used": false,
+    "price_reconciliation": "121_EQUALS_95_PLUS_26"
+  },
+  "secret_lair": {
+    "current_ranked_snapshot_rows": 787,
+    "dynamic_universe": true,
+    "fixed_product_count": false
+  },
+  "governance": {
+    "native_methods_preserved": true,
+    "cross_lane_rank_created": false,
+    "cross_lane_score_created": false,
+    "cross_lane_purchase_policy_created": false,
+    "missing_price_values_synthesized": 0,
+    "missing_forecast_values_synthesized": 0,
+    "models_rerun": false,
+    "marketplace_calls": 0,
+    "automatic_purchase_execution": false
+  },
+  "output": {
+    "path": "docs/phase_9/unified_mtg/unified_mtg_v1_normalized_product_authority.csv",
+    "sha256": "006ba3951565437291284d8e86e93a40208d2c0e783f43d3652e9f8f510914e1"
+  },
+  "next_gate": "MTG_U1D_NORMALIZED_AUTHORITY_VALIDATION_AND_PRODUCTION_CERTIFICATION"
+}
