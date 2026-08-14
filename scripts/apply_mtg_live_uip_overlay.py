@@ -19,7 +19,8 @@ ID_FIELDS = (
     "product_id", "tcgplayer_product_id", "asset_id",
 )
 PRICE_FIELDS = (
-    "consolidated_market_price_usd", "consolidated_price_usd",
+    "consolidated_market_price_usd", "consolidated_market_price",
+    "consolidated_price_usd", "consolidated_price",
     "market_price_usd", "median_price_usd", "current_price_usd",
     "current_price", "price_usd", "price",
 )
@@ -197,6 +198,13 @@ def main() -> int:
         row["decision_observed_at_utc"] = ""
         row["decision_source"] = "PHASE_10_CERTIFIED_BASELINE"
 
+    if live_price_count < 1:
+        print("MTG LIVE UIP OVERLAY: FAILED - CERTIFIED PRICES DID NOT APPLY")
+        return 2
+    if live_decision_count < 1:
+        print("MTG LIVE UIP OVERLAY: FAILED - CERTIFIED DECISIONS DID NOT APPLY")
+        return 2
+
     for row in risks:
         asset_id = str(row.get("asset_id", "") or "").strip()
         row["market_data_status"] = (
@@ -258,9 +266,6 @@ def main() -> int:
     shutil.copytree(package, history)
 
     print(json.dumps(summary["live_overlay"], indent=2))
-    if not live_asset_ids:
-        print("MTG LIVE UIP OVERLAY: FAILED - NO JOINABLE LIVE PRODUCTS")
-        return 2
     print("MTG LIVE UIP OVERLAY: PASS")
     print(f"Historical snapshot: {history}")
     return 0
