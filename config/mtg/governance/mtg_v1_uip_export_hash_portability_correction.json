@@ -1,0 +1,61 @@
+{
+    "correction_id": "mtg_v1_uip_export_hash_portability_correction",
+    "correction_version": "1.0.0",
+    "status": "MTG_V1_TO_UIP_HASH_PORTABILITY_CORRECTION_CERTIFIED",
+    "base_export_commit": "f7dea3e2611f27de4ff6541da3b1d6a60dc6d695",
+    "affected_artifacts": {
+        "normalized_product_authority": "docs/phase_9/unified_mtg/unified_mtg_v1_normalized_product_authority.csv",
+        "uip_export_payload": "docs/phase_9/uip_export/mtg_v1_uip_export_payload.csv"
+    },
+    "git_object_identity": {
+        "source_and_payload_same_git_blob": true,
+        "git_blob_sha1": "8d3fd2658ab8bda26357beb1ef3d676d8f754040"
+    },
+    "hash_representations": {
+        "historical_windows_crlf_sha256": "006ba3951565437291284d8e86e93a40208d2c0e783f43d3652e9f8f510914e1",
+        "canonical_repository_lf_sha256": "aa363cd474ae6b846588bb4af2fd235a676e5cefd65441d497addf765a35eb71",
+        "historical_sha_remains_valid_for_windows_crlf_representation": true,
+        "canonical_sha_is_authority_for_committed_repository_bytes": true
+    },
+    "diagnosis": {
+        "difference_scope": "LINE_ENDINGS_ONLY",
+        "core_autocrlf_environment_observed": true,
+        "logical_line_count": 969,
+        "header_rows": 1,
+        "payload_rows": 968
+    },
+    "data_integrity": {
+        "payload_regenerated": false,
+        "payload_content_changed": false,
+        "payload_rows_changed": 0,
+        "payload_columns_changed": 0,
+        "payload_values_changed": 0,
+        "rows_filtered": 0,
+        "rows_added": 0,
+        "rows_removed": 0,
+        "columns_renamed": 0,
+        "columns_reordered": 0,
+        "missing_values_imputed": 0
+    },
+    "semantic_integrity": {
+        "MTG_model_reopened": false,
+        "MTG_lane_semantics_changed": false,
+        "native_ranks_changed": false,
+        "native_purchase_semantics_changed": false,
+        "execution_authority_changed": false,
+        "automatic_purchase_execution": false,
+        "UIP_cross_asset_ranking_authorized": false
+    },
+    "UIP_verification_authority": {
+        "UIP_may_validate_canonical_repository_sha256": true,
+        "canonical_repository_sha256": "aa363cd474ae6b846588bb4af2fd235a676e5cefd65441d497addf765a35eb71",
+        "UIP_must_not_silently_accept_arbitrary_hashes": true,
+        "UIP_integration_certified": false,
+        "next_gate": "UIP_MTG_A1_EXPORT_ACCEPTANCE_AND_SEMANTIC_PRESERVATION"
+    },
+    "historical_evidence": {
+        "original_export_certification_preserved": true,
+        "historical_windows_crlf_sha256": "006ba3951565437291284d8e86e93a40208d2c0e783f43d3652e9f8f510914e1",
+        "original_export_commit": "f7dea3e2611f27de4ff6541da3b1d6a60dc6d695"
+    }
+}
