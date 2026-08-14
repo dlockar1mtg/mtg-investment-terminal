@@ -20,6 +20,38 @@ Source SHA-256:
 
 006ba3951565437291284d8e86e93a40208d2c0e783f43d3652e9f8f510914e1
 
+
+## Hash portability correction
+
+A portability defect was identified during UIP acceptance testing.
+
+The certified source authority and UIP export payload are the same committed
+Git object:
+
+`8d3fd2658ab8bda26357beb1ef3d676d8f754040`
+
+The original SHA-256:
+
+`006ba3951565437291284d8e86e93a40208d2c0e783f43d3652e9f8f510914e1`
+
+is preserved as the historical Windows CRLF representation hash.
+
+The canonical SHA-256 of the bytes stored in the Git repository is:
+
+`aa363cd474ae6b846588bb4af2fd235a676e5cefd65441d497addf765a35eb71`
+
+The difference is line endings only. No payload row, column, value, native
+rank, forecast, purchase semantic, execution control, or MTG model authority
+changed.
+
+UIP is authorized to verify the canonical repository SHA-256 when consuming
+the committed certified export artifact. This does not authorize arbitrary
+hash substitution and does not certify UIP integration.
+
+Correction authority:
+
+`config/mtg/governance/mtg_v1_uip_export_hash_portability_correction.json`
+
 ## Export payload
 
 docs/phase_9/uip_export/mtg_v1_uip_export_payload.csv
