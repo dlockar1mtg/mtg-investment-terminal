@@ -1,0 +1,112 @@
+{
+    "contract_id": "mtg_lane_native_research_hydration_contract_v1",
+    "contract_version": "1.0.0",
+    "status": "AUTHORIZED_FOR_BOUNDED_UIP_HYDRATION_IMPLEMENTATION",
+    "purpose": "Authorize UIP to hydrate certified lane-native MTG research sidecars without altering native model semantics or the frozen 23-field common MTG authority.",
+    "common_interface": {
+        "field_count": 23,
+        "remains_frozen": true,
+        "replaced_by_sidecars": false
+    },
+    "collector": {
+        "product_dataset": {
+            "path": "docs/phase_9/uip_export/research_sidecars/mtg_collector_research.csv",
+            "sha256": "b81ee16a310f8a4f9dcbccf21047e31396df9810d53291cdb9b631fbe046d457",
+            "row_count": 50,
+            "key": "canonical_product_id",
+            "analytical_core_count": 49,
+            "current_price_only_count": 1,
+            "current_price_only_asset": "MTG-CANON-TCGPLAYER-515906"
+        },
+        "horizon_dataset": {
+            "path": "docs/phase_9/uip_export/research_sidecars/mtg_collector_forecast_horizon.csv",
+            "sha256": "585257520197fff9700c0a9f1d1d517af60c1792d944f3f4dab1f65c564cf3e8",
+            "row_count": 294,
+            "key": [
+                "canonical_product_id",
+                "horizon_days"
+            ],
+            "product_count": 49,
+            "horizons_days": [
+                90,
+                180,
+                365,
+                730,
+                1095,
+                1825
+            ]
+        },
+        "hydration_semantics": [
+            "PRODUCT_RECORD_MAY_EXIST_WITHOUT_ANALYTICAL_HORIZONS",
+            "CURRENT_PRICE_ONLY_ASSET_MUST_REMAIN_UNRANKED",
+            "CURRENT_PRICE_ONLY_ASSET_MUST_NOT_RECEIVE_SYNTHETIC_FORECAST",
+            "MISSING_ANALYTICS_REMAIN_MISSING"
+        ]
+    },
+    "pre_collector": {
+        "product_dataset": {
+            "path": "docs/phase_9/uip_export/research_sidecars/mtg_precollector_research.csv",
+            "sha256": "80d8a60ffcc35d688e6560ee94f2d1f910fb3cd961eea097d5ffd00862034f81",
+            "row_count": 131,
+            "key": "canonical_product_id",
+            "ranked_forecastable_count": 95,
+            "not_ranked_count": 36
+        },
+        "scenario_dataset": {
+            "path": "docs/phase_9/uip_export/research_sidecars/mtg_precollector_scenario_horizon.csv",
+            "sha256": "74caad4f8d39ce255455854ab5a5459779f6e73adc0afebc8269e769858aed0a",
+            "row_count": 190,
+            "key": [
+                "canonical_product_id",
+                "monte_carlo_horizon_years"
+            ],
+            "product_count": 95,
+            "horizons_years": [
+                3,
+                5
+            ]
+        },
+        "hydration_semantics": [
+            "PRODUCT_RECORD_MAY_EXIST_WITHOUT_SCENARIO_ROWS",
+            "ONLY_RANKED_FORECASTABLE_PRODUCTS_MAY_HAVE_3Y_5Y_SCENARIOS",
+            "3Y_AND_5Y_ARE_SCENARIOS_NOT_DIRECT_BACKTESTED_FORECASTS",
+            "CURRENT_PRICE_GAP_REASON_MAY_ONLY_USE_CERTIFIED_GAP_AUTHORITY",
+            "MISSING_ANALYTICS_REMAIN_MISSING"
+        ]
+    },
+    "uip_authorization": {
+        "may_load_product_research": true,
+        "may_load_horizon_research": true,
+        "may_attach_research_to_native_detail": true,
+        "may_expose_new_read_only_detail_fields": true,
+        "may_create_lane_native_visualizations": true,
+        "may_modify_native_rank": false,
+        "may_modify_native_purchase_status": false,
+        "may_recalculate_forecast": false,
+        "may_recalculate_risk": false,
+        "may_create_universal_mtg_rank": false,
+        "may_create_cross_lane_score": false,
+        "may_create_automatic_purchase_execution": false
+    },
+    "required_uip_behavior": [
+        "HYDRATION_IS_PRESENTATION_ONLY",
+        "COMMON_23_FIELD_NATIVE_AUTHORITY_REMAINS_AUTHORITATIVE",
+        "SIDECARS_SUPPLEMENT_BUT_DO_NOT_OVERRIDE_NATIVE_AUTHORITY",
+        "LANE_NATIVE_TERMINOLOGY_MUST_BE_PRESERVED",
+        "MISSING_VALUES_MUST_NOT_RENDER_AS_ZERO",
+        "MISSING_VALUES_MUST_NOT_CREATE_FAKE_CHART_POINTS",
+        "COLLECTOR_AND_PRECOLLECTOR_RESEARCH_MUST_REMAIN_SEMANTICALLY_SEPARATE"
+    ],
+    "forbidden": [
+        "NO_MODEL_EXECUTION",
+        "NO_FORECAST_RECALCULATION",
+        "NO_RISK_RECALCULATION",
+        "NO_SYNTHETIC_HISTORY",
+        "NO_SYNTHETIC_FORECAST_DISTRIBUTION",
+        "NO_CRYPTO_BEAR_BASE_BULL_MAPPING",
+        "NO_SECRET_LAIR_Q10_REUSE_FOR_NATIVE_LANES",
+        "NO_CROSS_LANE_RANK",
+        "NO_CROSS_LANE_SCORE",
+        "NO_AUTOMATIC_PURCHASE_EXECUTION"
+    ]
+}
