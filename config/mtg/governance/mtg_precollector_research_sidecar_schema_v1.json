@@ -1,0 +1,211 @@
+{
+    "contract_id": "mtg_precollector_research_sidecar_schema_v1",
+    "contract_version": "1.1.0",
+    "status": "AUTHORIZED_FOR_BOUNDED_SIDECAR_ASSEMBLY",
+    "lane": "PRE_COLLECTOR_V1",
+    "purpose": "Expose certified Pre-Collector-native investment research to UIP while preserving final package semantics and long-horizon scenario governance.",
+    "common_interface": {
+        "mtg_v1_field_count": 23,
+        "remains_frozen": true,
+        "schema_expansion_authorized": false
+    },
+    "authority": {
+        "certified_package": {
+            "name": "MTG_PreCollector_Monte_Carlo_Purchase_Ranking_v1_20260809_111303.zip",
+            "sha256": "47be599f92999fbdede603dc3aee7d720dd0eef01ca68d328e36abda3e256261"
+        },
+        "complete_disposition": {
+            "member": "precollector_final_131_product_disposition_v1.csv",
+            "sha256": "b28769909432e5c61b0d8afee8a88b275b23f178a3d4e6ff1bb69ae189cf5113"
+        },
+        "forecast_and_risk": {
+            "member": "precollector_monte_carlo_summary_v1.csv",
+            "sha256": "c5084e4f3fcd63eee08c7490647fd0e231e9d67830092fee6fd35b57fa3d4992"
+        },
+        "purchase_ranking": {
+            "member": "precollector_purchase_ranking_v1.csv",
+            "sha256": "5aa061c8d005074e4dab88ba5646a1888bd84ef8bc6f27abdc55ce9629e59185"
+        },
+        "current_price_package": {
+            "name": "MTG_PreCollector_Current_Price_Authority_v2_20260808_151353.zip",
+            "sha256": "cab2c351a167e5a5c02b58c411355d58c18d0f075f282a05e85083412cb3f3c6"
+        },
+        "current_price_member": {
+            "member": "precollector_current_price_authority_v2.csv",
+            "sha256": "2f2e23afab13c5ffc41899cc14dbe92b5e4cb3a0cd60ac6d19cba11ce7d338a8"
+        },
+        "current_price_coverage": {
+            "member": "precollector_current_price_coverage_v2.csv",
+            "sha256": "664c15c982dda1a53b7e98eeb089c93a1358215cdda98834d16b1401412ac9ed"
+        },
+        "current_price_gaps": {
+            "member": "precollector_current_price_gaps_v2.csv",
+            "sha256": "e2a9f81f551ed33312c3b51299c24717470a0870df350782787589ea1f80fda9"
+        },
+        "model_return_ranking": {
+            "member": "precollector_model_return_ranking_v1.csv",
+            "sha256": "3a59415e6abb08c5accc99ea3224bed29af665b3408dfe5acfb80ed5b4926500"
+        },
+        "high_confidence_subset": {
+            "member": "precollector_high_confidence_purchase_ranking_v1.csv",
+            "sha256": "f597745b14c7e7767ff2cfb6dee179de31b53b7f2db757ea55ff50e5e7a44ad6"
+        },
+        "speculative_subset": {
+            "member": "precollector_speculative_candidate_ranking_v1.csv",
+            "sha256": "c754af3bc70da31c5767d4708b0318ac1f9be2b2c23a2befbaaf7272417a1113"
+        }
+    },
+    "product_record": {
+        "record_type": "mtg_precollector_research",
+        "grain": "ONE_ROW_PER_CANONICAL_PRECOLLECTOR_PRODUCT",
+        "key": "canonical_product_id",
+        "fields": [
+            "canonical_product_id",
+            "tcgplayer_product_id",
+            "product_name",
+            "current_price",
+            "current_price_evidence_status",
+            "current_price_gap_reason",
+            "source_name",
+            "observation_date",
+            "final_analysis_status",
+            "purchase_rank",
+            "investment_tier",
+            "forecast_price_365d",
+            "combined_purchase_score",
+            "confidence_quartile",
+            "evidence_quality_score",
+            "liquidity_score",
+            "accepted_listing_count",
+            "unique_seller_count",
+            "history_observation_count",
+            "median_cagr_3y",
+            "median_cagr_5y",
+            "probability_positive_3y",
+            "probability_positive_5y",
+            "probability_cagr_above_5pct_3y",
+            "probability_cagr_above_5pct_5y",
+            "downside_cvar10_3y",
+            "downside_cvar10_5y",
+            "median_max_drawdown_3y",
+            "median_max_drawdown_5y",
+            "purchase_score_3y",
+            "purchase_score_5y",
+            "three_year_classification",
+            "five_year_classification",
+            "persistent_product_exclusion",
+            "not_ranked_reason",
+            "high_confidence_rank",
+            "speculative_rank"
+        ]
+    },
+    "scenario_horizon_record": {
+        "record_type": "mtg_precollector_scenario_horizon",
+        "grain": "ONE_ROW_PER_CANONICAL_PRECOLLECTOR_PRODUCT_X_CERTIFIED_SCENARIO_HORIZON",
+        "key": [
+            "canonical_product_id",
+            "monte_carlo_horizon_years"
+        ],
+        "authorized_horizons_years": [
+            3,
+            5
+        ],
+        "fields": [
+            "canonical_product_id",
+            "product_name",
+            "current_price",
+            "certified_365_forecast_price",
+            "monte_carlo_horizon_years",
+            "monte_carlo_paths",
+            "random_seed",
+            "residual_observation_count",
+            "terminal_price_mean",
+            "terminal_price_p10",
+            "terminal_price_p25",
+            "terminal_price_median",
+            "terminal_price_p75",
+            "terminal_price_p90",
+            "mean_total_return",
+            "median_total_return",
+            "mean_cagr",
+            "median_cagr",
+            "probability_positive_return",
+            "probability_cagr_above_5pct",
+            "probability_capital_loss",
+            "return_p10",
+            "return_cvar10",
+            "median_max_drawdown",
+            "p10_max_drawdown",
+            "terminal_log_dispersion",
+            "evidence_quality_score",
+            "liquidity_score",
+            "accepted_listing_count",
+            "unique_seller_count",
+            "history_observation_count",
+            "evidence_domains_present",
+            "source_disagreement_metric",
+            "confidence_quartile",
+            "purchase_score",
+            "scenario_classification",
+            "directly_backtested_at_this_horizon",
+            "model_rank"
+        ]
+    },
+    "presentation_authorizations": [
+        "CURRENT_PRICE_TO_CERTIFIED_365D_FORECAST",
+        "THREE_YEAR_SCENARIO_DISTRIBUTION",
+        "FIVE_YEAR_SCENARIO_DISTRIBUTION",
+        "P10_P25_MEDIAN_P75_P90_SCENARIO_VISUALS",
+        "POSITIVE_RETURN_PROBABILITY_VISUAL",
+        "CAPITAL_LOSS_PROBABILITY_VISUAL",
+        "CAGR_ABOVE_5_PERCENT_PROBABILITY_VISUAL",
+        "DOWNSIDE_CVAR_VISUAL",
+        "MAX_DRAWDOWN_VISUAL",
+        "EVIDENCE_QUALITY_VISUAL",
+        "LIQUIDITY_VISUAL",
+        "LISTING_SELLER_HISTORY_EVIDENCE_VISUAL",
+        "PURCHASE_SCORE_AND_NATIVE_RANK_EXPLANATION",
+        "CURRENT_PRICE_GAP_EXPLANATION"
+    ],
+    "semantic_requirements": [
+        "THREE_YEAR_MUST_BE_LABELED_SCENARIO_NOT_DIRECTLY_BACKTESTED",
+        "FIVE_YEAR_MUST_BE_LABELED_SCENARIO_NOT_DIRECTLY_BACKTESTED",
+        "CERTIFIED_365_FORECAST_REMAINS_SEPARATE_FROM_3Y_5Y_SCENARIOS",
+        "PURCHASE_RANK_REMAINS_NATIVE_PRECOLLECTOR_RANK",
+        "INVESTMENT_TIER_REMAINS_NATIVE_PRECOLLECTOR_TIER",
+        "MISSING_CURRENT_PRICE_MAY_USE_CERTIFIED_GAP_REASON_ONLY",
+        "CURRENT_PRICE_EVIDENCE_STATUS_MUST_COME_FROM_CERTIFIED_COVERAGE_MEMBER"
+    ],
+    "prohibitions": [
+        "NO_FORECAST_RECALCULATION",
+        "NO_RISK_RECALCULATION",
+        "NO_SYNTHETIC_CURRENT_PRICE",
+        "NO_SYNTHETIC_HISTORY",
+        "NO_CRYPTO_BEAR_BASE_BULL_MAPPING",
+        "NO_COLLECTOR_THRESHOLD_REUSE",
+        "NO_SECRET_LAIR_Q10_POLICY",
+        "NO_CROSS_LANE_RANK",
+        "NO_CROSS_LANE_SCORE",
+        "NO_AUTOMATIC_PURCHASE_EXECUTION",
+        "MISSING_VALUES_REMAIN_MISSING"
+    ],
+    "bounded_native_detail_enrichment": {
+        "authorization_basis": "14N-K3G3_FINAL_NATIVE_COMPLETENESS_AUDIT",
+        "added_product_fields": [
+            "high_confidence_rank",
+            "speculative_rank"
+        ],
+        "added_scenario_fields": [
+            "model_rank"
+        ],
+        "semantics": {
+            "high_confidence_rank": "CERTIFIED_88_PRODUCT_HIGH_CONFIDENCE_SUBSET_RANK_ONLY",
+            "speculative_rank": "CERTIFIED_6_PRODUCT_SPECULATIVE_SUBSET_RANK_ONLY",
+            "model_rank": "CERTIFIED_HORIZON_SPECIFIC_MODEL_RETURN_RANK"
+        },
+        "explicit_non_fields": [
+            "high_confidence_status",
+            "speculative_classification"
+        ]
+    }
+}
