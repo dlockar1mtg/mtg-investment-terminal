@@ -1,0 +1,167 @@
+{
+    "contract_id": "mtg_collector_research_sidecar_schema_v1",
+    "contract_version": "1.1.0",
+    "status": "AUTHORIZED_FOR_BOUNDED_SIDECAR_ASSEMBLY",
+    "lane": "COLLECTOR_V1",
+    "purpose": "Expose certified Collector-native investment research to UIP without modifying the frozen common MTG interface or recalculating native analytics.",
+    "common_interface": {
+        "mtg_v1_field_count": 23,
+        "remains_frozen": true,
+        "schema_expansion_authorized": false
+    },
+    "authority": {
+        "current_price": {
+            "path": "data/governance/permanence/certification/collector_v1_final_premodel_user_exclusion_resolution/collector_final_current_price_authority.csv",
+            "sha256": "d8a0e2c256807407033a2f56194282e50647f2ecc3e55ca617d981023cffc884"
+        },
+        "forecast": {
+            "path": "data/governance/permanence/certification/collector_v1_canonical_identity_lineage_recertification/collector_final_authority_bound_49_product_forecasts.csv",
+            "sha256": "ba78970c401068b9387755d0ad052d1d5c6a9bc9ffe59302eb82f4a22973313e"
+        },
+        "ranking": {
+            "path": "data/governance/permanence/certification/collector_v1_final_governed_ranking/collector_final_governed_1_49_rankings.csv",
+            "sha256": "0f609fe2770b01f080ab02039adade3fe8679072792c35a0e7b8aa7cf48fb48c"
+        },
+        "purchase": {
+            "path": "data/governance/permanence/certification/collector_v1_purchase_recommendation_certification/collector_purchase_recommendation_authority.csv",
+            "sha256": "363358aeb269f9acb04fb489fe614d6cc1db39587f0a53decebca01a4330de7e"
+        }
+    },
+    "product_record": {
+        "record_type": "mtg_collector_research",
+        "grain": "ONE_ROW_PER_CANONICAL_COLLECTOR_PRODUCT",
+        "key": "canonical_product_id",
+        "fields": [
+            "canonical_product_id",
+            "tcgplayer_product_id",
+            "product_name",
+            "current_price",
+            "final_rank",
+            "rank_tier",
+            "final_governed_score",
+            "final_ranking_eligibility_status",
+            "ranking_penalty_points",
+            "factor_calibration_strength",
+            "factor_downside_protection",
+            "factor_early_opportunity",
+            "factor_forecast_return_365",
+            "factor_forecast_return_1095_annualized",
+            "factor_supply_demand",
+            "factor_uncertainty_control",
+            "accepted_listing_count",
+            "distinct_seller_count",
+            "median_return_365",
+            "median_return_1095",
+            "probability_of_50pct_gain_365",
+            "probability_of_doubling_365",
+            "probability_of_loss_365",
+            "interval_width_return_365",
+            "budget_context_band",
+            "strong_entry_ceiling",
+            "candidate_entry_ceiling",
+            "current_vs_strong_ceiling_pct",
+            "median_price_365",
+            "p25_price_365",
+            "p90_price_365",
+            "purchase_basis",
+            "purchase_status",
+            "recommendation_authorized",
+            "recommended_quantity",
+            "calibration_status_365",
+            "calibration_status_1095",
+            "limitations",
+            "purchase_eligible_at_this_stage",
+            "weighted_score_before_penalty"
+        ]
+    },
+    "forecast_horizon_record": {
+        "record_type": "mtg_collector_forecast_horizon",
+        "grain": "ONE_ROW_PER_CANONICAL_COLLECTOR_PRODUCT_X_NATIVE_HORIZON",
+        "key": [
+            "canonical_product_id",
+            "horizon_days"
+        ],
+        "authorized_horizons_days": [
+            90,
+            180,
+            365,
+            730,
+            1095,
+            1825
+        ],
+        "fields": [
+            "canonical_product_id",
+            "product_name",
+            "current_price",
+            "horizon_days",
+            "explicit_method_id",
+            "history_observations_used",
+            "own_monthly_returns_used",
+            "simulation_count",
+            "return_distribution_size",
+            "mean_expected_return",
+            "median_expected_return",
+            "mean_price",
+            "median_price",
+            "p10_price",
+            "p25_price",
+            "p75_price",
+            "p90_price",
+            "probability_of_50pct_gain",
+            "probability_of_doubling",
+            "probability_of_loss",
+            "route",
+            "production_forecast_authorized",
+            "purchase_recommendation_authorized",
+            "ranking_authorized"
+        ]
+    },
+    "presentation_authorizations": [
+        "CURRENT_PRICE_VS_ENTRY_BANDS",
+        "CURRENT_PRICE_VS_365D_DISTRIBUTION",
+        "MULTI_HORIZON_MEDIAN_FORECAST_CURVE",
+        "MULTI_HORIZON_P10_P90_RANGE",
+        "MULTI_HORIZON_P25_P75_RANGE",
+        "GAIN_DOUBLING_LOSS_PROBABILITY_VISUALS",
+        "NATIVE_RANK_AND_SCORE_EXPLANATION",
+        "NATIVE_FACTOR_CONTRIBUTION_VISUAL",
+        "EVIDENCE_DEPTH_VISUAL",
+        "PURCHASE_BASIS_PANEL"
+    ],
+    "prohibitions": [
+        "NO_FORECAST_RECALCULATION",
+        "NO_RISK_RECALCULATION",
+        "NO_SYNTHETIC_HISTORY",
+        "NO_SYNTHETIC_FORECAST_DISTRIBUTION",
+        "NO_CRYPTO_BEAR_BASE_BULL_MAPPING",
+        "NO_CROSS_LANE_RANK",
+        "NO_CROSS_LANE_SCORE",
+        "NO_AUTOMATIC_PURCHASE_EXECUTION",
+        "MISSING_VALUES_REMAIN_MISSING"
+    ],
+    "bounded_native_detail_enrichment": {
+        "authorization_basis": "14N-K3G3_FINAL_NATIVE_COMPLETENESS_AUDIT",
+        "added_product_fields": [
+            "calibration_status_365",
+            "calibration_status_1095",
+            "limitations",
+            "purchase_eligible_at_this_stage",
+            "weighted_score_before_penalty"
+        ],
+        "source_semantics": {
+            "calibration_status_365": "FINAL_GOVERNED_RANKING_AUTHORITY",
+            "calibration_status_1095": "FINAL_GOVERNED_RANKING_AUTHORITY",
+            "limitations": "FINAL_GOVERNED_RANKING_AUTHORITY",
+            "purchase_eligible_at_this_stage": "RANKING_STAGE_ELIGIBILITY_CONTEXT_ONLY",
+            "weighted_score_before_penalty": "FINAL_GOVERNED_RANKING_METHODOLOGY"
+        },
+        "explicit_exclusions": [
+            "purchase_recommendations_authorized",
+            "raw_calibration_strength",
+            "raw_downside_protection",
+            "raw_early_opportunity",
+            "raw_supply_demand",
+            "raw_uncertainty_control"
+        ]
+    }
+}
