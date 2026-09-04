@@ -1,0 +1,6 @@
+# BEGIN MTG CERTIFIED RESEARCH SIDECARS
+docs/phase_9/uip_export/research_sidecars/mtg_collector_research.csv text eol=lf
+docs/phase_9/uip_export/research_sidecars/mtg_collector_forecast_horizon.csv text eol=lf
+docs/phase_9/uip_export/research_sidecars/mtg_precollector_research.csv text eol=lf
+docs/phase_9/uip_export/research_sidecars/mtg_precollector_scenario_horizon.csv text eol=lf
+# END MTG CERTIFIED RESEARCH SIDECARS
