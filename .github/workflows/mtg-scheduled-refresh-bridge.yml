@@ -1,0 +1,35 @@
+name: MTG Scheduled Refresh Bridge
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "27 12 * * *"
+
+permissions:
+  actions: write
+  contents: read
+
+concurrency:
+  group: mtg-scheduled-refresh-bridge
+  cancel-in-progress: false
+
+jobs:
+  dispatch-production:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Dispatch MTG marketplace production
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          curl --fail-with-body --silent --show-error \
+            --request POST \
+            --url "https://api.github.com/repos/${REPOSITORY}/actions/workflows/mtg-marketplace-production.yml/dispatches" \
+            --header "Accept: application/vnd.github+json" \
+            --header "Authorization: Bearer ${GH_TOKEN}" \
+            --header "X-GitHub-Api-Version: 2022-11-28" \
+            --data '{"ref":"main","inputs":{"live_execution":"true"}}'
+          echo "MTG marketplace production dispatch accepted."
