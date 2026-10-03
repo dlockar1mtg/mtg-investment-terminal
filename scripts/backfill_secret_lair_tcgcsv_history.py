@@ -6,6 +6,11 @@ archive per week (Mondays by default), extracts only the Secret Lair groups name
 approved product map, and appends one row per mapped product and sub-type to a committed
 CSV. Dates already present are skipped, so it resumes across runs and later only adds new
 weeks. The history lives in the repository so the cloud can read it back.
+
+TCGCSV took the price archive offline in 2026 ("temporarily removed due to rising server
+costs"), so --live is the normal mode: it reads today's group price files once (the
+operator asks for at most one request per file per 24 hours), overwrites a latest-prices
+file, and appends to the weekly history on the first successful fetch of each week.
 """
 from __future__ import annotations
 
@@ -30,6 +35,8 @@ FIRST_ARCHIVE_DATE = date(2024, 2, 8)
 CATEGORY_ID = "1"
 DEFAULT_MAP = ROOT / "docs" / "phase_8" / "secret_lair" / "secret_lair_v1_tcg_current_price_status.csv"
 DEFAULT_OUTPUT = ROOT / "data" / "history" / "tcgcsv_weekly" / "secret_lair_weekly_prices.csv"
+DEFAULT_LATEST = ROOT / "data" / "history" / "tcgcsv_weekly" / "secret_lair_latest_prices.csv"
+LIVE_BASE_URL = "https://tcgcsv.com/tcgplayer"
 FIELDS = [
     "snapshot_date", "secret_lair_id", "tcgplayer_product_id", "tcgcsv_group_id", "sub_type",
     "market_price", "low_price", "mid_price", "high_price", "direct_low_price",
@@ -145,6 +152,47 @@ def snapshot_rows(
         return rows
 
 
+def _fetch_json(url: str, retries: int = 3, pause: float = 5.0):
+    for attempt in range(1, retries + 1):
+        try:
+            request = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
+            with urllib.request.urlopen(request, timeout=120) as response:
+                return json.loads(response.read().decode("utf-8", errors="replace") or "{}")
+        except Exception:  # noqa: BLE001 - retried, then re-raised
+            if attempt == retries:
+                raise
+            time.sleep(pause * attempt)
+
+
+def live_rows(
+    today: date,
+    groups: set[str],
+    mapping: dict[str, dict[str, str]],
+    fetch: Callable[[str], object] = _fetch_json,
+) -> list[dict]:
+    """Today's prices from TCGCSV's live group files: one request per group."""
+    rows = []
+    for group in sorted(groups):
+        payload = fetch(f"{LIVE_BASE_URL}/{CATEGORY_ID}/{group}/prices")
+        results = payload.get("results", []) if isinstance(payload, dict) else payload
+        rows.extend(select_rows(today.isoformat(), group, results or [], mapping))
+    return rows
+
+
+def write_latest(path: Path, rows: list[dict]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", newline="", encoding="utf-8") as handle:
+        writer = csv.DictWriter(handle, fieldnames=FIELDS)
+        writer.writeheader()
+        writer.writerows(rows)
+
+
+def week_already_stored(path: Path, day: date) -> bool:
+    monday = day - timedelta(days=day.weekday())
+    stored = existing_dates(path)
+    return any((monday + timedelta(days=k)).isoformat() in stored for k in range(7))
+
+
 def append_rows(path: Path, rows: list[dict]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     new_file = not path.is_file()
@@ -155,7 +203,12 @@ def append_rows(path: Path, rows: list[dict]) -> None:
         writer.writerows(rows)
 
 
-def main(argv: list[str] | None = None, download: Callable[[str, Path], None] = _download) -> int:
+def main(
+    argv: list[str] | None = None,
+    download: Callable[[str, Path], None] = _download,
+    fetch: Callable[[str], object] = _fetch_json,
+    today: date | None = None,
+) -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--map", type=Path, default=DEFAULT_MAP)
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
@@ -163,10 +216,26 @@ def main(argv: list[str] | None = None, download: Callable[[str, Path], None] = 
     parser.add_argument("--end", type=date.fromisoformat, default=date.today() - timedelta(days=1))
     parser.add_argument("--max-snapshots", type=int, default=0, help="stop after this many new weeks (0 = no limit)")
     parser.add_argument("--sleep-seconds", type=float, default=1.0)
+    parser.add_argument("--live", action="store_true", help="read today's live TCGCSV prices instead of archives")
+    parser.add_argument("--latest", type=Path, default=DEFAULT_LATEST)
     args = parser.parse_args(argv)
 
     mapping = load_map(args.map)
     groups = {target["tcgcsv_group_id"] for target in mapping.values()}
+    if args.live:
+        day = today or date.today()
+        rows = live_rows(day, groups, mapping, fetch)
+        priced = len({r["secret_lair_id"] for r in rows if r["market_price"]})
+        if not priced:
+            print(f"LIVE FETCH FAILED: {len(rows)} rows, no mapped product has a market price")
+            return 1
+        write_latest(args.latest, rows)
+        appended = not week_already_stored(args.output, day)
+        if appended:
+            append_rows(args.output, rows)
+        print(f"{day}: {len(rows)} rows, {priced} of {len(mapping)} mapped products with a market price; "
+              f"weekly history {'extended' if appended else 'already has this week'}")
+        return 0
     done = existing_dates(args.output)
     todo = [d for d in weekly_dates(args.start, args.end) if d.isoformat() not in done]
     if args.max_snapshots:
