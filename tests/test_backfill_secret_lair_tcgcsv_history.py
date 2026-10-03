@@ -53,3 +53,27 @@ def test_a_failed_download_is_reported_and_other_weeks_continue(tmp_path, capsys
     code = bf.main(["--map", str(write_map(tmp_path)), "--output", str(out), "--start", "2024-02-12", "--end", "2024-02-19", "--sleep-seconds", "0"], download=download)
     assert code == 0 and bf.existing_dates(out) == {"2024-02-19"}
     assert "2024-02-12: OSError" in capsys.readouterr().out
+
+def test_live_mode_updates_latest_daily_and_history_weekly(tmp_path):
+    prices = {"https://tcgcsv.com/tcgplayer/1/2576/prices": {"results": [{"productId": 111, "subTypeName": "Normal", "marketPrice": 50}, {"productId": 222, "marketPrice": 60}, {"productId": 999, "marketPrice": 1}]}}
+    calls = []
+    def fetch(url):
+        calls.append(url); return prices[url]
+    out, latest = tmp_path / "hist.csv", tmp_path / "latest.csv"
+    args = ["--map", str(write_map(tmp_path)), "--output", str(out), "--latest", str(latest), "--live"]
+    assert bf.main(args, fetch=fetch, today=date(2026, 10, 5)) == 0                  # Monday
+    assert calls == ["https://tcgcsv.com/tcgplayer/1/2576/prices"]                   # one request per group
+    assert [r["secret_lair_id"] for r in csv.DictReader(latest.open())] == ["SL-A", "SL-B"]
+    assert bf.existing_dates(out) == {"2026-10-05"}
+    prices["https://tcgcsv.com/tcgplayer/1/2576/prices"]["results"][0]["marketPrice"] = 52
+    assert bf.main(args, fetch=fetch, today=date(2026, 10, 7)) == 0                  # same week
+    assert next(csv.DictReader(latest.open()))["market_price"] == "52.00"            # latest refreshed
+    assert bf.existing_dates(out) == {"2026-10-05"}                                  # history not duplicated
+    assert bf.main(args, fetch=fetch, today=date(2026, 10, 12)) == 0                 # next week
+    assert bf.existing_dates(out) == {"2026-10-05", "2026-10-12"}
+
+def test_live_mode_fails_when_nothing_is_priced(tmp_path):
+    out, latest = tmp_path / "hist.csv", tmp_path / "latest.csv"
+    code = bf.main(["--map", str(write_map(tmp_path)), "--output", str(out), "--latest", str(latest), "--live"],
+                   fetch=lambda url: {"results": []}, today=date(2026, 10, 5))
+    assert code == 1 and not out.exists() and not latest.exists()
