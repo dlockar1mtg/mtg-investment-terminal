@@ -4,6 +4,7 @@ import argparse
 import csv
 import hashlib
 import json
+import os
 import shutil
 from datetime import datetime, timezone
 from pathlib import Path
@@ -123,10 +124,58 @@ def validate_payload(rows: list[dict[str, str]]) -> None:
         raise RuntimeError("Certified MTG payload must not certify execution-ready purchases.")
 
 
+SECRET_LAIR_V2_DECISIONS = ROOT / "data" / "history" / "tcgcsv_weekly" / "secret_lair_v2_decisions.csv"
+SECRET_LAIR_V2_ENV = "MTG_SECRET_LAIR_V2"
+SECRET_LAIR_V2_STATUS = {
+    "BUY": ("BUY_CANDIDATE_NOW", "MODEL_QUALIFIED_ENTRY_CANDIDATE", "true"),
+    "WAIT": ("WAIT_FOR_LISTING_DISCOUNT", "MODEL_ENTRY_PRICE_CONDITION_NOT_SATISFIED", "false"),
+    "NO_PRICE": ("NO_CURRENT_MARKET_PRICE", "MODEL_EVIDENCE_REVIEW_REQUIRED", "false"),
+}
+
+
+def apply_secret_lair_v2(rows: list[dict[str, str]], path: Path = SECRET_LAIR_V2_DECISIONS) -> int:
+    """Secret Lair model v2 (scripts/build_secret_lair_v2_decisions.py) replaces the August calls.
+
+    Priced products get the current market price, the v2 call and the v2 rank (expected 6-month
+    return after selling costs). The August 1-year forecast is withdrawn: v2 forecasts 6 months and
+    its details travel in the v2 decisions file. Safety fields keep their meaning: a BUY stays a
+    model-qualified entry candidate with a manual price check and is never execution-ready.
+    """
+    if not path.is_file():
+        return 0
+    decisions = {r.get("secret_lair_id", "").strip(): r for r in read_csv(path)}
+    applied = 0
+    for row in rows:
+        if row.get("mtg_lane", "").strip() != "SECRET_LAIR_V1_1":
+            continue
+        decision = decisions.get(row.get("native_asset_id", "").strip())
+        if not decision or decision.get("call") not in SECRET_LAIR_V2_STATUS:
+            continue
+        status, semantic, manual_check = SECRET_LAIR_V2_STATUS[decision["call"]]
+        row["native_purchase_status"] = status
+        row["purchase_semantic"] = semantic
+        row["manual_execution_price_check_required"] = manual_check
+        row["native_rank_type"] = "SECRET_LAIR_V2_EXPECTED_NET_RETURN_6M"
+        row["forecast_authority_available"] = "false"
+        row["forecast_1y_price_usd"] = ""
+        row["forecast_1y_return"] = ""
+        if decision["call"] == "NO_PRICE":
+            row["native_rank"] = ""
+        else:
+            row["current_price_usd"] = decision.get("market_price", "")
+            row["current_price_authority_available"] = "true"
+            row["native_rank"] = decision.get("rank", "")
+        applied += 1
+    return applied
+
+
 def build(output_root: Path) -> dict[str, Any]:
     generated = datetime.now(timezone.utc)
     rows = read_csv(CERTIFIED_PAYLOAD)
     validate_payload(rows)
+    # Secret Lair model v2 overlay; off unless MTG_SECRET_LAIR_V2=1 (enabled with the UIP v2 projection).
+    secret_lair_v2_rows = apply_secret_lair_v2(rows) if os.environ.get(SECRET_LAIR_V2_ENV) == "1" else 0
+    print(f"Secret Lair v2 overlay rows: {secret_lair_v2_rows}")
 
     source_manifest = json.loads(CERTIFIED_MANIFEST.read_text(encoding="utf-8"))
     package_id = generated.strftime("mtg-hosted-r2-%Y%m%dT%H%M%SZ")
