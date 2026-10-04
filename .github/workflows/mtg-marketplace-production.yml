@@ -22,9 +22,9 @@ on:
   workflow_dispatch:
     inputs:
       live_execution:
-        description: "Run live eBay and TCGCSV source refresh"
+        description: "Run live eBay and TCGCSV source refresh (off builds no UIP package)"
         required: true
-        default: false
+        default: true
         type: boolean
       ebay_batch_index:
         description: "Optional zero-based eBay batch index; leave blank to rotate automatically"
