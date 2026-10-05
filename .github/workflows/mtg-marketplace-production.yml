@@ -124,6 +124,8 @@ jobs:
             tests/test_mtg_delivery_secret_lair_v2.py \
             tests/test_collect_box_tcgcsv_prices.py \
             tests/test_build_collector_v2_decisions.py \
+            tests/test_build_precollector_box_list.py \
+            tests/test_build_precollector_v2_decisions.py \
             tests/test_daily_tcgcsv_collection_entrypoint.py \
             tests/test_tcgcsv_group_id_reconciliation.py \
             tests/test_mtg_marketplace_production.py \
