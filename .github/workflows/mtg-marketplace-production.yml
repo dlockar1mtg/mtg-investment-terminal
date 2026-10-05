@@ -56,7 +56,6 @@ jobs:
       LIVE_EXECUTION: ${{ github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.live_execution == true) }}
       MTG_LIVE_EXECUTION: ${{ github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.live_execution == true) }}
       EBAY_LIMIT: "200"
-      MTG_SECRET_LAIR_V2: "1"   # Secret Lair model v2 calls in the UIP delivery (pairs with UIP_MTG_SECRET_LAIR_V2_ENABLED)
       EBAY_BATCH_SIZE: ${{ github.event_name == 'workflow_dispatch' && inputs.ebay_batch_size || '25' }}
       EBAY_BATCH_INDEX: ${{ github.event_name == 'workflow_dispatch' && inputs.ebay_batch_index || '' }}
       EBAY_CLIENT_ID: ${{ secrets.EBAY_CLIENT_ID }}
@@ -121,6 +120,10 @@ jobs:
         run: |
           python -m pytest \
             tests/test_daily_ebay_collection_entrypoint.py \
+            tests/test_build_secret_lair_v2_decisions.py \
+            tests/test_mtg_delivery_secret_lair_v2.py \
+            tests/test_collect_box_tcgcsv_prices.py \
+            tests/test_build_collector_v2_decisions.py \
             tests/test_daily_tcgcsv_collection_entrypoint.py \
             tests/test_tcgcsv_group_id_reconciliation.py \
             tests/test_mtg_marketplace_production.py \
@@ -307,6 +310,8 @@ jobs:
 
       - name: Build hosted MTG UIP delivery
         if: ${{ env.LIVE_EXECUTION == 'true' }}
+        env:
+          MTG_SECRET_LAIR_V2: "1"   # Secret Lair model v2 calls in the delivery (pairs with UIP_MTG_SECRET_LAIR_V2_ENABLED)
         run: |
           python scripts/build_mtg_hosted_uip_delivery.py \
             --output-root data/operations/mtg_uip_delivery
