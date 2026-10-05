@@ -106,3 +106,13 @@ def test_outcome_ranges_attach_to_scored_products():
     assert row["similar_cases"] > 0 and 0 <= row["prob_profit_6m"] <= 1 and row["range_low_6m"] <= row["range_high_6m"]
     empty = v2.score(lat, {"intercept": 0.13, "slope": 0.53, "pairs": 500}, {})[0]
     assert empty["similar_cases"] == "" and empty["prob_profit_6m"] == ""
+
+
+def test_market_index_is_chain_linked_and_ignores_new_products():
+    panel = {("A", "2026-01"): (100.0, 90.0), ("A", "2026-02"): (110.0, 99.0),
+             ("B", "2026-01"): (50.0, 45.0), ("B", "2026-02"): (55.0, 50.0),
+             ("NEW", "2026-02"): (900.0, 800.0)}
+    idx = v2.market_index(panel)
+    assert idx[0] == ["2026-01", 100.0, 2]
+    assert idx[1][0] == "2026-02" and idx[1][1] == 110.0 and idx[1][2] == 2  # +10% median; the new $900 drop is ignored
+    assert v2.market_index({}) == []
