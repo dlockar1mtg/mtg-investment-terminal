@@ -126,8 +126,9 @@ def score(latest, model, names):
                      "buy_price_basis": p["basis"], "gap": round(gap, 4), "expected_return_6m": round(expected, 4),
                      "expected_net_return_6m": round(net, 4), "call": "BUY" if gap >= BUY_GAP and net > 0 else "WAIT",
                      "note": "CHECK_LISTING_LARGE_GAP" if gap >= CHECK_GAP else ""})
-    # Clean deals rank ahead of very large gaps (often mislisted or damaged copies), each by after-cost return.
-    ranked = sorted((r for r in rows if r["call"] != "NO_PRICE"), key=lambda r: (r["note"] != "", -r["expected_net_return_6m"]))
+    # Clean BUYs first, then BUYs with very large gaps (often mislisted or damaged copies), then the rest,
+    # each by after-cost return.
+    ranked = sorted((r for r in rows if r["call"] != "NO_PRICE"), key=lambda r: (0 if r["call"] == "BUY" and not r["note"] else 1 if r["call"] == "BUY" else 2, -r["expected_net_return_6m"]))
     for n, r in enumerate(ranked, start=1):
         r["rank"], r["ranked_products"] = n, len(ranked)
     for r in rows:
