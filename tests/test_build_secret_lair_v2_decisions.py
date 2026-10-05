@@ -67,6 +67,8 @@ def test_runs_as_a_script(tmp_path):
     assert proc.returncode == 0, proc.stderr
     rows = list(csv.DictReader(out.open()))
     assert [r["call"] for r in rows] == ["BUY", "WAIT"]
+    price_history = json.loads(out.with_name("secret_lair_v2_history.json").read_text())
+    assert price_history["SL-001"][0][0] == "2024-02" and len(price_history["SL-001"]) == 20 and len(price_history["SL-001"][0]) == 3
     summary = json.loads(out.with_suffix(".json").read_text())
     assert summary["calls"] == {"BUY": 1, "WAIT": 1, "NO_PRICE": 0} and summary["calibration"]["slope"] > 0
 
@@ -87,3 +89,9 @@ def test_clean_deals_rank_ahead_of_check_listing_gaps():
     ])
     rows = v2.score(lat, {"intercept": 0.13, "slope": 0.53, "pairs": 500}, {})
     assert [(r["secret_lair_id"], r["call"], r["rank"]) for r in rows] == [("CLEAN", "BUY", 1), ("FLAG", "BUY", 2), ("WAIT", "WAIT", 3)]
+
+
+def test_tcgplayer_ids_travel_with_the_decisions():
+    lat = v2.latest_prices([{"secret_lair_id": "A", "market_price": "100", "low_price": "80", "direct_low_price": "", "snapshot_date": "2026-10-05"}])
+    row = v2.score(lat, {"intercept": 0.13, "slope": 0.53, "pairs": 500}, {"A": "Drop A"}, {"A": "512345"})[0]
+    assert row["tcgplayer_product_id"] == "512345"
