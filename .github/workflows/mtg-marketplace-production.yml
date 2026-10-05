@@ -311,7 +311,7 @@ jobs:
       - name: Build hosted MTG UIP delivery
         if: ${{ env.LIVE_EXECUTION == 'true' }}
         env:
-          MTG_SECRET_LAIR_V2: "1"   # Secret Lair model v2 calls in the delivery (pairs with UIP_MTG_SECRET_LAIR_V2_ENABLED)
+          MTG_SECRET_LAIR_V2: "0"   # off: the UIP takes Secret Lair calls from the certified native authority, not this package
         run: |
           python scripts/build_mtg_hosted_uip_delivery.py \
             --output-root data/operations/mtg_uip_delivery
