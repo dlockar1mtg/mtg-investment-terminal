@@ -143,7 +143,12 @@ def apply_secret_lair_v2(rows: list[dict[str, str]], path: Path = SECRET_LAIR_V2
     """
     if not path.is_file():
         return 0
-    decisions = {r.get("secret_lair_id", "").strip(): r for r in read_csv(path)}
+    # Plain reader: read_csv() enforces the certified-export columns, which the decisions file lacks.
+    with path.open("r", encoding="utf-8-sig", newline="") as handle:
+        reader = csv.DictReader(handle)
+        if not reader.fieldnames or "secret_lair_id" not in reader.fieldnames or "call" not in reader.fieldnames:
+            raise RuntimeError(f"Secret Lair v2 decisions lack secret_lair_id/call: {path}")
+        decisions = {r.get("secret_lair_id", "").strip(): r for r in reader}
     applied = 0
     for row in rows:
         if row.get("mtg_lane", "").strip() != "SECRET_LAIR_V1_1":
