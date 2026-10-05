@@ -56,6 +56,7 @@ jobs:
       LIVE_EXECUTION: ${{ github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.live_execution == true) }}
       MTG_LIVE_EXECUTION: ${{ github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.live_execution == true) }}
       EBAY_LIMIT: "200"
+      MTG_SECRET_LAIR_V2: "1"   # Secret Lair model v2 calls in the UIP delivery (pairs with UIP_MTG_SECRET_LAIR_V2_ENABLED)
       EBAY_BATCH_SIZE: ${{ github.event_name == 'workflow_dispatch' && inputs.ebay_batch_size || '25' }}
       EBAY_BATCH_INDEX: ${{ github.event_name == 'workflow_dispatch' && inputs.ebay_batch_index || '' }}
       EBAY_CLIENT_ID: ${{ secrets.EBAY_CLIENT_ID }}
