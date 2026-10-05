@@ -78,3 +78,12 @@ def test_very_large_gaps_are_flagged():
     lat = v2.latest_prices([{"secret_lair_id": "X", "market_price": "100", "low_price": "60", "direct_low_price": "", "snapshot_date": "2026-10-05"}])
     row = v2.score(lat, {"intercept": 0.13, "slope": 0.53, "pairs": 500}, {})[0]
     assert row["call"] == "BUY" and row["note"] == "CHECK_LISTING_LARGE_GAP"
+
+def test_clean_deals_rank_ahead_of_check_listing_gaps():
+    lat = v2.latest_prices([
+        {"secret_lair_id": "FLAG", "market_price": "100", "low_price": "55", "direct_low_price": "", "snapshot_date": "2026-10-05"},   # 45% gap
+        {"secret_lair_id": "CLEAN", "market_price": "100", "low_price": "85", "direct_low_price": "", "snapshot_date": "2026-10-05"},  # 15% gap
+        {"secret_lair_id": "WAIT", "market_price": "100", "low_price": "99", "direct_low_price": "", "snapshot_date": "2026-10-05"},
+    ])
+    rows = v2.score(lat, {"intercept": 0.13, "slope": 0.53, "pairs": 500}, {})
+    assert [(r["secret_lair_id"], r["call"], r["rank"]) for r in rows] == [("CLEAN", "BUY", 1), ("FLAG", "BUY", 2), ("WAIT", "WAIT", 3)]
