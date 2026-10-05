@@ -40,7 +40,7 @@ CHECK_GAP = 0.30          # gaps this large are often mislisted, damaged or sing
 SELL_COST = 0.13          # TCGplayer seller fees plus shipping, as a share of the sale price
 MIN_PAIRS = 200
 FIELDS = ["secret_lair_id", "tcgplayer_product_id", "product_name", "as_of", "market_price", "buy_price", "buy_price_basis",
-          "gap", "expected_return_6m", "expected_net_return_6m", "call", "note", "rank", "ranked_products", "model_version"]
+          "gap", "expected_return_6m", "expected_net_return_6m", "range_low_6m", "range_median_6m", "range_high_6m", "prob_profit_6m", "similar_cases", "call", "note", "rank", "ranked_products", "model_version"]
 
 
 def _float(value):
@@ -81,6 +81,38 @@ def gap_of(buy, market):
     return max(-GAP_CAP, min(GAP_CAP, 1.0 - buy / market))
 
 
+OUTCOME_BINS = (-0.41, -0.05, 0.0, 0.05, 0.10, 0.15, 0.20, 0.30, 0.41)
+MIN_BIN_CASES = 30
+
+
+def _quantile(values, q):
+    s = sorted(values)
+    pos = (len(s) - 1) * q
+    lo = int(pos)
+    hi = min(lo + 1, len(s) - 1)
+    return s[lo] + (s[hi] - s[lo]) * (pos - lo)
+
+
+def outcome_bins(pairs):
+    """What similar deals did: 6-month outcomes grouped by gap below market (walk-forward: 80% ranges held 80.6%)."""
+    out = []
+    for lo, hi in zip(OUTCOME_BINS, OUTCOME_BINS[1:]):
+        forwards = [fwd for gap, fwd in pairs if lo < gap <= hi]
+        if len(forwards) >= MIN_BIN_CASES:
+            out.append({"low": lo, "high": hi, "n": len(forwards), "q10": _quantile(forwards, 0.1),
+                        "median": _quantile(forwards, 0.5), "q90": _quantile(forwards, 0.9),
+                        "p_profit": sum(1 for f in forwards if (1 + f) * (1 - SELL_COST) - 1 > 0) / len(forwards)})
+    return out
+
+
+def _band_fields(model, gap):
+    band = next((b for b in model.get("bins", []) if b["low"] < gap <= b["high"]), None)
+    if not band:
+        return {"range_low_6m": "", "range_median_6m": "", "range_high_6m": "", "prob_profit_6m": "", "similar_cases": ""}
+    return {"range_low_6m": round(band["q10"], 4), "range_median_6m": round(band["median"], 4), "range_high_6m": round(band["q90"], 4),
+            "prob_profit_6m": round(band["p_profit"], 4), "similar_cases": band["n"]}
+
+
 def calibrate(panel):
     """Least squares of the 6-month listing-to-listing return on the gap, over known pairs."""
     pairs = []
@@ -96,7 +128,7 @@ def calibrate(panel):
     xs, ys = [p[0] for p in pairs], [p[1] for p in pairs]
     mx, my = mean(xs), mean(ys)
     slope = sum((x - mx) * (y - my) for x, y in pairs) / sum((x - mx) ** 2 for x in xs)
-    return {"intercept": my - slope * mx, "slope": slope, "pairs": len(pairs)}
+    return {"intercept": my - slope * mx, "slope": slope, "pairs": len(pairs), "bins": outcome_bins(pairs)}
 
 
 def latest_prices(rows):
@@ -133,7 +165,7 @@ def score(latest, model, names, tcg_ids=None):
         rows.append({"secret_lair_id": product, "as_of": p["as_of"], "market_price": round(p["market"], 2), "buy_price": round(p["buy"], 2),
                      "buy_price_basis": p["basis"], "gap": round(gap, 4), "expected_return_6m": round(expected, 4),
                      "expected_net_return_6m": round(net, 4), "call": "BUY" if gap >= BUY_GAP and net > 0 else "WAIT",
-                     "note": "CHECK_LISTING_LARGE_GAP" if gap >= CHECK_GAP else ""})
+                     "note": "CHECK_LISTING_LARGE_GAP" if gap >= CHECK_GAP else "", **_band_fields(model, gap)})
     # Clean BUYs first, then BUYs with very large gaps (often mislisted or damaged copies), then the rest,
     # each by after-cost return.
     ranked = sorted((r for r in rows if r["call"] != "NO_PRICE"), key=lambda r: (0 if r["call"] == "BUY" and not r["note"] else 1 if r["call"] == "BUY" else 2, -r["expected_net_return_6m"]))

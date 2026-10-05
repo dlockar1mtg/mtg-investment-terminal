@@ -95,3 +95,14 @@ def test_tcgplayer_ids_travel_with_the_decisions():
     lat = v2.latest_prices([{"secret_lair_id": "A", "market_price": "100", "low_price": "80", "direct_low_price": "", "snapshot_date": "2026-10-05"}])
     row = v2.score(lat, {"intercept": 0.13, "slope": 0.53, "pairs": 500}, {"A": "Drop A"}, {"A": "512345"})[0]
     assert row["tcgplayer_product_id"] == "512345"
+
+
+def test_outcome_ranges_attach_to_scored_products():
+    pairs = [((k % 80) / 100 - 0.4, 0.1 + ((k % 13) - 6) / 20) for k in range(2000)]
+    bins = v2.outcome_bins(pairs)
+    assert bins and all(b["q10"] <= b["median"] <= b["q90"] and b["n"] >= v2.MIN_BIN_CASES for b in bins)
+    lat = v2.latest_prices([{"secret_lair_id": "A", "market_price": "100", "low_price": "80", "direct_low_price": "", "snapshot_date": "2026-10-05"}])
+    row = v2.score(lat, {"intercept": 0.13, "slope": 0.53, "pairs": 500, "bins": bins}, {})[0]
+    assert row["similar_cases"] > 0 and 0 <= row["prob_profit_6m"] <= 1 and row["range_low_6m"] <= row["range_high_6m"]
+    empty = v2.score(lat, {"intercept": 0.13, "slope": 0.53, "pairs": 500}, {})[0]
+    assert empty["similar_cases"] == "" and empty["prob_profit_6m"] == ""
