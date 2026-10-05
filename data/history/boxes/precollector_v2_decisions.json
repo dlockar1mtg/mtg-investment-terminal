@@ -1,0 +1,68 @@
+{
+  "model_version": "precollector-v2",
+  "as_of": "2026-07",
+  "horizon_months": 12,
+  "sell_cost": 0.13,
+  "buy_tiers": [
+    1,
+    2
+  ],
+  "first_modeled_year": 2000,
+  "calls": {
+    "BUY": 36,
+    "HOLD": 79,
+    "NO_PRICE": 4
+  },
+  "tier_history": {
+    "1": {
+      "cases": 324,
+      "avg_return": 0.25468635758039854,
+      "avg_net_return": 0.09157713109494674,
+      "share_profitable": 0.7283950617283951,
+      "by_start_year": {
+        "2024": 0.0586,
+        "2025": 0.1434
+      }
+    },
+    "2": {
+      "cases": 322,
+      "avg_return": 0.21120241762865444,
+      "avg_net_return": 0.05374610333692934,
+      "share_profitable": 0.5652173913043478,
+      "by_start_year": {
+        "2024": 0.0189,
+        "2025": 0.1094
+      }
+    },
+    "3": {
+      "cases": 320,
+      "avg_return": 0.19532289916737702,
+      "avg_net_return": 0.03993092227561801,
+      "share_profitable": 0.50625,
+      "by_start_year": {
+        "2024": -0.026,
+        "2025": 0.1442
+      }
+    },
+    "4": {
+      "cases": 322,
+      "avg_return": 0.029283553474710358,
+      "avg_net_return": -0.10452330847700199,
+      "share_profitable": 0.21428571428571427,
+      "by_start_year": {
+        "2024": -0.1462,
+        "2025": -0.038
+      }
+    },
+    "5": {
+      "cases": 306,
+      "avg_return": -0.048676044362460244,
+      "avg_net_return": -0.17234815859534042,
+      "share_profitable": 0.15359477124183007,
+      "by_start_year": {
+        "2024": -0.2359,
+        "2025": -0.0724
+      }
+    }
+  }
+}
