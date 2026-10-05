@@ -153,6 +153,25 @@ def history_by_product(panel):
     return out
 
 
+def market_index(panel):
+    """Chain-linked Secret Lair market index (start = 100): each month, the median price change
+    across products priced in both that month and the one before, so new drops do not distort it."""
+    by_month = {}
+    for (product, month), (market, _low) in panel.items():
+        by_month.setdefault(month, {})[product] = market
+    months = sorted(by_month)
+    if not months:
+        return []
+    level, out = 100.0, [[months[0], 100.0, len(by_month[months[0]])]]
+    for prev, cur in zip(months, months[1:]):
+        ratios = sorted(by_month[cur][p] / by_month[prev][p] for p in by_month[cur] if p in by_month[prev])
+        if ratios:
+            mid = len(ratios) // 2
+            level *= ratios[mid] if len(ratios) % 2 else (ratios[mid - 1] + ratios[mid]) / 2
+        out.append([cur, round(level, 2), len(ratios)])
+    return out
+
+
 def score(latest, model, names, tcg_ids=None):
     rows = []
     for product, p in sorted(latest.items()):
@@ -202,7 +221,7 @@ def main(argv=None):
         writer.writerows(rows)
     calls = {c: sum(1 for r in rows if r["call"] == c) for c in ("BUY", "WAIT", "NO_PRICE")}
     summary = {"model_version": MODEL_VERSION, "as_of": max((r["as_of"] for r in rows if r.get("as_of")), default=""),
-               "calibration": model, "buy_gap": BUY_GAP, "sell_cost": SELL_COST, "horizon_months": HORIZON_MONTHS, "calls": calls}
+               "calibration": model, "buy_gap": BUY_GAP, "sell_cost": SELL_COST, "horizon_months": HORIZON_MONTHS, "calls": calls, "market_index": market_index(panel)}
     args.output.with_suffix(".json").write_text(json.dumps(summary, indent=2) + "\n", encoding="utf-8")
     history = history_by_product(panel)
     args.output.with_name("secret_lair_v2_history.json").write_text(json.dumps(history, separators=(",", ":")) + "\n", encoding="utf-8")
