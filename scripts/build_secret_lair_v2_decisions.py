@@ -39,7 +39,7 @@ BUY_GAP = 0.10
 CHECK_GAP = 0.30          # gaps this large are often mislisted, damaged or single odd copies
 SELL_COST = 0.13          # TCGplayer seller fees plus shipping, as a share of the sale price
 MIN_PAIRS = 200
-FIELDS = ["secret_lair_id", "product_name", "as_of", "market_price", "buy_price", "buy_price_basis",
+FIELDS = ["secret_lair_id", "tcgplayer_product_id", "product_name", "as_of", "market_price", "buy_price", "buy_price_basis",
           "gap", "expected_return_6m", "expected_net_return_6m", "call", "note", "rank", "ranked_products", "model_version"]
 
 
@@ -113,7 +113,15 @@ def latest_prices(rows):
     return out
 
 
-def score(latest, model, names):
+def history_by_product(panel):
+    """Monthly market and lowest-listing prices per product, for the research page chart."""
+    out = {}
+    for (product, month), (market, low) in sorted(panel.items()):
+        out.setdefault(product, []).append([month, round(market, 2), round(low, 2) if low else None])
+    return out
+
+
+def score(latest, model, names, tcg_ids=None):
     rows = []
     for product, p in sorted(latest.items()):
         if not p["market"] or not p["buy"]:
@@ -133,6 +141,7 @@ def score(latest, model, names):
         r["rank"], r["ranked_products"] = n, len(ranked)
     for r in rows:
         r["product_name"] = names.get(r["secret_lair_id"], "")
+        r["tcgplayer_product_id"] = (tcg_ids or {}).get(r["secret_lair_id"], "")
         r["model_version"] = MODEL_VERSION
     return sorted(rows, key=lambda r: (r.get("rank") or 10**9, r["secret_lair_id"]))
 
@@ -150,8 +159,10 @@ def main(argv=None):
     latest = latest_prices(_rows(args.latest))
     if not latest:
         raise SystemExit("no latest prices")
-    names = {r["secret_lair_id"]: r.get("product_name", "") for r in _rows(args.names) if r.get("secret_lair_id")}
-    rows = score(latest, model, names)
+    name_rows = [r for r in _rows(args.names) if r.get("secret_lair_id")]
+    names = {r["secret_lair_id"]: r.get("product_name", "") for r in name_rows}
+    tcg_ids = {r["secret_lair_id"]: str(r.get("tcgplayer_product_id") or "").strip() for r in name_rows}
+    rows = score(latest, model, names, tcg_ids)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     with args.output.open("w", newline="", encoding="utf-8") as handle:
         writer = csv.DictWriter(handle, fieldnames=FIELDS, extrasaction="ignore")
@@ -161,6 +172,8 @@ def main(argv=None):
     summary = {"model_version": MODEL_VERSION, "as_of": max((r["as_of"] for r in rows if r.get("as_of")), default=""),
                "calibration": model, "buy_gap": BUY_GAP, "sell_cost": SELL_COST, "horizon_months": HORIZON_MONTHS, "calls": calls}
     args.output.with_suffix(".json").write_text(json.dumps(summary, indent=2) + "\n", encoding="utf-8")
+    history = history_by_product(panel)
+    args.output.with_name("secret_lair_v2_history.json").write_text(json.dumps(history, separators=(",", ":")) + "\n", encoding="utf-8")
     print(json.dumps(summary))
     return 0
 
