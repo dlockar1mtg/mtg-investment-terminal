@@ -19,5 +19,84 @@
     "BUY": 12,
     "HOLD": 36,
     "NO_PRICE": 3
+  },
+  "walk_forward": {
+    "test_months": 13,
+    "first_test_month": "2025-02",
+    "last_test_month": "2026-04",
+    "horizon_months": 6,
+    "sell_cost": 0.13,
+    "quarters": {
+      "1": {
+        "cases": 138,
+        "avg_net_return": 0.1606,
+        "p10_net_return": -0.1223,
+        "p50_net_return": 0.1535,
+        "p90_net_return": 0.4171,
+        "share_profitable": 0.7464,
+        "avg_predicted_net_return": 0.1519
+      },
+      "2": {
+        "cases": 130,
+        "avg_net_return": 0.1134,
+        "p10_net_return": -0.0903,
+        "p50_net_return": 0.098,
+        "p90_net_return": 0.3577,
+        "share_profitable": 0.7308,
+        "avg_predicted_net_return": 0.076
+      },
+      "3": {
+        "cases": 134,
+        "avg_net_return": 0.107,
+        "p10_net_return": -0.0828,
+        "p50_net_return": 0.1104,
+        "p90_net_return": 0.2989,
+        "share_profitable": 0.7388,
+        "avg_predicted_net_return": 0.0248
+      },
+      "4": {
+        "cases": 126,
+        "avg_net_return": 0.0662,
+        "p10_net_return": -0.0702,
+        "p50_net_return": 0.0528,
+        "p90_net_return": 0.2127,
+        "share_profitable": 0.7222,
+        "avg_predicted_net_return": -0.0261
+      }
+    },
+    "all_boxes": {
+      "cases": 528,
+      "avg_net_return": 0.1128,
+      "p10_net_return": -0.0898,
+      "p50_net_return": 0.0981,
+      "p90_net_return": 0.332,
+      "share_profitable": 0.7348
+    },
+    "buy_quarter_edge": 0.0478,
+    "recent": {
+      "test_months": 6,
+      "first_test_month": "2025-09",
+      "last_test_month": "2026-04",
+      "buy_quarter": {
+        "cases": 67,
+        "avg_net_return": 0.1061,
+        "p10_net_return": -0.1573,
+        "p50_net_return": 0.1149,
+        "p90_net_return": 0.2872,
+        "share_profitable": 0.6716
+      },
+      "all_boxes": {
+        "cases": 256,
+        "avg_net_return": 0.1003,
+        "p10_net_return": -0.1208,
+        "p50_net_return": 0.0898,
+        "p90_net_return": 0.2987,
+        "share_profitable": 0.6992
+      },
+      "buy_quarter_edge": 0.0058
+    },
+    "rank_correlation": 0.1905,
+    "share_months_rank_positive": 0.7692,
+    "status": "VALIDATED"
   }
 }
