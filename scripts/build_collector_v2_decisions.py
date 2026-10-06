@@ -51,7 +51,7 @@ VALIDATED_MONTHS = 12
 RECENT_MONTHS = 6
 FIELDS = ["tcgplayer_product_id", "box_name", "as_of", "market_price", "low_price", "direct_low_price",
           "months_since_release", "in_sweet_spot", "trend_6m", "expected_return_6m", "expected_net_return_6m",
-          "call", "rank", "ranked_products", "quarter", "calibrated_net_return_6m", "calibrated_net_p10_6m",
+          "release_date", "call", "note", "rank", "ranked_products", "quarter", "calibrated_net_return_6m", "calibrated_net_p10_6m",
           "calibrated_net_p90_6m", "calibrated_share_profitable", "model_version"]
 
 
@@ -116,10 +116,13 @@ def _centred_ranks(values: dict[str, float | None]) -> dict[str, float]:
     return {k: ranks.get(k, 0.0) for k in values}
 
 
-def features(prices: dict[str, float], month: str, panel_, rel):
-    """Feature rows for the products priced in `month` that have a release date."""
+def features(prices: dict[str, float], month: str, panel_, rel, on: date | None = None):
+    """Feature rows for the products priced in `month` that have a release date.
+
+    Ages are measured at the start of the month (history) or at `on` (today's scoring), and
+    boxes not yet released at that point are left out."""
     products = [p for p in prices if p in rel]
-    first_day = date.fromisoformat(month + "-01")
+    first_day = on or date.fromisoformat(month + "-01")
     ages = {p: _months_between(rel[p], first_day) for p in products}
     products = [p for p in products if ages[p] >= 0]
     trend = {}
@@ -287,15 +290,19 @@ def latest_prices(rows):
 def score(latest, panel_, rel, model, history=None):
     as_of = max((v["as_of"] for v in latest.values() if v["as_of"]), default=date.today().isoformat())
     prices = {p: v["market"] for p, v in latest.items() if v["market"]}
-    feats = features(prices, _month(as_of), panel_, rel)
+    feats = features(prices, _month(as_of), panel_, rel, on=date.fromisoformat(as_of))
     quarters = (history or {}).get("quarters", {})
     rows = []
     for p, v in sorted(latest.items()):
         base = {"tcgplayer_product_id": p, "box_name": v["name"], "as_of": v["as_of"], "market_price": v["market"] or "",
                 "low_price": v["low"] or "", "direct_low_price": v["direct"] or "", "model_version": MODEL_VERSION}
         f = feats.get(p)
+        released = rel.get(p)
+        base["release_date"] = released.isoformat() if released else ""
         if not v["market"] or not f:
-            rows.append({**base, "call": "NO_PRICE"})
+            note = ("NO_CURRENT_PRICE" if not v["market"] else "NO_RELEASE_DATE" if not released
+                    else "NOT_YET_RELEASED" if released > date.fromisoformat(as_of) else "NO_MODEL_FEATURES")
+            rows.append({**base, "call": "NO_PRICE", "note": note})
             continue
         expected = model["intercept"] + model["sweet_spot"] * f["sweet"] + model["trend_rank"] * f["trend_r"] + model["price_rank"] * f["price_r"]
         rows.append({**base, "months_since_release": round(f["age"], 1), "in_sweet_spot": int(f["sweet"]),
