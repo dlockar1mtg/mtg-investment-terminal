@@ -17,8 +17,8 @@
   ],
   "calls": {
     "BUY": 12,
-    "HOLD": 36,
-    "NO_PRICE": 3
+    "HOLD": 37,
+    "NO_PRICE": 2
   },
   "walk_forward": {
     "test_months": 13,
