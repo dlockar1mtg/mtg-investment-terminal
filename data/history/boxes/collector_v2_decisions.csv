@@ -1,52 +1,52 @@
-tcgplayer_product_id,box_name,as_of,market_price,low_price,direct_low_price,months_since_release,in_sweet_spot,trend_6m,expected_return_6m,expected_net_return_6m,call,rank,ranked_products,model_version
-618893,FINAL FANTASY Collector Booster Display,2026-10-06,1659.28,1659.99,,15.6,1,0.4703,0.3407,0.1664,BUY,1,48,collector-v2
-562122,Foundations Collector Booster Display,2026-10-06,901.96,875.0,,22.5,1,0.2893,0.3217,0.1498,BUY,2,48,collector-v2
-619672,Edge of Eternities Collector Booster Display,2026-10-06,739.98,699.99,,14.0,1,0.3656,0.3065,0.1367,BUY,3,48,collector-v2
-515906,The Lord of the Rings: Tales of Middle-earth - Special Edition Collector Booster Display,2026-10-06,7084.04,7240.0,,34.9,0,1.6288,0.2916,0.1237,BUY,4,48,collector-v2
-484912,Universes Beyond: The Lord of the Rings: Tales of Middle-earth Collector Booster Display,2026-10-06,2063.54,2055.0,,39.3,0,0.6248,0.2882,0.1207,BUY,5,48,collector-v2
-523185,Universes Beyond: Fallout Collector Booster Display,2026-10-06,1834.75,1942.9,,30.8,0,0.3504,0.2815,0.1149,BUY,6,48,collector-v2
-541238,Bloomburrow Collector Booster Display,2026-10-06,1310.6,1251.97,,26.0,0,0.6381,0.2804,0.1139,BUY,7,48,collector-v2
-517708,Ravnica Remastered Collector Booster Display,2026-10-06,1224.03,1230.0,,32.6,0,0.7016,0.278,0.1119,BUY,8,48,collector-v2
-516614,The Lost Caverns of Ixalan Collector Booster Display,2026-10-06,1193.89,1298.0,,34.5,0,0.5557,0.2743,0.1086,BUY,9,48,collector-v2
-619649,Tarkir: Dragonstorm Collector Booster Display,2026-10-06,496.92,491.69,,17.7,1,0.2355,0.271,0.1058,BUY,10,48,collector-v2
-475584,March of the Machine Collector Booster Display,2026-10-06,957.18,919.5,,41.4,0,0.6453,0.2699,0.1048,BUY,11,48,collector-v2
-451880,Phyrexia: All Will Be One Collector Booster Display,2026-10-06,1115.41,1199.69,,43.7,0,0.3885,0.2691,0.1042,BUY,12,48,collector-v2
-594681,Innistrad Remastered Collector Booster Display,2026-10-06,494.78,486.0,,20.2,1,0.3272,0.2688,0.1039,HOLD,13,48,collector-v2
-541179,Modern Horizons 3 Collector Booster Display,2026-10-06,899.02,894.98,,27.6,0,0.4456,0.2626,0.0985,HOLD,14,48,collector-v2
-648650,Avatar: The Last Airbender Collector Booster Display,2026-10-06,460.5,475.69,,10.3,1,0.2625,0.2606,0.0967,HOLD,15,48,collector-v2
-282224,The Brothers' War Collector Booster Display,2026-10-06,838.51,838.0,,46.4,0,0.7375,0.2597,0.0959,HOLD,16,48,collector-v2
-496041,Wilds of Eldraine Collector Booster Display,2026-10-06,861.93,934.99,,36.8,0,-0.0177,0.2554,0.0922,HOLD,17,48,collector-v2
-557244,Duskmourn: House of Horror Collector Booster Display,2026-10-06,756.48,815.0,,24.1,0,0.3475,0.2522,0.0894,HOLD,18,48,collector-v2
-657852,Teenage Mutant Ninja Turtles Collector Booster Display,2026-10-06,430.16,424.99,,6.9,1,0.0359,0.2515,0.0888,HOLD,19,48,collector-v2
-656322,Lorwyn Eclipsed Collector Booster Display,2026-10-06,422.62,404.9,,8.2,1,0.1161,0.2492,0.0868,HOLD,20,48,collector-v2
-221323,Commander Legends Collector Booster Display,2026-10-06,751.8,885.49,,70.3,0,0.1389,0.2483,0.086,HOLD,21,48,collector-v2
-621110,Marvel's Spider-Man Collector Booster Display,2026-10-06,404.74,409.0,,12.2,1,0.2152,0.2468,0.0848,HOLD,22,48,collector-v2
-692963,The Hobbit Collector Booster Display,2026-10-06,721.74,714.01,,1.6,0,,0.2455,0.0836,HOLD,23,48,collector-v2
-496076,Universes Beyond: Doctor Who Collector Booster Display,2026-10-06,703.2,798.01,,35.6,0,0.4931,0.2448,0.083,HOLD,24,48,collector-v2
-208279,Ikoria: Lair of Behemoths Collector Booster Display,2026-10-06,679.16,685.0,,76.5,0,0.4308,0.2409,0.0796,HOLD,25,48,collector-v2
-257563,Kamigawa: Neon Dynasty Collector Booster Display,2026-10-06,649.59,605.0,,55.4,0,0.5833,0.24,0.0788,HOLD,26,48,collector-v2
-236348,Modern Horizons 2 Collector Booster Display,2026-10-06,641.93,640.0,,63.4,0,0.3766,0.2344,0.0739,HOLD,27,48,collector-v2
-604253,Aetherdrift Collector Booster Display,2026-10-06,316.95,300.0,,19.5,1,0.3669,0.2325,0.0723,HOLD,28,48,collector-v2
-267023,Commander Legends: Battle for Baldur's Gate Collector Booster Display,2026-10-06,617.5,597.0,,51.7,0,0.4039,0.23,0.0701,HOLD,29,48,collector-v2
-233232,Strixhaven: School of Mages Collector Booster Display,2026-10-06,629.28,600.0,,65.3,0,0.1006,0.2294,0.0696,HOLD,30,48,collector-v2
-449559,Dominaria Remastered Collector Booster Display,2026-10-06,575.2,591.0,,44.6,0,0.4306,0.2275,0.068,HOLD,31,48,collector-v2
-484929,Commander Masters Collector Booster Display,2026-10-06,573.63,500.0,,37.9,0,0.4852,0.226,0.0666,HOLD,32,48,collector-v2
-541225,Universes Beyond: Assassin's Creed Collector Booster Display,2026-10-06,565.25,529.99,,26.9,0,0.604,0.2243,0.0651,HOLD,33,48,collector-v2
-214818,Core Set 2021 Collector Booster Display,2026-10-06,505.3,494.0,,74.9,0,0.6114,0.2218,0.0629,HOLD,34,48,collector-v2
-675558,Secrets of Strixhaven Collector Booster Display,2026-10-06,503.15,486.67,,5.3,0,-0.0129,0.2132,0.0555,HOLD,35,48,collector-v2
-220423,Zendikar Rising Collector Booster Display,2026-10-06,476.29,469.99,,72.2,0,0.4335,0.2093,0.0521,HOLD,36,48,collector-v2
-541090,Outlaws of Thunder Junction Collector Booster Display,2026-10-06,473.1,474.99,,29.4,0,0.2346,0.2035,0.0471,HOLD,37,48,collector-v2
-271509,Double Masters 2022 Collector Booster Display,2026-10-06,451.6,473.0,,50.8,0,0.3446,0.199,0.0431,HOLD,38,48,collector-v2
-675606,Marvel Super Heroes Collector Booster Display,2026-10-06,446.24,459.84,,3.2,0,-0.3038,0.1943,0.0391,HOLD,39,48,collector-v2
-228249,Kaldheim Collector Booster Display,2026-10-06,404.6,391.96,,67.8,0,0.4783,0.1887,0.0342,HOLD,40,48,collector-v2
-238745,Adventures in the Forgotten Realms Collector Booster Display,2026-10-06,404.58,398.88,,62.3,0,0.4038,0.1848,0.0308,HOLD,41,48,collector-v2
-529968,Murders at Karlov Manor Collector Booster Display,2026-10-06,396.39,399.97,,31.7,0,0.3892,0.1819,0.0282,HOLD,42,48,collector-v2
-275412,Dominaria United Collector Booster Display,2026-10-06,393.51,385.0,,48.7,0,0.3948,0.1794,0.0261,HOLD,43,48,collector-v2
-275406,Unfinity Collector Booster Display,2026-10-06,393.49,370.0,,47.8,0,0.3744,0.1759,0.0231,HOLD,44,48,collector-v2
-264767,Streets of New Capenna Collector Booster Display,2026-10-06,308.74,310.0,,53.1,0,0.4894,0.1731,0.0206,HOLD,45,48,collector-v2
-246457,Innistrad: Crimson Vow Collector Booster Display,2026-10-06,304.3,314.99,,58.4,0,0.3847,0.1683,0.0164,HOLD,46,48,collector-v2
-489207,March of the Machine: The Aftermath Collector Booster Display,2026-10-06,288.73,280.0,,40.7,0,0.5521,0.1682,0.0163,HOLD,47,48,collector-v2
-244384,Innistrad: Midnight Hunt Collector Booster Display,2026-10-06,266.48,265.0,,60.2,0,0.4362,0.1644,0.013,HOLD,48,48,collector-v2
-628315,FINAL FANTASY - Collector Booster Display (Japanese),2026-10-06,774.23,810.0,,,,,,,NO_PRICE,,,collector-v2
-692983,Reality Fracture Collector Booster Display,2026-10-06,455.55,450.0,,,,,,,NO_PRICE,,,collector-v2
-706142,Star Trek Collector Booster Display,2026-10-06,687.6,650.0,,,,,,,NO_PRICE,,,collector-v2
+tcgplayer_product_id,box_name,as_of,market_price,low_price,direct_low_price,months_since_release,in_sweet_spot,trend_6m,expected_return_6m,expected_net_return_6m,call,rank,ranked_products,quarter,calibrated_net_return_6m,calibrated_net_p10_6m,calibrated_net_p90_6m,calibrated_share_profitable,model_version
+618893,FINAL FANTASY Collector Booster Display,2026-10-06,1659.28,1659.99,,15.6,1,0.4703,0.3407,0.1664,BUY,1,48,1,0.1606,-0.1223,0.4171,0.7464,collector-v2
+562122,Foundations Collector Booster Display,2026-10-06,901.96,875.0,,22.5,1,0.2893,0.3217,0.1498,BUY,2,48,1,0.1606,-0.1223,0.4171,0.7464,collector-v2
+619672,Edge of Eternities Collector Booster Display,2026-10-06,739.98,699.99,,14.0,1,0.3656,0.3065,0.1367,BUY,3,48,1,0.1606,-0.1223,0.4171,0.7464,collector-v2
+515906,The Lord of the Rings: Tales of Middle-earth - Special Edition Collector Booster Display,2026-10-06,7084.04,7240.0,,34.9,0,1.6288,0.2916,0.1237,BUY,4,48,1,0.1606,-0.1223,0.4171,0.7464,collector-v2
+484912,Universes Beyond: The Lord of the Rings: Tales of Middle-earth Collector Booster Display,2026-10-06,2063.54,2055.0,,39.3,0,0.6248,0.2882,0.1207,BUY,5,48,1,0.1606,-0.1223,0.4171,0.7464,collector-v2
+523185,Universes Beyond: Fallout Collector Booster Display,2026-10-06,1834.75,1942.9,,30.8,0,0.3504,0.2815,0.1149,BUY,6,48,1,0.1606,-0.1223,0.4171,0.7464,collector-v2
+541238,Bloomburrow Collector Booster Display,2026-10-06,1310.6,1251.97,,26.0,0,0.6381,0.2804,0.1139,BUY,7,48,1,0.1606,-0.1223,0.4171,0.7464,collector-v2
+517708,Ravnica Remastered Collector Booster Display,2026-10-06,1224.03,1230.0,,32.6,0,0.7016,0.278,0.1119,BUY,8,48,1,0.1606,-0.1223,0.4171,0.7464,collector-v2
+516614,The Lost Caverns of Ixalan Collector Booster Display,2026-10-06,1193.89,1298.0,,34.5,0,0.5557,0.2743,0.1086,BUY,9,48,1,0.1606,-0.1223,0.4171,0.7464,collector-v2
+619649,Tarkir: Dragonstorm Collector Booster Display,2026-10-06,496.92,491.69,,17.7,1,0.2355,0.271,0.1058,BUY,10,48,1,0.1606,-0.1223,0.4171,0.7464,collector-v2
+475584,March of the Machine Collector Booster Display,2026-10-06,957.18,919.5,,41.4,0,0.6453,0.2699,0.1048,BUY,11,48,1,0.1606,-0.1223,0.4171,0.7464,collector-v2
+451880,Phyrexia: All Will Be One Collector Booster Display,2026-10-06,1115.41,1199.69,,43.7,0,0.3885,0.2691,0.1042,BUY,12,48,1,0.1606,-0.1223,0.4171,0.7464,collector-v2
+594681,Innistrad Remastered Collector Booster Display,2026-10-06,494.78,486.0,,20.2,1,0.3272,0.2688,0.1039,HOLD,13,48,2,0.1134,-0.0903,0.3577,0.7308,collector-v2
+541179,Modern Horizons 3 Collector Booster Display,2026-10-06,899.02,894.98,,27.6,0,0.4456,0.2626,0.0985,HOLD,14,48,2,0.1134,-0.0903,0.3577,0.7308,collector-v2
+648650,Avatar: The Last Airbender Collector Booster Display,2026-10-06,460.5,475.69,,10.3,1,0.2625,0.2606,0.0967,HOLD,15,48,2,0.1134,-0.0903,0.3577,0.7308,collector-v2
+282224,The Brothers' War Collector Booster Display,2026-10-06,838.51,838.0,,46.4,0,0.7375,0.2597,0.0959,HOLD,16,48,2,0.1134,-0.0903,0.3577,0.7308,collector-v2
+496041,Wilds of Eldraine Collector Booster Display,2026-10-06,861.93,934.99,,36.8,0,-0.0177,0.2554,0.0922,HOLD,17,48,2,0.1134,-0.0903,0.3577,0.7308,collector-v2
+557244,Duskmourn: House of Horror Collector Booster Display,2026-10-06,756.48,815.0,,24.1,0,0.3475,0.2522,0.0894,HOLD,18,48,2,0.1134,-0.0903,0.3577,0.7308,collector-v2
+657852,Teenage Mutant Ninja Turtles Collector Booster Display,2026-10-06,430.16,424.99,,6.9,1,0.0359,0.2515,0.0888,HOLD,19,48,2,0.1134,-0.0903,0.3577,0.7308,collector-v2
+656322,Lorwyn Eclipsed Collector Booster Display,2026-10-06,422.62,404.9,,8.2,1,0.1161,0.2492,0.0868,HOLD,20,48,2,0.1134,-0.0903,0.3577,0.7308,collector-v2
+221323,Commander Legends Collector Booster Display,2026-10-06,751.8,885.49,,70.3,0,0.1389,0.2483,0.086,HOLD,21,48,2,0.1134,-0.0903,0.3577,0.7308,collector-v2
+621110,Marvel's Spider-Man Collector Booster Display,2026-10-06,404.74,409.0,,12.2,1,0.2152,0.2468,0.0848,HOLD,22,48,2,0.1134,-0.0903,0.3577,0.7308,collector-v2
+692963,The Hobbit Collector Booster Display,2026-10-06,721.74,714.01,,1.6,0,,0.2455,0.0836,HOLD,23,48,2,0.1134,-0.0903,0.3577,0.7308,collector-v2
+496076,Universes Beyond: Doctor Who Collector Booster Display,2026-10-06,703.2,798.01,,35.6,0,0.4931,0.2448,0.083,HOLD,24,48,2,0.1134,-0.0903,0.3577,0.7308,collector-v2
+208279,Ikoria: Lair of Behemoths Collector Booster Display,2026-10-06,679.16,685.0,,76.5,0,0.4308,0.2409,0.0796,HOLD,25,48,3,0.107,-0.0828,0.2989,0.7388,collector-v2
+257563,Kamigawa: Neon Dynasty Collector Booster Display,2026-10-06,649.59,605.0,,55.4,0,0.5833,0.24,0.0788,HOLD,26,48,3,0.107,-0.0828,0.2989,0.7388,collector-v2
+236348,Modern Horizons 2 Collector Booster Display,2026-10-06,641.93,640.0,,63.4,0,0.3766,0.2344,0.0739,HOLD,27,48,3,0.107,-0.0828,0.2989,0.7388,collector-v2
+604253,Aetherdrift Collector Booster Display,2026-10-06,316.95,300.0,,19.5,1,0.3669,0.2325,0.0723,HOLD,28,48,3,0.107,-0.0828,0.2989,0.7388,collector-v2
+267023,Commander Legends: Battle for Baldur's Gate Collector Booster Display,2026-10-06,617.5,597.0,,51.7,0,0.4039,0.23,0.0701,HOLD,29,48,3,0.107,-0.0828,0.2989,0.7388,collector-v2
+233232,Strixhaven: School of Mages Collector Booster Display,2026-10-06,629.28,600.0,,65.3,0,0.1006,0.2294,0.0696,HOLD,30,48,3,0.107,-0.0828,0.2989,0.7388,collector-v2
+449559,Dominaria Remastered Collector Booster Display,2026-10-06,575.2,591.0,,44.6,0,0.4306,0.2275,0.068,HOLD,31,48,3,0.107,-0.0828,0.2989,0.7388,collector-v2
+484929,Commander Masters Collector Booster Display,2026-10-06,573.63,500.0,,37.9,0,0.4852,0.226,0.0666,HOLD,32,48,3,0.107,-0.0828,0.2989,0.7388,collector-v2
+541225,Universes Beyond: Assassin's Creed Collector Booster Display,2026-10-06,565.25,529.99,,26.9,0,0.604,0.2243,0.0651,HOLD,33,48,3,0.107,-0.0828,0.2989,0.7388,collector-v2
+214818,Core Set 2021 Collector Booster Display,2026-10-06,505.3,494.0,,74.9,0,0.6114,0.2218,0.0629,HOLD,34,48,3,0.107,-0.0828,0.2989,0.7388,collector-v2
+675558,Secrets of Strixhaven Collector Booster Display,2026-10-06,503.15,486.67,,5.3,0,-0.0129,0.2132,0.0555,HOLD,35,48,3,0.107,-0.0828,0.2989,0.7388,collector-v2
+220423,Zendikar Rising Collector Booster Display,2026-10-06,476.29,469.99,,72.2,0,0.4335,0.2093,0.0521,HOLD,36,48,3,0.107,-0.0828,0.2989,0.7388,collector-v2
+541090,Outlaws of Thunder Junction Collector Booster Display,2026-10-06,473.1,474.99,,29.4,0,0.2346,0.2035,0.0471,HOLD,37,48,4,0.0662,-0.0702,0.2127,0.7222,collector-v2
+271509,Double Masters 2022 Collector Booster Display,2026-10-06,451.6,473.0,,50.8,0,0.3446,0.199,0.0431,HOLD,38,48,4,0.0662,-0.0702,0.2127,0.7222,collector-v2
+675606,Marvel Super Heroes Collector Booster Display,2026-10-06,446.24,459.84,,3.2,0,-0.3038,0.1943,0.0391,HOLD,39,48,4,0.0662,-0.0702,0.2127,0.7222,collector-v2
+228249,Kaldheim Collector Booster Display,2026-10-06,404.6,391.96,,67.8,0,0.4783,0.1887,0.0342,HOLD,40,48,4,0.0662,-0.0702,0.2127,0.7222,collector-v2
+238745,Adventures in the Forgotten Realms Collector Booster Display,2026-10-06,404.58,398.88,,62.3,0,0.4038,0.1848,0.0308,HOLD,41,48,4,0.0662,-0.0702,0.2127,0.7222,collector-v2
+529968,Murders at Karlov Manor Collector Booster Display,2026-10-06,396.39,399.97,,31.7,0,0.3892,0.1819,0.0282,HOLD,42,48,4,0.0662,-0.0702,0.2127,0.7222,collector-v2
+275412,Dominaria United Collector Booster Display,2026-10-06,393.51,385.0,,48.7,0,0.3948,0.1794,0.0261,HOLD,43,48,4,0.0662,-0.0702,0.2127,0.7222,collector-v2
+275406,Unfinity Collector Booster Display,2026-10-06,393.49,370.0,,47.8,0,0.3744,0.1759,0.0231,HOLD,44,48,4,0.0662,-0.0702,0.2127,0.7222,collector-v2
+264767,Streets of New Capenna Collector Booster Display,2026-10-06,308.74,310.0,,53.1,0,0.4894,0.1731,0.0206,HOLD,45,48,4,0.0662,-0.0702,0.2127,0.7222,collector-v2
+246457,Innistrad: Crimson Vow Collector Booster Display,2026-10-06,304.3,314.99,,58.4,0,0.3847,0.1683,0.0164,HOLD,46,48,4,0.0662,-0.0702,0.2127,0.7222,collector-v2
+489207,March of the Machine: The Aftermath Collector Booster Display,2026-10-06,288.73,280.0,,40.7,0,0.5521,0.1682,0.0163,HOLD,47,48,4,0.0662,-0.0702,0.2127,0.7222,collector-v2
+244384,Innistrad: Midnight Hunt Collector Booster Display,2026-10-06,266.48,265.0,,60.2,0,0.4362,0.1644,0.013,HOLD,48,48,4,0.0662,-0.0702,0.2127,0.7222,collector-v2
+628315,FINAL FANTASY - Collector Booster Display (Japanese),2026-10-06,774.23,810.0,,,,,,,NO_PRICE,,,,,,,,collector-v2
+692983,Reality Fracture Collector Booster Display,2026-10-06,455.55,450.0,,,,,,,NO_PRICE,,,,,,,,collector-v2
+706142,Star Trek Collector Booster Display,2026-10-06,687.6,650.0,,,,,,,NO_PRICE,,,,,,,,collector-v2
