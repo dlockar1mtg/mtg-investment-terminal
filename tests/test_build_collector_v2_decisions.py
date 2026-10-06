@@ -31,6 +31,10 @@ def fixture(tmp):
     write(tmp / "latest.csv", ["snapshot_date", "tcgplayer_product_id", "box_name", "market_price", "low_price", "direct_low_price"], latest)
     return tmp
 
+def run(t, out):
+    return subprocess.run([sys.executable, str(SCRIPTS / "build_collector_v2_decisions.py"), "--ledger", str(t / "ledger.csv"), "--weekly", str(t / "none.csv"),
+                           "--latest", str(t / "latest.csv"), "--releases", str(t / "rel.csv"), "--output", str(out)], capture_output=True, text=True)
+
 def test_calibration_learns_the_sweet_spot(tmp_path):
     t = fixture(tmp_path)
     p = cv2.panel(cv2._rows(t / "ledger.csv"), [])
@@ -39,8 +43,7 @@ def test_calibration_learns_the_sweet_spot(tmp_path):
 
 def test_top_quarter_buy_after_costs_rest_hold(tmp_path):
     t = fixture(tmp_path); out = t / "d.csv"
-    proc = subprocess.run([sys.executable, str(SCRIPTS / "build_collector_v2_decisions.py"), "--ledger", str(t / "ledger.csv"), "--weekly", str(t / "none.csv"),
-                           "--latest", str(t / "latest.csv"), "--releases", str(t / "rel.csv"), "--output", str(out)], capture_output=True, text=True)
+    proc = run(t, out)
     assert proc.returncode == 0, proc.stderr
     rows = list(csv.DictReader(out.open()))
     ranked = [r for r in rows if r["call"] != "NO_PRICE"]
@@ -56,3 +59,40 @@ def test_top_quarter_buy_after_costs_rest_hold(tmp_path):
 def test_too_little_history_is_refused():
     with pytest.raises(ValueError):
         cv2.calibrate({("1", "2026-01"): 100.0}, {"1": date(2025, 1, 1)})
+
+def test_walk_forward_reports_realized_results_by_quarter(tmp_path):
+    t = fixture(tmp_path); out = t / "d.csv"
+    assert run(t, out).returncode == 0
+    wf = json.loads(out.with_suffix(".json").read_text())["walk_forward"]
+    assert wf["test_months"] > 0 and set(wf["quarters"]) == {"1", "2", "3", "4"}
+    for q in wf["quarters"].values():
+        assert q["p10_net_return"] <= q["p50_net_return"] <= q["p90_net_return"] and 0 <= q["share_profitable"] <= 1
+    assert wf["status"] in ("VALIDATED", "PROVISIONAL") and wf["recent"]["test_months"] <= cv2.RECENT_MONTHS
+    rows = [r for r in csv.DictReader(out.open()) if r["call"] != "NO_PRICE"]
+    top = rows[0]
+    assert top["quarter"] == "1" and float(top["calibrated_net_return_6m"]) == wf["quarters"]["1"]["avg_net_return"]
+    assert rows[-1]["quarter"] == "4"
+    history = json.loads(out.with_name("collector_v2_history.json").read_text())
+    assert history["1000"][0][0] <= history["1000"][-1][0]
+
+def test_walk_forward_refits_only_on_known_outcomes():
+    # outcomes that start in a test month must not be in that month's training set
+    panel = {}
+    rel = {str(p): date(2022 + p % 3, 1 + p % 12, 1) for p in range(20)}
+    for p in range(20):
+        for k in range(36):
+            panel[(str(p), cv2._shift("2024-01", k))] = (100.0 + 37 * ((p * 7) % 20)) * (1.01 + 0.002 * (p % 5) + 0.003 * (k % 4 == p % 4)) ** k
+    seen = []
+    real = cv2._solve
+    def spy(xs, ys):
+        seen.append(len(ys)); return real(xs, ys)
+    cv2._solve = spy
+    try:
+        wf = cv2.walk_forward(panel, rel)
+    finally:
+        cv2._solve = real
+    assert wf["test_months"] > 0 and seen == sorted(seen)  # training only grows as outcomes become known
+
+def test_quarters_split_evenly():
+    assert [cv2._quarter(i, 8) for i in range(8)] == [1, 1, 2, 2, 3, 3, 4, 4]
+    assert cv2._quarter(0, 1) == 1
