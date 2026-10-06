@@ -1,6 +1,6 @@
 {
   "model_version": "precollector-v2",
-  "as_of": "2026-07",
+  "as_of": "2026-10-06",
   "horizon_months": 12,
   "sell_cost": 0.13,
   "buy_tiers": [
@@ -15,53 +15,53 @@
   },
   "tier_history": {
     "1": {
-      "cases": 324,
-      "avg_return": 0.25468635758039854,
-      "avg_net_return": 0.09157713109494674,
-      "share_profitable": 0.7283950617283951,
+      "cases": 341,
+      "avg_return": 0.2626498593735966,
+      "avg_net_return": 0.09850537765502904,
+      "share_profitable": 0.7419354838709677,
       "by_start_year": {
         "2024": 0.0586,
-        "2025": 0.1434
+        "2025": 0.1538
       }
     },
     "2": {
-      "cases": 322,
-      "avg_return": 0.21120241762865444,
-      "avg_net_return": 0.05374610333692934,
-      "share_profitable": 0.5652173913043478,
+      "cases": 339,
+      "avg_return": 0.22248755995097508,
+      "avg_net_return": 0.06356417715734831,
+      "share_profitable": 0.5811209439528023,
       "by_start_year": {
         "2024": 0.0189,
-        "2025": 0.1094
+        "2025": 0.1263
       }
     },
     "3": {
-      "cases": 320,
-      "avg_return": 0.19532289916737702,
-      "avg_net_return": 0.03993092227561801,
-      "share_profitable": 0.50625,
+      "cases": 337,
+      "avg_return": 0.2026036006018387,
+      "avg_net_return": 0.04626513252359968,
+      "share_profitable": 0.5311572700296736,
       "by_start_year": {
         "2024": -0.026,
-        "2025": 0.1442
+        "2025": 0.1468
       }
     },
     "4": {
-      "cases": 322,
-      "avg_return": 0.029283553474710358,
-      "avg_net_return": -0.10452330847700199,
-      "share_profitable": 0.21428571428571427,
+      "cases": 339,
+      "avg_return": 0.04064847587977245,
+      "avg_net_return": -0.09463582598459798,
+      "share_profitable": 0.2359882005899705,
       "by_start_year": {
         "2024": -0.1462,
-        "2025": -0.038
+        "2025": -0.0223
       }
     },
     "5": {
-      "cases": 306,
-      "avg_return": -0.048676044362460244,
-      "avg_net_return": -0.17234815859534042,
-      "share_profitable": 0.15359477124183007,
+      "cases": 323,
+      "avg_return": -0.039291100056439494,
+      "avg_net_return": -0.16418325704910236,
+      "share_profitable": 0.16718266253869968,
       "by_start_year": {
         "2024": -0.2359,
-        "2025": -0.0724
+        "2025": -0.0655
       }
     }
   }

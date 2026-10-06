@@ -1,0 +1,23 @@
+{
+  "model_version": "collector-v2",
+  "as_of": "2026-10-06",
+  "calibration": {
+    "intercept": 0.22433664838825318,
+    "sweet_spot": 0.05938041507336784,
+    "trend_rank": 0.007355371298529319,
+    "price_rank": 0.12718704074954904,
+    "rows": 918
+  },
+  "buy_share": 0.25,
+  "sell_cost": 0.13,
+  "horizon_months": 6,
+  "sweet_spot_months": [
+    6.0,
+    24.0
+  ],
+  "calls": {
+    "BUY": 12,
+    "HOLD": 36,
+    "NO_PRICE": 3
+  }
+}
