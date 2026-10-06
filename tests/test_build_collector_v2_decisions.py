@@ -96,3 +96,19 @@ def test_walk_forward_refits_only_on_known_outcomes():
 def test_quarters_split_evenly():
     assert [cv2._quarter(i, 8) for i in range(8)] == [1, 1, 2, 2, 3, 3, 4, 4]
     assert cv2._quarter(0, 1) == 1
+
+def test_unreleased_and_just_released_boxes(tmp_path):
+    t = fixture(tmp_path); out = t / "d.csv"
+    rel = list(csv.DictReader((t / "rel.csv").open()))
+    rel += [{"tcgplayer_product_id": "8001", "official_release_date": "2026-10-02"},   # released this month, before as_of
+            {"tcgplayer_product_id": "8002", "official_release_date": "2026-11-13"}]   # preorder
+    write(t / "rel.csv", ["tcgplayer_product_id", "official_release_date"], rel)
+    latest = list(csv.DictReader((t / "latest.csv").open()))
+    latest += [{"snapshot_date": "2026-10-05", "tcgplayer_product_id": p, "box_name": n, "market_price": "450", "low_price": "", "direct_low_price": ""}
+               for p, n in (("8001", "Just released"), ("8002", "Preorder"))]
+    write(t / "latest.csv", ["snapshot_date", "tcgplayer_product_id", "box_name", "market_price", "low_price", "direct_low_price"], latest)
+    assert run(t, out).returncode == 0
+    rows = {r["tcgplayer_product_id"]: r for r in csv.DictReader(out.open())}
+    assert rows["8001"]["call"] in ("BUY", "HOLD") and rows["8001"]["release_date"] == "2026-10-02"
+    assert (rows["8002"]["call"], rows["8002"]["note"]) == ("NO_PRICE", "NOT_YET_RELEASED")
+    assert (rows["9999"]["call"], rows["9999"]["note"]) == ("NO_PRICE", "NO_RELEASE_DATE")
