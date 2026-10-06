@@ -74,8 +74,8 @@ jobs:
           fi
           wf="${GITHUB_WORKFLOW_REF%@*}"; wf="${wf##*/}"
           since="$(date -u -d '12 hours ago' +%Y-%m-%dT%H:%M:%SZ)"
-          ids="$(gh api "repos/$GITHUB_REPOSITORY/actions/workflows/$wf/runs?branch=main&status=success&per_page=30" \
-            --jq ".workflow_runs[] | select(.id != $GITHUB_RUN_ID) | select(.event == \"schedule\" or .event == \"workflow_dispatch\") | select(.run_started_at >= \"$since\") | .id")"
+          ids="$(gh api "repos/$GITHUB_REPOSITORY/actions/workflows/$wf/runs?per_page=50" \
+            --jq ".workflow_runs[] | select(.head_branch == \"main\" and .conclusion == \"success\") | select(.id != $GITHUB_RUN_ID) | select(.event == \"schedule\" or .event == \"workflow_dispatch\") | select(.run_started_at >= \"$since\") | .id")"
           for id in $ids; do
             worked="$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$id/jobs" --jq '[.jobs[] | select(.name != "gate" and .conclusion == "success")] | length')"
             if [ "$worked" -gt 0 ]; then
