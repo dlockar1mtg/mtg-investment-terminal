@@ -39,6 +39,9 @@ on:
 
   schedule:
     - cron: "15 12 * * *"
+    - cron: "15 15 * * *" # backup: skipped unless the last run that did the work is over 12 hours old (see the gate job)
+    - cron: "15 18 * * *"
+    - cron: "15 21 * * *"
 
 permissions:
   contents: read
@@ -48,7 +51,43 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  gate:
+    # GitHub often starts scheduled runs hours late or skips them, so this workflow also has
+    # backup schedule times. A scheduled run goes ahead only if no run of this workflow finished
+    # its work successfully in the last 12 hours. Manual and other runs always go ahead.
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      actions: read
+    outputs:
+      run: ${{ steps.check.outputs.run }}
+    steps:
+      - id: check
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SCHEDULE: ${{ github.event.schedule }}
+          ALWAYS_RUN_SCHEDULES: ""
+        run: |
+          set -euo pipefail
+          if [ "$GITHUB_EVENT_NAME" != "schedule" ] || { [ -n "$ALWAYS_RUN_SCHEDULES" ] && [[ "|$ALWAYS_RUN_SCHEDULES|" == *"|$SCHEDULE|"* ]]; }; then
+            echo "run=true" >> "$GITHUB_OUTPUT"; exit 0
+          fi
+          wf="${GITHUB_WORKFLOW_REF%@*}"; wf="${wf##*/}"
+          since="$(date -u -d '12 hours ago' +%Y-%m-%dT%H:%M:%SZ)"
+          ids="$(gh api "repos/$GITHUB_REPOSITORY/actions/workflows/$wf/runs?branch=main&status=success&per_page=30" \
+            --jq ".workflow_runs[] | select(.id != $GITHUB_RUN_ID) | select(.event == \"schedule\" or .event == \"workflow_dispatch\") | select(.run_started_at >= \"$since\") | .id")"
+          for id in $ids; do
+            worked="$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$id/jobs" --jq '[.jobs[] | select(.name != "gate" and .conclusion == "success")] | length')"
+            if [ "$worked" -gt 0 ]; then
+              echo "Run $id already did this workflow's work since $since, so this backup run stops here."
+              echo "run=false" >> "$GITHUB_OUTPUT"; exit 0
+            fi
+          done
+          echo "run=true" >> "$GITHUB_OUTPUT"
+
   marketplace-production:
+    needs: gate
+    if: ${{ !cancelled() && needs.gate.outputs.run != 'false' }} # a failed gate never blocks the run
     runs-on: ubuntu-24.04
     timeout-minutes: 180
 
