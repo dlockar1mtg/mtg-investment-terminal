@@ -17,8 +17,8 @@ against +7.1% for all boxes, and its raw expected return (+16.5%) ran high. So e
 also replays the model walk-forward (refit only on outcomes known at each test month) and reports,
 per predicted quarter, what boxes actually returned after costs. Those realized results are the
 numbers to show; the status is VALIDATED only when the BUY quarter beat the all-box average by at
-least VALIDATED_EDGE after costs over at least VALIDATED_MONTHS test months and also beat it over the
-most recent RECENT_MONTHS test months, PROVISIONAL otherwise. (October 2026, with every box the live
+least VALIDATED_EDGE after costs over at least VALIDATED_MONTHS test months and by the same margin over
+the most recent RECENT_MONTHS test months, PROVISIONAL otherwise. (October 2026, with every box the live
 model scores: the top quarter made +14.7% after costs vs +10.1% for all boxes over 12 test months,
 but the whole edge came from 2025-02 to 2025-06 starts; over the last 6 test months it trailed.)
 """
@@ -261,7 +261,7 @@ def walk_forward(panel_, rel):
     recent_top = [t[1] for t in recent if t[0] == 1]
     recent_all = [t[1] for t in recent]
     recent_edge = (sum(recent_top) / len(recent_top) - sum(recent_all) / len(recent_all)) if recent_top else 0.0
-    validated = len(months_used) >= VALIDATED_MONTHS and edge >= VALIDATED_EDGE and recent_edge > 0
+    validated = len(months_used) >= VALIDATED_MONTHS and edge >= VALIDATED_EDGE and recent_edge >= VALIDATED_EDGE
     return {"test_months": len(months_used), "first_test_month": months_used[0], "last_test_month": months_used[-1],
             "horizon_months": HORIZON, "sell_cost": SELL_COST, "quarters": quarters, "all_boxes": everything,
             "buy_quarter_edge": round(edge, 4),
