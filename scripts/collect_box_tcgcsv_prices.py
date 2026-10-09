@@ -5,6 +5,11 @@ price file once (TCGCSV asks for at most one request per file per 24 hours), kee
 boxes' market, lowest-listing and TCGplayer Direct low prices, overwrites a latest-prices file
 and appends to a weekly history on the first successful fetch of each week. The stored history
 lets the box models refit as it grows and makes the listing gap testable for boxes.
+
+Partial fetches: when some groups fail, their boxes' previous rows are carried forward into the
+latest-prices file unchanged (keeping their original snapshot_date) with stale_carried=true, so
+a feed outage never silently drops boxes; the weekly history only ever gets fresh rows. If fewer
+than MIN_FRESH_GROUP_SHARE of the groups were fetched, nothing is written and the run exits 1.
 """
 from __future__ import annotations
 
@@ -23,8 +28,10 @@ DEFAULT_DIR = ROOT / "data" / "history" / "boxes"
 LIVE_BASE_URL = "https://tcgcsv.com/tcgplayer"
 CATEGORY_ID = "1"
 USER_AGENT = "UIP-MTG-history/1.0 (+https://github.com/dlockar1mtg/mtg-investment-terminal)"
-FIELDS = ["snapshot_date", "tcgplayer_product_id", "box_name", "tcgcsv_group_id", "sub_type",
-          "market_price", "low_price", "mid_price", "high_price", "direct_low_price"]
+WEEKLY_FIELDS = ["snapshot_date", "tcgplayer_product_id", "box_name", "tcgcsv_group_id", "sub_type",
+                 "market_price", "low_price", "mid_price", "high_price", "direct_low_price"]
+FIELDS = WEEKLY_FIELDS + ["stale_carried"]   # latest-prices file: true on rows carried from an earlier day
+MIN_FRESH_GROUP_SHARE = 0.95                # below this share of groups fetched, publish nothing
 
 
 def load_boxes(path: Path) -> dict[str, dict[str, str]]:
@@ -62,6 +69,7 @@ def _fetch_json(url: str, retries: int = 3, pause: float = 5.0):
 
 
 def collect(today: date, boxes, fetch: Callable[[str], object] = _fetch_json, sleep_seconds: float = 0.2):
+    """Rows for the listed boxes, and the failures as 'group: error' strings."""
     rows, failures = [], []
     for group in sorted({b["group"] for b in boxes.values()}):
         try:
@@ -84,6 +92,13 @@ def collect(today: date, boxes, fetch: Callable[[str], object] = _fetch_json, sl
     return rows, failures
 
 
+def _previous(path: Path):
+    if not path.is_file():
+        return []
+    with path.open(newline="", encoding="utf-8-sig") as handle:
+        return list(csv.DictReader(handle))
+
+
 def _dates(path: Path) -> set[str]:
     if not path.is_file():
         return set()
@@ -91,11 +106,22 @@ def _dates(path: Path) -> set[str]:
         return {row["snapshot_date"] for row in csv.DictReader(handle)}
 
 
-def _write(path: Path, rows, append: bool) -> None:
+def carry_forward(previous_rows, failed_groups, boxes):
+    """Previous latest rows of the listed boxes in groups that failed today, flagged stale_carried."""
+    out = []
+    for r in previous_rows:
+        product, group = str(r.get("tcgplayer_product_id") or "").strip(), str(r.get("tcgcsv_group_id") or "").strip()
+        box = boxes.get(product)
+        if box and box["group"] == group and group in failed_groups:
+            out.append({**{k: r.get(k, "") for k in WEEKLY_FIELDS}, "stale_carried": "true"})
+    return out
+
+
+def _write(path: Path, rows, append: bool, fields=FIELDS) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     new = not path.is_file() or not append
     with path.open("a" if append else "w", newline="", encoding="utf-8") as handle:
-        writer = csv.DictWriter(handle, fieldnames=FIELDS)
+        writer = csv.DictWriter(handle, fieldnames=fields, extrasaction="ignore")
         if new:
             writer.writeheader()
         writer.writerows(rows)
@@ -115,15 +141,26 @@ def main(argv=None, fetch: Callable[[str], object] = _fetch_json, today: date | 
     if not priced:
         print(f"BOX FETCH FAILED: no listed box has a market price; failures: {failures}")
         return 1
+    groups = {b["group"] for b in boxes.values()}
+    failed_groups = {f.split(":", 1)[0] for f in failures}
+    fresh_share = 1 - len(failed_groups) / len(groups)
+    if fresh_share < MIN_FRESH_GROUP_SHARE:
+        print(f"BOX FETCH FAILED: only {len(groups) - len(failed_groups)} of {len(groups)} groups fetched "
+              f"({fresh_share:.0%} < {MIN_FRESH_GROUP_SHARE:.0%}); previous files left unchanged. Failures: {', '.join(failures)}")
+        return 1
+    for r in rows:
+        r["stale_carried"] = ""
     latest = args.output_dir / f"{args.segment}_latest_prices.csv"
     weekly = args.output_dir / f"{args.segment}_weekly_prices.csv"
-    _write(latest, rows, append=False)
+    carried = carry_forward(_previous(latest), failed_groups, boxes)
+    _write(latest, rows + carried, append=False)
     monday = day - timedelta(days=day.weekday())
     stored = _dates(weekly)
     extended = not any((monday + timedelta(days=k)).isoformat() in stored for k in range(7))
     if extended:
-        _write(weekly, rows, append=True)
-    print(f"{day}: {priced} of {len(boxes)} boxes priced; groups failed {len(failures)}; weekly history {'extended' if extended else 'already has this week'}")
+        _write(weekly, rows, append=True, fields=WEEKLY_FIELDS)
+    print(f"{day}: {priced} of {len(boxes)} boxes priced; groups failed {len(failed_groups)} of {len(groups)}; "
+          f"{len(carried)} earlier rows carried forward; weekly history {'extended' if extended else 'already has this week'}")
     if failures:
         print("FAILED GROUPS: " + ", ".join(failures))
     return 0

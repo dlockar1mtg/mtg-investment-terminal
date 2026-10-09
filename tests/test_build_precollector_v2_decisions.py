@@ -83,3 +83,29 @@ def test_runs_as_a_script(tmp_path):
     assert summary["calls"] == {"BUY": 8, "HOLD": 12, "NO_PRICE": 1} and set(summary["tier_history"]) == {"1", "2", "3", "4", "5"}
     history = json.loads(out.with_name("precollector_v2_history.json").read_text())
     assert len(history["1000"]) == 26
+
+
+def test_old_prices_are_stale_and_left_out_of_the_tiers():
+    panel = pc.monthly_panel(_ledger(), [])
+    boxes = _boxes()
+    years = {b["tcgplayer_product_id"]: int(b["release_date"][:4]) for b in boxes}
+    history = pc.tier_history(panel, years)
+    # Only boxes 1000-1009 have a fresh daily price; the rest only have ledger months that end in 2026-03.
+    daily = [{"tcgplayer_product_id": str(1000 + b), "market_price": f"{100 + b}", "snapshot_date": "2026-10-06"} for b in range(10)]
+    prices = pc.latest_prices(daily, panel)
+    rows = {r["tcgplayer_product_id"]: r for r in pc.score(boxes, prices, history, "2026-10-06")}
+    assert (rows["1012"]["call"], rows["1012"]["note"]) == ("NO_PRICE", "STALE_PRICE")
+    assert "tier" not in rows["1012"] and "rank" not in rows["1012"] and rows["1012"]["price_date"] == "2026-03"
+    assert rows["1019"]["note"] == "STALE_PRICE"                                  # stale before vintage
+    ranked = [r for r in rows.values() if r.get("rank")]
+    assert sorted(r["tcgplayer_product_id"] for r in ranked) == [str(1000 + b) for b in range(10)]
+    assert all(r["ranked_boxes"] == 10 for r in ranked) and sum(1 for r in ranked if r["call"] == "BUY") == 4
+    assert pc.is_stale("2026-09-15", pc.date(2026, 10, 6)) is False and pc.is_stale("2026-09-14", pc.date(2026, 10, 6)) is True
+    assert pc.is_stale("2026-09", pc.date(2026, 10, 21)) is False                # a ledger month counts as its last day
+
+
+def test_carried_rows_are_labelled_and_age_from_their_own_date():
+    prices = pc.latest_prices([{"tcgplayer_product_id": "1000", "market_price": "50", "snapshot_date": "2026-09-01", "stale_carried": "true"}], {})
+    assert prices["1000"] == (50.0, "2026-09-01", "TCGCSV_DAILY_CARRIED")
+    row = pc.score([{"tcgplayer_product_id": "1000", "box_name": "A", "release_date": "2012-01-01"}], prices, {}, "2026-10-06")[0]
+    assert (row["call"], row["note"]) == ("NO_PRICE", "STALE_PRICE")
