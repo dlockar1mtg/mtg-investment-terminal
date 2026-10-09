@@ -13,9 +13,11 @@ returns measured listing to listing), then score today's prices.
 
 Buy price: the TCGplayer Direct low would be used if the feed carried one, but TCGCSV leaves
 direct_low_price empty for Secret Lairs (0 of 876 rows on 2026-10-09), so in practice buy_price
-is the lowest listing from any seller. A buyer also pays shipping, which the listing price
-excludes, so scoring uses the landed cost = buy_price + BUY_SHIPPING_USD (an assumed flat
-$4.00 per order; change the constant if your typical shipping differs):
+is the lowest listing from any seller. A buyer may also pay shipping, which the listing price
+excludes, so scoring uses the landed cost = buy_price + shipping. Shipping is usually free on these
+listings but varies by listing, so the default is $0 (BUY_SHIPPING_USD); pass --buy-shipping-usd to
+score with a flat amount instead. The call is only as good as that assumption: check the listing's
+shipping before buying (the summary and every row carry the amount used):
   gap                 = 1 - landed cost / market price (the discount actually captured)
   expected_return_6m  = predicted listing price in 6 months (model fitted on listing gaps)
                         / landed cost - 1
@@ -48,7 +50,7 @@ GAP_CAP = 0.40
 BUY_GAP = 0.10
 CHECK_GAP = 0.30          # gaps this large are often mislisted, damaged or single odd copies
 SELL_COST = 0.13          # TCGplayer seller fees plus shipping, as a share of the sale price
-BUY_SHIPPING_USD = 4.00   # ASSUMPTION: buyer-side shipping added to every purchase (flat, per order)
+BUY_SHIPPING_USD = 0.00   # ASSUMPTION (owner, 2026-10-09): shipping is usually free, sometimes more, depending on the listing
 MIN_PAIRS = 200
 FIELDS = ["secret_lair_id", "tcgplayer_product_id", "product_name", "as_of", "market_price", "buy_price", "buy_price_basis",
           "gap", "expected_return_6m", "expected_net_return_6m", "range_low_6m", "range_median_6m", "range_high_6m", "prob_profit_6m", "similar_cases", "call", "note", "rank", "ranked_products", "model_version",
@@ -230,7 +232,11 @@ def main(argv=None):
     parser.add_argument("--latest", type=Path, default=LATEST)
     parser.add_argument("--names", type=Path, default=NAMES)
     parser.add_argument("--output", type=Path, default=OUTPUT)
+    parser.add_argument("--buy-shipping-usd", type=float, default=BUY_SHIPPING_USD,
+                        help="flat buyer shipping added to every purchase (default: %(default)s)")
     args = parser.parse_args(argv)
+    if args.buy_shipping_usd < 0:
+        raise SystemExit("--buy-shipping-usd cannot be negative")
     panel = monthly_panel(_rows(args.history_monthly), _rows(args.history_weekly))
     model = calibrate(panel)
     latest = latest_prices(_rows(args.latest))
@@ -239,7 +245,7 @@ def main(argv=None):
     name_rows = [r for r in _rows(args.names) if r.get("secret_lair_id")]
     names = {r["secret_lair_id"]: r.get("product_name", "") for r in name_rows}
     tcg_ids = {r["secret_lair_id"]: str(r.get("tcgplayer_product_id") or "").strip() for r in name_rows}
-    rows = score(latest, model, names, tcg_ids)
+    rows = score(latest, model, names, tcg_ids, shipping=args.buy_shipping_usd)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     with args.output.open("w", newline="", encoding="utf-8") as handle:
         writer = csv.DictWriter(handle, fieldnames=FIELDS, extrasaction="ignore")
@@ -248,7 +254,7 @@ def main(argv=None):
     calls = {c: sum(1 for r in rows if r["call"] == c) for c in ("BUY", "WAIT", "NO_PRICE")}
     calibration = {**model, "bins": [{k: v for k, v in b.items() if k != "forwards"} for b in model.get("bins", [])]}
     summary = {"model_version": MODEL_VERSION, "as_of": max((r["as_of"] for r in rows if r.get("as_of")), default=""),
-               "calibration": calibration, "buy_gap": BUY_GAP, "sell_cost": SELL_COST, "buy_shipping_usd": BUY_SHIPPING_USD, "horizon_months": HORIZON_MONTHS, "calls": calls, "market_index": market_index(panel)}
+               "calibration": calibration, "buy_gap": BUY_GAP, "sell_cost": SELL_COST, "buy_shipping_usd": args.buy_shipping_usd, "shipping_note": "Shipping varies by listing (usually free): check it before buying.", "horizon_months": HORIZON_MONTHS, "calls": calls, "market_index": market_index(panel)}
     args.output.with_suffix(".json").write_text(json.dumps(summary, indent=2) + "\n", encoding="utf-8")
     history = history_by_product(panel)
     args.output.with_name("secret_lair_v2_history.json").write_text(json.dumps(history, separators=(",", ":")) + "\n", encoding="utf-8")
