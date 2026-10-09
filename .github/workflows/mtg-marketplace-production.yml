@@ -54,7 +54,10 @@ jobs:
   gate:
     # GitHub often starts scheduled runs hours late or skips them, so this workflow also has
     # backup schedule times. A scheduled run goes ahead only if no run of this workflow finished
-    # its work successfully in the last 12 hours. Manual and other runs always go ahead.
+    # its work successfully in the last 12 hours. Runs dispatched by another workflow
+    # (actor github-actions[bot], e.g. the old scheduled refresh bridge) are gated the same way,
+    # so they cannot repeat the day's eBay and TCGCSV calls. Manual runs by a person and other
+    # events always go ahead.
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     permissions:
@@ -69,7 +72,10 @@ jobs:
           ALWAYS_RUN_SCHEDULES: ""
         run: |
           set -euo pipefail
-          if [ "$GITHUB_EVENT_NAME" != "schedule" ] || { [ -n "$ALWAYS_RUN_SCHEDULES" ] && [[ "|$ALWAYS_RUN_SCHEDULES|" == *"|$SCHEDULE|"* ]]; }; then
+          gated=false
+          if [ "$GITHUB_EVENT_NAME" = "schedule" ]; then gated=true; fi
+          if [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ] && [ "$GITHUB_ACTOR" = "github-actions[bot]" ]; then gated=true; fi
+          if [ "$gated" != "true" ] || { [ -n "$ALWAYS_RUN_SCHEDULES" ] && [[ "|$ALWAYS_RUN_SCHEDULES|" == *"|$SCHEDULE|"* ]]; }; then
             echo "run=true" >> "$GITHUB_OUTPUT"; exit 0
           fi
           wf="${GITHUB_WORKFLOW_REF%@*}"; wf="${wf##*/}"
@@ -201,18 +207,29 @@ jobs:
               "data/operations/mtg_marketplace/runtime/"
               "marketplace_batch_summary.json"
           )
+          import csv
           payload = json.loads(path.read_text(encoding="utf-8"))
           if payload.get("status") != "PASS":
               raise SystemExit(f"Marketplace batch failed: {payload}")
-          if payload.get("universe_ready_products") != 1141:
+          # Compare against the universe built in this run (not fixed counts), so adding or
+          # retiring products does not break production; the range only catches a broken build.
+          universe = Path("data/operations/mtg_marketplace/governed_universe")
+          def count(name):
+              with (universe / name).open(encoding="utf-8-sig", newline="") as handle:
+                  return sum(1 for _ in csv.DictReader(handle))
+          ready_expected = count("ebay_eligible_product_map.csv")        # READY rows
+          tcgcsv_expected = count("tcgcsv_eligible_product_map.csv")
+          ready = payload.get("universe_ready_products")
+          tcgcsv = payload.get("tcgcsv_full_refresh_products")
+          if ready != ready_expected or not 500 <= ready <= 5000:
               raise SystemExit(
-                  "Governed universe did not contain 1,141 ready products"
+                  f"Batch kept {ready} ready products; the governed universe has {ready_expected} (sane range 500-5000)"
               )
           if payload.get("ebay_batch_products", 0) < 1:
               raise SystemExit("eBay batch is empty")
-          if payload.get("tcgcsv_full_refresh_products") != 168:
+          if tcgcsv != tcgcsv_expected or tcgcsv < 1:
               raise SystemExit(
-                  "TCGCSV refresh did not retain all 168 eligible products"
+                  f"TCGCSV refresh kept {tcgcsv} of {tcgcsv_expected} eligible products"
               )
           print(json.dumps(payload, indent=2))
           PY
@@ -245,11 +262,17 @@ jobs:
           import json
           from pathlib import Path
           path = Path("data/operations/mtg_history_backfill/universal_mtg_history_backfill_summary.json")
+          import csv
           payload = json.loads(path.read_text(encoding="utf-8"))
           if payload.get("status") != "PASS":
               raise SystemExit(f"History backfill foundation failed: {payload}")
-          if payload.get("governed_products") != 1141:
-              raise SystemExit("History verification did not retain 1,141 products")
+          universe = Path("data/operations/mtg_marketplace/governed_universe/governed_marketplace_product_map.csv")
+          with universe.open(encoding="utf-8-sig", newline="") as handle:
+              expected = sum(1 for _ in csv.DictReader(handle))
+          if payload.get("governed_products") != expected:
+              raise SystemExit(
+                  f"History verification kept {payload.get('governed_products')} of {expected} governed products"
+              )
           print(json.dumps(payload, indent=2))
           PY
 
