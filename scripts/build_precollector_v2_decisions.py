@@ -7,12 +7,21 @@ with release year added, price still carries it. It holds within 2000s and 2010s
 After a 13% selling cost, only the cheapest two price fifths made money on average (+7.4% and
 +4.3% a year vs -2.7% for all boxes). Return levels varied a lot by year, so calibrated forecasts and
 ranges did not validate (80% ranges held 55%); the model reports tiers and their past results only.
+
+Stale prices: a box whose price is more than MAX_PRICE_AGE_DAYS older than the run's as_of date
+(the newest daily-feed price) is not ranked against today's prices; typical cases are a box with
+only a July ledger month, or a daily-feed row carried forward after a failed fetch. It gets call
+NO_PRICE with note STALE_PRICE (the UIP loader accepts only BUY / HOLD / NO_PRICE), keeps its
+price and price_date for reference, and is left out of the tiers and ranks. Ledger prices are
+dated by month; a month counts as its last day, so a price is never called stale early.
 """
 from __future__ import annotations
 
 import argparse
+import calendar
 import csv
 import json
+from datetime import date
 from pathlib import Path
 from statistics import mean
 
@@ -30,6 +39,7 @@ SELL_COST = 0.13
 TIERS = 5
 BUY_TIERS = (1, 2)
 FIRST_MODELED_YEAR = 2000
+MAX_PRICE_AGE_DAYS = 21   # older prices are STALE_PRICE: not ranked against today's
 FIELDS = ["tcgplayer_product_id", "box_name", "release_date", "as_of", "price_date", "price", "price_source",
           "call", "note", "tier", "rank", "ranked_boxes", "tier_avg_return_12m", "tier_avg_net_return_12m",
           "tier_share_profitable", "tier_cases", "model_version"]
@@ -108,16 +118,35 @@ def latest_prices(latest_rows, panel):
     for r in latest_rows:
         product, price = str(r.get("tcgplayer_product_id") or ""), _float(r.get("market_price"))
         if product.isdigit() and price and product not in out:
-            out[product] = (price, str(r.get("snapshot_date") or "")[:10], "TCGCSV_DAILY")
+            carried = str(r.get("stale_carried") or "").strip().lower() == "true"
+            out[product] = (price, str(r.get("snapshot_date") or "")[:10], "TCGCSV_DAILY_CARRIED" if carried else "TCGCSV_DAILY")
     for (product, month), price in sorted(panel.items()):
         if product not in out or out[product][2] == "LEDGER_LAST_MONTH":
             out[product] = (price, month, "LEDGER_LAST_MONTH")
     return out
 
 
-def score(boxes, prices, history, as_of):
+def _price_day(text: str) -> date | None:
+    """The date of a price: YYYY-MM-DD as given, a ledger month YYYY-MM as its last day."""
+    try:
+        if len(text) == 7:
+            y, m = int(text[:4]), int(text[5:7])
+            return date(y, m, calendar.monthrange(y, m)[1])
+        return date.fromisoformat(text[:10])
+    except ValueError:
+        return None
+
+
+def is_stale(price_date: str, today: date) -> bool:
+    day = _price_day(price_date)
+    return day is None or (today - day).days > MAX_PRICE_AGE_DAYS
+
+
+def score(boxes, prices, history, as_of, today: date | None = None):
+    today = today or _price_day(str(as_of or "")) or date.today()
     years = {b["tcgplayer_product_id"]: int(b["release_date"][:4]) for b in boxes if b.get("release_date", "")[:4].isdigit()}
-    modeled = {p: prices[p][0] for p in prices if years.get(p, 0) >= FIRST_MODELED_YEAR}
+    stale = {p for p in prices if is_stale(prices[p][1], today)}
+    modeled = {p: prices[p][0] for p in prices if years.get(p, 0) >= FIRST_MODELED_YEAR and p not in stale}
     tiers = _tiers(modeled)
     ranked = sorted(modeled, key=lambda p: (modeled[p], p))
     rank_of = {p: i + 1 for i, p in enumerate(ranked)}
@@ -130,6 +159,8 @@ def score(boxes, prices, history, as_of):
             row.update(price=round(prices[product][0], 2), price_date=prices[product][1], price_source=prices[product][2])
         if product not in prices:
             row.update(call="NO_PRICE", note="NO_CURRENT_PRICE")
+        elif product in stale:
+            row.update(call="NO_PRICE", note="STALE_PRICE")
         elif years.get(product, 0) < FIRST_MODELED_YEAR:
             row.update(call="HOLD", note="VINTAGE_NO_MODEL_EDGE")
         else:
@@ -151,6 +182,7 @@ def main(argv=None) -> int:
     parser.add_argument("--weekly", type=Path, default=WEEKLY)
     parser.add_argument("--latest", type=Path, default=LATEST)
     parser.add_argument("--output", type=Path, default=OUTPUT)
+    parser.add_argument("--today", type=date.fromisoformat, default=None, help="reference date for the stale-price check (default: as_of)")
     args = parser.parse_args(argv)
     boxes = [b for b in _rows(args.boxes) if str(b.get("tcgplayer_product_id") or "").isdigit()]
     if not boxes:
@@ -162,7 +194,7 @@ def main(argv=None) -> int:
         raise SystemExit("not enough 12-month history to describe the tiers")
     prices = latest_prices(_rows(args.latest), panel)
     as_of = max((p[1] for p in prices.values() if p[2] == "TCGCSV_DAILY"), default=max(p[1] for p in prices.values()) if prices else "")
-    rows = score(boxes, prices, history, as_of)
+    rows = score(boxes, prices, history, as_of, args.today)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     with args.output.open("w", newline="", encoding="utf-8") as handle:
         writer = csv.DictWriter(handle, fieldnames=FIELDS, extrasaction="ignore")
@@ -170,7 +202,8 @@ def main(argv=None) -> int:
         writer.writerows(rows)
     calls = {c: sum(1 for r in rows if r["call"] == c) for c in ("BUY", "HOLD", "NO_PRICE")}
     summary = {"model_version": MODEL_VERSION, "as_of": as_of, "horizon_months": HORIZON_MONTHS, "sell_cost": SELL_COST,
-               "buy_tiers": list(BUY_TIERS), "first_modeled_year": FIRST_MODELED_YEAR, "calls": calls,
+               "buy_tiers": list(BUY_TIERS), "first_modeled_year": FIRST_MODELED_YEAR, "max_price_age_days": MAX_PRICE_AGE_DAYS,
+               "stale_prices": sum(1 for r in rows if r.get("note") == "STALE_PRICE"), "calls": calls,
                "tier_history": {str(k): v for k, v in history.items()}}
     args.output.with_suffix(".json").write_text(json.dumps(summary, indent=2) + "\n", encoding="utf-8")
     price_history = {}
