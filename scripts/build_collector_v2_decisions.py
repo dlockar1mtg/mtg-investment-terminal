@@ -8,8 +8,15 @@ The September model's inputs (own-trend Monte Carlo forecasts) were never tested
 
 Each run refits expected 6-month return = a + b*sweet_spot + c*trend_rank + d*price_rank on every
 month whose 6-month outcome is known (market price to market price), then scores today's prices.
-BUY the top quarter by expected return when the return after selling costs is positive; HOLD the
+BUY the top quarter by expected return (quarter 1 as _quarter assigns it, the same quarter the
+walk-forward results are reported for) when the return after selling costs is positive; HOLD the
 rest; NO_PRICE without a current price or release date.
+
+Every scored row also carries the walk-forward verdict, so a BUY is never shown without it:
+model_status (VALIDATED / PROVISIONAL / NOT_VALIDATED), edge_vs_all_boxes_pts (the BUY quarter's
+after-cost return minus all boxes', in percentage points, over every test month) and
+recent_edge_vs_all_boxes_pts (the same over the last RECENT_MONTHS test months). PROVISIONAL means
+the edge missed VALIDATED_EDGE (2 pts) on one of those checks; the BUY call itself is unchanged.
 
 Calibration check (October 2026 re-test on TCGCSV prices only): the edge is not steady. In a stricter
 re-test (boxes with a full 6-month trend only, 7 test months) the top quarter made +8.5% after costs
@@ -40,10 +47,10 @@ OUTPUT = ROOT / "data" / "history" / "boxes" / "collector_v2_decisions.csv"
 MODEL_VERSION = "collector-v2"
 HORIZON = 6
 SWEET_SPOT = (6.0, 24.0)
-BUY_SHARE = 0.25
 SELL_COST = 0.13
 MIN_ROWS = 150
 QUARTERS = 4
+BUY_SHARE = 1 / QUARTERS  # reported in the summary; BUY itself is decided by quarter == 1
 WF_MIN_TRAIN_MONTHS = 6
 WF_MIN_TEST_BOXES = 8
 VALIDATED_EDGE = 0.02
@@ -52,7 +59,8 @@ RECENT_MONTHS = 6
 FIELDS = ["tcgplayer_product_id", "box_name", "as_of", "market_price", "low_price", "direct_low_price",
           "months_since_release", "in_sweet_spot", "trend_6m", "expected_return_6m", "expected_net_return_6m",
           "release_date", "call", "note", "rank", "ranked_products", "quarter", "calibrated_net_return_6m", "calibrated_net_p10_6m",
-          "calibrated_net_p90_6m", "calibrated_share_profitable", "model_version"]
+          "calibrated_net_p90_6m", "calibrated_share_profitable", "model_version",
+          "model_status", "edge_vs_all_boxes_pts", "recent_edge_vs_all_boxes_pts"]
 
 
 def _rows(path: Path):
@@ -292,6 +300,9 @@ def score(latest, panel_, rel, model, history=None):
     prices = {p: v["market"] for p, v in latest.items() if v["market"]}
     feats = features(prices, _month(as_of), panel_, rel, on=date.fromisoformat(as_of))
     quarters = (history or {}).get("quarters", {})
+    status = (history or {}).get("status") or "NOT_VALIDATED"
+    edge = (history or {}).get("buy_quarter_edge")
+    recent_edge = ((history or {}).get("recent") or {}).get("buy_quarter_edge")
     rows = []
     for p, v in sorted(latest.items()):
         base = {"tcgplayer_product_id": p, "box_name": v["name"], "as_of": v["as_of"], "market_price": v["market"] or "",
@@ -309,11 +320,14 @@ def score(latest, panel_, rel, model, history=None):
                      "trend_6m": "" if f["trend"] is None else round(f["trend"], 4), "expected_return_6m": round(expected, 4),
                      "expected_net_return_6m": round((1 + expected) * (1 - SELL_COST) - 1, 4)})
     ranked = sorted((r for r in rows if r.get("call") != "NO_PRICE"), key=lambda r: r["expected_return_6m"], reverse=True)
-    cutoff = max(1, round(len(ranked) * BUY_SHARE))
     for n, r in enumerate(ranked, start=1):
         r["rank"], r["ranked_products"] = n, len(ranked)
-        r["call"] = "BUY" if n <= cutoff and r["expected_net_return_6m"] > 0 else "HOLD"
         r["quarter"] = _quarter(n - 1, len(ranked))
+        # One source of truth: BUY is quarter 1, the quarter whose walk-forward results are shown.
+        r["call"] = "BUY" if r["quarter"] == 1 and r["expected_net_return_6m"] > 0 else "HOLD"
+        r.update(model_status=status,
+                 edge_vs_all_boxes_pts="" if edge is None else round(100 * edge, 2),
+                 recent_edge_vs_all_boxes_pts="" if recent_edge is None else round(100 * recent_edge, 2))
         past = quarters.get(str(r["quarter"]))
         if past:
             r.update(calibrated_net_return_6m=past["avg_net_return"], calibrated_net_p10_6m=past["p10_net_return"],

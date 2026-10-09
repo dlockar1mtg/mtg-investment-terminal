@@ -48,7 +48,10 @@ def test_top_quarter_buy_after_costs_rest_hold(tmp_path):
     rows = list(csv.DictReader(out.open()))
     ranked = [r for r in rows if r["call"] != "NO_PRICE"]
     buys = [r for r in ranked if r["call"] == "BUY"]
-    assert 0 < len(buys) <= round(len(ranked) * 0.25)
+    assert 0 < len(buys) <= sum(1 for r in ranked if r["quarter"] == "1")
+    assert all(r["quarter"] == "1" for r in buys)                     # BUY comes from the reported quarter
+    assert {r["model_status"] for r in ranked} <= {"VALIDATED", "PROVISIONAL", "NOT_VALIDATED"}
+    assert all(r["edge_vs_all_boxes_pts"] != "" and r["recent_edge_vs_all_boxes_pts"] != "" for r in ranked)
     assert all(float(r["expected_net_return_6m"]) > 0 for r in buys)
     assert all(r["in_sweet_spot"] == "1" for r in buys) or buys[0]["in_sweet_spot"] == "1"
     assert [int(r["rank"]) for r in ranked] == list(range(1, len(ranked) + 1))
@@ -112,3 +115,18 @@ def test_unreleased_and_just_released_boxes(tmp_path):
     assert rows["8001"]["call"] in ("BUY", "HOLD") and rows["8001"]["release_date"] == "2026-10-02"
     assert (rows["8002"]["call"], rows["8002"]["note"]) == ("NO_PRICE", "NOT_YET_RELEASED")
     assert (rows["9999"]["call"], rows["9999"]["note"]) == ("NO_PRICE", "NO_RELEASE_DATE")
+
+
+def test_buy_follows_quarter_one_when_rounding_disagrees():
+    # 49 boxes: round(49 * 0.25) = 12, but quarter 1 holds positions 0..12 = 13 boxes.
+    rel = {str(p): date(2025, 1, 1) for p in range(49)}
+    latest = {str(p): {"market": 100.0 + p, "low": None, "direct": None, "name": f"B{p}", "as_of": "2026-10-05"} for p in range(49)}
+    model = {"intercept": 0.30, "sweet_spot": 0.0, "trend_rank": 0.0, "price_rank": -0.1}
+    history = {"status": "PROVISIONAL", "buy_quarter_edge": 0.0478, "recent": {"buy_quarter_edge": 0.0058},
+               "quarters": {"1": {"avg_net_return": 0.1, "p10_net_return": -0.1, "p90_net_return": 0.3, "share_profitable": 0.6}}}
+    rows = cv2.score(latest, {}, rel, model, history)
+    assert sum(1 for r in rows if r["quarter"] == 1) == 13
+    assert sum(1 for r in rows if r["call"] == "BUY") == 13
+    assert all((r["call"] == "BUY") == (r["quarter"] == 1) for r in rows)
+    top = rows[0]
+    assert (top["model_status"], top["edge_vs_all_boxes_pts"], top["recent_edge_vs_all_boxes_pts"]) == ("PROVISIONAL", 4.78, 0.58)
