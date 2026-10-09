@@ -54,8 +54,38 @@ def test_calls_follow_the_gap_and_costs(tmp_path):
     assert rows["C"]["buy_price_basis"] == "TCGPLAYER_DIRECT_LOW" and rows["C"]["call"] == "WAIT"
     assert rows["D"]["call"] == "NO_PRICE" and "rank" not in rows["D"]
     a = rows["A"]
-    assert a["expected_return_6m"] == pytest.approx(0.13 + 0.53 * 0.20, abs=1e-4)
+    # $80 listing + $4 assumed shipping = $84 landed: the model's listing change (fitted on the 20%
+    # listing gap) is measured against what the buyer actually pays.
+    assert a["landed_buy_price"] == 84.0 and a["buy_price"] == 80.0 and a["gap"] == pytest.approx(0.16)
+    assert a["expected_return_6m"] == pytest.approx((1 + 0.13 + 0.53 * 0.20) * 80 / 84 - 1, abs=1e-4)
     assert a["expected_net_return_6m"] == pytest.approx((1 + a["expected_return_6m"]) * 0.87 - 1, abs=1e-4)
+    free = v2.score(lat, model, {}, shipping=0.0)[0]
+    assert free["secret_lair_id"] == "A" and free["expected_return_6m"] == pytest.approx(0.13 + 0.53 * 0.20, abs=1e-4)
+
+
+def test_shipping_turns_a_thin_cheap_deal_into_wait():
+    model = {"intercept": 0.13, "slope": 0.53, "pairs": 500}
+    lat = v2.latest_prices([
+        {"secret_lair_id": "CHEAP", "market_price": "30", "low_price": "26", "direct_low_price": "", "snapshot_date": "2026-10-05"},   # 13% listing gap
+        {"secret_lair_id": "DEAR", "market_price": "300", "low_price": "261", "direct_low_price": "", "snapshot_date": "2026-10-05"},  # 13% listing gap
+    ])
+    assert v2.BUY_SHIPPING_USD == 4.00
+    without = {r["secret_lair_id"]: r["call"] for r in v2.score(lat, model, {}, shipping=0.0)}
+    with_shipping = {r["secret_lair_id"]: r for r in v2.score(lat, model, {})}
+    assert without == {"CHEAP": "BUY", "DEAR": "BUY"}
+    assert with_shipping["CHEAP"]["call"] == "WAIT" and with_shipping["CHEAP"]["gap"] == pytest.approx(0.0, abs=1e-4)  # $30 landed
+    assert with_shipping["DEAR"]["call"] == "BUY" and with_shipping["DEAR"]["landed_buy_price"] == 265.0
+
+
+def test_profit_odds_count_shipping_and_bins_stay_out_of_the_summary(tmp_path):
+    pairs = [(0.12, 0.10)] * 40       # every similar past deal: listing rose 10%
+    bins = v2.outcome_bins(pairs)
+    lat = v2.latest_prices([{"secret_lair_id": "A", "market_price": "40", "low_price": "35", "direct_low_price": "", "snapshot_date": "2026-10-05"}])
+    model = {"intercept": 0.13, "slope": 0.53, "pairs": 500, "bins": bins}
+    assert v2.score(lat, model, {}, shipping=0.0)[0]["prob_profit_6m"] == 0.0     # 35*1.1*0.87 = 33.5 < 35
+    rich = v2.outcome_bins([(0.12, 0.28)] * 40)       # 35*1.28*0.87 = 38.98: profit at $35, not at $39 landed
+    assert v2.score(lat, {**model, "bins": rich}, {}, shipping=0.0)[0]["prob_profit_6m"] == 1.0
+    assert v2.score(lat, {**model, "bins": rich}, {})[0]["prob_profit_6m"] == 0.0
 
 def test_runs_as_a_script(tmp_path):
     lat = latest(tmp_path, [{"snapshot_date": "2026-10-05", "secret_lair_id": "SL-001", "sub_type": "Normal", "market_price": "60", "low_price": "48", "direct_low_price": ""},
@@ -71,6 +101,8 @@ def test_runs_as_a_script(tmp_path):
     assert price_history["SL-001"][0][0] == "2024-02" and len(price_history["SL-001"]) == 20 and len(price_history["SL-001"][0]) == 3
     summary = json.loads(out.with_suffix(".json").read_text())
     assert summary["calls"] == {"BUY": 1, "WAIT": 1, "NO_PRICE": 0} and summary["calibration"]["slope"] > 0
+    assert summary["buy_shipping_usd"] == v2.BUY_SHIPPING_USD and rows[0]["landed_buy_price"] == "52.0"
+    assert all("forwards" not in b for b in summary["calibration"]["bins"])
 
 def test_too_little_history_is_refused():
     with pytest.raises(ValueError):
