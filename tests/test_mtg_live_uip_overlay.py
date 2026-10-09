@@ -27,3 +27,9 @@ def test_price_field_selection():
     assert module.first({"median_price_usd": "100"}, module.PRICE_FIELDS) == "100"
     assert module.first({"consolidated_price": "222.56"}, module.PRICE_FIELDS) == "222.56"
     assert module.first({"consolidated_market_price": "470.95"}, module.PRICE_FIELDS) == "470.95"
+
+
+def test_only_buy_type_calls_are_recommendation_eligible():
+    module = load_module()
+    assert [module.recommendation_eligible(s) for s in ("STRONG_BUY", "BUY", "buy", "ACCUMULATE")] == ["YES"] * 4
+    assert [module.recommendation_eligible(s) for s in ("HOLD", "AVOID", "WATCH", "NO_ACTION", "", None)] == ["NO"] * 6

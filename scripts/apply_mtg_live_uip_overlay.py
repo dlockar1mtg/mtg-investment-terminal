@@ -25,11 +25,20 @@ PRICE_FIELDS = (
     "current_price", "price_usd", "price",
 )
 SIGNAL_FIELDS = ("signal", "recommendation_action", "action", "recommendation")
+# Only buy-type calls are recommendations to act on. The certified decisioning emits STRONG_BUY,
+# BUY, WATCH, HOLD and AVOID (ACCUMULATE / ACCUMULATE_PRIORITY are its policy actions for the two
+# buy signals); HOLD, WATCH and AVOID mean "do not buy" and are not recommendation-eligible.
+BUY_SIGNALS = frozenset({"STRONG_BUY", "BUY", "ACCUMULATE", "ACCUMULATE_PRIORITY"})
 CONFIDENCE_FIELDS = ("confidence", "confidence_score", "model_confidence_score")
 OBSERVED_FIELDS = (
     "observed_at_utc", "observation_timestamp", "collected_at_utc",
     "generated_at_utc", "as_of_utc",
 )
+
+
+def recommendation_eligible(signal: str) -> str:
+    """YES only for buy-type calls."""
+    return "YES" if str(signal or "").strip().upper() in BUY_SIGNALS else "NO"
 
 
 def read_csv(path: Path) -> list[dict[str, str]]:
@@ -184,7 +193,7 @@ def main() -> int:
             if signal:
                 row["recommendation_action"] = signal
                 row["recommendation_status"] = "LIVE_CERTIFIED"
-                row["recommendation_eligible"] = "NO" if signal.upper() in {"", "WATCH", "NO_ACTION"} else "YES"
+                row["recommendation_eligible"] = recommendation_eligible(signal)
                 confidence = first(match, CONFIDENCE_FIELDS)
                 if confidence:
                     row["confidence"] = confidence
