@@ -27,6 +27,15 @@ for the listing's expected worth). BUY when the gap is at least 10% and the expe
 selling costs is positive; otherwise WAIT; NO_PRICE when there is no market or buy price.
 Listings 30% or more below market (before shipping) are flagged CHECK_LISTING_LARGE_GAP: such
 listings are often mislisted, damaged or single copies, and rank after the clean deals.
+
+Backtest (summary JSON "backtest", recomputed every run from the stored history): the research
+figures above replayed on the same 6-month listing-to-listing pairs the model is fitted on. Test
+months are the months with at least WF_MIN_TRAIN_MONTHS earlier months of known outcomes (2024-11
+on, with history from 2024-02) through the last month whose outcome is known. Over them, the mean
+return of every listing at least BUY_GAP below market and of every Secret Lair, each less SELL_COST.
+On the history through 2026-07 this gives +10.5% vs +2.1% (1,970 and 7,788 cases, 2024-11 to
+2026-01). The rule has nothing to refit month by month, and the signal and threshold were chosen
+on this same history, so the figure is in sample ("out_of_sample": false).
 """
 from __future__ import annotations
 
@@ -52,6 +61,7 @@ CHECK_GAP = 0.30          # gaps this large are often mislisted, damaged or sing
 SELL_COST = 0.13          # TCGplayer seller fees plus shipping, as a share of the sale price
 BUY_SHIPPING_USD = 0.00   # ASSUMPTION (owner, 2026-10-09): shipping is usually free, sometimes more, depending on the listing
 MIN_PAIRS = 200
+WF_MIN_TRAIN_MONTHS = 4   # a backtest month needs this many earlier months whose 6-month outcome is known
 FIELDS = ["secret_lair_id", "tcgplayer_product_id", "product_name", "as_of", "market_price", "buy_price", "buy_price_basis",
           "gap", "expected_return_6m", "expected_net_return_6m", "range_low_6m", "range_median_6m", "range_high_6m", "prob_profit_6m", "similar_cases", "call", "note", "rank", "ranked_products", "model_version",
           "buy_shipping_usd", "landed_buy_price"]
@@ -137,22 +147,52 @@ def _band_fields(model, gap, cost_ratio=1.0):
             "prob_profit_6m": round(p_profit, 4), "similar_cases": band["n"]}
 
 
-def calibrate(panel):
-    """Least squares of the 6-month listing-to-listing return on the gap, over known pairs."""
-    pairs = []
+def known_pairs(panel):
+    """(month, gap, 6-month listing-to-listing return) for every product-month whose outcome is known."""
+    out = []
     for (product, month), (market, low) in panel.items():
         later = panel.get((product, _month_add(month, HORIZON_MONTHS)))
         if not later or not low or not later[1]:
             continue
         forward = later[1] / low - 1.0
         if -0.9 <= forward <= 5.0:
-            pairs.append((gap_of(low, market), forward))
+            out.append((month, gap_of(low, market), forward))
+    return out
+
+
+def calibrate(panel):
+    """Least squares of the 6-month listing-to-listing return on the gap, over known pairs."""
+    pairs = [(gap, forward) for _month, gap, forward in known_pairs(panel)]
     if len(pairs) < MIN_PAIRS:
         raise ValueError(f"only {len(pairs)} known 6-month pairs; need {MIN_PAIRS}")
     xs, ys = [p[0] for p in pairs], [p[1] for p in pairs]
     mx, my = mean(xs), mean(ys)
     slope = sum((x - mx) * (y - my) for x, y in pairs) / sum((x - mx) ** 2 for x in xs)
     return {"intercept": my - slope * mx, "slope": slope, "pairs": len(pairs), "bins": outcome_bins(pairs)}
+
+
+BACKTEST_METHOD = (f"Each month with {WF_MIN_TRAIN_MONTHS}+ earlier months of known outcomes: buy every Secret Lair whose lowest "
+                   f"listing is {BUY_GAP:.0%}+ below market, hold {HORIZON_MONTHS} months (listing to listing), less "
+                   f"{SELL_COST:.0%} selling costs; vs all Secret Lairs. Fixed rule chosen on this history (in sample).")
+
+
+def backtest(panel):
+    """Mean 6-month return after selling costs of listings at least BUY_GAP below market vs all
+    Secret Lairs, over every test month (see the module docstring), pooled across months."""
+    cases = known_pairs(panel)
+    known = sorted({month for month, _gap, _forward in cases})
+    tested = [m for m in known if sum(1 for s in known if _month_add(s, HORIZON_MONTHS) <= m) >= WF_MIN_TRAIN_MONTHS]
+    test_months = set(tested)
+    every = [forward for month, _gap, forward in cases if month in test_months]
+    buys = [forward for month, gap, forward in cases if month in test_months and gap >= BUY_GAP]
+
+    def net(values):
+        return round((1.0 + mean(values)) * (1.0 - SELL_COST) - 1.0, 4) if values else None
+
+    return {"method": BACKTEST_METHOD, "start": tested[0] if tested else "", "end": tested[-1] if tested else "",
+            "horizon_months": HORIZON_MONTHS, "buy_gap": BUY_GAP, "sell_cost": SELL_COST,
+            "buy_net_return_6m": net(buys), "all_net_return_6m": net(every),
+            "buy_cases": len(buys), "all_cases": len(every), "out_of_sample": False}
 
 
 def latest_prices(rows):
@@ -254,7 +294,7 @@ def main(argv=None):
     calls = {c: sum(1 for r in rows if r["call"] == c) for c in ("BUY", "WAIT", "NO_PRICE")}
     calibration = {**model, "bins": [{k: v for k, v in b.items() if k != "forwards"} for b in model.get("bins", [])]}
     summary = {"model_version": MODEL_VERSION, "as_of": max((r["as_of"] for r in rows if r.get("as_of")), default=""),
-               "calibration": calibration, "buy_gap": BUY_GAP, "sell_cost": SELL_COST, "buy_shipping_usd": args.buy_shipping_usd, "shipping_note": "Shipping varies by listing (usually free): check it before buying.", "horizon_months": HORIZON_MONTHS, "calls": calls, "market_index": market_index(panel)}
+               "calibration": calibration, "buy_gap": BUY_GAP, "sell_cost": SELL_COST, "buy_shipping_usd": args.buy_shipping_usd, "shipping_note": "Shipping varies by listing (usually free): check it before buying.", "horizon_months": HORIZON_MONTHS, "calls": calls, "backtest": backtest(panel), "market_index": market_index(panel)}
     args.output.with_suffix(".json").write_text(json.dumps(summary, indent=2) + "\n", encoding="utf-8")
     history = history_by_product(panel)
     args.output.with_name("secret_lair_v2_history.json").write_text(json.dumps(history, separators=(",", ":")) + "\n", encoding="utf-8")

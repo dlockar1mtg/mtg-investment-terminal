@@ -182,8 +182,12 @@ def main() -> int:
                     live_asset_ids.add(asset_id)
                 continue
         row["market_data_status"] = "BASELINE_FALLBACK"
-        row["market_observed_at_utc"] = ""
-        row["market_source"] = "PHASE_10_CERTIFIED_BASELINE"
+        # The package builder may already have refreshed the baseline from a daily model decision
+        # (current_price_source / current_price_as_of); say so instead of calling it the certified price.
+        daily_source = str(row.get("current_price_source", "") or "").strip()
+        daily = bool(str(row.get("current_price_as_of", "") or "").strip()) and daily_source not in ("", "CERTIFIED_EXPORT")
+        row["market_observed_at_utc"] = row["current_price_as_of"].strip() if daily else ""
+        row["market_source"] = daily_source if daily else "PHASE_10_CERTIFIED_BASELINE"
 
     for row in recommendations:
         ids = row_identifiers(row, asset_aliases)
