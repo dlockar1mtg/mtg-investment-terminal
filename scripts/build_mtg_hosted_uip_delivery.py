@@ -4,9 +4,10 @@ import argparse
 import csv
 import hashlib
 import json
+import math
 import os
 import shutil
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
 from pathlib import Path
 from typing import Any
 
@@ -174,6 +175,97 @@ def apply_secret_lair_v2(rows: list[dict[str, str]], path: Path = SECRET_LAIR_V2
     return applied
 
 
+COLLECTOR_V2_DECISIONS = ROOT / "data" / "history" / "boxes" / "collector_v2_decisions.csv"
+PRECOLLECTOR_V2_DECISIONS = ROOT / "data" / "history" / "boxes" / "precollector_v2_decisions.csv"
+DAILY_PRICE_MAX_AGE_DAYS = 4   # same limit as the UIP's stale-decision check (MTG_DECISIONS_MAX_AGE_DAYS)
+CERTIFIED_PRICE_SOURCE = "CERTIFIED_EXPORT"
+
+
+def _precollector_product_id(native_asset_id: str) -> str:
+    """The TCGplayer id in a Pre-Collector native id (tcgplayer:<id>)."""
+    head, _, tail = native_asset_id.strip().partition(":")
+    return tail.strip() if head.lower() == "tcgplayer" and tail.strip().isdigit() else ""
+
+
+# lane -> (daily decisions file, its product id column, price column, price date column,
+#          native_asset_id -> that product id, source label)
+DAILY_PRICE_LANES = {
+    "SECRET_LAIR_V1_1": (SECRET_LAIR_V2_DECISIONS, "secret_lair_id", "market_price", "as_of",
+                         lambda native: native.strip(), "SECRET_LAIR_V2_DECISIONS_TCGPLAYER_MARKET"),
+    "COLLECTOR_V1": (COLLECTOR_V2_DECISIONS, "tcgplayer_product_id", "market_price", "as_of",
+                     tcgplayer_id, "COLLECTOR_V2_DECISIONS_TCGPLAYER_MARKET"),
+    "PRE_COLLECTOR_V1": (PRECOLLECTOR_V2_DECISIONS, "tcgplayer_product_id", "price", "price_date",
+                         _precollector_product_id, "PRECOLLECTOR_V2_DECISIONS_TCGPLAYER_MARKET"),
+}
+
+
+def _positive_price(value: str) -> str:
+    try:
+        number = float(str(value).strip())
+    except ValueError:
+        return ""
+    return str(value).strip() if math.isfinite(number) and number > 0 else ""
+
+
+def _fresh_date(value: str, today: date) -> str:
+    """The ISO date when it is at most DAILY_PRICE_MAX_AGE_DAYS old (a day ahead tolerated), else ""."""
+    try:
+        day = date.fromisoformat(str(value or "").strip()[:10])
+    except ValueError:
+        return ""
+    return day.isoformat() if -1 <= (today - day).days <= DAILY_PRICE_MAX_AGE_DAYS else ""
+
+
+def _daily_decisions(path: Path, id_field: str) -> dict[str, dict[str, str]]:
+    if not path.is_file():
+        return {}
+    with path.open("r", encoding="utf-8-sig", newline="") as handle:
+        reader = csv.DictReader(handle)
+        if not reader.fieldnames or id_field not in reader.fieldnames:
+            raise RuntimeError(f"Daily MTG decisions lack {id_field}: {path}")
+        return {str(r.get(id_field) or "").strip(): r for r in reader if str(r.get(id_field) or "").strip()}
+
+
+def refresh_daily_prices(rows: list[dict[str, str]], today: date | None = None,
+                         lanes: dict[str, tuple] | None = None) -> dict[str, Any]:
+    """Refresh current_price_usd from the daily model decisions; the certified price is the fallback.
+
+    The certified Phase 9 export froze its prices on 2026-08-13. Every lane now has a daily decision
+    file carrying today's TCGplayer market price (Secret Lair v2, Collector v2, Pre-Collector v2). A
+    row takes that price when the decision has a positive price dated within DAILY_PRICE_MAX_AGE_DAYS;
+    otherwise it keeps its certified price. Each row gains current_price_as_of (the price date, empty
+    for a certified price) and current_price_source. Calls, ranks, purchase semantics and
+    lane_authority_state are untouched, and so is the certified native authority file, which the UIP
+    verifies byte for byte against the certified SHA-256.
+    """
+    today = today or datetime.now(timezone.utc).date()
+    lanes = DAILY_PRICE_LANES if lanes is None else lanes
+    loaded = {lane: _daily_decisions(spec[0], spec[1]) for lane, spec in lanes.items()}
+    by_lane: dict[str, dict[str, int]] = {}
+    for row in rows:
+        lane = row.get("mtg_lane", "").strip()
+        counts = by_lane.setdefault(lane, {"refreshed": 0, "certified": 0})
+        row["current_price_as_of"] = ""
+        row["current_price_source"] = CERTIFIED_PRICE_SOURCE if _positive_price(row.get("current_price_usd", "")) else ""
+        spec = lanes.get(lane)
+        decision = loaded.get(lane, {}).get(spec[4](row.get("native_asset_id", ""))) if spec else None
+        price = _positive_price(decision.get(spec[2], "")) if decision else ""
+        as_of = _fresh_date(decision.get(spec[3], ""), today) if price else ""
+        if not as_of:
+            counts["certified"] += 1
+            continue
+        row["current_price_usd"] = price
+        row["current_price_as_of"] = as_of
+        row["current_price_source"] = spec[5]
+        counts["refreshed"] += 1
+    return {"max_age_days": DAILY_PRICE_MAX_AGE_DAYS, "as_of_date": today.isoformat(),
+            "refreshed": sum(c["refreshed"] for c in by_lane.values()),
+            "certified_fallback": sum(c["certified"] for c in by_lane.values()),
+            "by_lane": dict(sorted(by_lane.items())),
+            "sources": {lane: str(spec[0].relative_to(ROOT)) if spec[0].is_relative_to(ROOT) else str(spec[0])
+                        for lane, spec in sorted(lanes.items())}}
+
+
 def build(output_root: Path) -> dict[str, Any]:
     generated = datetime.now(timezone.utc)
     rows = read_csv(CERTIFIED_PAYLOAD)
@@ -181,6 +273,8 @@ def build(output_root: Path) -> dict[str, Any]:
     # Secret Lair model v2 overlay; off unless MTG_SECRET_LAIR_V2=1 (enabled with the UIP v2 projection).
     secret_lair_v2_rows = apply_secret_lair_v2(rows) if os.environ.get(SECRET_LAIR_V2_ENV) == "1" else 0
     print(f"Secret Lair v2 overlay rows: {secret_lair_v2_rows}")
+    daily_prices = refresh_daily_prices(rows, today=generated.date())
+    print(f"Daily price refresh: {json.dumps(daily_prices['by_lane'], sort_keys=True)}")
 
     source_manifest = json.loads(CERTIFIED_MANIFEST.read_text(encoding="utf-8"))
     package_id = generated.strftime("mtg-hosted-r2-%Y%m%dT%H%M%SZ")
@@ -219,7 +313,8 @@ def build(output_root: Path) -> dict[str, Any]:
         })
 
         forecast_available = is_true(row["forecast_authority_available"])
-        current_price_available = is_true(row["current_price_authority_available"])
+        daily_price = bool(row.get("current_price_as_of"))
+        current_price_available = is_true(row["current_price_authority_available"]) or daily_price
         forecast_rows.append({
             "asset_id": asset_id,
             "source_product_id": native_id,
@@ -244,6 +339,10 @@ def build(output_root: Path) -> dict[str, Any]:
             "five_year_upside_usd": "",
             "forecast_1y_return": row["forecast_1y_return"] if forecast_available else "",
             "currency": "USD",
+            # What current_market_value_usd is as built here: a daily decision price or the certified one.
+            # The live overlay may then replace the value; its market_source says which it kept.
+            "current_price_as_of": row.get("current_price_as_of", "") if current_price_available else "",
+            "current_price_source": row.get("current_price_source", "") if current_price_available else "",
         })
 
         native_purchase_status = row["native_purchase_status"].strip()
@@ -314,6 +413,8 @@ def build(output_root: Path) -> dict[str, Any]:
         ["lane", "source_product_id", "diagnostic"],
     )
 
+    # Byte copy, never the refreshed rows: the UIP import verifies this file against the certified
+    # SHA-256 and column list (mtg_v1_uip_export_manifest.json), so daily prices travel in forecasts.csv.
     shutil.copy2(CERTIFIED_PAYLOAD, package / "mtg_native_authority.csv")
     shutil.copy2(CERTIFIED_MANIFEST, package / "mtg_native_authority_manifest.json")
 
@@ -345,6 +446,7 @@ def build(output_root: Path) -> dict[str, Any]:
         "automatic_purchase_execution": False,
         "execution_ready_purchase_certified": False,
         "generic_surfaces_are_semantic_authority": False,
+        "daily_price_refresh": daily_prices,
         "files": {
             name: {
                 "sha256": sha256(package / name),
