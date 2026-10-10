@@ -148,3 +148,46 @@ def test_market_index_is_chain_linked_and_ignores_new_products():
     assert idx[0] == ["2026-01", 100.0, 2]
     assert idx[1][0] == "2026-02" and idx[1][1] == 110.0 and idx[1][2] == 2  # +10% median; the new $900 drop is ignored
     assert v2.market_index({}) == []
+
+
+BACKTEST_KEYS = {"method", "start", "end", "horizon_months", "buy_gap", "sell_cost", "buy_net_return_6m",
+                 "all_net_return_6m", "buy_cases", "all_cases", "out_of_sample"}
+
+
+def test_backtest_matches_hand_computed_returns():
+    # A and B list at least 10% below market, C (9%) and D (above market) do not. Listings grow 50%,
+    # 20%, 0% and -10% every 6 months.
+    months_ = [m[:7] for m in months(20)]            # 2024-02 .. 2025-09; outcomes known for 2024-02 .. 2025-03
+    panel = {}
+    for k, month in enumerate(months_):
+        for product, gap, growth in (("A", 0.20, 1.5), ("B", 0.12, 1.2), ("C", 0.09, 1.0), ("D", -0.05, 0.9)):
+            market = 100.0 * growth ** (k / 6)
+            panel[(product, month)] = (market, market * (1 - gap))
+    bt = v2.backtest(panel)
+    # 2024-11 is the first start with four earlier starts (2024-02 .. 2024-05) whose outcome was known
+    # by then; 2025-03 the last start with an outcome. 5 test months.
+    assert (bt["start"], bt["end"]) == ("2024-11", "2025-03")
+    assert bt["out_of_sample"] is False and (bt["horizon_months"], bt["buy_gap"], bt["sell_cost"]) == (6, 0.10, 0.13)
+    assert (bt["buy_cases"], bt["all_cases"]) == (10, 20)           # A and B every month; all four
+    assert bt["buy_net_return_6m"] == pytest.approx(((0.5 + 0.2) / 2 + 1) * 0.87 - 1, abs=1e-4)
+    assert bt["all_net_return_6m"] == pytest.approx(((0.5 + 0.2 + 0.0 - 0.1) / 4 + 1) * 0.87 - 1, abs=1e-4)
+
+
+def test_backtest_without_enough_history_reports_no_figures():
+    panel = {(p, m[:7]): (100.0, 90.0) for p in ("A", "B") for m in months(12)}   # outcomes for 6 starts, none testable
+    bt = v2.backtest(panel)
+    assert set(bt) == BACKTEST_KEYS and bt["start"] == "" and bt["end"] == ""
+    assert bt["buy_net_return_6m"] is None and bt["all_net_return_6m"] is None and bt["buy_cases"] == bt["all_cases"] == 0
+
+
+def test_backtest_is_written_into_the_summary(tmp_path):
+    lat = latest(tmp_path, [{"snapshot_date": "2026-10-05", "secret_lair_id": "SL-001", "sub_type": "Normal", "market_price": "60", "low_price": "48", "direct_low_price": ""}])
+    out = tmp_path / "decisions.csv"
+    assert v2.main(["--history-monthly", str(history(tmp_path)), "--history-weekly", str(tmp_path / "none.csv"), "--latest", str(lat),
+                    "--names", str(tmp_path / "none.csv"), "--output", str(out)]) == 0
+    bt = json.loads(out.with_suffix(".json").read_text())["backtest"]
+    assert set(bt) == BACKTEST_KEYS
+    # history(): 20 months from 2024-02, so starts 2024-02 .. 2025-03 have outcomes; tests run 2024-11 .. 2025-03.
+    assert (bt["start"], bt["end"], bt["all_cases"], bt["buy_cases"]) == ("2024-11", "2025-03", 300, 120)
+    assert bt["buy_net_return_6m"] > bt["all_net_return_6m"]
+    assert isinstance(bt["buy_net_return_6m"], float) and isinstance(bt["buy_cases"], int)
