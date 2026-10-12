@@ -1,6 +1,6 @@
 {
   "model_version": "precollector-v2",
-  "as_of": "2026-10-11",
+  "as_of": "2026-10-12",
   "horizon_months": 12,
   "sell_cost": 0.13,
   "buy_tiers": [
@@ -18,48 +18,48 @@
   "tier_history": {
     "1": {
       "cases": 341,
-      "avg_return": 0.2626498593735966,
-      "avg_net_return": 0.09850537765502904,
+      "avg_return": 0.2628005991745519,
+      "avg_net_return": 0.09863652128186016,
       "share_profitable": 0.7419354838709677,
       "by_start_year": {
         "2024": 0.0586,
-        "2025": 0.1538
+        "2025": 0.1541
       }
     },
     "2": {
       "cases": 339,
-      "avg_return": 0.22248755995097508,
-      "avg_net_return": 0.06356417715734831,
-      "share_profitable": 0.5811209439528023,
+      "avg_return": 0.22278302498750022,
+      "avg_net_return": 0.06382123173912518,
+      "share_profitable": 0.584070796460177,
       "by_start_year": {
         "2024": 0.0189,
-        "2025": 0.1263
+        "2025": 0.1269
       }
     },
     "3": {
       "cases": 337,
-      "avg_return": 0.2026036006018387,
-      "avg_net_return": 0.04626513252359968,
+      "avg_return": 0.20286447365468394,
+      "avg_net_return": 0.04649209207957502,
       "share_profitable": 0.5311572700296736,
       "by_start_year": {
         "2024": -0.026,
-        "2025": 0.1468
+        "2025": 0.1473
       }
     },
     "4": {
       "cases": 339,
-      "avg_return": 0.04064847587977245,
-      "avg_net_return": -0.09463582598459798,
+      "avg_return": 0.040958540116782925,
+      "avg_net_return": -0.09436607009839885,
       "share_profitable": 0.2359882005899705,
       "by_start_year": {
         "2024": -0.1462,
-        "2025": -0.0223
+        "2025": -0.0216
       }
     },
     "5": {
       "cases": 323,
-      "avg_return": -0.039291100056439494,
-      "avg_net_return": -0.16418325704910236,
+      "avg_return": -0.039260496185833056,
+      "avg_net_return": -0.16415663168167477,
       "share_profitable": 0.16718266253869968,
       "by_start_year": {
         "2024": -0.2359,
