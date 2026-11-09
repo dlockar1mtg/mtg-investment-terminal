@@ -1,11 +1,11 @@
 {
   "model_version": "collector-v2",
-  "as_of": "2026-11-08",
+  "as_of": "2026-11-09",
   "calibration": {
-    "intercept": 0.23526050682397004,
-    "sweet_spot": 0.05060136973607371,
-    "trend_rank": 0.005495807277846172,
-    "price_rank": 0.12901256064627376,
+    "intercept": 0.23523427010807502,
+    "sweet_spot": 0.05052440926898313,
+    "trend_rank": 0.00576232177347861,
+    "price_rank": 0.12902452962398298,
     "rows": 964
   },
   "buy_share": 0.25,
@@ -31,23 +31,23 @@
         "cases": 150,
         "avg_net_return": 0.1692,
         "p10_net_return": -0.1092,
-        "p50_net_return": 0.1526,
+        "p50_net_return": 0.1543,
         "p90_net_return": 0.4329,
         "share_profitable": 0.76,
         "avg_predicted_net_return": 0.1492
       },
       "2": {
         "cases": 141,
-        "avg_net_return": 0.122,
+        "avg_net_return": 0.1217,
         "p10_net_return": -0.0903,
         "p50_net_return": 0.1054,
         "p90_net_return": 0.3758,
-        "share_profitable": 0.7447,
+        "share_profitable": 0.7518,
         "avg_predicted_net_return": 0.0756
       },
       "3": {
         "cases": 146,
-        "avg_net_return": 0.1086,
+        "avg_net_return": 0.1085,
         "p10_net_return": -0.0798,
         "p50_net_return": 0.1171,
         "p90_net_return": 0.3057,
@@ -58,8 +58,8 @@
         "cases": 137,
         "avg_net_return": 0.0815,
         "p10_net_return": -0.067,
-        "p50_net_return": 0.0643,
-        "p90_net_return": 0.2545,
+        "p50_net_return": 0.0654,
+        "p90_net_return": 0.2551,
         "share_profitable": 0.7445,
         "avg_predicted_net_return": -0.0239
       }
@@ -70,7 +70,7 @@
       "p10_net_return": -0.0881,
       "p50_net_return": 0.112,
       "p90_net_return": 0.344,
-      "share_profitable": 0.7474
+      "share_profitable": 0.7491
     },
     "buy_quarter_edge": 0.048,
     "recent": {
@@ -79,23 +79,23 @@
       "last_test_month": "2026-05",
       "buy_quarter": {
         "cases": 68,
-        "avg_net_return": 0.1542,
+        "avg_net_return": 0.1544,
         "p10_net_return": -0.1421,
         "p50_net_return": 0.1494,
-        "p90_net_return": 0.4192,
+        "p90_net_return": 0.4164,
         "share_profitable": 0.7647
       },
       "all_boxes": {
         "cases": 261,
-        "avg_net_return": 0.1401,
+        "avg_net_return": 0.1399,
         "p10_net_return": -0.0859,
-        "p50_net_return": 0.1386,
-        "p90_net_return": 0.3566,
-        "share_profitable": 0.7816
+        "p50_net_return": 0.1429,
+        "p90_net_return": 0.3523,
+        "share_profitable": 0.7854
       },
-      "buy_quarter_edge": 0.0141
+      "buy_quarter_edge": 0.0144
     },
-    "rank_correlation": 0.1715,
+    "rank_correlation": 0.1709,
     "share_months_rank_positive": 0.7143,
     "status": "PROVISIONAL"
   }
