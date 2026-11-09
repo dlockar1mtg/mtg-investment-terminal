@@ -1,6 +1,6 @@
 {
   "model_version": "precollector-v2",
-  "as_of": "2026-11-08",
+  "as_of": "2026-11-09",
   "horizon_months": 12,
   "sell_cost": 0.13,
   "buy_tiers": [
@@ -18,32 +18,32 @@
   "tier_history": {
     "1": {
       "cases": 357,
-      "avg_return": 0.26913350128581476,
-      "avg_net_return": 0.10414614611865886,
+      "avg_return": 0.26924979561097795,
+      "avg_net_return": 0.10424732218155082,
       "share_profitable": 0.7535014005602241,
       "by_start_year": {
         "2024": 0.0586,
-        "2025": 0.1609
+        "2025": 0.1611
       }
     },
     "2": {
       "cases": 355,
-      "avg_return": 0.23265635896423983,
-      "avg_net_return": 0.07241103229888865,
+      "avg_return": 0.2328318080490914,
+      "avg_net_return": 0.07256367300270952,
       "share_profitable": 0.6,
       "by_start_year": {
         "2024": 0.0189,
-        "2025": 0.1399
+        "2025": 0.1402
       }
     },
     "3": {
       "cases": 353,
-      "avg_return": 0.2106682364073822,
-      "avg_net_return": 0.053281365674422494,
+      "avg_return": 0.21097674070507014,
+      "avg_net_return": 0.05354976441341102,
       "share_profitable": 0.5524079320113314,
       "by_start_year": {
         "2024": -0.026,
-        "2025": 0.1523
+        "2025": 0.1529
       }
     },
     "4": {
@@ -58,8 +58,8 @@
     },
     "5": {
       "cases": 338,
-      "avg_return": -0.026972972227087496,
-      "avg_net_return": -0.15346648583756614,
+      "avg_return": -0.026942696345638006,
+      "avg_net_return": -0.15344014582070506,
       "share_profitable": 0.1893491124260355,
       "by_start_year": {
         "2024": -0.2359,
