@@ -1,6 +1,6 @@
 {
   "model_version": "precollector-v2",
-  "as_of": "2026-11-15",
+  "as_of": "2026-11-16",
   "horizon_months": 12,
   "sell_cost": 0.13,
   "buy_tiers": [
@@ -17,53 +17,53 @@
   },
   "tier_history": {
     "1": {
-      "cases": 357,
-      "avg_return": 0.26924979561097795,
-      "avg_net_return": 0.10424732218155082,
-      "share_profitable": 0.7535014005602241,
+      "cases": 358,
+      "avg_return": 0.2697821900578809,
+      "avg_net_return": 0.10471050535035636,
+      "share_profitable": 0.7541899441340782,
       "by_start_year": {
         "2024": 0.0586,
-        "2025": 0.1611
+        "2025": 0.1618
       }
     },
     "2": {
       "cases": 355,
-      "avg_return": 0.2328318080490914,
-      "avg_net_return": 0.07256367300270952,
+      "avg_return": 0.23295927457858734,
+      "avg_net_return": 0.07267456888337098,
       "share_profitable": 0.6,
       "by_start_year": {
         "2024": 0.0189,
-        "2025": 0.1402
+        "2025": 0.1405
       }
     },
     "3": {
       "cases": 353,
-      "avg_return": 0.21097674070507014,
-      "avg_net_return": 0.05354976441341102,
+      "avg_return": 0.21053313021112546,
+      "avg_net_return": 0.053163823283679155,
       "share_profitable": 0.5524079320113314,
       "by_start_year": {
         "2024": -0.026,
-        "2025": 0.1529
+        "2025": 0.1521
       }
     },
     "4": {
       "cases": 355,
-      "avg_return": 0.04936102682983382,
-      "avg_net_return": -0.08705590665804458,
+      "avg_return": 0.049883833001135774,
+      "avg_net_return": -0.08660106528901189,
       "share_profitable": 0.2535211267605634,
       "by_start_year": {
         "2024": -0.1462,
-        "2025": -0.0125
+        "2025": -0.0115
       }
     },
     "5": {
-      "cases": 338,
-      "avg_return": -0.026942696345638006,
-      "avg_net_return": -0.15344014582070506,
-      "share_profitable": 0.1893491124260355,
+      "cases": 339,
+      "avg_return": -0.02506789444473481,
+      "avg_net_return": -0.1518090681669193,
+      "share_profitable": 0.1887905604719764,
       "by_start_year": {
         "2024": -0.2359,
-        "2025": -0.0513
+        "2025": -0.0483
       }
     }
   }
