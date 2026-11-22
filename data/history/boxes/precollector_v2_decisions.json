@@ -1,6 +1,6 @@
 {
   "model_version": "precollector-v2",
-  "as_of": "2026-11-21",
+  "as_of": "2026-11-22",
   "horizon_months": 12,
   "sell_cost": 0.13,
   "buy_tiers": [
@@ -9,11 +9,11 @@
   ],
   "first_modeled_year": 2000,
   "max_price_age_days": 21,
-  "stale_prices": 16,
+  "stale_prices": 20,
   "calls": {
-    "BUY": 34,
-    "HOLD": 65,
-    "NO_PRICE": 20
+    "BUY": 33,
+    "HOLD": 62,
+    "NO_PRICE": 24
   },
   "tier_history": {
     "1": {
