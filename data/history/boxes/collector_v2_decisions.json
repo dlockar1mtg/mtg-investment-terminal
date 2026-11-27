@@ -1,6 +1,6 @@
 {
   "model_version": "collector-v2",
-  "as_of": "2026-11-26",
+  "as_of": "2026-11-27",
   "calibration": {
     "intercept": 0.2345704737748586,
     "sweet_spot": 0.05090471765022839,
